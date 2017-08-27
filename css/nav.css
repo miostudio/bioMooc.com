@@ -10,8 +10,8 @@
 .footer a:hover {color:#ba2636;}
 .colLM {width:748px; float:left; border:1px solid #B1C8D7; border-top:none;}
 .colR {width:198px; float:right; border:1px solid #B1C8D7; border-top:none;}
-.titleBar {clear:both; height:25px; line-height:24px; border-top:1px solid #B1C8D7; border-bottom:1px solid #B1C8D7; background:url(../img/sitemap/titbg.jpg) left top repeat-x #C7D5E9;}
-.titleBar h2 {padding-left:19px; font-size:14px; font-weight:bold; color:#1E50A2; background:url(../img/sitemap/h2bg.jpg) left top no-repeat;}
+.titleBar {clear:both; height:25px; line-height:24px; border-top:1px solid #B1C8D7;}
+.titleBar h2 {padding-left:19px; font-size:14px; font-weight:bold; color:#1E50A2; background:#F7F7F7;}
 .titleBar h2 a,.titleBar h2 a:visited {color:#1E50A2;}
 .content {background:url(../img/sitemap/conbg.jpg) left top repeat-x;}
 .linkBox,.linkBox1,.linkBox2 {padding:11px 6px 15px 19px;}
