@@ -10,3 +10,4 @@ miostudio/bioMooc
 	change H2 title styles.
 
 > v0.1.3 add links: work flow
+> v0.1.4 change css, add GATK training link.
