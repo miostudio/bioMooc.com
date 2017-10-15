@@ -14,3 +14,4 @@ miostudio/bioMooc
 > v0.1.5 add immoc logo, add qq qun No.
 > v0.1.6 change style to Ubuntu
 > v0.1.7 add enNewspapers links.html,logo
+	> v0.1.7.2 add html title, separate css/links.css to file.add nature,science,cell links.
