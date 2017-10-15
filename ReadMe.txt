@@ -12,3 +12,5 @@ miostudio/bioMooc
 > v0.1.3 add links: work flow
 > v0.1.4 change css, add GATK training link.
 > v0.1.5 add immoc logo, add qq qun No.
+> v0.1.6 change style to Ubuntu
+> v0.1.7 add enNewspapers links.html,logo
