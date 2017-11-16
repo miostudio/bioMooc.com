@@ -35,6 +35,17 @@
 	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
 }
 .button.red {    background-color: #E33100;}
+
+.button.blue {    background-color: #2DAEBF;}
+.button.red {    background-color: #E33100;}
+.button.orange {    background-color: #FFB515;}
+.button.pink {    background-color: #FF0097;}
+
+.button.white {    background-color: #EEEEEE;    color: #555555;}
+
+.button.sm{font-size: 10px;}
+
+
 .button:hover {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAyCAYAAACd+7GKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAClJREFUeNpi/v//vwMTAwPDfzjBgMpFI/7hFSOT9Y8qRuF3JLoHAQIMAHYtMmRA+CugAAAAAElFTkSuQmCC");
 }
