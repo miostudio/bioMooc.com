@@ -18,3 +18,4 @@ miostudio/bioMooc
 > v0.1.8 add links to en/links.html	
 	> v0.1.8.1 en/links.html add links,add css
 	> v0.1.8.2 en/links.html modify css
+	> v0.1.8.3 en/links.html add theAtlantic
