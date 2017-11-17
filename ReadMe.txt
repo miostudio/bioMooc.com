@@ -17,3 +17,4 @@ miostudio/bioMooc
 	> v0.1.7.2 add html title, separate css/links.css to file.add nature,science,cell links.
 > v0.1.8 add links to en/links.html	
 	> v0.1.8.1 en/links.html add links,add css
+	> v0.1.8.2 en/links.html modify css
