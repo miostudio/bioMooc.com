@@ -21,3 +21,5 @@ miostudio/bioMooc
 	> v0.1.8.3 en/links.html add theAtlantic
 	> v0.1.8.4 en/links.html edit links
 	> v0.1.8.5 add 百度统计 code	[https://tongji.baidu.com: 亲自走路/Bd12345678]
+	> v0.1.8.6 添加百度统计查看按钮
+		https://tongji.baidu.com/web/welcome/ico?s=e8bfc4624d292f16f30358abd921d748
