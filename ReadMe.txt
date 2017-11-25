@@ -24,3 +24,4 @@ miostudio/bioMooc
 	> v0.1.8.6 添加百度统计查看按钮
 		https://tongji.baidu.com/web/welcome/ico?s=e8bfc4624d292f16f30358abd921d748
 	> v0.1.8.7 调整描述。
+	> v0.1.8.8 add 英文标题。
