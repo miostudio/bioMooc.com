@@ -25,3 +25,6 @@ miostudio/bioMooc
 		https://tongji.baidu.com/web/welcome/ico?s=e8bfc4624d292f16f30358abd921d748
 	> v0.1.8.7 调整描述。
 	> v0.1.8.8 add 英文标题。
+	> v0.1.8.9 去掉viewport。
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+		添加新周刊名字：
