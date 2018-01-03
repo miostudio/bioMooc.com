@@ -31,3 +31,7 @@ miostudio/bioMooc
 > v0.1.9-1 添加 BI商业内参 
 	> v0.1.9-2 添加友情链接。打算改版。 
 	> v0.1.9-3 独立tongji文件。 
+	> v0.1.9-4 修改utf-8标示。
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />。 
+> v0.2.0 调整 英文杂志链接到ielts中：http://ielts.biomooc.com/en/links.html
+
