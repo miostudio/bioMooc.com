@@ -35,3 +35,12 @@ miostudio/bioMooc
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />。 
 > v0.2.0 调整 英文杂志链接到ielts中：http://ielts.biomooc.com/en/links.html
 
+--------------------
+
+> v0.2.1 首页效果
+搭建新框架，模仿： http://www.runoob.com
+
+给我发邮件：http://openmail.qq.com
+图片转base64编码：http://www.atool.org/img2base64.php
+
+
