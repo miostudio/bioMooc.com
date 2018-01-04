@@ -51,3 +51,18 @@ ico图标转换： 	http://www.bitbug.net
 	> v0.2.1-2 设计火焰形logo，更新微信等地方、favicon.ico
 	todo 为什么手机浏览器不显示顶部logo图片？
 
+	> v0.2.1-3 添加linux部分的首页，
+	> v0.2.1-4 补充aboutus。添加目录结构。
+
+	
+
+
+
+
+
+
+
+
+
+
+
