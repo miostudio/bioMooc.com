@@ -42,12 +42,12 @@ miostudio/bioMooc
 
 给我发邮件：http://openmail.qq.com
 图片转base64编码：http://www.atool.org/img2base64.php
+ico图标转换： 	http://www.bitbug.net
 
 -------------------- dev 分支下进行
 	> v0.2.1-1 logo灰色表示没有开通 desaturate。
 	整理和归类静态资源。
 	还没有自己的icon？logo怎么办？
-	
-
-
+	> v0.2.1-2 设计火焰形logo，更新微信等地方、favicon.ico
+	todo 为什么手机浏览器不显示顶部logo图片？
 
