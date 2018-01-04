@@ -42,7 +42,7 @@ jQuery(document).ready(function ($){
 	}
 	// 评论区域样式
 
-	$(".comt-main li").prepend( "<i style=\"font-size:12px;color:#cfcfcf;padding-right: 4px;\" class=\"fa fa-circle\" aria-hidden=\"true\"></i>" );
+	$(".comt-main li").prepend( "<i style=\"font-size:12px;color:#E44D26;padding-right: 4px;\" class=\"fa fa-circle\" aria-hidden=\"true\"></i>" );
 	
 	// 列表
 	color_flag = false; //配色标记
@@ -94,7 +94,7 @@ jQuery(document).ready(function ($){
 				if(href != tmp_url) return;
 			}
 			if(!color_flag) {
-				$(this).css({"background-color":"#96b97d","font-weight":"bold", "color":"#fff"});
+				$(this).css({"background-color":"#E44D26","font-weight":"bold", "color":"#fff"});
 				color_flag = true;
 			}
 			prev_href = $(this).prev("a").prop("href");

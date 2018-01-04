@@ -42,12 +42,36 @@ miostudio/bioMooc
 
 给我发邮件：http://openmail.qq.com
 图片转base64编码：http://www.atool.org/img2base64.php
+ico图标转换： 	http://www.bitbug.net
+html 美化： https://tool.lu/html/
+
 
 -------------------- dev 分支下进行
 	> v0.2.1-1 logo灰色表示没有开通 desaturate。
 	整理和归类静态资源。
 	还没有自己的icon？logo怎么办？
+	> v0.2.1-2 设计火焰形logo，更新微信等地方、favicon.ico
+	todo 为什么手机浏览器不显示顶部logo图片？
+
+	> v0.2.1-3 添加linux部分的首页，
+	> v0.2.1-4 补充aboutus。精简拆分首页。
+	> v0.2.1-5 添加linux目录。fix顶部目录。拆分右侧导航。添加sitemap
+index自动跳转
+<head>
+<!-- 以下方式只是刷新不跳转到其他页面 -->
+<meta http-equiv="refresh" content="10">
+<!-- 以下方式定时转到其他页面 -->
+<meta http-equiv="refresh" content="0;url=linux-tutorial.html"> 
+</head>
 	
+	> 
+
+
+
+
+
+
+
 
 
 
