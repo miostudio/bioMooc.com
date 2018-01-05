@@ -1,5 +1,7 @@
 >biomooc.com
 
+按照 sitemap 组织内容。
+
 git remote add origin https://github.com/MioStudio/biomooc.com.git
 git push origin master
 
@@ -64,7 +66,7 @@ index自动跳转
 <meta http-equiv="refresh" content="0;url=linux-tutorial.html"> 
 </head>
 	
-	> 
+	> v0.2.1-6 替换网站logo为文字，增加两个logo，写到about.html中。
 
 
 
