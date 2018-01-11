@@ -68,12 +68,40 @@ index自动跳转
 	
 	> v0.2.1-6 替换网站logo为文字，增加两个logo，写到about.html中。
 
+-----------------------------
+	> v0.2.1-7 网易云课堂。微调。
+网易云课堂申请： http://study.163.com/cp/introduction.htm
+	批准入驻-后台：http://cp.study.163.com/400000000359002
+	批准入驻-前台：http://study.163.com/provider/400000000359002/index.htm
+	绑定网易支付bj卡建行 https://epay.163.com/main.htm 
+
+[20180106提交课程计划]	
+章节1:windows和linux下安装R与RStudio
+章节2:R语言语法核心：变量类型和运算符
+章节3:数据输入与输出I/O
+章节4:控制结构（分组、条件和循环）
+章节5:函数和面向对象初步
+章节6:字符串处理与正则表达式
+章节7:基因表达数据与数据框data.frame操作
+章节8:R语言绘图（高水平、低水平绘图函数）
+章节9:R语言包管理
+
+	已经有其他人的课程了：http://study.163.com/course/introduction/1004104013.htm
+		biowolf 更多介绍： http://study.163.com/provider/1026136977/index.htm
+-----------------------------
 
 
 
 
 
 
+
+
+
+
+---------------
+todo
+1. 热力图，最后使用ggplot2灵活、好看的效果：https://www.plob.org/article/10156.html
 
 
 
