@@ -92,10 +92,11 @@ index自动跳转
 
 
 > nav0.2.2 加链接，调顺序 
+https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 
-
-
-
+> nav0.2.2-2 加入IGB等工具
+	http://bioviz.org/igb/
+> v0.2.2-3 添加R/,删除Linux首页中的空格。
 
 
 
