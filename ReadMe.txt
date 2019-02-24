@@ -98,12 +98,14 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	http://bioviz.org/igb/
 	v0.2.2-3 添加R/,删除Linux首页中的空格。
 	v0.2.2-4 去掉index首页中的//www.biomooc.com 字样。都变成相对URL了。
+	v0.2.2-5 添加张泽民lab链接
 
 
 
 ---------------
 todo
 1. 热力图，最后使用ggplot2灵活、好看的效果：https://www.plob.org/article/10156.html
-
+2.据说很全面的数据库 https://www.hsls.pitt.edu/obrc/
+3.
 
 

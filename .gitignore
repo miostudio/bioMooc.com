@@ -4,3 +4,7 @@
 #backup
 backup
 dustbin
+
+
+#ignore test dir
+paper
