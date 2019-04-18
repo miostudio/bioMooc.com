@@ -1,0 +1,905 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R绘图 </span> 图形初阶</h1>
+
+
+
+<h2 class="tutheader">目录： 图形初阶(R in Action chapter3)</h2>
+<p><b>要点</b>: 创建、修改、保存图形，及低水平画图命令。</p>
+
+<ul>
+	<li><a href="#1">图形的创建和保存(高清渲染库Cairo)</a></li>
+	<li><a href="#2">自定义符号、线条、颜色和坐标轴</a>
+		<ul>
+			<li><a href="#21">符号与线条</a>
+			<li><a href="#22">颜色</a>
+			<li><a href="#23">文本属性:字号、字体</a>
+			<li><a href="#24">图形尺寸与边界尺寸</a>
+		</ul>
+	</li>
+	<li><a href="#3">标注文本和标题</a>
+		<ul>
+			<li><a href="#31">标题 title()</a>
+			<li><a href="#32">坐标轴 axis()</a>
+			<li><a href="#33">参考线 abline()</a>
+			<li><a href="#34">图例 legend()</a>
+			<li><a href="#35">文本标注 text(),mtext(),plotmath</a>		
+		</ul>
+	</li>
+	<li><a href="#4">组合多个图形</a>
+		<ul>
+			<li><a href="#41">par()参数mfrow控制布局</a>
+			<li><a href="#42">layout()函数更精细排版：matrix, widths和heights</a>
+			<li><a href="#43">layout()函数自由嵌入图形:fig参数</a>	
+		</ul>
+	</li>
+</ul>
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">图形的创建和保存</h2>
+直接截图，或者依靠菜单保存图片。也可以用命令保存图片。
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#输出pdf格式
+setwd("F://Temp//") #设定工作目录
+
+pdf("pic1.pdf") # 设定文件名
+attach(mtcars)
+plot(wt,mpg)
+abline(lm(mpg~wt))
+detach(mtcars)
+dev.off() #关闭绘图设备</div>
+</div>
+
+<p>除了pdf()，还可以使用函数win.metafile()、png()、jpeg()、bmp()、tiff()、xfig()和postscript()将图形保存为其他格式。（注意，Windows图元文件格式仅在Windows系统中可用。）</p>
+
+<h3>R语言的高质量图形渲染库Cairo</h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#输出高清pdf
+library(Cairo)
+Cairo.capabilities() #检查Cairo的兼容性
+#   png   jpeg   tiff    pdf    svg     ps    x11    win raster
+#  TRUE   TRUE  FALSE   TRUE   TRUE   TRUE   TRUE  FALSE   TRUE
+
+CairoPDF(file="xx.pdf",width=10,height=10)
+plot(c(1,2))
+#画图语句...
+dev.off()</div>
+</div>
+<pre>Cairo使用起来非常简单，和基础包grDevices中的函数对应：
+	CairoPNG: 对应grDevices:png()
+	CairoJPEG: 对应grDevices:jpeg()
+	CairoTIFF: 对应grDevices:tiff()
+	CairoSVG: 对应grDevices:svg()
+	CairoPDF: 对应grDevices:pdf()
+我常用的图形输出，就是pdf和png。
+</pre>
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">自定义符号、线条、颜色和坐标轴</h2>
+<h3>1.图形参数的设定方式有两种</h3>
+<p>(1)通过par()指定，除非被再次修改，该设定在session结束前一直有效。该语句可一次性定义好，或使用多次。语句par(no.readonly=T)返回一个当前图形参数列表，可用于恢复设定。</p>
+
+<div class="code notranslate">
+	<div>
+oldPar=par(no.readonly = T) #记录当前设定. 或简写 oldPar=par()<br>
+par(lty=2,pch=17) #修改设定：line type将默认实线改为虚线，pch将默认的点符号改为实心三角<br>
+plot(x,y,type="b")<br>
+<br>
+par(oldPar) #恢复设定<br>
+plot(x,y,type="b")<br>
+	</div>
+</div>
+<img src="images/draw-basic/par.png" /><br>
+
+<p>(2)通过高级绘图函数直接定义，仅对当前图形有效。</p>
+<div class="code notranslate">
+	<div>
+plot(x,y,type="b",lty=2,pch=17)
+	</div>
+</div>
+
+
+<br>
+<h3>2.函数par()中的参数可以分为三大类：</h3>
+<p>字体、颜色、线条、坐标轴、标题</p>
+
+<p>(1)只能读取，不能进行设置。包括参数cin，cra，csi，cxy， din。</p>
+<p>(2)只能通过函数par()进行设置。包括参数：</p>
+"ask",<br>
+"fig", "fin",<br>
+"lheight",<br>
+"mai", "mar", "mex", "mfcol", "mfrow", "mfg",<br>
+"new",<br>
+"oma", "omd", "omi",<br>
+"pin", "plt", "ps", "pty",<br>
+"usr",<br>
+"xlog", "ylog"
+<p>(3)剩下的参数除了函数par()外，还可以通过各种高级绘图函数进行设置，如函数plot，points，lines，abline，title，text，axis，image，box，contour，rect，arrows等。</p>
+<p> &gt; ?par #查看详细文档。或参考 <a target="_blank" href="http://blog.sina.com.cn/s/blog_6caea8bf0100yk4h.html">R中设置图形参数--par()参数详解.html</a></p>
+
+
+
+
+
+<a name='21'></a>
+<h2 class="tutheader">符号和线条参数</h2>
+<p>pch: 指定绘制时使用的符号(见图fig1)</p>
+<p>cex: 缩放倍数，默认是1；</p>
+<p>lty: 指定线条类型(见图fig2)。Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses ‘invisible lines’ (i.e., does not draw them).</p>
+<p>lwd: 线条宽度。</p>
+<img src="images/draw-basic/pch.png" /><br>
+<p>fig1 对于pch的21-25，还可以指定边界颜色(col=)和填充色(bg=).</p><br>
+
+
+<img src="images/draw-basic/lty.png" /><br>
+<p>fig2 线条类型</p><br>
+
+
+
+
+<a name='22'></a>
+<h2 class="tutheader">颜色 </h2>
+<table class="reference" style="width:100%">
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+	<tr><td>col</td>   <td> 默认的绘图颜色。某些函数（如lines和pie）可以接受一个含有颜色值的向量	并自动循环使用。例如，如果设定col=c("red", "blue")并需要绘制三条线，则第一条线将为红色，第二条线为蓝色，第三条线又将为红色</tr>
+	<tr><td>col.axis</td>   <td> 坐标轴刻度文字的颜色</tr>
+	<tr><td>col.lab</td>   <td> 坐标轴标签（名称）的颜色</tr>
+	<tr><td>col.main</td>   <td> 标题颜色</tr>
+	<tr><td>col.sub</td>   <td> 副标题颜色</tr>
+	<tr><td>fg</td>   <td> 图形的前景色</tr>
+	<tr><td>bg</td>   <td> 图形的背景色</tr>
+</table>
+
+<p>在R中，可以通过颜色下标、颜色名称、十六进制的颜色值、RGB值或HSV值来指定颜色。举例来说，col=1、col="white"、col="#FFFFFF"、col=rgb(1,1,1)和col=hsv(0,0,1)都是表示白色的等价方式。</p>
+<p>函数rgb()可基于红—绿—蓝三色值生成颜色，而hsv()则基于色相—饱和度—亮度值来生成颜色。</p>
+
+<br>
+<p><b>显示所有颜色</b></p>
+<div class="code notranslate">
+	<div>
+		colors()<br>
+	</div>
+</div>
+<p>很好很强大的 <a href="https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf" rel="nofollow" target="_blank">R颜色列表.pdf</a></p>
+
+<br>
+<p><b>R自带配色方案</b></p>
+<p>R自带很多套连续颜色集合，包括rainbow()、heat.colors()、terrain.colors()、topo.colors()以及cm.colors()</p>
+<p>rainbow(10)可以生成10种连续的“彩虹型”颜色。多阶灰度色可使用gray()函数生成。这时要通过一个元素值为0和1之间的向量来指定各颜色的灰度。gray(0:10/10)将生成10阶灰度色。</p>
+<div class="code notranslate">
+	<div>
+		n=10<br>
+mycolors=rainbow(n)<br>
+pie(rep(1,n), labels=mycolors, col=mycolors)<br>
+mygrays=gray(1:n/n)<br>
+pie(rep(1,n), labels=mygrays, col=mygrays)
+<br>
+	</div>
+</div>
+<img src="images/draw-basic/rainbow.png" style="height:50%"><br><br>
+
+<div class="code notranslate">
+	<div>
+par(mfrow=c(2,2), mai=c(0.1,0.4,0.2,0.1)) <br>
+#mfrow设置图的行列数<br>
+# mai设置边距 c(bottom, left, top, right) <br>
+barplot(rep(1,6), col= heat.colors(6), main="heat") <br>
+barplot(rep(1,6),col=terrain.colors(6), main="terrain")<br>
+barplot(rep(1,6),col=topo.colors(6), main="topo")<br>
+barplot(rep(1,6),col=cm.colors(6), main="cm")<br>
+	</div>
+</div>
+<img src="images/draw-basic/colorSet.png"><br><br>
+
+
+<div class="code notranslate">
+	<div>
+par(mfrow=c(2,1),mai=c(0.2,0.4,0.2,0.1))<br>
+#补齐中间的颜色，获得指定数量的渐变色<br>
+colorRampPalette(brewer.pal(9,"Blues"))(100) -> color #从正黄色到正蓝色直接过度10个颜色 <br>
+plot(1:100,col=color,pch=20,cex=2)  <br>
+<br>
+barplot(rep(1,30),col=brewer.pal(9,"Blues"))#如果颜色不够，则循环使用
+	</div>
+</div>
+<img src="images/draw-basic/recycleColor.png"><br><br>
+
+
+
+
+<hr>
+<p><b>RColorBrewr颜色扩展包</b></p>
+<p>RColorBrewr包提供了3套好看的配色方案。</p>
+<div class="code notranslate">
+	<div>
+library(RColorBrewer)<br>
+display.brewer.all() #全部颜色组合名字 <br>
+display.brewer.all(type="seq")# 有9种颜色 <br>
+display.brewer.all(type="div")# 有11种颜色 <br>
+display.brewer.all(type="qual")# 颜色种类不确定 <br>
+<br>
+#brewer.pal（9, "某组渐变颜色的名称"）来获取该组渐变色的全部9种颜色 <br>
+barplot(rep(1,8),col=brewer.pal(8,"Set2"))  <br>
+barplot(rep(1,6),col=brewer.pal(8,"Set2")[2:7]) #第二到第七个颜色。 <br>
+<br>
+barplot(1:5,col=RColorBrewer::brewer.pal(n = 5,name = "Set2")) #无图
+	</div>
+</div>
+<p>（1）连续型 sequential， 颜色渐变。</p>
+<p>（2）极端型 Diverging，生成深色强调两端、浅色表示中部的颜色，可用来标注数据中的离群点。</p>
+<p>（3）离散型 Qualitative，生成彼此差异明显的颜色，通常用来标记分类数据。</p>
+<img src="images/draw-basic/RColorBrewr.png"><br><br>
+
+
+
+
+
+
+
+<a name='23'></a>
+<h2 class="tutheader">文本属性 </h2>
+<table class="reference" style="width:100%">
+	<tbody>
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+<tr><td>cex</td> <td>表示相对于默认大小缩放倍数的数值。默认大小为1，1.5表示放大为默认值的1.5倍，0.5表示缩小为默认值的50%，等等</td></tr>
+<tr><td>cex.axis </td> <td>坐标轴刻度文字的缩放倍数。类似于cex</td></tr>
+<tr><td>cex.lab</td> <td> 坐标轴标签（名称）的缩放倍数。类似于cex</td></tr>
+<tr><td>cex.main</td> <td> 标题的缩放倍数。类似于cex</td></tr>
+<tr><td>cex.sub</td> <td> 副标题的缩放倍数。类似于cex</td></tr>
+	</tbody>
+</table>
+
+
+<br><br>
+<p><b>用于指定字体族、字号和字样的参数</b></p>
+<table class="reference" style="width:100%">
+	<tbody>
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+<tr><td>font</td> <td> 整数。用于指定绘图使用的字体样式。1=常规，2=粗体，3=斜体，4=粗斜体，5=符号字体（以Adobe符号编码表示）</th></tr>
+<tr><td>font.axis</td> <td> 坐标轴刻度文字的字体样式</th></tr>
+<tr><td>font.lab</td> <td> 坐标轴标签（名称）的字体样式</th></tr>
+<tr><td>font.main</td> <td> 标题的字体样式</th></tr>
+<tr><td>font.sub</td> <td> 副标题的字体样式</th></tr>
+<tr><td>ps</td> <td> 字体磅值（1磅约为1/72英寸）。文本的最终大小为 ps*cex</th></tr>
+<tr><td>family</td> <td> 绘制文本时使用的字体族。标准的取值为serif（衬线）、sans（无衬线）和mono（等宽）</th></tr>
+	</tbody>
+</table>
+
+
+<div class="code notranslate">
+	<div>
+#左图<br>
+plot(0:4,type="n",xlab = NA,ylab=NA,axes=F) #画一个空图形<br>
+text(2,4,label="font=1 正常体",font=1)<br>
+text(2,3,label="font=2 粗体",font=2)<br>
+text(2,2,label="font=3 斜体",font=3)<br>
+text(2,1,label="font=4 粗斜体",font=4)<br>
+<br>
+#右图<br>
+plot(0:4,type="n",xlab = NA,ylab=NA,axes=F) #画一个空图形<br>
+text(2,4,label="cex=1 font=1 正常体",font=1,cex=1)<br>
+text(2,3,label="cex=0.5 粗体",font=2,cex=0.5)<br>
+text(2,2,label="cex=1.5 font=3 斜体",font=3,cex=1.5)<br>
+text(2,1,label="cex=2 font=4 粗斜体",font=4,cex=2)<br>
+	</div>
+</div>
+<img src="images/draw-basic/font-cex.png"><br><br>
+
+
+
+<br>
+<p>执行如下命令：</p>
+<div class="code notranslate">
+	<div>
+	par(font.lab=3, cex.lab=1.5, font.main=4, cex.main=2)
+	</div>
+</div>
+<p>之后创建的所有图形都将拥有斜体、1.5倍于默认文本大小的坐标轴标签（名称），以及粗斜体、2倍于默认文本大小的标题。</p>
+
+
+(1)windows下使用windowsFont()函数来创建映射，
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">windowsFonts(
+  A=windowsFont("Arial Black"),
+  B=windowsFont("Bookman Old Style"),
+  C=windowsFont("Comic Sans MS")
+)<br>
+#之后，即可使用A、B、C作为family的取值。
+#比如使用 par(family="A") 将指定Arial Black作为绘图字体
+par(family="A")
+plot(1:10,main="plot") 坐标轴、标题的字体都是粗体了。</div>
+</div>
+<p>在Mac下，请改用 quartzFonts()函数。</p><br>
+
+
+<p>输出pdf、PostScript格式，则修改字体相对简单。</p>
+<p>pdf则直接用如下函数找出系统可用字体，</p>
+<div class="code notranslate">
+	<div>
+names(pdfFonts())<br>
+# [1] "serif"	"sans"	"mono" <br>           
+# [4] "AvantGarde"	 "Bookman"	"Courier"<br>
+#...<br>
+#然后使用<br>
+pdf(file="myplot.pdf", family="mono") #来生成图形。<br>
+plot(1:10,main="test")<br>
+dev.off()
+	</div>
+</div>
+<p>PostScript格式输出，对应函数为 names(postscriptFonts())和postscript(file="myplot.ps", family="fontname")</p>
+
+
+
+
+
+
+<a name='24'></a>
+<h2 class="tutheader">图形尺寸与边界尺寸 </h2>
+<table class="reference" style="width:100%">
+	<tbody>
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+<tr><td>pin</td> <td> 以英寸表示的图形尺寸（宽和高）</td></tr>
+<tr><td>mai</td> <td> 以数值向量表示的边界大小，顺序为“下、左、上、右”，单位为英寸</td></tr>
+<tr><td>mar</td> <td> 以数值向量表示的边界大小，顺序为“下、左、上、右”，单位为英分*。默认值为c(5, 4, 4, 2) + 0.1</td></tr>
+	</tbody>
+</table>
+<p>*一英分等于十二分之一英寸。——译者注</p>
+
+
+<div class="code notranslate">
+	<div>
+oldPar=par(no.readonly = T) #记录当前设定<br>
+par(pin=c(2,4), mai=c(1.5,1.5,1,0.2)) #2 inch宽，4英寸高。图形边界(第一个底部，顺时针)<br>
+par(lwd=2, cex=1.5) #线条宽度是默认的2倍，符号是默认的1.5倍<br>
+par(cex.axis=0.75, font.axis=3) #坐标轴文本斜体、缩小为默认75%大小<br>
+x=1:10<br>
+plot(x,x*x, type="b", pch=19, lty=2,col="red") #红色实心圆圈和虚线<br>
+plot(x,x*x, type="b", pch=23, lty=6,col="blue", bg="green") #绿色填充的绿色菱形加蓝色边框和蓝色虚线<br>
+par(oldPar) #恢复设定
+	</div>
+</div>
+<img src="images/draw-basic/par-mai.png"><br><br>
+
+
+
+
+
+
+
+
+<a name='3'></a>
+<h2 class="tutheader">添加文本、自定义坐标轴和图例 </h2>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x=1:10
+plot(x,x*x, type="b",
+     col="red",lty=2,pch=2,lwd=2,
+     main="This is main",
+     sub="This is sub",
+     xlab="X(x axis)", ylab="x*x(y axis)",
+     xlim=c(0,10),ylim=c(0,100)
+)</div>
+</div>
+<img src="images/draw-basic/plot-para.png"><br><br>
+
+
+
+
+<h3 class="tutheader">注意 </h3>
+<p>并非所有函数都支持这些选项。请参考帮助文档。</p>
+<p>从更精细的控制和模块化的角度考虑，你可以使用本节余下部分描述的函数来控制标题、坐标轴、图例和文本标注的外观。</p>
+<br>
+<p>某些高级绘图函数已经包含了默认的标题和标签。你可以通过在plot()语句或单独的par()语句中添加ann=FALSE来移除它们。</p>
+
+
+
+
+
+
+<a name="31"></a>
+<h3 class="tutheader">标题 title() </h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#plot(1:10) #带xy轴标签，会和title设置的标题重叠
+plot(1:10,ann=F) #ann=F则去掉默认坐标轴标签和所有title
+title(main="My title", col.main="red",
+      sub="my sub-title", col.sub="blue",
+      xlab='my x label', ylab='my y lable',
+      col.lab="green",cex.lab=0.75) #label标签绿色，标签是默认大小的75%</div>
+</div>
+<img src="images/draw-basic/para-title.png"><br><br>
+
+
+
+
+
+
+<a name="32"></a>
+<h3 class="tutheader">坐标轴 axis() </h3>
+<table class="reference" style="width:100%">
+	<tbody>
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+<tr><td>side</td> <td> 一个整数，表示在图形的哪边绘制坐标轴（1=下，2=左，3=上，4=右）</th></tr>
+<tr><td>at</td> <td> 一个数值型向量，表示需要绘制刻度线的位置</th></tr>
+<tr><td>labels</td> <td> 一个字符型向量，表示置于刻度线旁边的文字标签（如果为NULL，则将直接使用at中的值）</th></tr>
+<tr><td>pos</td> <td> 坐标轴线绘制位置的坐标（即与另一条坐标轴相交位置的值）</th></tr>
+<tr><td>lty</td> <td> 线条类型</th></tr>
+<tr><td>col</td> <td> 线条和刻度线颜色</th></tr>
+<tr><td>las</td> <td> 标签是否平行于（=0）或垂直于（=2）坐标轴</th></tr>
+<tr><td>tck</td> <td> 刻度线的长度，以相对于绘图区域大小的分数表示（负值表示在图形外侧，正值表示在图形内侧，0表示禁用刻度，1表示绘制网格线）；默认值为-0.01</th></tr>
+<tr><td>(…)</td> <td> 其他图形参数</th></tr>
+	</tbody>
+</table>
+
+<p>创建自定义坐标轴时，要禁用高级绘图函数自动生成的坐标轴。</p>
+<p>参数 axes=F将禁用全部坐标轴（包括坐标轴框架线，除非添加了参数 frame.plot=T）。</p>
+<p>参数 xaxt="n"和yaxt="n"将分别禁用X和Y轴（会留下框架线，只是去除了刻度）。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#综合实例：绘制带有双y坐标轴的图形
+x=c(1:10)
+y=x
+z=10/x
+opar=par(no.readonly = T)
+
+par(mar=c(5,4,4,8)+0.1) #增加边界大小
+
+plot(x,y,type="b", #绘制x对y的点图
+     pch=21,#pch: plot character
+     col="red",yaxt="n", #yaxt不要y轴刻度
+     lty=3,ann=F) #ann是不要所有默认的标题和标签
+#
+lines(x,z,type="b",pch=22,col="blue",lty=2) #绘制x对10/x的点图，蓝色
+#axis第一个参数表示位置 1=below, 2=left, 3=above and 4=right.
+axis(2,at=x,labels=x,col.axis="red",las=0) #自定义坐标轴2左侧，las=0垂直于轴，2平行于轴
+axis(4,at=z,labels=round(z,digits=2),
+     col.axis="blue",las=2,cex.axis=0.7,tck=-0.02) #自定义坐标轴4右侧; tck刻度长度
+mtext("y=1/x",side=4,line=3,cex.lab=1,las=2,col="blue") #图外右侧添加文字；las=2垂直于轴
+title("An example of creative axes", xlab="X values", ylab="Y=X") #标题和坐标轴标签
+
+par(opar)</div>
+</div>
+<img src="images/draw-basic/Example-plot-more.png"><br><br>
+<p>除lines()和mtext()外上文都讨论过了。
+lines()向现有图形添加线元素，比如在一幅图画两条或更多曲线。
+mtext()用于在图形边界添加文本。</p>
+
+<br>
+<p><b>次要刻度线</b></p>
+要创建次要刻度线，需要使用Hmisc包中的minor.tick()函数。
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(Hmisc)
+minor.tick(nx=n,ny=n,tick.ratio=0.5) #tick.ratio=0.5 长度为主刻度线的一半
+#nx和ny指定主刻度线之间细分几个区间。
+
+#当前的主刻度线长度获取
+par("tck")</div>
+</div>
+
+
+
+
+
+<a name="33"></a>
+<h3 class="tutheader">参考线 abline() </h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x=1:10
+plot(x,x*x)
+abline(h=36,v=6) #画两条线
+#也可以添加很多条线,并指定线条类型、颜色、宽度
+abline(h=c(10,50,100), lty=2, col="red",lwd=0.5) #三条red虚横线，宽度是一半
+abline(v=seq(0,10,2), lty=2, col="grey",lwd=0.5) #n条灰色虚竖线，宽度是一半</div>
+</div>
+<img src="images/draw-basic/abline.png"><br><br>
+
+
+
+
+
+
+
+<a name="34"></a>
+<h3 class="tutheader">图例 legend() </h3>
+<table class="reference" style="width:100%">
+	<tbody>
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+	<tr><td>location</td>   <td> 有许多方式可以指定图例的位置。你可以直接给定图例左上角的x、y坐标，也可以执行locator(1)，然后通过鼠标单击给出图例的位置，还可以使用关键字bottom、bottomleft、left、topleft、top、topright、right、bottomright或center放置图例。如果你使用了以上某个关键字，那么可以同时使用参数inset=指定图例向图形内侧移动的大小（以绘图区域大小的分数表示）</td></tr>
+	<tr><td>title</td>   <td> 图例标题的字符串（可选）</td></tr>
+	<tr><td>legend</td>   <td> 图例标签组成的字符型向量</td></tr>
+	<tr><td>… </td>   <td>其他选项。如果图例标示的是颜色不同的线条，需要指定col=加上颜色值组成的向量。如果图例标示的是符号不同的点，则需指定pch=加上符号的代码组成的向量。如果图例标示的是不同的线条宽度或线条类型，请使用lwd=或lty=加上宽度值或类型值组成的向量。要为图例创建颜色填充的盒形（常见于条形图、箱线图或饼图），需要使用参数fill=加上颜色值组成的向量</td></tr>
+	</tbody>
+</table>
+<p>其他图例参数，bty指定盒子样式，bg指定背景色，cex指定大小，text.col指定文本颜色。
+horiz=T将会水平放置图例，默认是竖直放置。更多细节参考 help(legend)</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x=1:10;y=x;
+z=10/x;
+opar=par(no.readonly = T)
+#par(lwd=2, cex=1, font.lab=2)
+par(mai=c(2,1,1,0.5))
+
+plot(x,y,type="b",
+     pch=15, lty=1, col="red", ylim=c(0,10),
+     main="X vs. Y",
+     mgp=c(1.4,0.5,0), #坐标轴标签、刻度标签偏移，坐标轴偏移（默认为0）
+     xlab="X value",ylab="Y value")
+lines(x,z,type="b",
+      pch=17,lty=2,col="blue")
+abline(h=c(3), lwd=1.5, lty=2, col="grey") #横虚线
+
+library("Hmisc")
+minor.tick(nx=5,ny=5,tick.ratio = 0.4) #添加次要刻度线
+
+#legend("bottom", inset=-0.7,
+legend(x=2,y=-1.5,
+       legend=c("This is A","This is B"),
+       #title="Data Type", 
+       #horiz = T,#横着显示
+       ncol=2, #图例显示为两列
+       cex=1, #字体大小倍数
+       xpd=T, #有这句话才能显示在图外
+       bty="n", #不要图例边框
+       
+       x.intersp=0.2, #图形和文字的距离
+       text.width=4, #两个图例之间的距离
+       lty=c(1,2), pch=c(15,17), col=c("red","blue")) #线型-形状-颜色和前面一致
+par(opar)</div>
+</div>
+<img src="images/draw-basic/para-legend.png"><br><br>
+
+
+
+
+
+
+
+
+<a name="35"></a>
+<h3 class="tutheader">文本标注 text(), mtext() </h3>
+<p>text()可向绘图区域内部添加文本，而mtext()则向图形的四个边界之一添加文本。</p>
+<p>text(location,"text to place",pos,...)</p>
+<p>mtext("text to place",side,line=n,...)</p>
+
+<table class="reference" style="width:100%">
+	<tbody>
+	<tr><th>参 数</th>   <th>描 述</th></tr>
+<tr><td>location</td> <td> 文本的位置参数。可为一对x,y坐标，也可通过指定location为locator(1)使用鼠标交互式地确定摆放位置</td></tr>
+<tr><td>pos</td> <td> 文本相对于位置参数的方位。1=下，2=左，3=上，4=右。如果指定了pos，就可以同时指定参数offset=作为偏移量，以相对于单个字符宽度的比例表示</td></tr>
+<tr><td>side</td> <td> 指定用来放置文本的边。1=下，2=左，3=上，4=右。你可以指定参数line=来内移或外移文本，随着值的增加，文本将外移。也可使用adj=0将文本向左下对齐，或使用adj=1右上对齐</td></tr>
+	</tbody>
+</table>
+<p>其他选项：cex、col和font（分别用来调整字号、颜色和字体样式）。</p>
+<p>text()常用来标示图形中的点，只需一系列x,y坐标值作为位置参数，同时以向量形式指定要放置的文本。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">attach(mtcars)
+plot(wt,mpg,
+     main="Mileage vs. Car Weight",
+     xlab="Weight",ylab="Mileage",
+     pch=18,col="blue")
+text(wt,mpg,
+     labels=row.names(mtcars), offset=0.5, #偏移距离
+     cex=0.6,pos=4, #字体为默认的60%，pos=4位右侧
+     col="red")
+detach(mtcars)</div>
+</div>
+<p>mtcars提供的32种车型的车重和每加仑汽油行驶英里数散点图。每个点右侧标注车辆型号。</p>
+<img src="images/draw-basic/para-text.png" /><br>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#win下自定义字体
+windowsFonts(
+  A=windowsFont("微软雅黑"),
+  B=windowsFont("华文行楷")
+)
+opar=par(no.readonly = T)
+par(cex=1.5)
+
+plot(1:3, type="n",ann=F,axes=F,frame.plot=T)
+text(2,1.2,"default 默认")
+text(2,1.5,family="mono","mono 同宽")
+text(2,2,family="serif","serif")
+text(2,2.5,family="A","微软雅黑")
+text(2,2.8,family="B","华文行楷")
+title(sub="学习在R中设置字体",cex.sub=0.5,#字体大小
+      mgp=c(-1, -0.2, 0) )
+par(opar)</div>
+</div>
+<img src="images/draw-basic/para-font.png" /><br>
+
+
+
+
+
+<h3 class="tutheader">数学标注 help(plotmath)</h3>
+<p>使用类似于TeX中的写法为图形添加数学符号和公示。细节和示例参考help(plotmath); demo(plotmath)。<a target="_blank" href="http://biostats.lofter.com/post/3b2d2f_1493c96">expression()中可以使用的数学表达式</a>，比Latex少，但是比matlab多。</p>
+<p>也可以用 plotmath() 函数为图形主体或边界上的标题、坐标轴名称或文本标注添加数学符号。</p>
+<p>具体使用是利用text()语句中放入expression表达的数学公式。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#Mathematical Annotation in R
+plot(1,2,type="b",ylim=c(1.2,2.1),
+     pch=21,col="blue",bg="red",cex=2) # 在(1,2)处画一个点
+text(1,2,expression(hat(x)), pos=4) # 在(1,2)右加入\hat{x}
+#更复杂的公式
+formula = expression(italic(Prob) == bgroup("(",atop(n, x),")")%*%p[1]^x%*%(1-p[1])^(n-x))
+text(1,1.5,label=formula)</div>
+</div>
+
+<img src="images/draw-basic/para-plotmath.png" /><br>
+
+
+
+
+
+
+
+
+
+
+
+<a name="4"></a>
+<h2 class="tutheader">图形的组合</h2>
+<p>在R中使用函数par()或layout()可以容易的组合多幅图。</p>
+
+
+
+<a name="41"></a>
+<h3 class="tutheader">par()参数mfrow控制布局</h3>
+<p>par()是使用图形参数 mfrow=c(nrows,ncols) 来创建按行填充的、行数为nrows、列为ncols的图形矩阵。mfcol=c(nrows,ncols)则按列填充。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#示例1
+#画图函数
+myDraw=function(){
+  set.seed(1000);plot(rnorm(10),pch="1", cex=0.5)
+  set.seed(1001);plot(rnorm(10),pch="2", cex=1)
+  set.seed(1002);plot(rnorm(10),pch="3", cex=1.5)
+  set.seed(1003);plot(rnorm(10),pch="4", cex=2)
+}
+
+par(mar=c(3, 3, 0.5, 0.5))
+#横着输出-左图
+par(mfrow=c(2,2)) #两行两列，mfrow行
+myDraw()
+
+#竖着输出-右图
+par(mfcol=c(2,2)) #两行两列，mfcol列
+myDraw()</div>
+</div>
+
+<img src="images/draw-basic/par-mfrow.png" /><br>
+<p>高级绘图函数hist()包含一个默认的标题，可以使用main=""来禁用它，或ann=F禁用所有标题和标签</p>
+
+
+
+
+
+<br><a name="42"></a>
+<p><b>使用layout()函数更精细的排版</b></p>
+<p>如果页面不均等分隔绘制多图，用layout函数分隔页面。它有四个参数，mat，widths，heights和respect。后三个参数有默认值，示例2我们只设置第一个参数mat。它是一个矩阵，表示绘图区分隔的各部分，相同数字的部分合并成一个绘图区，数字也是它们作图时的顺序。下面的矩阵mat有2行3列，我们看看它绘出的图形：</p>
+<p><b>注意：</b>mat参数的值必需从1-n顺序依次取值，不能有间隔。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#示例2 layout布局
+par(mar=c(2, 2, 0.5, 0.5))
+
+#layout布局1-left
+mat = matrix(c(1,1,2,3,4,4), nrow=2, byrow=TRUE)
+mat
+#     [,1] [,2] [,3]
+#[1,]    1    1    2
+#[2,]    3    4    4
+layout(mat)
+myDraw()
+
+
+#layout布局2-right
+mat = matrix(c(1,2,3,4,4,4), nrow=2, byrow=TRUE)
+mat
+#     [,1] [,2] [,3]
+#[1,]    1    2    3
+#[2,]    4    4    4
+layout(mat)
+myDraw()</div>
+</div>
+<img src="images/draw-basic/par-layout.png" /><br>
+
+<br>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#示例3 使用widths=和heights=两个参数更精确的控制每幅图的大小。
+#widths=各列宽度值组成的一个向量
+#heights=各列高度值组成的一个向量
+#相对宽度可以直接通过数值指定，绝对宽度（以厘米为单位）可以通过函数lcm()来指定。
+
+attach(mtcars)
+par(mar=c(4,3, 0.5, 0.5))
+mat=matrix(c(1,1,2,3),nrow=2,byrow=T)
+#layout(mat) #左图: 默认左右1:1,上下1:1
+layout(mat, widths = c(1,3),heights =c(1,2)) #右图: 左右1:3,上下1:2
+plot(1:8)
+hist(wt)
+hist(disp)
+detach(mtcars)</div>
+</div>
+<img src="images/draw-basic/par-layout-widths-heights.png" /><br>
+<p>layout()函数能轻松控制最终图形中子图数量和摆放方式，以及这些子图的相对大小。参考help(layout)。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#layout.show()函数用于展示布局
+## create single figure which is 5cm square
+nf = layout(matrix(1), widths = lcm(5), heights = lcm(5)) #使用lcm()来指定绝对宽高(单位：厘米)
+layout.show(nf)
+plot(1:5)</div>
+</div>
+
+
+
+
+<br><a name="43"></a>
+<h3 class="tutheader">图形布局的精细控制：fig参数自由嵌入图形 </h3>
+<p>可以使用fig=c(x1,x2,y1,y2)的方式将若干图形以任意排布方式组合到单幅图中。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#左下角为(0,0)，右上角为(1,1)。fig=(x1,x2,y1,y2)表示绘图区间
+opar=par(no.readonly = T)
+par(fig=c(0,0.8,0,0.8)) #fig=参数更精细控制图形布局
+plot(mtcars$wt,mtcars$mpg,
+     xlab="Miles Per Gallon",
+     ylab="Car Weight")
+#top 在上方添加箱线图
+par(fig=c(0,0.8,0.4,1),new=T) #添加新图到现有图上，所以要new=T
+boxplot(mtcars$wt,horizontal = T,axes=F)
+#left 在右侧添加箱线图
+par(fig=c(0.6,1,0,0.8),new=T)
+boxplot(mtcars$mpg, axes=F)
+#顶部文字
+mtext("Enhanced Scatterplot",side=3,outer=T,line=-5)
+par(opar)</div>
+</div>
+<img src="images/draw-basic/par-layout-fig.png" /><br>
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

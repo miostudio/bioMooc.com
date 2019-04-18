@@ -1,0 +1,171 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程, R画图">
+<meta name="description" content="R  画图教程。 本教程，我们将为大家介绍如何使用R画图。 R其实很容易学，相信你们能很快学会。 现在开始学习 R ！    谁适合阅读？ 本教程针对的是R数据分析人员阅读。">
+
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R绘图 </span> 命令</h1>
+<hr>
+<div class="tutintro"> 
+<p>R 是一个开源的统计和绘图系统。</p>
+<p>1. <a target="_blank" href="http://www.sthda.com/english/wiki/r-base-graphs">R语言原生的绘图系统</a>已经非常强大了，可以绘制非常炫目的图片，但是需要耐心调试。</p>
+<p>除了基础图形，grid、lattice和ggplot2软件包也提供了图形系统，它们克服了R基础图形系统的低效性，大大扩展了R的绘图能力。</p>
+<p>2. grid图形系统可以很容易控制图形基础单元，给予编程者创作图形极大的灵活性。由于grid不常用，本文略过。</p>
+
+<p>3. <a target="_blank" href="http://lmdvr.r-forge.r-project.org/figures/figures.html">lattice包</a>通过一维、二维或三维条件绘图，即所谓的栅栏（trellis）图形来对多元变量关系进行直观展示。lattice系统原则上能绘制任何复杂图形。<a target="_blank" href="http://www.sthda.com/english/wiki/lattice-graphs">Lattice package</a> is a powerful and elegant data visualization system that aims to improve on base R graphs.</p>
+
+<p>4. <a target="_blank" href="https://ggplot2.tidyverse.org/">ggplot2包</a>则基于一种全面的图形“语法”，提供了一种全新的、统一风格的图形创建方法。绘图神器，既快又好。<a target="_blank" href="http://www.sthda.com/english/wiki/ggplot2-essentials">ggplot2 is a powerful and a flexible R package</a>, implemented by Hadley Wickham, for producing elegant graphics.</p>
+
+<br/>
+<p>生物信息与R语言QQ群: 187923577</p>
+<p><a target="_blank" href="https://www.w3cschool.cn/r/">w3cschool的R教程</a> | <a target="_blank" href="https://www.yiibai.com/r/r_pie_charts.html">易百教程R教程</a></p>
+<p><a target="_blank" href="http://wenku.baidu.com/view/80f22fa50029bd64783e2c22.html">华大基因PPT:R语言的绘图功能及应用案例</a></p>
+<p><a target="_blank" href="https://www.statmethods.net/graphs/index.html">《R语言实战》R in Action</a></p>
+<p><a target="_blank" href="http://www.sthda.com/english/wiki/data-visualization">sthda:使用R base,Lattice,ggplot2,3D画图</a></p>
+
+
+<br>
+<p><b>R原生绘图命令要点：</b></p>
+<p>1.高水平画图命令:画图像主体，包括plot,boxplot,hist等</p>
+<p>2.低水平画图命令:画辅助成分，包括title,axis,title等</p>
+<p>3.此外还包括图形的交互与参数，图形设备，动态图形等</p>
+
+<br>
+<p>现在开始学习 R 绘图 ！</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

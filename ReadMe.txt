@@ -1,5 +1,8 @@
->biomooc.com
+>dir: biomooc.com
+www.biomooc.com
+URL at south: biomooc.dawneve.cc
 
+全站模仿：https://www.runoob.com/
 按照 sitemap 组织内容。
 
 git remote add origin https://github.com/MioStudio/biomooc.com.git
@@ -99,6 +102,9 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	v0.2.2-3 添加R/,删除Linux首页中的空格。
 	v0.2.2-4 去掉index首页中的//www.biomooc.com 字样。都变成相对URL了。
 	v0.2.2-5 添加张泽民lab链接
+> main0.2.3 添加R低水平画图命令 R-draw-basic.html
+	这一句下载为站内资源 <link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
+
 
 
 
