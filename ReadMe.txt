@@ -105,7 +105,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 > main0.2.3 添加R低水平画图命令 R-draw-basic.html
 	这一句下载为站内资源 <link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
 	main0.2.3-1 fix框架结构：顶部没自动出现“上一个”：啥js没写，就是补充了原文.previous-design-link 的div内容。
-
+	main0.2.3-2 fix框架结构：底部添加“上一个”
+todo 
 
 
 ---------------
