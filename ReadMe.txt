@@ -106,13 +106,15 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	这一句下载为站内资源 <link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
 	main0.2.3-1 fix框架结构：顶部没自动出现“上一个”：啥js没写，就是补充了原文.previous-design-link 的div内容。
 	main0.2.3-2 fix框架结构：底部添加“上一个”
-todo 
+	main0.2.3-3 R in Action 第6章 基本图形
+
+
 
 
 ---------------
 todo
 1. 热力图，最后使用ggplot2灵活、好看的效果：https://www.plob.org/article/10156.html
 2.据说很全面的数据库 https://www.hsls.pitt.edu/obrc/
-3.
+3.par(mar和mai的区别)
 
 

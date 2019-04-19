@@ -1,0 +1,640 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R绘图 </span> 基本图形</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 高级画图命令，如条形图、饼图、扇形图、直方图、核密度图、箱线图、小提琴图和点图的用法。[R In Action Chapter6]</p>
+
+<ul>
+	<li><a href="#1">条形图、箱线图和点图</a>
+		<ul>
+			<li><a href="#1_1">简单条形图</a>
+			<li><a href="#1_2">堆砌条形图和分组条形图: beside参数</a>
+			<li><a href="#1_3">均值条形图及更多微调</a>
+			<li><a href="#1_4">脊状图（spinogram）</a>
+		</ul>
+	</li>
+	<li><a href="#2">饼图和扇形图</a></li>
+	<li><a href="#3">直方图 hist()</a></li>
+	<li><a href="#4">核密度图 plot(density(x))</a></li>
+	<li><a href="#5">箱线图(又称盒须图) boxplot()</a>
+		<ul>
+			<li><a href="#5_1">并列箱线图进行跨组比较</a>
+			<li><a href="#5_2">两交叉因子的箱线图</a>
+			<li><a href="#5_3">小提琴图 violin plot</a>
+		</ul>
+	</li>
+	<li><a href="#6">点图 dotchart()</a></li>
+</ul>
+
+
+
+
+
+<p>R作图的目的：更好地理解数据，并能够与他人沟通这些理解方式。</p>
+
+<a name="1"></a>
+<h2 class="tutheader">条形图 barplot()</h2>
+
+
+
+<a name="1_1"></a>
+<h3 class="tutheader">简单条形图 </h3>
+<p>格式：barplot(height) #height是一个向量或一个矩阵，表示条形图的高度；选项horiz=TRUE水平显示；</p>
+<p>我们使用vcd包中的Arthritis数据框(一项探索类风湿性关节炎新疗法研究的结果)为例。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#install.packages("vcd")
+library("vcd")
+
+#探索数据
+str(Arthritis)
+head(Arthritis)
+
+counts=table(Arthritis$Improved);counts
+#None   Some Marked 
+#42     14     28
+#无效、部分改善、改善的人数
+
+#简单条形图
+barplot(counts, main="Simple bar plot",
+        xlab="Improvement",ylab="Frequency")
+#水平条形图
+barplot(counts, main="Horizontal bar plot",
+        horiz=T,
+        ylab="Improvement",xlab="Frequency") #注意手动交换x和y轴label</div>
+</div>
+<img src="images/draw-basic2/barplot.png"><br>
+		
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#对于因子，可以直接plot()绘制，无需table()将其表格化
+plot(Arthritis$Improved, main="Simple bar plot",
+     xlab="Improvement",ylab="Frequency")
+plot(Arthritis$Improved, main="Horizontal bar plot",
+        horiz=T,
+        ylab="Improvement",xlab="Frequency")
+#绘图结果同上图。</div>
+</div>
+<br>
+
+
+
+<a name="1_2"></a>
+<h3 class="tutheader">堆砌条形图和分组条形图: beside参数</h3>
+<p>如果height是一个矩阵而不是一个向量，则绘图结果就是堆砌条形图和分组条形图。</p>
+<p>若beside=FALSE（默认值），则矩阵中的每一列都将生成图中的一个条形，各列中的值将给出堆砌的“子条”的高度。</p>
+<p>若beside=TRUE，则矩阵中的每一列都表示一个分组，各列中的值将并列而不是堆砌。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#治疗类型和改善结果的列联表
+library("vcd")
+counts=table(Arthritis$Improved,Arthritis$Treatment)
+counts
+#Placebo Treated
+#None        29      13
+#Some         7       7
+#Marked       7      21
+#堆砌条形图
+barplot(counts, main="Stacked bar plot",
+        xlab="Treatment",ylab='Frequency',
+        col=c("red",'yellow','green'),
+        legend=rownames(counts))
+#分组条形图
+barplot(counts, main="Stacked bar plot",
+        xlab="Treatment",ylab='Frequency',
+        col=c("red",'yellow','green'),
+        legend=rownames(counts),
+        beside=T)</div>
+</div>
+<img src="images/draw-basic2/barplot-beside.png"><br><br>
+<p>请尝试重新布局，避免图形和图例重叠。</p>
+
+
+
+
+
+<a name="1_3"></a>
+<h3 class="tutheader">均值条形图及更多微调：阴影、barplot()返回值</h3>
+<p><b>怎么让barplot的标签倾斜45度？难点是怎么定标签坐标？</b> 1.barplot()返回值是条形的位置，2.使用text()自定义坐标轴文本</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#合并数据
+states=data.frame(state.region, state.x77)
+#str(states) #50 obs. of  9 variables
+#head(states)
+#按照by分组求每组的均值
+means=aggregate(states$Illiteracy,by=list(state.region),FUN=mean)
+#对数据框排序，从小到大
+means=means[order(means$x),];means
+#        Group.1        x
+#3 North Central 0.700000
+#1     Northeast 1.000000
+#4          West 1.023077
+#2         South 1.737500
+
+par(mar=c(7,4,4,2)) #增加底部空间
+posX=barplot(means$x, 
+        #cex.names=0.6,#字号和默认的比值
+        #main="Barplot Title",
+        #las=2,#las=0和轴平行，2和轴崔志
+        #names.arg = means$Group.1,#names.arg展示在每个bar底部
+
+        density = c(5,10), #阴影密度
+        col=c('black',"red"), #阴影颜色 rainbow(4)
+        angle = 15+20*1:4) #每个阴影的角度
+title("Mean Illiteracy Rate") #添加标题
+text(x=posX,y=-0.1, #文字坐标
+     srt = 30, #文字倾斜30度
+     adj = 1, #对齐点0-1之间，0左下,1右上,0.5居中,outside [0, 1] will also work
+     xpd = TRUE, #允许显示到图形外部
+     labels = means$Group.1)</div>
+</div>
+<img src="images/draw-basic2/barplot-text.png"><br><br>
+<p>使用ggplot2中的barplot2()函数创建叠加有置信区间的均值条形图: <a target="_blank" href="https://rdrr.io/rforge/gplots/man/barplot2.html">barplot2: Enhanced Bar Plots.html</a></p>
+
+
+
+
+<a name="1_4"></a>
+<h3 class="tutheader">脊状图（spinogram）: 归一化的条形图</h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(vcd)
+attach(Arthritis)
+counts=table(Treatment, Improved);counts;
+#        Improved
+#Treatment None Some Marked
+#Placebo   29    7      7
+#Treated   13    7     21
+
+# Top
+spine(counts,main="Spine Example" ) #归一化后，没法加图例？
+spine(Improved~Treatment) #Y~X 同上
+c2=t(counts);barplot(c2,legend.text = row.names(c2))
+
+# Bottom
+spine(Treatment~Improved) #Y~X
+barplot(counts, legend.text=row.names(counts))
+
+detach(Arthritis)</div>
+</div>
+<img src="images/draw-basic2/barplot-spine.png"><br><br>
+
+
+
+
+
+
+
+<a name="2"></a>
+<h2 class="tutheader">饼图 </h2>
+<p>pei(x, labels); #x是非负向量，表示每个扇形的面积，而labels是标签字符型向量。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#画饼图
+draw=function(){
+  par(mfrow=c(2,2))
+  slices=c(10,12.4,16,8,2)
+  lbls=c("US","UK","Australia","Germany","France")
+  #1 简单饼图
+  pie(slices, labels=lbls, main="Simple Pie Chart")
+  #2 为标签加上百分数，并自定义颜色
+  pct=round(slices/sum(slices)*100)
+  lbls2=paste(lbls," ",pct,"%",sep="");lbls2
+  pie(slices, labels=lbls2,col=rainbow(length(lbls2)),
+      main="Pie Chart with Percentage")
+  #3 比较鸡肋的3D图，更分散注意力
+  #install.packages("plotrix")
+  library(plotrix) #画3D饼图
+  pie3D(slices, labels=lbls,labelcex=1,#标签缩放倍数
+        explode=0.2, #饼图裂缝大小
+        main="3D Pie Chart")
+  #4 从表格创建饼图
+  mytable=table(state.region);mytable
+  lbls3=paste0(names(mytable), "\n",unname(mytable));lbls3
+  pie(mytable,labels=lbls3,
+      main="Pie Chart from a Table\n(with sample sizes")
+}
+#par(mai=c(0,0,0.5,0));
+par(mar=c(0,0,2,0));
+draw()</div>
+</div>
+<img src="images/draw-basic2/pie.png"><br><br>
+<p>如果你不熟悉多附图的组合，请参考<a target="_blank" href="R-draw-basic.html#4">这里</a>。</p>
+
+
+
+
+<h3 class="tutheader">扇形图（fan plot） </h3>
+<p>扇形图没有柱状图直观，比如几乎无法比较US和Germany的大小。所以扇形图是受统计学家鄙视的。为了提高可比较性，有人创造了一种称为扇形图（fan plot）的饼图变种。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(plotrix)
+slices=c(10,12.4,16,8,2)
+lbls=c("US","UK","Australia","Germany","France")
+#图1
+fan.plot(slices,labels=lbls, main="Fan Plot")
+#图2 加上百分比，自定义颜色
+pct=round(slices/sum(slices)*100)
+lbls2=paste(lbls," ",pct,"%",sep="");lbls2
+fan.plot(slices,labels=lbls2, main="Fan Plot",
+         borders=NULL,
+         col=RColorBrewer::brewer.pal(n = 5,name = "Set2"))</div>
+</div>
+<img src="images/draw-basic2/fan.plot.png"><br><br>
+<p>扇形图重要的是看角度，而不是半径或者面积。</p><br>
+
+
+
+
+
+
+
+<a name="3"></a>
+<h2 class="tutheader">直方图 hist()</h2>
+<p>直方图通过在X 轴上将值域分割为一定数量的组，在Y 轴上显示相应值的频数，展示了连续型变量的分布。</p>
+<p>hist(x) #x是数值向量。参数freq=F则表示根据概率密度而不是频数绘制图形。参数breaks用于控制组的数量。在定义直方图中的单元时，默认将生成等距切分。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">par(mfrow=c(2,2))
+hist(mtcars$mpg) #1简单直方图
+#2
+hist(mtcars$mpg, breaks=12,#分12个bin
+     col="red",
+     xlab="Miles Per Gallon",
+     main="Colored histogram with 12 bins")
+#3 轴须图是一个和密度估计
+hist(mtcars$mpg, freq=F,#不用频数，用频率
+     breaks=12,col="red",
+     xlab="Miles Per Gallon",
+     main="Histogram, rug plot, density curve")
+rug(jitter(mtcars$mpg)) #添加轴须图
+lines(density(mtcars$mpg),col="blue",lwd=2)
+
+#4 添加正态密度曲线和外框
+x=mtcars$mpg
+h=hist(x,breaks=12,col="red",
+       xlab="Miles Per Gallon",
+       main="Histogram with normal curve and box")
+xfit=seq(min(x), max(x), length=40);xfit
+yfit=dnorm(xfit,mean=mean(x),sd=sd(x))
+yfit2=yfit*diff(h$mids[1:2])*length(x) #公式来自PeterDalgaard。不懂??
+lines(xfit,yfit2,col="green",lwd=2)
+box() #添加盒型
+
+#rug(jitter(mtcars$mpg, amount=0.01)) #如果有重复值，使用jitter打散</div>
+</div>
+<img src="images/draw-basic2/hist.png"><br><br>
+
+
+
+
+
+
+
+
+
+<a name="4"></a>
+<h2 class="tutheader">核密度图 plot(density(x))</h2>
+<p>用术语来说，核密度估计是用于估计随机变量概率密度函数的一种非参数方法。从总体上讲，核密度图不失为一种用来观察连续型变量分布的有效方法。</p>
+<p>全新绘制密度图: plot(density(x)) #x是一个数值型向量。</p>
+<p>向一幅图中添加密度曲线: lines(density(x)) </p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">par(mar=c(4,4,3,2) + 0.1)
+par(mfrow=c(2,1))
+d=density(mtcars$mpg)
+#1
+plot(d)
+#2
+plot(d,main="Kernel Density of Miles Per Gallon")
+polygon(d,col="red",border="blue") #红色填充曲线下方区域，边界蓝色
+rug(mtcars$mpg,col="brown") #添加轴须图</div>
+</div>
+<img src="images/draw-basic2/plot-density.png"><br><br>
+
+
+
+
+<h3 class="tutheader">核密度图可用于比较组间差异</h3>
+<p>可能是由于普遍缺乏方便好用的软件，这种方法其实完全没有被充分利用。幸运的是，sm包漂亮地填补了这一缺口。</p>
+<p>使用sm包中的sm.density.compare()函数可向图形叠加两组或更多的核密度图。使用格
+式为：</p>
+<p>sm.density.compare(x, factor) #其中x是数值型向量，factor是一个分组向量。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#install.packages("sm")
+library(sm)
+par(lwd=2) #线宽度 双倍
+
+#创建分组因子：cyl转换为cyl.f的因子
+cyl.f=factor(mtcars$cyl, levels = c(4,6,8),
+             labels=paste(c(4,6,8),"cylinder"))
+#绘制密度图
+sm.density.compare(mtcars$mpg, mtcars$cyl,
+                   xlab="Miels Per Gallon")
+title(main="MPG Distribution by Car Cylinders")
+#通过鼠标单机添加图例
+colfill=c(2:(1+length(levels(cyl.f)))); #创建颜色向量
+colfill #[1] 2 3 4
+legend(locator(1), levels(cyl.f),fill=colfill) #locator(1)表示通过鼠标点击确定位置
+</div>
+</div>
+<img src="images/draw-basic2/sm.density.compare.png"><br>
+<p>核密度图的叠加不失为一种在某个结果变量上跨组比较观测的强大方法。你可以看到不同组所含值的分布形状，以及不同组之间的重叠程度。</p>
+<br>
+
+
+
+
+
+
+
+
+<a name="5"></a>
+<h2 class="tutheader">箱线图(又称盒须图) boxplot()</h2>
+<p>箱线图同样是一项用来可视化分布和组间差异的绝佳图形手段（并且更常用）。通过五数总括，即最小值、下四分位数（第25百分位数）、中位数（第50百分位数）、上四分位数（第75百分位数）以及最大值，描述了连续型变量的分布。</p>
+<p>箱线图能够显示出可能为离群点（范围±1.5*IQR以外的值，IQR表示四分位距，即上四分位数与下四分位数的差值）的观测。</p>
+<p>默认情况下，两条须的延伸极限不会超过盒型各端加1.5倍四分位距的范围。此范围以外的值将以点来表示。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">tmp=c(mtcars$mpg,40,50) #添加离群值2个
+boxplot(tmp, main="Box plot", ylab="Mile per Gallon")
+
+#输出统计量
+boxplot.stats(mtcars$mpg)
+#$stats
+#[1] 10.40 15.35 19.20 22.80 33.90</div>
+</div>
+<p>从统计量可见，在我们的车型样本中，每加仑汽油行驶英里数的中位数是19.2，50%的值都落在了15.3和22.8之间，最小值为10.4，最大值为33.9。</p>
+<img src="images/draw-basic2/boxplot.png"><br>
+<p>看标注过的上图，数据略微正偏（上侧的须较下侧的须更长）。</p>
+
+
+
+
+<a name="5_1"></a>
+<h3 class="tutheader">并列箱线图进行跨组比较</h3>
+<p>箱线图可以展示单个变量或分组变量。</p>
+<p>boxplot(formula, data=dataframe) #公式为y~A，为类别型变量A的每个值并列地生成数值型变量y的箱线图<br>
+#公式y ~ A*B则将为类别型变量A和B所有水平的两两组合生成数值型变量y的箱线图。<br>
+参数varwidth=TRUE 将使箱线图的宽度与其样本大小的平方根成正比。<br>
+参数horizontal=TRUE可以反转坐标轴的方向
+</p>
+
+<p>研究气缸数量对每加仑汽油行驶的英里数的影响。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">par(lwd=2) #线加粗
+par(mfrow=c(1,4))
+#1
+boxplot(mpg~cyl, data=mtcars, main="Car Mileage Data",
+        xlab="Number of Cylinders",
+        ylab="Miles per Gallon")
+#2
+boxplot(mpg~cyl, data=mtcars, main="varwidth=T",
+        varwidth=TRUE, #箱线图的宽度与各自的样本大小成正比
+        xlab="Number of Cylinders",
+        ylab="Miles per Gallon")
+#3 ?warning
+boxplot(mpg~cyl, data=mtcars, main="notch=T",
+        notch=TRUE, #带凹槽的
+        col="#A6D854",
+        xlab="Number of Cylinders",
+        ylab="Miles per Gallon")
+
+#4 ?warning
+boxplot(mpg~cyl, data=mtcars, main="notch=T,varwidth=T",
+        notch=TRUE, #带凹槽的
+        varwidth=T, #箱线图的宽度与各自的样本大小成正比
+        col="#A6D854",
+        xlab="Number of Cylinders",
+        ylab="Miles per Gallon")
+table(mtcars$cyl)
+#4  6  8 
+#11  7 14</div>
+</div>
+<img src="images/draw-basic2/boxplot-varwidth-notch.png"><br>
+<p>含notch=T 的语句为什么都有warning? //<a target="_blank" href="http://bi.dataguru.cn/thread-49927-1-1.html">todo</a></p>
+
+
+
+<a name="5_2"></a>
+<h3 class="tutheader">两交叉因子的箱线图</h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#创建气缸数量的因子
+mtcars$cyl.f=factor(mtcars$cyl,levels=c(4,6,8),labels=c("4","6","8"))
+#创建变速箱类型的因子 
+#[, 9]	 am	 Transmission (0 = automatic, 1 = manual)
+mtcars$am.f=factor(mtcars$am,levels=c(0,1),labels=c("auto","standard"))
+#
+boxplot(mpg~am.f*cyl.f, data=mtcars,
+        varwidth=T,
+        col=c("gold","darkgreen"),
+        main="MPG Distribution by Auto Type",
+        xlab="Auto Type")</div>
+</div>
+<img src="images/draw-basic2/boxplot-2factors.png"><br>
+<p>figX.不同变速箱类型和汽缸数量车型的箱线图<br>
+再一次清晰地显示出油耗随着缸数的下降而减少。对于四缸和六缸车型，标准变速箱
+（standard）的油耗更高。但是对于八缸车型，油耗似乎没有差别。也可以从箱线图的宽度看出，四缸标准变速箱的车型和八缸自动变速箱的车型在数据集中最常见。</p><br>
+
+
+
+<a name="5_3"></a>
+<h3 class="tutheader">小提琴图 violin plot</h3>
+<p>小提琴图（violin plot）是箱线图的变种。小提琴图是箱线图与核密度图的结合。可以使用vioplot包中的vioplot()函数绘制它。</p>
+<p>vioplot(x1,x2,…,names=,col=) #
+其中x1, x2, …表示要绘制的一个或多个数值向量（将为每个向量绘制一幅小提琴图）。
+参数names是小提琴图中标签的字符向量，而col是颜色向量。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#小提琴图
+#install.packages("vioplot")
+library(vioplot)
+x1=mtcars$mpg[mtcars$cyl==4];x1
+x2=mtcars$mpg[mtcars$cyl==6];x2
+x3=mtcars$mpg[mtcars$cyl==8];x3
+vioplot(x1,x2,x3, col="gold",
+        ylab="MPG", #没有显示
+        names=paste(c(4,6,8),"cyl"))
+title("Violin Plots of Miles Per Gallon")
+
+#vioplot(mpg~cyl, data=mtcars) #为什么不行？</div>
+</div>
+<img src="images/draw-basic2/vioplot.png"><br>
+<p>小提琴图基本上是核密度图以镜像方式在箱线图上的叠加。在图中，白点是中位数，黑色盒型的范围是下四分位点到上四分位点，细黑线表示须。<br>
+外部形状即为核密度估计。</p>
+<br>
+
+
+
+
+
+
+<a name="6"></a>
+<h2 class="tutheader">点图 dotchart()</h2>
+<p>点图提供了一种在简单水平刻度上绘制大量有标签值的方法。</p>
+<p>dotchart(x,labels=) # x是一个数值向量，而labels则是由每个点的标签组成的向量。</p>
+<p>可选参数groups指定一个因子，作为x中元素的分组方式；gcolor可以控制不同组标签的颜色，cex标签大小。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#1 普通点图
+dotchart(mtcars$mpg, labels=row.names(mtcars),cex=0.7,
+         main="Gas Mileage for Car Models",
+         xlab="Miles Per Gallon")
+
+#2 分组、排序、着色后的点图
+x=mtcars[order(mtcars$mpg),] #按照mpg排序
+x$cyl=factor(x$cyl) #变cyl为因子
+x$color[x$cyl==4]="red"
+x$color[x$cyl==6]="blue"
+x$color[x$cyl==8]="darkgreen"
+dotchart(x$mpg, labels=row.names(x),cex=0.7, #标签为行名
+         groups=x$cyl, #分组
+         gcolor="black", #分组的颜色 黑色
+         color=x$color, #标签的颜色
+         pch=19,
+         main="Gas Mileage for Car Models\ngrouped by cylinder",
+         xlab="Miles per Gallon")</div>
+</div>
+<img src="images/draw-basic2/dotchart.png"><br><br>
+<p>看右图，许多特征第一次明显起来。随着汽缸数的减少，每加仑汽油行驶的英里数有了增加。但也要例外。</p>
+<p>但是随着数据点的增多，点图的实用性随之下降。Hmisc包提供了叫做dotchart2的点图函数。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

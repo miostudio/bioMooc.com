@@ -93,13 +93,14 @@ $(function(){
 
 
 
-<h2 class="tutheader">目录： 图形初阶(R in Action chapter3)</h2>
-<p><b>要点</b>: 创建、修改、保存图形，及低水平画图命令。</p>
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 创建、修改、保存、组合图形，及低水平画图命令。[R In Action Chapter3]</p>
 
 <ul>
 	<li><a href="#1">图形的创建和保存(高清渲染库Cairo)</a></li>
 	<li><a href="#2">自定义符号、线条、颜色和坐标轴</a>
 		<ul>
+			<li><a href="#20">图形参数设定的两种方式</a>
 			<li><a href="#21">符号与线条</a>
 			<li><a href="#22">颜色</a>
 			<li><a href="#23">文本属性:字号、字体</a>
@@ -175,8 +176,13 @@ dev.off()</div>
 
 <a name='2'></a>
 <h2 class="tutheader">自定义符号、线条、颜色和坐标轴</h2>
-<h3>1.图形参数的设定方式有两种</h3>
-<p>(1)通过par()指定，除非被再次修改，该设定在session结束前一直有效。该语句可一次性定义好，或使用多次。语句par(no.readonly=T)返回一个当前图形参数列表，可用于恢复设定。</p>
+
+
+<a name='20'></a>
+<h3>1.图形参数设定的两种方式</h3>
+<p>(1)通过par()指定，除非被再次修改，该设定在session结束前一直有效。该语句可一次性定义好，或使用多次。</p>
+<p>&gt; par("mar") #[1] 5.1 4.1 4.1 2.1 用于查询当前"mar"参数的值。</p>
+<p>&gt; oldPar=par(no.readonly=T) #返回一个当前图形参数列表，可用于恢复设定: par(oldPar)</p>
 
 <div class="code notranslate">
 	<div>
@@ -445,19 +451,57 @@ dev.off()
 <p>*一英分等于十二分之一英寸。——译者注</p>
 
 
+
 <div class="code notranslate">
-	<div>
-oldPar=par(no.readonly = T) #记录当前设定<br>
+	<div style="white-space: pre-wrap;">oldPar=par(no.readonly = T) #记录当前设定<br>
 par(pin=c(2,4), mai=c(1.5,1.5,1,0.2)) #2 inch宽，4英寸高。图形边界(第一个底部，顺时针)<br>
 par(lwd=2, cex=1.5) #线条宽度是默认的2倍，符号是默认的1.5倍<br>
 par(cex.axis=0.75, font.axis=3) #坐标轴文本斜体、缩小为默认75%大小<br>
 x=1:10<br>
 plot(x,x*x, type="b", pch=19, lty=2,col="red") #红色实心圆圈和虚线<br>
 plot(x,x*x, type="b", pch=23, lty=6,col="blue", bg="green") #绿色填充的绿色菱形加蓝色边框和蓝色虚线<br>
-par(oldPar) #恢复设定
-	</div>
+par(oldPar) #恢复设定</div>
 </div>
 <img src="images/draw-basic/par-mai.png"><br><br>
+
+
+
+<h3 class="tutheader">两类边界：mar和oma </h3>
+<p><a target="_blank" href="https://www.r-graph-gallery.com/74-margin-and-oma-cheatsheet/">R plot中包含两类边界:margin和oma</a>[<a target="_blank" href="http://research.stowers.org/mcm/efg/R/Graphics/Basics/mar-oma/index.htm">Origin here</a>]，可以在画图前通过par()函数的参数分别设置。mar=设置margin，oma=设置outer margin area。参数都是4参数向量c(bottom, left, top, right)。比如 par(mar=c(4,0,0,0))表示仅底部留下4行空白，其他地方不留白。</p>
+<p>也可以使用omi=和mai=来设定，不过单位是inches，不再是lines。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#用box()定边界mar和oma
+# Margins area
+par(oma=c(3,3,3,3))# all sides have 3 lines of space
+par(mar=c(5,4,4,2) + 0.1)
+
+# Plot
+plot(0:10, 0:10, type="n", xlab="X", ylab="Y") # type="n" hides the points
+
+# Place text in the plot and color everything plot-related red
+text(5,5, "Plot", col="red", cex=2)
+box("plot", col="red") #绘图区只是坐标轴围起来的部分
+
+# Place text in the margins and label the margins, all in forestgreen
+mtext("Margins", side=3, line=2, cex=2, col="forestgreen")
+mtext("par(mar=c(b,l,t,r))", side=3, line=1, cex=1, col="forestgreen")
+mtext("Line 0", side=3, line=0, adj=1.0, cex=1, col="forestgreen")
+mtext("Line 1", side=3, line=1, adj=1.0, cex=1, col="forestgreen")
+mtext("Line 2", side=3, line=2, adj=1.0, cex=1, col="forestgreen")
+mtext("Line 3", side=3, line=3, adj=1.0, cex=1, col="forestgreen")
+box("figure", col="forestgreen") #这是figure区域
+
+# Label the outer margin area and color it blue
+# Note the 'outer=TRUE' command moves us from the figure margins to the outer margins.
+mtext("Outer Margin Area", side=1, line=1, cex=2, col="blue", outer=TRUE)
+mtext("par(oma=c(b,l,t,r))", side=1, line=2, cex=1, col="blue", outer=TRUE)
+mtext("Line 0", side=1, line=0, adj=0.0, cex=1, col="blue", outer=TRUE)
+mtext("Line 1", side=1, line=1, adj=0.0, cex=1, col="blue", outer=TRUE)
+mtext("Line 2", side=1, line=2, adj=0.0, cex=1, col="blue", outer=TRUE)
+box("outer", col="blue") #这是outer区域，也最大</div>
+</div>
+<img src="images/draw-basic/par-oma-mar.png"><br><br>
 
 
 
@@ -604,6 +648,7 @@ abline(v=seq(0,10,2), lty=2, col="grey",lwd=0.5) #n条灰色虚竖线，宽度�
 	<tr><td>location</td>   <td> 有许多方式可以指定图例的位置。你可以直接给定图例左上角的x、y坐标，也可以执行locator(1)，然后通过鼠标单击给出图例的位置，还可以使用关键字bottom、bottomleft、left、topleft、top、topright、right、bottomright或center放置图例。如果你使用了以上某个关键字，那么可以同时使用参数inset=指定图例向图形内侧移动的大小（以绘图区域大小的分数表示）</td></tr>
 	<tr><td>title</td>   <td> 图例标题的字符串（可选）</td></tr>
 	<tr><td>legend</td>   <td> 图例标签组成的字符型向量</td></tr>
+	<tr><td>ncol</td>   <td>图例的列数目。如果horiz为true，则此项无意义。</td></tr>
 	<tr><td>… </td>   <td>其他选项。如果图例标示的是颜色不同的线条，需要指定col=加上颜色值组成的向量。如果图例标示的是符号不同的点，则需指定pch=加上符号的代码组成的向量。如果图例标示的是不同的线条宽度或线条类型，请使用lwd=或lty=加上宽度值或类型值组成的向量。要为图例创建颜色填充的盒形（常见于条形图、箱线图或饼图），需要使用参数fill=加上颜色值组成的向量</td></tr>
 	</tbody>
 </table>
