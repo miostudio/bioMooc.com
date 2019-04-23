@@ -499,13 +499,13 @@ dev.off()
 
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">oldPar=par(no.readonly = T) #记录当前设定<br>
-par(pin=c(2,4), mai=c(1.5,1.5,1,0.2)) #2 inch宽，4英寸高。图形边界(第一个底部，顺时针)<br>
-par(lwd=2, cex=1.5) #线条宽度是默认的2倍，符号是默认的1.5倍<br>
-par(cex.axis=0.75, font.axis=3) #坐标轴文本斜体、缩小为默认75%大小<br>
-x=1:10<br>
-plot(x,x*x, type="b", pch=19, lty=2,col="red") #红色实心圆圈和虚线<br>
-plot(x,x*x, type="b", pch=23, lty=6,col="blue", bg="green") #绿色填充的绿色菱形加蓝色边框和蓝色虚线<br>
+	<div style="white-space: pre-wrap;">oldPar=par(no.readonly = T) #记录当前设定
+par(pin=c(2,4), mai=c(1.5,1.5,1,0.2)) #2 inch宽，4英寸高。图形边界(第一个底部，顺时针)
+par(lwd=2, cex=1.5) #线条宽度是默认的2倍，符号是默认的1.5倍
+par(cex.axis=0.75, font.axis=3) #坐标轴文本斜体、缩小为默认75%大小
+x=1:10
+plot(x,x*x, type="b", pch=19, lty=2,col="red") #红色实心圆圈和虚线
+plot(x,x*x, type="b", pch=23, lty=6,col="blue", bg="green") #绿色填充的绿色菱形加蓝色边框和蓝色虚线
 par(oldPar) #恢复设定</div>
 </div>
 <img src="images/draw-basic/par-mai.png"><br><br>

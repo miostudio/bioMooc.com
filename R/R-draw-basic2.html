@@ -196,7 +196,7 @@ barplot(counts, main="Stacked bar plot",
         legend=rownames(counts),
         beside=T)</div>
 </div>
-<img src="images/draw-basic2/barplot-beside.png"><br><br>
+<img src="images/draw-basic2/barplot-beside.png"><br>
 <p>请尝试重新布局，避免图形和图例重叠。</p>
 
 
@@ -239,7 +239,7 @@ text(x=posX,y=-0.1, #文字坐标
      xpd = TRUE, #允许显示到图形外部
      labels = means$Group.1)</div>
 </div>
-<img src="images/draw-basic2/barplot-text.png"><br><br>
+<img src="images/draw-basic2/barplot-text.png"><br>
 <p>使用ggplot2中的barplot2()函数创建叠加有置信区间的均值条形图: <a target="_blank" href="https://rdrr.io/rforge/gplots/man/barplot2.html">barplot2: Enhanced Bar Plots.html</a></p>
 
 
@@ -307,7 +307,7 @@ draw=function(){
 par(mar=c(0,0,2,0));
 draw()</div>
 </div>
-<img src="images/draw-basic2/pie.png"><br><br>
+<img src="images/draw-basic2/pie.png"><br>
 <p>如果你不熟悉多附图的组合，请参考<a target="_blank" href="R-draw-basic.html#4">这里</a>。</p>
 
 
@@ -329,7 +329,7 @@ fan.plot(slices,labels=lbls2, main="Fan Plot",
          borders=NULL,
          col=RColorBrewer::brewer.pal(n = 5,name = "Set2"))</div>
 </div>
-<img src="images/draw-basic2/fan.plot.png"><br><br>
+<img src="images/draw-basic2/fan.plot.png"><br>
 <p>扇形图重要的是看角度，而不是半径或者面积。</p><br>
 
 
@@ -586,7 +586,7 @@ dotchart(x$mpg, labels=row.names(x),cex=0.7, #标签为行名
          main="Gas Mileage for Car Models\ngrouped by cylinder",
          xlab="Miles per Gallon")</div>
 </div>
-<img src="images/draw-basic2/dotchart.png"><br><br>
+<img src="images/draw-basic2/dotchart.png"><br>
 <p>看右图，许多特征第一次明显起来。随着汽缸数的减少，每加仑汽油行驶的英里数有了增加。但也要例外。</p>
 <p>但是随着数据点的增多，点图的实用性随之下降。Hmisc包提供了叫做dotchart2的点图函数。</p>
 

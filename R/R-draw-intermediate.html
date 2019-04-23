@@ -171,8 +171,7 @@ scatterplot(mpg~wt|cyl,data=mtcars,lwd=2,
 <p>R中至少有四种创建散点图矩阵的实用函数。pairs()函数可以创建基础的散点图矩阵。</p>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">#散点图矩阵
-#left
+	<div style="white-space: pre-wrap;">#left
 pairs(~mpg+disp+drat+wt, data=mtcars,main="Basic Scatter Plot Matrix")
 
 #right 上三角和下三角信息是重复的，upper.panel = NULL将只生成下三角
@@ -245,7 +244,7 @@ cpairs(mydata,myorder, #变量顺序
 <img src="images/draw-intermediate/cpairs.png"><br>
 <p>红色相关性最好，距离主对角线最近；黄色相关性最差，距离主对角线最远。</p>
 <p>当变量数众多，变量间的相关性变化很大时，适合使用该方法。</p>
-<hr>
+
 
 
 
@@ -287,7 +286,7 @@ library(IDPmisc)
 with(mydata,
      iplot(x,y,main="4 Image Scatter Plot with Color Indicating Density"))</div>
 </div>
-<img src="images/draw-intermediate/dense-plot.png"><br><hr>
+<img src="images/draw-intermediate/dense-plot.png"><br><br>
 
 
 
@@ -320,7 +319,7 @@ s3d$plane3d(fit)
 #点在平面之上则表明它的预测值被低估了，点在平面之下则表明它的预测值被高估了。
 detach(mtcars)</div>
 </div>
-<img src="images/draw-intermediate/scatterplot3d.png"><br><hr>
+<img src="images/draw-intermediate/scatterplot3d.png"><br><br>
 
 
 
@@ -344,7 +343,7 @@ scatter3d(wt,disp,mpg) #也可旋转，但是没有坐标轴
 #图形默认添加线性平面。help(scatter3d)
 detach(mtcars)</div>
 </div>
-<img src="images/draw-intermediate/plot3d.png"><br><hr>
+<img src="images/draw-intermediate/plot3d.png"><br><br>
 
 
 
@@ -372,7 +371,7 @@ detach(mtcars)</div>
 <img src="images/draw-intermediate/bubblePlot_symbols.png"><br>
 <p>图中可见，随着每加仑汽油所行驶里程的增加，车重和发动机排量都逐渐减少。</p>
 <p>相比对长度的判断，人们对体积/面积的判断通常更困难。所以，饼图和气泡图在统计人员中避免使用，而商业中很常用。</p>
-<hr>
+<br>
 
 
 
@@ -428,8 +427,7 @@ for(i in c("p",'l','o','b','c','s','S','h')){
 }
 par(opar)</div>
 </div>
-<img src="images/draw-intermediate/plot-type.png"><br>
-<hr>
+<img src="images/draw-intermediate/plot-type.png"><br><br>
 
 
 

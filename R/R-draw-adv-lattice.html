@@ -6,9 +6,9 @@
 	<title>R 教程 | 生物慕课网</title>
 
 <link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
-<meta name="keywords" content="R 绘图教程, R画图">
-<meta name="description" content="R  画图教程。 本教程，我们将为大家介绍如何使用R画图。 R其实很容易学，相信你们能很快学会。 现在开始学习 R ！    谁适合阅读？ 本教程针对的是R数据分析人员阅读。">
-
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
 	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
 	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
 	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
@@ -89,36 +89,42 @@ $(function(){
 		
 			<div class="article-intro" id="content">
 			
-			<h1><span class="color_h1">R绘图 </span> 概述</h1>
-<hr>
-<div class="tutintro"> 
-<p>R 是一个开源的统计和绘图系统。</p>
-<p>1. <a target="_blank" href="http://www.sthda.com/english/wiki/r-base-graphs">R语言原生的绘图系统</a>已经非常强大了，可以绘制非常炫目的图片，但是需要耐心调试。</p>
-<p>除了基础图形，grid、lattice和ggplot2软件包也提供了图形系统，它们克服了R基础图形系统的低效性，大大扩展了R的绘图能力。</p>
-<p>2. <a target="_blank" href="https://www.stat.auckland.ac.nz/~paul/grid/grid.html">grid图形系统</a> 可以很容易控制图形基础单元，给予编程者创作图形极大的灵活性。由于grid不常用，本文略过。</p>
-
-<p>3. <a target="_blank" href="http://lmdvr.r-forge.r-project.org/figures/figures.html">lattice包</a>通过一维、二维或三维条件绘图，即所谓的栅栏（trellis）图形来对多元变量关系进行直观展示。lattice系统原则上能绘制任何复杂图形。<a target="_blank" href="http://www.sthda.com/english/wiki/lattice-graphs">Lattice package</a> is a powerful and elegant data visualization system that aims to improve on base R graphs.</p>
-
-<p>4. <a target="_blank" href="https://ggplot2.tidyverse.org/">ggplot2包</a>则基于一种全面的图形“语法”，提供了一种全新的、统一风格的图形创建方法。绘图神器，既快又好。<a target="_blank" href="http://www.sthda.com/english/wiki/ggplot2-essentials">ggplot2 is a powerful and a flexible R package</a>, implemented by Hadley Wickham, for producing elegant graphics.</p>
-
-<br/>
-<p>生物信息与R语言QQ群: 187923577</p>
-<p><a target="_blank" href="https://www.w3cschool.cn/r/">w3cschool的R教程</a> | <a target="_blank" href="https://www.yiibai.com/r/r_pie_charts.html">易百教程R教程</a></p>
-<p><a target="_blank" href="http://wenku.baidu.com/view/80f22fa50029bd64783e2c22.html">华大基因PPT:R语言的绘图功能及应用案例</a></p>
-<p><a target="_blank" href="https://www.statmethods.net/graphs/index.html">《R语言实战》R in Action</a></p>
-<p><a target="_blank" href="http://www.sthda.com/english/wiki/data-visualization">sthda:使用R base,Lattice,ggplot2,3D画图</a></p>
-<p><a target="_blank" href="https://www.r-graph-gallery.com/">R graph gallery</a> 各种R图片和源码</p>
+			<h1><span class="color_h1">R绘图 </span> lattice包高级绘图</h1>
 
 
-<br>
-<p><b>R原生绘图命令要点：</b></p>
-<p>1.高水平画图命令:画图像主体，包括plot,boxplot,hist等</p>
-<p>2.低水平画图命令:画辅助成分，包括title,axis,title等</p>
-<p>3.此外还包括图形的交互与参数，图形设备，动态图形等</p>
 
-<br>
-<p>现在开始学习 R 绘图 ！</p>
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: lattice和ggplot2包极大地扩展了R绘图的范畴，提高了图形的质量。[R In Action Chapter16]</p>
+
+<ul>
+	<li><a href="#1">Trellis图形和lattice包</a>
+		<ul>
+			<li><a href="#1_1">散点图矩阵</a>
+		</ul>
+	</li>
+	<li><a href="#2">ggplot2的图形语法</a></li>
+	<li><a href="#2"> 交互式图形</a></li>
+
+
+</ul>
+
+
+
+
+
+
+<p>R作图的目的：更好地理解数据，并能够与他人沟通这些理解方式。</p>
+
+<a name="1"></a>
+<h2 class="tutheader">lattice 包 </h2>
+
+征进行控制。
+lattice包提供了丰富的函数，可生成单变量图形（点图、核密度图、直方图、柱状图和箱
+线图）、双变量图形（散点图、带状图和平行箱线图）和多变量图形（三维图和散点图矩阵）。
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">xxx</div>
 </div>
+<img src="images/draw-adv/plot.png"><br><hr>
 
 
 
@@ -128,6 +134,8 @@ $(function(){
 
 
 
+#
+https://www.jianshu.com/p/5885aaeda6c1
 
 
 
