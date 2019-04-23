@@ -1,0 +1,34 @@
+常用代码片段
+
+plot(1,col="white",xlim=c(1,9),ylim=c(1,7))
+
+<a name="31"></a>
+target="_blank" href=
+
+
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>参 数</th>   <th>描 述</th></tr>
+		<tr><td>cex.sub</td> <td> 副标题的缩放倍数。类似于cex</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#左下角为
+opar=par(no.readonly = T)
+
+#顶部文字
+mtext("Enhanced Scatterplot",side=3,outer=T,line=-5)
+par(opar)</div>
+</div>
+<img src="images/draw-intermediate/para-legend.png"><br><hr>
+<p>扇形图重要</p><br>
+
+
+
+detach(mtcars)

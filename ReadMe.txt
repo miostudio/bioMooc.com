@@ -107,6 +107,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.3-1 fix框架结构：顶部没自动出现“上一个”：啥js没写，就是补充了原文.previous-design-link 的div内容。
 	main0.2.3-2 fix框架结构：底部添加“上一个”
 	main0.2.3-3 R in Action 第6章 基本图形
+	main0.2.3-4 R in Action 第11章 中级绘图
 
 
 

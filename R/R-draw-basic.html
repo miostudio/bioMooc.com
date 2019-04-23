@@ -297,6 +297,52 @@ barplot(rep(1,6),col=cm.colors(6), main="cm")<br>
 <img src="images/draw-basic/colorSet.png"><br><br>
 
 
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#画一个色环(未展示)
+n = 1000
+#png("rainbow.disc.png", bg = "transparent")
+par(mar = c(0,0,0,0))
+pie(rep(1,times=n),labels="",col=rainbow(n),border=rainbow(n))
+#dev.off()
+
+
+#五个调色板产生的颜色对比如下：
+#定义画图函数
+draw1=function(f,n,main=""){
+  barplot(rep(1,times=n),
+          axes=FALSE,main=main,
+          col=f(n),border=f(n) ); 
+  if(n&lt;=20)box()
+}
+#批量调用画图函数
+draw2=function(n){
+  par(mfrow=c(5,1)); 
+  par(mar=c(0.3,0.5,2,0.5));par(xaxs="i", yaxs="i")
+  #
+  draw1(rainbow,n,"Rainbow colors")
+  draw1(heat.colors,n,"heat.colors")
+  draw1(terrain.colors,n,"terrain.colors")
+  draw1(topo.colors,n,"topo.colors")
+  draw1(cm.colors,n,"cm.colors")
+}
+
+#left
+draw2(10000)
+
+#right: 如果只需要10中颜色
+draw2(10)</div>
+</div>
+<img src="images/draw-basic/colorSet2.png"><br><br>
+
+
+
+
+
+
+
 <div class="code notranslate">
 	<div>
 par(mfrow=c(2,1),mai=c(0.2,0.4,0.2,0.1))<br>
