@@ -715,6 +715,46 @@ text(x=xPos, y=-0.5, labels=labs,
 
 
 
+<p><b>对数坐标轴 log="xy"</b></p>
+<p>参考文章(<a target="_blank" href="https://www.nature.com/articles/nmeth.2645">Philip Brennecke, NM2013</a> Fig 3)，以下R代码改写自其补充材料2。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#数据示例
+meansHeLa[1:3]
+#  5_8S_rRNA         7SK         A2M 
+#14.37722513  0.93673966  0.06131997 
+
+cv2HeLa[1:3]
+#5_8S_rRNA       7SK       A2M 
+# 8.465926  4.789838 28.000000 
+
+#对数坐标轴，定义为对数，然后手工添加轴刻度
+plot( NULL, xaxt="n", yaxt="n",
+      log="xy", xlim = c( 1e-1, 3e5 ), ylim = c( .005, 100 ), 
+      xlab = "average normalized read count", 
+      ylab = "squared coefficient of variation (CV^2)" )
+axis( 1, 10^(-1:5), c( "0.1", "1", "10", "100", "1000",
+                       expression(10^4), expression(10^5) ) ) #x轴数学符号
+axis( 2, 10^(-2:2), c( "0.01", "0.1", "1", "10" ,"100"), las=2 ) #y轴数字
+abline( h=10^(-2:1), v=10^(-1:5), col="#D0D0D0", lwd=2 ) #背景灰线
+
+# Plot the plant genes, use a different color if they are highly variable
+points( meansHeLa, cv2HeLa, pch=20, cex=.2, col="#70500040")
+        #col = ifelse( p &lt; .1, "#C0007090", "#70500040" ) ) #可以根据p值(提前计算)选择颜色
+
+
+#因为缺少上文数据，下列代码无法运行，仅供欣赏
+# Add the technical noise fit, as before
+xg &lt;- 10^seq( -2, 6, length.out=1000 )
+lines( xg, coefficients(fit)["a1tilde"] / xg + a0, col="#FF000080", lwd=3 )
+# Add a curve showing the expectation for the chosen biological CV^2 thershold
+lines( xg, psia1theta/xg + coefficients(fit)["a0"] + minBiolDisp,
+       lty="dashed", col="#C0007090", lwd=3 )
+# Add the normalised ERCC points
+points( meansERCC, cv2ERCC, pch=20, cex=1, col="#0060B8A0" )</div>
+</div>
+<img src="images/draw-basic/para-log.png"><br><br>
+
 
 
 
