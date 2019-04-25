@@ -109,6 +109,9 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.3-3 R in Action 第6章 基本图形
 	main0.2.3-4 R in Action 第11章 中级绘图
 	main0.2.3-5 勘误格式细节
+	main0.2.3-6 添加新图点带图 stripchart()、热图 image(x, y, z)
+	
+		Q:par(mar和mai的区别)  A:单位不同，mar行，mai是inche
 
 
 
@@ -117,6 +120,5 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 todo
 1. 热力图，最后使用ggplot2灵活、好看的效果：https://www.plob.org/article/10156.html
 2.据说很全面的数据库 https://www.hsls.pitt.edu/obrc/
-3.par(mar和mai的区别)
 
 

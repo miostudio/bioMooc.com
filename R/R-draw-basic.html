@@ -646,7 +646,7 @@ title("An example of creative axes", xlab="X values", ylab="Y=X") #标题和坐�
 
 par(opar)</div>
 </div>
-<img src="images/draw-basic/Example-plot-more.png"><br><br>
+<img src="images/draw-basic/Example-plot-more.png"><br>
 <p>除lines()和mtext()外上文都讨论过了。
 lines()向现有图形添加线元素，比如在一幅图画两条或更多曲线。
 mtext()用于在图形边界添加文本。</p>
@@ -663,6 +663,57 @@ minor.tick(nx=n,ny=n,tick.ratio=0.5) #tick.ratio=0.5 长度为主刻度线的一
 #当前的主刻度线长度获取
 par("tck")</div>
 </div>
+<br>
+
+
+
+
+<p><b>调整轴元素之间的距离：mgp=c() </b></p>
+<p> mgp=c(2.5,1,0) #坐标轴各部件的位置。</p>
+<p>第一个元素为坐标轴位置到坐标轴标签的距离，以文本行高为单位。</p>
+<p>第二个元素为坐标轴位置到坐标刻度标签的距离。</p>
+<p>第三个元素为坐标轴位置到实际画的坐标轴的距离，通常是0。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">d=c(1)
+par("mgp") #默认[1] 3 1 0
+par(mfrow=c(3,3), mar=c(4,4,1,1)) #三行三列
+#1 坐标轴标签和轴距离
+plot(d,xlab="mgp=c(3,1,0)") #control
+plot(d,mgp=c(2,1,0),xlab="mgp=c(2,1,0)") #坐标轴标签靠近轴
+plot(d,mgp=c(-1,1,0),xlab="mgp=c(-1,1,0)") #坐标轴标移到另一侧:warnings符号不同
+#2 刻度标签
+plot(d,mgp=c(2,1,0),xlab="mgp=c(2,1,0)") #control
+plot(d,mgp=c(2,0,0),xlab="mgp=c(2,0,0)") #刻度标签靠近轴
+plot(d,mgp=c(2,-1,0),xlab="mgp=c(2,-1,0)") #刻度标签移到轴另一侧:warnings符号不同
+#3 刻度位置
+plot(d,mgp=c(2,1,0),xlab="mgp=c(2,1,0)") #control
+plot(d,mgp=c(2,1,1),xlab="mgp=c(2,1,1)") #刻度远离轴
+plot(d,mgp=c(2,1,-1),xlab="mgp=c(2,1,-1)") #刻度内移：warnings符号不同</div>
+</div>
+<img src="images/draw-basic/para-mgp.png"><br><br>
+
+
+
+
+<p><b>坐标轴标签倾斜: srt=45</b></p>
+<p>或者屏蔽默认坐标轴(xaxt="n")，重绘一个满足自己要求的坐标轴。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">labs = paste(names(table(mtcars$cyl)), "cylinders")
+#返回值是条形图的x坐标
+xPos = barplot(table(mtcars$cyl), xaxt="n") #xaxt="n"不要x坐标轴
+text(x=xPos, y=-0.5, labels=labs,
+     cex=0.8, #字体是默认的倍数
+     col="navyblue",
+     xpd=TRUE, #允许绘制在绘图区外
+     adj=1, #adj=1右上对齐
+     srt=30) #倾斜30度</div>
+</div>
+<img src="images/draw-basic/para-srt.png"><br><br>
+
+
+
 
 
 
@@ -814,10 +865,17 @@ plot(1,2,type="b",ylim=c(1.2,2.1),
 text(1,2,expression(hat(x)), pos=4) # 在(1,2)右加入\hat{x}
 #更复杂的公式
 formula = expression(italic(Prob) == bgroup("(",atop(n, x),")")%*%p[1]^x%*%(1-p[1])^(n-x))
-text(1,1.5,label=formula)</div>
+text(1,1.5,label=formula)
+
+#right: https://stats.idre.ucla.edu/r/codefragments/greek_letters/
+set.seed(1)  # for reproducible, pseudo-random numbers
+h = rnorm(mean = 5, sd = 1, n = 1000)
+hist(h, xlab = expression(h),
+     main = expression(paste("希腊字母, ", mu, "=5, ", sigma,"=1")))</div>
 </div>
 
-<img src="images/draw-basic/para-plotmath.png" /><br>
+<img style="width:40%" src="images/draw-basic/para-plotmath.png" />
+<img src="images/draw-basic/para-plotmath2.png" /><br>
 
 
 

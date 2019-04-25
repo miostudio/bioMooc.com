@@ -99,7 +99,11 @@ $(function(){
 <ul>
 	<li><a href="#1">Trellis图形和lattice包</a>
 		<ul>
-			<li><a href="#1_1">散点图矩阵</a>
+			<li><a href="#1_1">条件变量</a>
+			<li><a href="#1_2">面板函数</a>
+			<li><a href="#1_3">分组变量</a>
+			<li><a href="#1_4">图形参数</a>
+			<li><a href="#1_5">页面摆放</a>
 		</ul>
 	</li>
 	<li><a href="#2">ggplot2的图形语法</a></li>
@@ -122,9 +126,16 @@ $(function(){
 lattice包提供了丰富的函数，可生成单变量图形（点图、核密度图、直方图、柱状图和箱
 线图）、双变量图形（散点图、带状图和平行箱线图）和多变量图形（三维图和散点图矩阵）。
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">xxx</div>
+	<div style="white-space: pre-wrap;">#纽约合唱团中歌手的身高随着他们所属的声部如何变化？
+library(lattice)
+head(singer) #预览数据
+histogram(~height|voice.part, data=singer,
+          main="Distribution of Heights by Voice Pitch",
+          xlab="Height (inches)") 
+#heigth是因变量，voice.part被称作条件变量（conditioning variable）
+#对八个声部的每一个都创建一个直方图，男高音和男低音比女低音和女高音身高要高。</div>
 </div>
-<img src="images/draw-adv/plot.png"><br><hr>
+<img src="images/draw-adv-lattice/histogram.png"><br><br>
 
 
 
@@ -136,9 +147,13 @@ lattice包提供了丰富的函数，可生成单变量图形（点图、核密�
 
 #
 https://www.jianshu.com/p/5885aaeda6c1
+https://www.statmethods.net/advgraphs/trellis.html
+http://master.bioconductor.org/help/course-materials/2008/advanced_R/latticeLab.pdf
 
+https://livebook.manning.com/#!/book/r-in-action-second-edition/bonus-chapter-23-advanced-graphics-with-the-lattice-package/
 
-
+#ggplot2 
+http://www.cookbook-r.com/Graphs/
 
 
 			</div>

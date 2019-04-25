@@ -26,7 +26,7 @@ opar=par(no.readonly = T)
 mtext("Enhanced Scatterplot",side=3,outer=T,line=-5)
 par(opar)</div>
 </div>
-<img src="images/draw-adv/xx.png"><br><hr>
+<img src="images/draw-adv-lattice/xx.png"><br><br>
 <p>扇形图重要</p><br>
 
 

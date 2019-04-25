@@ -97,7 +97,7 @@ $(function(){
 <p><b>要点</b>: 高级画图命令，如条形图、饼图、扇形图、直方图、核密度图、箱线图、小提琴图和点图的用法。[R In Action Chapter6]</p>
 
 <ul>
-	<li><a href="#1">条形图、箱线图和点图</a>
+	<li><a href="#1">条形图</a>
 		<ul>
 			<li><a href="#1_1">简单条形图</a>
 			<li><a href="#1_2">堆砌条形图和分组条形图: beside参数</a>
@@ -116,6 +116,8 @@ $(function(){
 		</ul>
 	</li>
 	<li><a href="#6">点图 dotchart()</a></li>
+	<li><a href="#7">点带图 stripchart()</a></li>
+	<li><a href="#8">热图 image(x, y, z)</a></li>
 </ul>
 
 
@@ -595,6 +597,126 @@ dotchart(x$mpg, labels=row.names(x),cex=0.7, #标签为行名
 
 
 
+
+
+
+<a name="7"></a>
+<h2 class="tutheader">点带图 stripchart()</h2>
+<p>add=TRUE 选项在第二个高级绘图函数中出现时，会把当前曲线叠加到上一个高级绘图函数的图上，而不是重新作图。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">head(iris) #第一列和最后一列
+#1 基本
+stripchart(Sepal.Length~Species, data=iris,
+           main="1 stripchart",
+           pch=19, frame=F) #图形点实心圆点，不要边框
+#2 Vertical plot using method = "jitter" 
+stripchart(Sepal.Length~Species, data=iris,
+           pch=19, frame=T, 
+           #method='stack',main="2 stack",
+           method="jitter",main="2 jitter", #使用jitter分散重复点
+           ##method:overplot(默认),jitter,stack(颗粒数据)
+           vertical=T) #竖着
+#3 Change point shapes (pch) and colors by groups
+# add main title and axis labels
+stripchart(Sepal.Length~Species, data=iris,
+           pch=c(21,18,16), frame=T,
+           vertical=T, method="jitter",
+           col=c("#999999", "#E69F00","#56B4E9"),
+           main="3 Sepal.Length by Species", xlab="Species",ylab="Sepal.Length")
+#4 箱线图和点带图叠加
+boxplot(Sepal.Length~Species, data=iris, main="4 box+jitter",
+        xaxt="n",
+        #las=2,
+        horizontal=F)
+stripchart(Sepal.Length~Species, data=iris, 
+           add=TRUE, #添加到上一个图上
+           col=c("#999999", "#E69F00","#56B4E9"),#设置颜色
+           pch=21,cex=0.9,vertical=T,
+           method="jitter")
+#自定义坐标轴标签
+text(x=c(1,2,3),y=4.1,labels=names(table(iris$Species)), 
+     adj=1,
+     xpd=TRUE,
+     srt=60)</div>
+</div>
+<img src="images/draw-basic2/stripchart.png"><br>
+
+
+
+
+
+
+
+
+
+<a name="8"></a>
+<h2 class="tutheader">热图 image(x, y, z)</h2>
+<p>image(x, y, z, zlim, xlim, ylim, col = heat.colors(12), xlab, ylab, breaks, ...) #在(x,y)位置绘制方块，颜色或灰度由矩阵z决定。<br>
+zlim: 数据的范围，默认值是z矩阵中的最小值到最大值；#xlim, ylim: 图片中x和y的数据阈值；<br>
+col: 设定颜色阈值；breaks: 颜色对应的数据断点。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#造一组数据
+data=iris[1:10,1:4]
+rownames(data)=paste0("Obs_",rownames(data))
+head(data)
+data=scale(data)
+
+# 设定绘图参数
+breaks.frequency = seq(from=min(data), to=max(data), length.out=10)#length.out预期长度
+myColors = colorRampPalette(c("white", "#2874A6")) #颜色函数
+
+par(mar=c(5,5,4,2))
+# 画热图
+image(1:nrow(data), 1:ncol(data), as.matrix(data),  
+      breaks=breaks.frequency,#要比color多1，递增
+      col=myColors(length(breaks.frequency)-1), 
+      axes = F, #下面自定义坐标轴
+      cex = 1.5,
+      xlab = "", ylab = "")
+
+# 自定义axis
+axis(3, #3是top显示x坐标轴
+     mgp=c(1,0.2,0), #控制坐标轴刻度与坐标轴的距离
+     at=1:nrow(data), #坐标轴刻度位置
+     rownames(data), #substr(rownames(data),2,3), #坐标轴刻度
+     las=2,#旋转坐标轴文字90度
+     lwd=0,lwd.ticks=0) #隐藏坐标轴和刻度, cex.axis=2.5 定义字体大小
+axis(2, at=1:ncol(data), colnames(data), 
+     mgp=c(1,0.2,0),
+     las=2, 
+     lwd=0,lwd.ticks=0)
+
+#图片的标题
+title(sub="Sub Title Here")
+
+# 自定义热图格子中输出的文本
+for (x in 1:nrow(data)) {
+  for (y in 1:ncol(data))  {
+    text(x, y, round(data[x, y],2) )#保留两位小数 cex = 2
+  }
+}
+
+#定义四种基本颜色 (1)0.001(2)0.01(3)0.05(4)
+BaseColor=myColors(4)#c("#FF0000","#FF5555","#FFA3A3","#EFEEEF") 
+
+#图例
+legend(x=1,y=0.5,border = "black",lty=0,
+       legend=c("&lt;0.001", "0.001~0.01", "0.01~0.05", "&gt;=0.05"),#随便写的文字
+       fill=BaseColor,
+       
+       x.intersp=0.2, #图形和文字的距离
+       text.width=1.5, #两个图例之间的距离
+       xpd=T, #要设置xpd=T才能在图外画图例
+       ncol=4,#ncol几列
+       bty="n" #不要图例边框
+)</div>
+</div>
+<img src="images/draw-basic2/heatmap-image.png"><br>
+<p>
+#todo: 怎么画渐变图例? <br>
+#polygon(c(0,0,1,1), density=, col=col[i], border=NA) </p>
 
 
 
