@@ -111,6 +111,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.3-5 勘误格式细节
 	main0.2.3-6 添加新图点带图 stripchart()、热图 image(x, y, z)
 	main0.2.3-7 对数坐标轴 log="xy"
+	main0.2.3-8 R 多边形绘图 polygon()、gradient-legend
 
 
 

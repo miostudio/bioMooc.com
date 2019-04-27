@@ -32,3 +32,31 @@ par(opar)</div>
 
 
 detach(mtcars)
+
+
+
+
+
+
+####################################
+#ggplot2配色神器
+https://zhuanlan.zhihu.com/p/26880524
+
+#配色案例欣赏：
+https://zhuanlan.zhihu.com/p/24089938
+
+
+
+R语言和gplot2系列笔记
+https://zhuanlan.zhihu.com/p/28131878
+https://zhuanlan.zhihu.com/p/25780082
+R语言中文社区2018年终文章整理（作者篇） 表哥有话讲  2019.1月15日
+
+
+流量结构分布图——炫酷和弦图(桑基图，即桑基能量分流图，也叫桑基能量平衡图。)
+https://zhuanlan.zhihu.com/p/26973613
+
+
+
+
+

@@ -146,6 +146,9 @@ dev.off() #关闭绘图设备</div>
 </div>
 
 <p>除了pdf()，还可以使用函数win.metafile()、png()、jpeg()、bmp()、tiff()、xfig()和postscript()将图形保存为其他格式。（注意，Windows图元文件格式仅在Windows系统中可用。）</p>
+<p><b>png函数技巧:</b> 把height width和res增大同样比例试一试。发现图片正常，而且清晰度提高了。<br>
+png("type.png",width=600*3,height=3*600,res=72*3) #否则字体大小会变得很不协调</p>
+
 
 <h3>R语言的高质量图形渲染库Cairo</h3>
 <div class="code notranslate">
@@ -203,6 +206,15 @@ plot(x,y,type="b",lty=2,pch=17)
 	</div>
 </div>
 
+<hr>
+<p>(3) 除了par函数，还有options()函数也是如此</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">op = options(digits = 2)
+(a = 1.34556) # 1.3
+options(op)
+(a = 1.34556) # 1.34556</div>
+</div>
+
 
 <br>
 <h3>2.函数par()中的参数可以分为三大类：</h3>
@@ -228,16 +240,32 @@ plot(x,y,type="b",lty=2,pch=17)
 
 <a name='21'></a>
 <h2 class="tutheader">符号和线条参数</h2>
-<p>pch: 指定绘制时使用的符号(见图fig1)</p>
 <p>cex: 缩放倍数，默认是1；</p>
-<p>lty: 指定线条类型(见图fig2)。Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses ‘invisible lines’ (i.e., does not draw them).</p>
 <p>lwd: 线条宽度。</p>
+<p>pch: 指定绘制时使用的符号(见图fig1)</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x = 1:6
+y = 5:1
+# 生成25个点的网格数据
+xy = expand.grid(y=y,x=x)
+xy=head(xy,n=26)
+
+# 画25种pch
+plot(xy$x-6,xy$y,pch=0:25,col="red",cex=2,
+     xlim=c(-5.5,6),ylim=c(-7,6), # 指定坐标轴范围
+     ann=F,axes=F) # 这两个参数去掉原有边框
+text(3-6,6,"plotting ‘character’: pch=")
+text(xy$x+0.4-6,xy$y,as.character(0:25))</div>
+</div>
 <img src="images/draw-basic/pch.png" /><br>
 <p>fig1 对于pch的21-25，还可以指定边界颜色(col=)和填充色(bg=).</p><br>
 
 
+<p>lty: 指定线条类型(见图fig2)。Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses ‘invisible lines’ (i.e., does not draw them).</p>
 <img src="images/draw-basic/lty.png" /><br>
-<p>fig2 线条类型</p><br>
+<p>fig2 线条类型-6种lty</p><br>
 
 
 
@@ -262,7 +290,7 @@ plot(x,y,type="b",lty=2,pch=17)
 <p><b>显示所有颜色</b></p>
 <div class="code notranslate">
 	<div>
-		colors()<br>
+		colors() #657种颜色："white" "aliceblue" "antiquewhite" ...<br>
 	</div>
 </div>
 <p>很好很强大的 <a href="https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf" rel="nofollow" target="_blank">R颜色列表.pdf</a></p>
@@ -341,7 +369,10 @@ draw2(10)</div>
 
 
 
-
+<p><b>colorRampPalette() 自定义颜色组</b></p>
+<p>可以用颜色名称通过colorRampPalette函数产生自己的颜色系列。colorRampPalette的参数如下：</p>
+<p>colorRamp(colors, bias = 1, space = c("rgb", "Lab"), interpolate = c("linear", "spline"))</p>
+<p>colorRampPalette(colors, ...)</p>
 
 <div class="code notranslate">
 	<div>
@@ -357,28 +388,42 @@ barplot(rep(1,30),col=brewer.pal(9,"Blues"))#如果颜色不够，则循环使�
 
 
 
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#自定义颜色组2
+n=1000
+mycolors = colorRampPalette(c("yellow", "red","black"))(n)
+barplot(rep(1,times=n),col=mycolors,border=mycolors,axes=FALSE); box()</div>
+</div>
+<img src="images/draw-basic/colorRampPalette.png"><br>
+
+
+
+
+
 
 <hr>
 <p><b>RColorBrewr颜色扩展包</b></p>
 <p>RColorBrewr包提供了3套好看的配色方案。</p>
+<p>（1）连续型seq类(sequential)，渐变，适用于从低到高排序明显的数据，浅色数字小，深色数字大。</p>
+<p>（2）极端型div类(Diverging)，生成深色强调两端、浅色表示中部的颜色。适用于对极值和中间值比较注重的数据，可用来标注数据中的离群点。</p>
+<p>（3）离散型qual类(Qualitative)，生成彼此差异明显的颜色，通常用来标记分类数据。</p>
+
 <div class="code notranslate">
-	<div>
-library(RColorBrewer)<br>
-display.brewer.all() #全部颜色组合名字 <br>
-display.brewer.all(type="seq")# 有9种颜色 <br>
-display.brewer.all(type="div")# 有11种颜色 <br>
-display.brewer.all(type="qual")# 颜色种类不确定 <br>
-<br>
-#brewer.pal（9, "某组渐变颜色的名称"）来获取该组渐变色的全部9种颜色 <br>
-barplot(rep(1,8),col=brewer.pal(8,"Set2"))  <br>
-barplot(rep(1,6),col=brewer.pal(8,"Set2")[2:7]) #第二到第七个颜色。 <br>
-<br>
+	<div style="white-space: pre-wrap;">library(RColorBrewer)
+brewer.pal.info # 查看有哪些调色板
+
+display.brewer.all() #全部颜色组合名字
+display.brewer.all(type="seq")# 有9种颜色
+display.brewer.all(type="div")# 有11种颜色
+display.brewer.all(type="qual")# 颜色种类不确定
+
+#brewer.pal（9, "某组渐变颜色的名称"）来获取该组渐变色的全部9种颜色
+barplot(rep(1,8),col=brewer.pal(8,"Set2")) 
+barplot(rep(1,6),col=brewer.pal(8,"Set2")[2:7]) #第二到第七个颜色。 
+
 barplot(1:5,col=RColorBrewer::brewer.pal(n = 5,name = "Set2")) #无图
-	</div>
+brewer.pal.info # 查看有哪些调色板</div>
 </div>
-<p>（1）连续型 sequential， 颜色渐变。</p>
-<p>（2）极端型 Diverging，生成深色强调两端、浅色表示中部的颜色，可用来标注数据中的离群点。</p>
-<p>（3）离散型 Qualitative，生成彼此差异明显的颜色，通常用来标记分类数据。</p>
 <img src="images/draw-basic/RColorBrewr.png"><br><br>
 
 
@@ -650,6 +695,28 @@ par(opar)</div>
 <p>除lines()和mtext()外上文都讨论过了。
 lines()向现有图形添加线元素，比如在一幅图画两条或更多曲线。
 mtext()用于在图形边界添加文本。</p>
+
+
+<br>
+<p><b>隐藏坐标轴刻度col.ticks = "transparent"，设置轴(col)、刻度标签(col.axis)的颜色</b></p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">plot(NA, xlim=c(-5,6), ylim=c(-7,6),
+     #xaxt='n', yaxt='n', #分别不要x或y坐标
+     axes=F,#不要坐标和边框
+     ann=F) #不要坐标标签和标题
+# 画通过原点的坐标轴
+axis(1,c(-5,0,6),pos=0, # 确定轴的坐标为0
+     col.ticks = "transparent",#刻度透明，即隐藏掉
+     col="grey",col.axis="black",
+     hadj=-1,#水平调整标签位置，正负号表反向移动方向
+     padj=-1.5) # 调整刻度名与轴之间的距离
+axis(2,c(-7,0,6),pos=0,
+     col.ticks = "transparent",col="grey",col.axis="black",
+     hadj=1,padj=1.5)</div>
+</div>
+<img src="images/draw-basic/plot-col.ticks.png"><br>
+
+
 
 <br>
 <p><b>次要刻度线</b></p>

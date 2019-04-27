@@ -118,6 +118,7 @@ $(function(){
 	<li><a href="#6">点图 dotchart()</a></li>
 	<li><a href="#7">点带图 stripchart()</a></li>
 	<li><a href="#8">热图 image(x, y, z)</a></li>
+	<li><a href="#9">其他图形：segments(),arrows(),rect(),polygon()</a></li>
 </ul>
 
 
@@ -714,9 +715,96 @@ legend(x=1,y=0.5,border = "black",lty=0,
 )</div>
 </div>
 <img src="images/draw-basic2/heatmap-image.png"><br>
-<p>
-#todo: 怎么画渐变图例? <br>
-#polygon(c(0,0,1,1), density=, col=col[i], border=NA) </p>
+
+
+<h3>怎么画渐变图例? </h3>
+<pre>
+#定义颜色条（清除后再画）
+n=1000
+mycolors = colorRampPalette(c("yellow", "red","black"))(n)
+barplot(rep(1,times=n),col=mycolors,border=mycolors,axes=FALSE);box() #貌似不方便画标度
+
+#用image函数画就方便很多：画热图（先清除再画）
+image(x=0:n, y=1, matrix(0:n),
+      #breaks=n+1,
+      col=mycolors, 
+      #下面自定义坐标轴
+      #axes = F,  #不显示坐标轴，或者
+      yaxt="n", xaxt="n",
+
+      cex = 1.5,
+      mgp=c(0,1,0),
+      xlab = "", ylab = "")
+text(x=-30,y=1,labels=c("Exp"),xpd=T)
+axis(1,at=seq(0,n,length.out=8), #seq(0,n,by=200),
+     labels=c(0,2,4,6,8,10,12,14),
+     cex.axis=1, #坐标轴刻度字体大小
+     col.axis="red", #坐标轴刻度字体颜色
+     col="purple", #坐标轴颜色
+     lwd=2, #坐标轴刻度粗细
+     las=0)#las=0垂直于轴，2平行于轴
+</pre>
+<img src="images/draw-basic2/gradient-legend.png"><br>
+
+
+
+
+<a name="9"></a>
+<h2 class="tutheader">其他低级图形：segments(),arrows(),rect(),polygon()</h2>
+<p>R base中的其他基本图形。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">plot(NA, xlim=c(0,6), ylim=c(-7,6),
+     axes=F,#不要坐标和边框
+     ann=F) #不要坐标标签和标题
+# 画各种图形
+segments(0.5,5,2.5,5,col=2) # 指定首尾坐标
+text(6,5,"segments(0.5,5,2.5,5)",adj=1) # adj=1则文字最左端对应前面指定的坐标
+
+arrows(0.5,4,2.5,4,col=3)
+text(6,4,"arrows(0.5,4,2.5,4)",adj=1)
+
+rect(0.5,2.7,2.5,3.3,col="transparent",border=4) # 颜色可以设为无色
+text(6,3,"rect(0.5,2.7,2.5,3.3)",adj=1)
+
+polygon(c(0.5,2.5,2.5,0.5),c(1.6,1.6,2.4,2.4), # 自动封闭填充颜色
+        col="grey",border=5) # 画多边形
+text(6,2,"polygon",adj=1)
+
+legend("bottomright",lty=1,pch=16,
+       c("segments","arrows","rect","polygon"),
+       text.col=2:5,
+       col=2:5,
+       bg="grey",title="legend")</div>
+</div>
+<img src="images/draw-basic2/other.png"><br><br>
+<br>
+
+
+
+<h3 class="tutheader">多边形绘图 polygon()</h3>
+<p>polygon()可以使用y坐标(x为自然数)，也可以使用(x,y)坐标。按照出现顺序依次连接起来，最后首尾连接。如果足够细腻，原则上可以绘制任何复杂图形，包括地图。</p>
+<p>参数 xpd=TRUE 则可以在坐标轴区域(plot区)外画图。</p>
+<pre>
+#1 填充颜色
+d=c(seq(0,4,length.out = 5),
+    seq(3,0,length.out = 4))
+plot(NA,xlim=c(0,10),ylim=c(0,12),ylab="")
+box("plot",col="green",lwd=2) #坐标轴围起来的区域
+box("figure",col="pink",lwd=20) #整个图形
+
+polygon(d**2, 
+        xpd=T,#可以在坐标轴以外区域画图
+        col="orange", border="red",lwd=2,lty=2)
+
+#2 填充阴影 density和angle参数
+#如果出现NA值，则多边形断开
+plot(c(1, 9), 1:2, type = "n")
+polygon(1:9, c(2,1,2,1,NA,2,1,2,1),
+        col=c("blue","orange"),
+        density = c(10, 20), angle = c(-45, 45))
+</pre>
+<img src="images/draw-basic2/polygon.png"><br><br>
+
 
 
 
