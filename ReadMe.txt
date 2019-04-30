@@ -112,11 +112,15 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.3-6 添加新图点带图 stripchart()、热图 image(x, y, z)
 	main0.2.3-7 对数坐标轴 log="xy"
 	main0.2.3-8 R 多边形绘图 polygon()、gradient-legend
+	main0.2.3-9 R 作图添加bty参数
+
+
 
 
 
 	
-		Q:par(mar和mai的区别)  A:单位不同，mar行，mai是inche
+####
+Q:par(mar和mai的区别)  A:单位不同，mar行，mai是inche
 
 
 

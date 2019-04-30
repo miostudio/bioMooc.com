@@ -104,7 +104,7 @@ $(function(){
 			<li><a href="#21">符号与线条</a>
 			<li><a href="#22">颜色</a>
 			<li><a href="#23">文本属性:字号、字体</a>
-			<li><a href="#24">图形尺寸与边界尺寸</a>
+			<li><a href="#24">图形尺寸与边界尺寸：2类边界、6种边框type</a>
 		</ul>
 	</li>
 	<li><a href="#3">标注文本和标题</a>
@@ -595,6 +595,27 @@ box("outer", col="blue") #这是outer区域，也最大</div>
 <img src="images/draw-basic/par-oma-mar.png"><br><br>
 
 
+
+
+<h3 class="tutheader">6种边框类型：bty= </h3>
+<p>bty(box type)6种字符:o" (the default), "l", "7", "c", "u", or "]"。可以用于plot()中，也可以用于box()中。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">par(mfrow=c(2,6), mar=c(0.5,0.5,4,0.5))
+for(i in c('o','l','7','c','u',']')){
+  plot(c(1),xaxt='n',yaxt='n', #不显示坐标轴
+       bty=i,main=paste0('bty="',i,'"')) #bty可用于plot()中
+}
+
+par(mar=c(4,0.5,0,0.5))
+for(i in c('o','l','7','c','u',']')){
+  plot(c(1),col="green",
+       axes=F, #不显示坐标轴
+       #xaxt='n',yaxt='n',
+       ann=T) #F则不显示轴标签和标题
+  box(col="red", bty=i,main=paste0('bty="',i,'"')) #bty也可用于box()中
+}</div>
+</div>
+<img src="images/draw-basic/para-bty.png"><br><br>
 
 
 
