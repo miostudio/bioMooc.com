@@ -113,6 +113,9 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.3-7 对数坐标轴 log="xy"
 	main0.2.3-8 R 多边形绘图 polygon()、gradient-legend
 	main0.2.3-9 R 作图添加bty参数
+#
+> main0.2.4 添加谷歌广告head代码
+
 
 
 
@@ -122,6 +125,16 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 ####
 Q:par(mar和mai的区别)  A:单位不同，mar行，mai是inche
 
+###
+1.在每个想添加广告的页面<head>标签内添加如下代码：
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9506119208881563",
+    enable_page_level_ads: true
+  });
+</script>
 
 
 
