@@ -118,6 +118,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.4-2 删除谷歌广告代码
 	main0.2.4-3 替换slogen为 生物慕课网 -- 生物信息常备参考！
 	main0.2.4-4 本地下载2个js
+	main0.2.4-5 添加R/lattice页面
 
 
 
