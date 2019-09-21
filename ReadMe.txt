@@ -119,6 +119,15 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.4-3 替换slogen为 生物慕课网 -- 生物信息常备参考！
 	main0.2.4-4 本地下载2个js
 	main0.2.4-5 添加R/lattice页面
+######################## 3.35 MB (3,516,644 字节) 2019.8.21
+	main0.2.4-6 添加R ggplot2页面，没写完;Linux首页添加链接
+#
+#
+
+
+
+
+
 
 
 
@@ -133,5 +142,12 @@ Q:par(mar和mai的区别)  A:单位不同，mar行，mai是inche
 
 ---------------
 todo
+#重构导航前端
+主体: http://caibaojian.com/links
+按钮: https://www.uniprot.org/
+
+todo
 1. 热力图，最后使用ggplot2灵活、好看的效果：https://www.plob.org/article/10156.html
 2.据说很全面的数据库 https://www.hsls.pitt.edu/obrc/
+
+$ git push origin gh-pages

@@ -90,20 +90,29 @@ $(function(){
 		
 			<div class="article-intro" id="content">
 			
-			<h1><span class="color_h1">R绘图 </span> ggplot2包</h1>
+			<h1><span class="color_h1">R绘图 </span> 使用ggplot2进行高级绘图</h1>
 
 
 
 <h2 class="tutheader">目录</h2>
-<p><b>要点</b>: lattice和ggplot2包极大地扩展了R绘图的范畴，提高了图形的质量。[R In Action Chapter16]</p>
+<p><b>要点</b>: lattice和ggplot2包极大地扩展了R绘图的范畴，提高了图形的质量。[R In Action(2nd Edition), Chapter19]</p>
 
 <ul>
-	<li><a href="#1">ggplot2包</a>
+	<li><a href="#1">ggplot2包介绍</a>
+	<li><a href="#2">用几何函数指定图的类型</a>
+	<li><a href="#3">分组</a>
+	<li><a href="#4">刻面</a>
+	<li><a href="#5">添加光滑曲线</a>
+	<li><a href="#6">修改ggplot2图形的外观</a>
 		<ul>
-			<li><a href="#1_1">xx</a>
+			<li><a href="#6_1">坐标轴</a>
+			<li><a href="#6_2">图例</a>
+			<li><a href="#6_3">标尺</a>
+			<li><a href="#6_4">主题</a>
+			<li><a href="#6_5">多重图</a>
 		</ul>
 	</li>
-	<li><a href="#2">xx</a></li>
+	<li><a href="#7">保存图形</a></li>
 </ul>
 
 
@@ -115,7 +124,11 @@ $(function(){
 
 <a name="1"></a>
 <h2 class="tutheader">ggplot2 包简介</h2>
-<p>xx</p>
+<p><a target="_blank" href="https://ggplot2.tidyverse.org/reference/">官网 reference</a> 应该是你入门后参考最多的网站。其次是应该打印出来贴墙上的小抄 <a target="_blank" href=" https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">ggplot2-cheatsheet.pdf</a>。</p>
+
+
+<p>知名图书： <a target="_blank" href="http://www.cookbook-r.com/Graphs/">《R cookbook》</a>, <a target="_blank" href="https://r4ds.had.co.nz/data-visualisation.html">《R for Data Science》</a>,  <a target="_blank" href="https://ggplot2-book.org/">《ggplot2: Elegant Graphics for Data Analysis》</a>,  </p>
+<p>有人写了 <a target="_blank" href="http://ggplot.yhathq.com/">python版的ggplot包</a>。 </p>
 
 
 
@@ -134,14 +147,11 @@ $(function(){
 
 
 
-
-
-
-
-
-
+<h2>深入学习 ggplot2 </h2>
 
 <pre>
+R语言实战 https://livebook.manning.com/book/r-in-action-second-edition/chapter-19/
+
 #ggplot2 
 http://www.cookbook-r.com/Graphs/</pre>
 
