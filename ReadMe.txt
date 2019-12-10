@@ -121,6 +121,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.4-5 添加R/lattice页面
 ######################## 3.35 MB (3,516,644 字节) 2019.8.21
 	main0.2.4-6 添加R ggplot2页面，没写完;Linux首页添加链接
+	main0.2.4-7 R ggplot2 添加饼图
 #
 #
 

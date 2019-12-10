@@ -1,0 +1,202 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R apply家族函数 </span> 详解</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 要想快速，就要尽量避免在R中使用for循环，用向量化的思维处理数据框。[R In Action,2nd: mainly in Chapter5.3]</p>
+
+<ul>
+	<li><a href="#1">apply家族函数概述</a></li>
+	<li><a href="#2">自定义符号、线条、颜色和坐标轴</a>
+		<ul>
+			<li><a href="#20">图形参数设定的两种方式</a>
+			<li><a href="#21">符号与线条</a>
+		</ul>
+	</li>
+	<li><a href="#3">标注文本和标题</a></li>
+
+</ul>
+
+<p><b>在使用R时，要尽量用array的方式思考，避免for循环。</b></p>
+<p>R是一种面向数组(array-oriented)的语法，它更像数学，方便科学家将数学公式转化为R代码。apply族功能强大，实用，可以代替很多循环语句。因为向量在R中在底层用C语言优化过，运行更快，性能更好，在使用R时，要尽量用array的方式思考，避免for、while循环语句，特别是数据量大的时候。</p>
+<br>
+<p>apply函数族是R语言中数据处理的一组核心函数，通过使用apply函数，我们可以实现对数据的循环、分组、过滤、类型控制等操作。但是，由于在R语言中apply函数与其他语言循环体的处理思路是完全不一样的，所以apply函数族一直是使用者玩不转的一类核心函数。很多R语言新手，写了很多的for循环代码，也不愿意多花点时间把apply函数的使用方法了解清楚，最后把R代码写的跟C似的，只会写for的R程序员的代码是效率低下的，是被鄙视的。</p>
+
+
+<a name='1'></a>
+<h2 class="tutheader">apply家族函数概述</h2>
+<p>不用循环怎么实现迭代呢？这就需要用到 apply 函数族。它不是一个函数，而是一族功能类似的函数。</p>
+<p>apply族函数是高效能计算的运算向量化(Vectorization)实现方法之一。常用的向量操作就是apply的家族函数：apply, sapply, tapply, mapply, lapply, rapply, vapply, eapply等。</p>
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">setwd("F://Temp//") 
+#设定工作目录
+</div>
+</div>
+
+
+
+
+<br><a name="43"></a>
+<h3 class="tutheader">图形布局的精细控制：fig参数自由嵌入图形 </h3>
+<p>可以使用fig=c(x1,x2,y1,y2)的方式将若干图形以任意排布方式组合到单幅图中。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#左下角为(0,0)，右上角为(1,1)。fig=(x1,x2,y1,y2)表示绘图区间
+opar=par(no.readonly = T)
+par(fig=c(0,0.8,0,0.8)) #fig=参数更精细控制图形布局
+plot(mtcars$wt,mtcars$mpg,
+     xlab="Miles Per Gallon",
+     ylab="Car Weight")
+#top 在上方添加箱线图
+par(fig=c(0,0.8,0.4,1),new=T) #添加新图到现有图上，所以要new=T
+boxplot(mtcars$wt,horizontal = T,axes=F)
+#left 在右侧添加箱线图
+par(fig=c(0.6,1,0,0.8),new=T)
+boxplot(mtcars$mpg, axes=F)
+#顶部文字
+mtext("Enhanced Scatterplot",side=3,outer=T,line=-5)
+par(opar)</div>
+</div>
+<img src="images/draw-basic/par-layout-fig.png" /><br>
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
