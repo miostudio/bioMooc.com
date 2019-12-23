@@ -105,6 +105,7 @@ $(function(){
 	<li><a href="#2">用几何函数指定图的类型
 		<ul>
 			<li><a href="#2_1">批量小提琴图</a>
+			<li><a href="#2_2">频率分布直方图和概率密度曲线</a>
 			<li><a href="#6_2">饼图（原生R和ggplot2）</a>
 		</ul>
 	</a>
@@ -119,9 +120,9 @@ $(function(){
 				</ul>
 			</li>
 			
-			<li><a href="#6_2">图例: 饼图</a></li>
-			<li><a href="#6_3">标尺 todo</a></li>
-			<li><a href="#6_4">主题 todo</a></li>
+			<li><a href="#6_2">图例(legend): 饼图</a></li>
+			<li><a href="#6_3">标度(scale) todo</a></li>
+			<li><a href="#6_4">主题(theme) </a></li>
 			<li><a href="#6_5">多重图，一页多图</a></li>
 		</ul>
 	</li>
@@ -231,8 +232,101 @@ print(p2)</div>
 
 
 
+
+
+
+
+<a name="2_2"></a>
+<h3 class="tutheader">频率分布直方图，和概率密度曲线图</h3>
+<img src="images/draw-adv-ggplot2/geom_density1.png">
+<img src="images/draw-adv-ggplot2/geom_density2.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 例1 概率密度曲线
+ggplot(iris, aes(x = Sepal.Length)) + theme_bw()+
+  geom_density(aes(color = Species))
+
+
+# 例2 画频率分布图，使用 y=..density..
+df=data.frame(
+  cid=seq(1,22),
+  group=c(rep("A",7), rep("B",15) ),
+  num=c(0.3,0.16, 0.1, 0.2, 0.3, 0.4, 0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 
+        0.1, 0.2, 0.3, 0.4, 0.5,0.1,  0.1, 0.2, 0.2, 0.1 )
+) # 两组数据(编号1,2)，每组污染指数
+head(df)
+#df$group=factor(df$group,levels=c('B','A'))
+df$group=factor(df$group,levels=c('A','B'))
+# 使用ggplot2 画频率分布直方图，和概率密度曲线
+library(ggplot2)
+ggplot(df,aes(x=num,y=..density..,fill=group))+
+  geom_histogram(position = "dodge",binwidth = 0.1)+ #画线
+  geom_text(aes(label=round(..density..,1)),position = "dodge",
+            stat="bin",binwidth = 0.1,vjust=-0.3)+ #曲线上数字是高度，是频数/总数/组距
+  geom_line(stat="density", aes(color=group))+ #只有线条
+  #geom_density( aes(color=group), alpha=0.5)+ #曲线下面积是1,带阴影，带边框
+  scale_color_manual(values=c('red','green'))+
+  theme_bw()#+
+  xlim(-0.1,0.6) #显示概率密度曲线两端
+
+# 每组频率=频数/总和
+table(df$group)
+# A  B
+# 7  15
+#
+summary(df$num)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#0.100   0.100   0.150   0.195   0.225   0.500
+#
+df[which(df$group=='A'),]$num
+df[which(df$group=='B'),]$num
+# 第一个bin总是 [min, min + binwidth/2)，之后开始正常
+nrow(df[which(df$num >= 0.1 & df$num<0.15 & df$group=="A"),])/7/0.1; #4
+nrow(df[which(df$num >= 0.1 & df$num<0.15 & df$group=="B"),])/15/0.1; #5.3
+#
+nrow(df[which(df$num >= 0.15 & df$num<0.25 & df$group=="A"),])/7/0.1; #2.8
+nrow(df[which(df$num >= 0.15 & df$num<0.25 & df$group=="B"),])/15/0.1; #2.7
+# 
+# ...
+#
+## R原生绘图函数 A 一致
+hist( df$num[which(df$group=='A')], n=20 )
+plot( density(df$num[which(df$group=='A')], n=100) )
+#plot( density(df$num[which(df$group=='A')]), xlim=c(0.1,0.5), ylim=c(0,6) )
+
+# R原生绘图函数 B 一致
+hist( df$num[which(df$group=='B')], n=20 )
+plot( density(df$num[which(df$group=='B')]) )
+
+# 查看A的值
+df$num[which(df$group=='A')]
+table(df$num[which(df$group=='A')])
+
+# 查看B的值
+df$num[which(df$group=='B')]
+table(df$num[which(df$group=='B')])
+# ggplot2 v3.2.1</div>
+</div>
+<br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a name="6_1_1"></a>
 <h3 class="tutheader">hjust和vjust</h3>
+<img src="images/draw-adv-ggplot2/hjust_vjust.png"><br><br>
+<p>hjust 控制水平对齐和 vjust 控制垂直对齐。</p>
+<p>取值[0,1]之间, 0表示左对齐, 1表示右对齐</p><br>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">td=expand.grid(
   hjust = c(0,0.5,1),
@@ -248,10 +342,7 @@ ggplot(td,aes(x = hjust,y = vjust))+
   scale_x_continuous(breaks = c(0,0.5,1),expand = c(0,0.2))+ 
   scale_y_continuous(breaks = c(0,0.5,1),expand = c(0,0.2))</div>
 </div>
-<img src="images/draw-adv-ggplot2/hjust_vjust.png"><br><br>
-<p>hjust 控制水平对齐和 vjust 控制垂直对齐。</p>
-<p>取值[0,1]之间, 0表示左对齐, 1表示右对齐</p><br>
-
+<br><br>
 
 
 
@@ -448,6 +539,60 @@ print( ggPie(df_2) ) #fig2</div>
 
 
 
+
+<a name="6_4"></a>
+<h3 class="tutheader">自定义主题</h3>
+<p>图略。输入主题名字，不加括号，就能看到该主题的定义，如: theme_bw。自定义主题就是模仿该函数定义的。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 自定义主题
+library(ggplot2)
+theme_01 = function(..., bg='white'){
+  require(grid)
+  #theme_classic(...) + #基于预设主题
+  theme_bw(...)+
+    theme(
+          rect=element_rect(fill=bg), #背景色填充
+          plot.margin=unit(rep(0.1,4), 'lines'), #图片四周距离
+          
+          #panel.background=element_rect(fill='transparent', color='black'),#白底黑边
+          #panel.border=element_rect(fill='transparent', color='transparent'),
+          
+          panel.grid=element_blank(), #不要背景网格
+          axis.title = element_text(color='black', vjust=0.1), #坐标轴标题也就是变量名
+          
+          axis.ticks.length = unit(-0.2,"lines"), #坐标刻度向内
+          axis.ticks = element_line(color='black'), #坐标轴刻度颜色
+          
+          #axis.ticks.margin = unit(0.8,"lines"), #`axis.ticks.margin` is deprecated. Please set `margin` property  of `axis.text` instead 
+          # unit(c(t, r, b, l), unit)
+          axis.text.x = element_text(margin=margin(t=0.8, unit="lines") ), #x轴刻度向上到坐标轴0.8行
+          axis.text.y = element_text(margin=margin(r=0.8, unit="lines") ),
+          
+          ##legend.title=element_blank(), #去掉图例标题
+          #legend.key=element_rect(fill='transparent', color='transparent')
+          plot.title=element_text(face="bold", hjust = 0.5), #大图标题居中 #size=14,
+          
+          legend.position="bottom", #图例显示位置
+          legend.margin=margin(t = -0.5, unit='line') #图例整体上边距,缩减n行
+      )
+}
+
+# 使用自定义主题
+p=ggplot(mtcars, aes(disp, mpg, color=factor(gear) ))+geom_point();p
+
+p+theme_01()+
+  scale_color_hue("gear_DIY")+
+  labs(title="mpg ~ disp")</div>
+</div>
+<br><br>
+
+
+
+
+
+
+
+
 <a name="6_5"></a>
 <h3 class="tutheader">一页多图</h3>
 <p>图略: 第一行一个多，第二行2个图。</p>
@@ -476,11 +621,22 @@ print(c,vp=vplayout(2,2)) #第2行第2列，图c
 #
 dev.off()</div>
 </div>
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
