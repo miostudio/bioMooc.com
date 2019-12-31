@@ -123,6 +123,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.4-6 添加R ggplot2页面，没写完;Linux首页添加链接
 	main0.2.4-7 R ggplot2 添加饼图
 	main0.2.4-8 R ggplot2 自定义主题
+	main0.2.4-9 about页添加插图
 #
 #
 
