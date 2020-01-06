@@ -105,7 +105,7 @@ $(function(){
 	<li><a href="#2">用几何函数指定图的类型
 		<ul>
 			<li><a href="#2_1">批量小提琴图</a>
-			<li><a href="#2_2">频率分布直方图和概率密度曲线</a>
+			<li><a href="#2_2">概率密度曲线和频率分布直方图</a>
 			<li><a href="#6_2">饼图（原生R和ggplot2）</a>
 		</ul>
 	</a>
@@ -237,7 +237,7 @@ print(p2)</div>
 
 
 <a name="2_2"></a>
-<h3 class="tutheader">频率分布直方图，和概率密度曲线图</h3>
+<h3 class="tutheader">概率密度曲线图，频率分布直方图</h3>
 <img src="images/draw-adv-ggplot2/geom_density1.png">
 <img src="images/draw-adv-ggplot2/geom_density2.png">
 <div class="code notranslate">
@@ -306,10 +306,30 @@ df$num[which(df$group=='B')]
 table(df$num[which(df$group=='B')])
 # ggplot2 v3.2.1</div>
 </div>
+<br>
+
+
+
+
+<h3>频率分布直方图(使用breaks参数，设置分段点)</h3>
+<img src="images/draw-adv-ggplot2/geom_hist.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">score=c(122,134,179,118,90,290,235,356,401,404,407,410,
+        413,416,419,422,425,428,431,434,437, 750)
+hist(score, breaks=c(0,199.5,399.5,599.5, 799.5))
+
+library(ggplot2)
+#使用频数
+g1=ggplot(NULL, aes(x=score, y=..count..))+theme_classic()+
+  geom_histogram(fill="#E5522C", breaks = c(0,199.5,399.5,599.5,799.5))
+#使用频率
+g2=ggplot(NULL, aes(x=score, y=..count../sum(..count..)*100 ))+theme_classic()+
+  geom_histogram(fill="#244264", breaks = c(0, seq(199.5,799.5,200) )  )+
+  labs(y="Frequency(%)")
+library(gridExtra)
+grid.arrange(g1,g2,nrow=2)</div>
+</div>
 <br><br>
-
-
-
 
 
 
@@ -621,10 +641,18 @@ print(c,vp=vplayout(2,2)) #第2行第2列，图c
 #
 dev.off()</div>
 </div>
+<br>
 
 
+<p>图略: 可以设置多行多列</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(gridExtra)
+grid.arrange(p1,p2,nrow=1)
 
-
+grid.arrange(plots[[1]]...plots[[10]],ncol=1,nrow=10)</div>
+</div>
+<br>
+<br>
 
 
 
