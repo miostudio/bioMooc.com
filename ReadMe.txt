@@ -125,6 +125,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.4-8 R ggplot2 自定义主题
 	main0.2.4-9 about页添加插图
 	main0.2.5-0 R ggplot2 添加频率分布直方图
+	main0.2.5-1 更新link
 #
 #
 
