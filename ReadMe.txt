@@ -126,8 +126,9 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.4-9 about页添加插图
 	main0.2.5-0 R ggplot2 添加频率分布直方图
 	main0.2.5-1 更新link
-#
-#
+	main0.2.5-2 更新年份, 添加 /ngs 主栏目
+# commit
+########>> push
 
 
 

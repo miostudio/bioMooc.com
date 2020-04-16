@@ -1,0 +1,247 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>scRNAseq 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 教程,R">
+<meta name="description" content="R  教程。 本教程，我们将为大家介绍如何使用R。 R其实很容易学，相信你们能很快学会。 现在开始学习 R ！    谁适合阅读？ 本教程针对的是R数据分析人员阅读。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">scRNAseq </span> 教程</h1>
+<hr>
+<div class="tutintro"> 
+<p>本教程，我们将为大家介绍如何分析单细胞测序数据。高通量单细胞RNA-Seq产品依托于Droplet技术（液滴法），可实现上万个单细胞的同时进行分离和建库，大幅的降低建库成本的同时实现全局性的组织细胞转录图谱。</p>
+<p>单细胞目前面临的挑战主要是：扩增量目前最多是一百万个细胞；有可能一个基因在一个细胞中能检测到中等表达量，但是在另一个细胞中却检测不到，这种现象叫做"gene dropouts"。</p>
+
+<p>方法主要分为两大部分：定量与捕获。</p>
+<p>定量包括两种类型：全长以及基于标签(tag)。前者对每个转录本都试图获得一致的read覆盖度，后者只捕获5‘或者3’端的RNA。Smart-Seq方法以其可实现完整mRNA扩增的优势，被广泛的应用。</p>
+<p>捕获的技术决定了细胞如何被筛选、获取怎样的测序外的补充信息、数据产量，三种最常用的方法是基于微孔microwell-(流式细胞术FACS分选到孔板)、微液流microfluidic-(Fluidigm's C1)、微滴droplet-(Drop seq, 10x genomics)</p>
+
+
+<br/>
+<p><a target="_blank" href="https://www.ted.com/talks/steve_mccarroll_how_data_is_helping_us_unravel_the_mysteries_of_the_brain">TED视频: Drop seq</a> to study brains, which is a data driven discovery.
+<p><a target="_blank" href="https://www.humancellatlas.org/">Human Cell Atlas</a>一项旨在为人体中每种细胞类型创建详细分类的全球性计划。</p>
+
+
+<br>
+<p>现在开始学习单细胞测序分析常用的R包 <a href="seutat.html">Seurat 3</a>:  QC以及后续分析探索数据</p>
+<p>现在开始学习单细胞测序分析常用的R包 <a href="monocle.html">monocle 3</a>: 伪时间分析 Monocle performs differential expression and time-series analysis for single-cell expression experiments.</p>
+<p>现在开始学习单细胞测序分析常用的R包 <a href="SingleR.html">SingleR</a>: 全自动细胞类型注释R包</p>
+
+
+
+<br>
+
+
+
+</div>
+<hr>
+<h2>谁适合阅读？</h2>
+<p>本教程介绍的是高通量测序分析知识，适合从事高通量测序数据分析和数据可视化的人员阅读。</p>
+<hr>
+<h2>需要具备的知识？</h2>
+<p>如果你熟悉主流计算机编程语言，有一定的Linux、R和python基础。</p>
+
+<p>生物信息与R语言QQ群: 187923577</p>
+
+
+
+
+
+
+
+
+<hr>
+<h2>表达矩阵</h2>
+<p>scRNA-seq数据的分析以其表达矩阵为起点，表达矩阵中的每一行代表一个基因，每列代表一个细胞。每个条目代表给定细胞中特定基因的表达水平。</p>
+
+<h3>1、表达矩阵中表达值的数据类型</h3>
+<ul>
+	<li>counts: Raw count data, e.g., number of reads or transcripts for a particular gene.</li>
+	<li>normcounts: Normalized values on the same scale as the original counts. For example, counts divided by cell-specific size factors that are centred at unity.</li>
+	<li>logcounts: Log-transformed counts or count-like values. In most cases, this will be defined as log-transformed normcounts, e.g., using log base 2 and a pseudo-count of 1.</li>
+	<li>cpm: Counts-per-million. This is the read count for each gene in each cell, divided by the library size of each cell in millions.</li>
+	<li>tpm: Transcripts-per-million. This is the number of transcripts for each gene in each cell, divided by the total number of transcripts in that cell (in millions).</li>
+</ul>
+
+一般取 apply(df, 2, function(x){  log2( x/sum(x) +1 } )
+
+
+<h3>2. 独特的分子标识符（UMI）</h3>
+<p>unique Molecular identifiers 是在逆转录过程中添加到转录本中的短随机条码（4-10bp）。它们可以将测序读序列分配给单个转录分子，从而消除scRNASeq数据中的放大噪声和偏差。当对包含UMI的数据进行测序时，技术通常只对包含UMI的转录本的末端（通常是3’端）进行特定的测序。</p>
+
+
+
+<h3>3. 过滤矩阵</h3>
+<ul>
+	<li>去除在任何细胞中都不表达的基因；</li>
+	<li>具有少量reads/molecules的细胞，很可能是已经被破坏或捕获细胞失败，应该移除这类细胞；</li>
+	<li>手动过滤细胞：大多数细胞检测到的基因在7000-10000之间，这对于高深度scRNAseq来说是正常的。但是这也取决于实验protocol和测序深度。比如说基于droplet或其他测序深度较低的方法，通常其每个细胞检测到的基因较少。如果细胞检出率相等，则分布应近似正常，因此我们移除分布尾部的那些细胞（检测到的基因少于7000的细胞）；</li>
+	<li>自动过滤细胞：自动异常检测来识别可能存在问题的细胞：scater包创建一个矩阵（行代表cell，列代表不同的QC度量），然后PAC提供了按照QC度量排序的cells的2D表示，然后使用来自mvoutlier包的方法检测异常值。</li>
+	<li>过滤基因：移除表达水平被认为是undetectable的基因。We define a gene as detectable if at least two cells contain more than 1 transcript from the gene. If we were considering read counts rather than UMI counts a reasonable threshold is to require at least five reads in at least two cells. 然而很多时候阈值取决于测序深度，而且很重要的一点是基因过滤一定要在细胞过滤之后，因为一些基因可能仅仅被检测到只存在在低质量的细胞里。</li>
+</ul>
+
+
+
+
+<h3>处理混杂因素</h3>
+<p>技术上的混杂因素包括识别和移除表达数据中与感兴趣的生物学信号无关（即混杂因素）的变异源。目前存在各种各样的方法，其中一些使用spike-in or housekeeping genes,一些使用endogenous genes。</p>
+
+
+
+
+
+<h2>数据可视化</h2>
+<h3>1. PCA</h3>
+<p>PC对应于协方差矩阵的特征向量，特征向量按照特征值排序，因此第一主成分尽可能的考虑数据的可变性，并且每个后续成分在与前面的成分正交的约束下具有最高的方差。</p>
+<p>注意：对数转换对数据是有益的：减少了第一主成分的方差，并且已经分离了一些生物效应。而且使表达值的分布更正常。</p>
+
+
+<h3>2. tSNE</h3>
+<p>tSNE（t-Distributed Stochastic Neighbor Embedding）将维数降低与最近邻网络上的随机游走相结合，将高维数据（例如14214维表达矩阵）映射到二维空间，同时保持细胞间的局部距离。与PCA相比，tSNE是一种随机算法，在统一数据集上运行多次该方法会得到不同的图。由于tSNE的非线性和随机性，导致很难解释。为了确保再现性（reproducibility）,我们可以固定随机数产生器的种子，以保证总是得到相同的图。</p>
+<p>此外，tSNE需要提供一个perplexity值，该值反应了用于构建最近邻网络的邻居数量。该值越高表明产生了一个密集网络，将细胞聚集在一起；该值越低表明网路更加稀疏，允许细胞群彼此分离。在scater包中，perplexity的默认值是：cells总数除以5。</p>
+
+
+
+
+
+
+
+<h2>亚群注释</h2>
+<p>单细胞数据分析的第一步就是分亚群（当然前期肯定是需要先做数据预处理的），通过样本比较发现新的细胞亚群或比例差异显著的亚群。</p>
+<p>亚群分好之后最重要的一步（也是最难的一步）就是对亚群进行细胞类型注释了。我们会结合细胞类型marker基因、细胞类型注释软件和文献数据做比对的方法综合进行注释。</p>
+
+
+
+
+
+
+
+
+
+<hr>
+<h2>NGS pipeline in Github</h2>
+<p><a target="_blank" href="https://github.com/crazyhottommy/">https://github.com/crazyhottommy/</a></p>
+<p><a target="_blank" href="https://github.com/xuzhougeng/R-ChIP-data-analysis">https://github.com/xuzhougeng/R-ChIP-data-analysis</a></p>
+<p><a target="_blank" href="https://github.com/xuzhougeng/RNA-seq-downstream-analysis">https://github.com/xuzhougeng/RNA-seq-downstream-analysis</a></p>
+<p><a target="_blank" href="https://github.com/jchap14">https://github.com/jchap14</a></p>
+<p><a target="_blank" href="https://github.com/jmzeng1314/NGS-pipeline">https://github.com/jmzeng1314/NGS-pipeline</a></p>
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -6,12 +6,15 @@
 	<title>R 教程 | 生物慕课网</title>
 
 <link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
-<meta name="keywords" content="R 教程,R">
-<meta name="description" content="R  教程。 本教程，我们将为大家介绍如何使用R。 R其实很容易学，相信你们能很快学会。 现在开始学习 R ！    谁适合阅读？ 本教程针对的是R数据分析人员阅读。">
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
 		
 	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
 	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
 	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
   <!--[if gte IE 9]><!-->
   <script src="/static/js/jquery.min.js"></script>
   <!--<![endif]-->
@@ -80,48 +83,113 @@ $(function(){
 		
 		</div>
 		<div class="previous-next-links">
-			<div class="previous-design-link"> </div>
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
 			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
 		</div>
 		<div class="article-body">
 		
 			<div class="article-intro" id="content">
 			
-			<h1><span class="color_h1">R </span> 教程</h1>
-<hr>
-<div class="tutintro"> 
-<p>R 是一个开源的统计和绘图系统。</p>
-<p>本教程，我们将为大家介绍如何使用R。R其实很容易学，相信你们能很快学会。</p>
-<br/>
-<p>生物信息与R语言QQ群: 187923577</p>
-<p><a target="_blank" href="https://www.w3cschool.cn/r/">w3cschool的R教程</a></p>
-<p><a target="_blank" href="https://www.yiibai.com/r/r_basic_syntax.html">易百教程R语言</a></p>
-<p><a target="_blank" href="https://cran.r-project.org/manuals.html">The R Manuals</a></p>
-<p><a target="_blank" href="https://www.rdocumentation.org/">Rdocumentation</a></p>
+			<h1><span class="color_h1">R 色彩 </span> 详解与实例</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: R中的色彩很丰富，灵活运用才能提高图片的美感和区分度。本文前面是实例，后面是R中怎么做。</p>
+
+<ul>
+	<li><a href="#1">figure中的色彩实例</a>
+		<ul>
+			<li><a href="#1_1">色彩列表:微软的4种颜色</a>
+			<li><a href="#1_2">示意图色彩</a>
+			<li><a href="#1_3">条形图色彩</a>
+		</ul>
+	</li>
+	<li><a href="#2">R中的色彩函数</a></li>
+	<li><a href="#3">ggplot2中的色彩函数</a></li>
+
+</ul>
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">figure中的色彩实例</h2>
+<p>简书笔记: 
+	<a target="_blank" href="https://www.jianshu.com/p/8b0e34364b89">论文figure色彩实例 - 权衡美观与区分度</a>，
+	<a target="_blank" href="https://www.jianshu.com/p/4e6fb1269ece">R语言中的渐变色</a>
+	<a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247485182&idx=1&sn=7b5c1d800560eddcf898ed410720a2a3&scene=21#wechat_redirect">史上最全的图表色彩运用原理</a>
+</p>
+
+
+
+
+
+<a name='1_1'></a>
+<h3>色彩列表</h3>
+<p>微软的四种颜色</p>
+<style>
+ul.color,
+ul.color li{margin:0; padding:0; list-style-type: none;}
+</style>
+<ul class=color>
+	<li>
+		<span style="display:inline-block; background:#F54D22; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#83BA00; height:40px; width:40px;"></span>
+	</li>
+	<li>
+		<span style="display:inline-block; background:#00A5F0; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#FFBA00; height:40px; width:40px;"></span>
+	</li>
+</ul>
+<br>
+<br>
+
+
+
+
+
+<a name='1_2'></a>
+<p>示意图色彩</p>
+
+
+10x单细胞示意图<br>
+<img src="images/color/color_002.png" /><br>
+
 
 <br>
-<p><a href="R-intro.html">现在开始学习 R ！</a></p>
+<br>
+
+
+
+
+<a name='1_3'></a>
+<p>条形图色彩</p>
+
+条形图<br>
+<img src="images/color/color_001.png" /><br>
+
+
+<br>
+<br>
 
 
 
 
 
-</div>
-<hr>
-<h2>谁适合阅读？</h2>
-<p>本教程针对的是R统计和绘图的知识，适合从事数据分析和数据可视化的人员阅读。</p>
-<hr>
-<h2>需要具备的知识？</h2>
-<p>如果你熟悉主流计算机编程语言，相信你会很快学会R。</p>
-<p>本教程使用R和Rstudio作为编辑器来讲解R的应用。</p>
 
-			
-			
+
+
+
+
+
+
+
+
 			</div>
 		</div>
 		
 		<div class="previous-next-links">
-			<div class="previous-design-link"> </div>
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
 			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
 		</div>
 	</div>
