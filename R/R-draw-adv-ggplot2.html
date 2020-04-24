@@ -110,7 +110,10 @@ $(function(){
 		</ul>
 	</a>
 	<li><a href="#3">分组</a>
-	<li><a href="#4">刻面</a>
+	<li><a href="#4">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</a>
+	
+	<li><a href="#42">位置调整(position="dodge|fill|stack|identity|jitter")</a>
+	
 	<li><a href="#5">添加光滑曲线</a>
 	<li><a href="#6">修改ggplot2图形的外观</a>
 		<ul>
@@ -343,6 +346,151 @@ grid.arrange(g1,g2,nrow=2)</div>
 
 
 
+
+<a name="3"></a>
+<h2 class="tutheader">分组</h2>
+<p>under coding ...</p>
+
+
+
+
+
+
+
+
+
+
+<a name="4"></a>
+<h2 class="tutheader">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</h2>
+<p>ggplot2提供了2种分面系统，根据需要选择.</p>
+<img src="images/draw-adv-ggplot2/facet.png">
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(ggplot2)
+dim(mpg) #234  11
+str(mpg)
+head(mpg)
+#  manufacturer model displ  year   cyl trans      drv     cty   hwy fl    class  
+#<chr>        <chr> <dbl> <int> <int> <chr>      <chr> <int> <int> <chr> <chr>  
+#1 audi         a4      1.8  1999     4 auto(l5)   f        18    29 p     compact
+#2 audi         a4      1.8  1999     4 manual(m5) f        21    29 p     compact
+table(mpg$drv)
+#取子集: 三种气缸cyl(4,6,8),2种驱动轮drv(4,f)
+mpg2=subset(mpg, cyl != 5 & drv %in% c('4','f') ) #todo 值得学习
+dim(mpg2) #205  11
+#
+# 画图
+# x:city miles per gallon;  每加仑城市英里数;
+# y:highway miles per gallon 每加仑高速英里数；
+g=ggplot(mpg2, aes(cty, hwy))+geom_point()
+g
+
+#1.封装分面: 先搞一个长队列，再根据行列设置断开
+g+facet_wrap(~cyl, nrow=2) #指定2行。如果设置nrow=1，则图和facet_grid(.~cyl)效果一致;
+g+facet_wrap(~cyl, ncol=2) #指定2列，和上一行效果一样。
+
+#2.网格分面
+#(1)加入第1个分类变量: 气缸数number of cylinders
+g+facet_grid(.~cyl) #一行 3列 (这个目测效果更好，感觉八缸被蹂躏了) #见上图
+g+facet_grid(cyl~.) #3行，一列
+
+#看直方图更明显: 每个图的最高峰比较，4气缸每加仑油在城市跑得最远
+ggplot(mpg2, aes(cty))+geom_histogram(binwidth=2)+
+  facet_grid(cyl~.)
+#
+
+#(2)加入第2个分类变量: 驱动方式。得到二维分面
+g+facet_grid(drv~cyl) #二维的驱动轮越多
+g+facet_grid(drv~cyl, margins=T) #添加边际图(相当于行列小计)
+
+# 每个纯度分面下，不同切割的价格密度曲线。见下图
+ggplot(diamonds, aes(x=price, fill=cut)) +
+  geom_density(alpha=0.25) +
+  facet_wrap(~clarity, nrow=1)+
+  theme_bw() #简化主题</div>
+</div>
+<img src="images/draw-adv-ggplot2/facet_wrap.png">
+<br><br>
+
+
+
+
+
+
+
+
+<a name="42"></a>
+<h2 class="tutheader">位置调整(position="dodge|fill|stack|identity|jitter")</h2>
+<p>position参数: R in action,P62. jitter对散点图有效，对柱状图虽然能画出来，但是没有意义。</p>
+<img src="images/draw-adv-ggplot2/position.png">
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(ggplot2)
+dim(diamonds) #[1] 53940    10
+df=diamonds[1:10000, c('clarity', 'cut')]
+dim(df) #[1] 10000     2
+str(df) #一行是一个钻石，包括2个属性: 纯度、切割好坏; 都是因子型的分类变量;
+head(df)
+#  clarity cut 
+#<ord>   <ord>    
+#1 SI2     Ideal    
+#2 SI1     Premium  
+#3 VS1     Good     
+#4 VS2     Premium  
+#5 SI2     Good     
+#6 VVS2    Very Good
+# 定义绘图函数，方便复用
+draw1=function(position){
+  alpha=1; if(position=="identity"){alpha=0.8;}
+  #
+  print( paste(position,'; alpha=', alpha) )
+  ggplot(df, aes(clarity, fill=cut))+
+    #factor(cut,levels = c("Good","Ideal","Fair", "Very Good","Premium")) #改变图例的顺序
+    geom_histogram(stat="count", position=position, alpha=alpha)+
+    theme_classic()+#简化背景
+    theme(axis.text.x=element_text(angle=60, hjust=1,size=8,color="blue") )+ #坐标轴文字旋转60度。
+    scale_fill_discrete('Cut')+ #指定图例标题
+    labs(title= paste0("position=",position) ) #顶部标题
+}
+g1=draw1('stack'); #将图形元素堆叠起来
+g2=draw1('fill') #同stack堆叠图形，并标准化高度到1
+g3=draw1('dodge');g3 #避免重叠，并排放置(类似分面)
+g4=draw1('identity') #不做任何调整。互相遮挡，效果不好。
+
+#
+g5=ggplot(df, aes(clarity, color=cut))+
+  geom_line(stat="count", aes(y=..count.., group=cut) )+
+  theme_classic()+#简化背景
+  theme(axis.text.x=element_text(angle=60, hjust=1,size=8,color="blue") )+
+  scale_fill_discrete('Cut')+ #指定图例标题
+  labs(title= "geom_line" )
+
+# 保存pdf到硬盘
+library(Cairo)
+library(gridExtra) #一页多图
+#
+CairoPDF(file="position.pdf", width=10, height=6)
+grid.arrange(g1,g2,g3,g4,g5,nrow=2)
+dev.off();</div>
+</div>
+<br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="6"></a>
+<h2 class="tutheader">修改ggplot2图形的外观</h2>
+
+<a name="6_1"></a>
+<h3 class="tutheader">坐标轴</h3>
 
 <a name="6_1_1"></a>
 <h3 class="tutheader">hjust和vjust</h3>
