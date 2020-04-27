@@ -179,7 +179,7 @@ def colorDict2HTML(colorDict, fName, header):
     for i in Dict:
         li=Dict[i];
         fw.write(li  +"&lt;/li&gt;\n")
-    fw.write("/ul")
+    fw.write("&lt;/ul&gt;")
     fw.close();
     print('==end==:', fName)
 #
