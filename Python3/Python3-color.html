@@ -1,0 +1,248 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Python 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+
+
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+</style>
+
+
+
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">Python 色彩 </span> 详解与实例</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: Python中的色彩。</p>
+
+<ul>
+	<li><a href="#1">matplotlib/seaborn中的色彩</a></li>
+
+</ul>
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">Python中的色彩</h2>
+<p>把python和seaborn中支持的颜色都画出来，左边颜色块，右边颜色名字和16进制</p>
+<p>结果: 
+	<a target="_blank" href="matplotlibColors.html">matplotlib中的色彩</a>，
+	<a target="_blank" href="seabornColors.html">seaborn中的色彩</a>
+</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># code
+def sortColors(colorDict):
+    from matplotlib import colors as mcolors
+    colors=colorDict #seaborn.xkcd_rgb #dict
+
+    # 对颜色排序
+    # Sort colors by hue, saturation, value and name.
+    by_hsv = sorted((tuple(mcolors.rgb_to_hsv(mcolors.to_rgba(color)[:3])), name) #[::-1]
+                    for name, color in colors.items())
+
+    sorted_names = [name for hsv, name in by_hsv]
+    return sorted_names;
+
+def colorDict2HTML(colorDict, fName, header):
+    sorted_names=sortColors(colorDict)
+    colors=colorDict
+    #
+    N=len(colors)
+    cols=6
+    rows=N // cols +1
+    print(N, "(",rows, 'rows,', cols, 'columns)')
+    #
+    fw=open(fName, 'w')
+
+    html="""
+    &lt;style&gt;
+    ul{list-style-type:none;}
+    ul li{margin: 0;    padding: 0;}
+    ul span{width:200px; display:inline-block; font-size:10px;}
+    ul span b{width:45px;height:15px; display:inline-block; margin-right: 5px;}
+    ul span i{font-size: xx-small; color: #eee;}
+    &lt;/style&gt;
+    &lt;h1&gt;%s&lt;/h1&gt;\n&lt;ul&gt;
+    """
+
+    fw.write(html % header)
+
+    i=0
+    Dict={}
+    for cName in sorted_names:
+        cHex=colors[cName]
+        i+=1
+        if i&gt;10:
+            #break;
+            pass;
+
+        nRow=i % rows;
+        nCol=i // rows;
+
+        if nRow not in Dict:
+            Dict[nRow]="&lt;li&gt;"
+        Dict[nRow]+="&lt;span&gt;&lt;b style='background:%s'&gt;&lt;/b&gt;%s&lt;i&gt;(%s)&lt;/i&gt;&lt;/span&gt;" % (cHex, cName,cHex);
+    #
+    for i in Dict:
+        li=Dict[i];
+        fw.write(li  +"&lt;/li&gt;\n")
+    fw.write("/ul")
+    fw.close();
+    print('==end==:', fName)
+#
+
+import seaborn
+colorDict2HTML(seaborn.xkcd_rgb, 'web/docs/pic/seabornColors.html', 'seaborn colors')
+# 949 ( 159 rows, 6 columns)
+
+import matplotlib
+colorDict2HTML(matplotlib.colors.cnames, 'web/docs/pic/matplotlibColors.html', 'matplotlib colors')
+# 148 ( 25 rows, 6 columns)</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

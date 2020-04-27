@@ -128,6 +128,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.5-1 更新link
 	main0.2.5-2 更新年份, 添加 /ngs 主栏目
 	main0.2.5-3 更新ggplot2
+	main0.2.5-4 添加Python3/color
 # commit
 ########>> push
 
