@@ -131,6 +131,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.5-4 添加Python3/color
 	main0.2.5-5 更新大小写
 	main0.2.5-6 fix小错误
+	main0.2.5-7 添加apply内容;
 # commit
 ########>> push
 

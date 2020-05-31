@@ -599,7 +599,7 @@ box("outer", col="blue") #这是outer区域，也最大</div>
 
 
 <h3 class="tutheader">6种边框类型：bty= </h3>
-<p>bty(box type)6种字符:o" (the default), "l", "7", "c", "u", or "]"。可以用于plot()中，也可以用于box()中。</p>
+<p>bty(box type)6种字符:o" (the default), "l", "7", "c", "u", or "]"("n"是不显示边框)。可以用于plot()中，也可以用于box()中。</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">par(mfrow=c(2,6), mar=c(0.5,0.5,4,0.5))
 for(i in c('o','l','7','c','u',']')){
@@ -983,7 +983,7 @@ par(opar)</div>
 
 
 <h3 class="tutheader">数学标注 help(plotmath)</h3>
-<p>使用类似于TeX中的写法为图形添加数学符号和公示。细节和示例参考help(plotmath); demo(plotmath)。<a target="_blank" href="http://biostats.lofter.com/post/3b2d2f_1493c96">expression()中可以使用的数学表达式</a>，比Latex少，但是比matlab多。</p>
+<p>使用类似于TeX中的写法为图形添加数学符号和公示。细节和示例参考help(plotmath); demo(plotmath)。<a target="_blank" href="https://blog.csdn.net/weixin_40628687/article/details/79280312">expression()中可以使用的数学表达式</a>，比Latex少，但是比matlab多。</p>
 <p>也可以用 plotmath() 函数为图形主体或边界上的标题、坐标轴名称或文本标注添加数学符号。</p>
 <p>具体使用是利用text()语句中放入expression表达的数学公式。</p>
 

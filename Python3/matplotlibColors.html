@@ -7,6 +7,17 @@
     ul span i{font-size: xx-small; color: #eee;}
     </style>
     <h1>matplotlib colors</h1>
+<pre>
+from matplotlib import colors as mcolors
+colors = dict(mcolors.BASE_COLORS, **mcolors.CSS4_COLORS)
+len(colors)
+
+for i in colors:
+    print(i, colors[i])
+#
+#b (0, 0, 1)
+#aliceblue #F0F8FF
+#antiquewhite #FAEBD7</pre>
 <ul>
     <li><span><b style='background:#000000'></b>black<i>(#000000)</i></span><span><b style='background:#E9967A'></b>darksalmon<i>(#E9967A)</i></span><span><b style='background:#B8860B'></b>darkgoldenrod<i>(#B8860B)</i></span><span><b style='background:#32CD32'></b>limegreen<i>(#32CD32)</i></span><span><b style='background:#B0E0E6'></b>powderblue<i>(#B0E0E6)</i></span><span><b style='background:#9370DB'></b>mediumpurple<i>(#9370DB)</i></span></li>
 <li><span><b style='background:#696969'></b>dimgray<i>(#696969)</i></span><span><b style='background:#FF7F50'></b>coral<i>(#FF7F50)</i></span><span><b style='background:#DAA520'></b>goldenrod<i>(#DAA520)</i></span><span><b style='background:#006400'></b>darkgreen<i>(#006400)</i></span><span><b style='background:#ADD8E6'></b>lightblue<i>(#ADD8E6)</i></span><span><b style='background:#663399'></b>rebeccapurple<i>(#663399)</i></span></li>
