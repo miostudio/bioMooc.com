@@ -105,18 +105,27 @@ $(function(){
 			<li><a href="#1_3">条形图色彩</a>
 		</ul>
 	</li>
-	<li><a href="#2">R中的色彩函数</a></li>
+	<li><a href="#2">R 中的色彩函数</a>
+		<ul>
+			<li><a href="#2_1">内置渐变色</a>
+			<li><a href="#2_2">自定义渐变色</a>
+		</ul>
+	</li>
 	<li><a href="#3">ggplot2中的色彩函数</a></li>
 
 </ul>
 
 
 
+
+
+
+
 <a name='1'></a>
 <h2 class="tutheader">figure中的色彩实例</h2>
 <p>简书笔记: 
-	<a target="_blank" href="https://www.jianshu.com/p/8b0e34364b89">论文figure色彩实例 - 权衡美观与区分度</a>，
-	<a target="_blank" href="https://www.jianshu.com/p/4e6fb1269ece">R语言中的渐变色</a>
+	<a target="_blank" href="https://www.jianshu.com/p/8b0e34364b89">论文figure色彩实例 - 权衡美观与区分度</a> | 
+	[推荐]<a target="_blank" href="https://www.jianshu.com/p/4e6fb1269ece">R语言中的渐变色</a> | 
 	<a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247485182&idx=1&sn=7b5c1d800560eddcf898ed410720a2a3&scene=21#wechat_redirect">史上最全的图表色彩运用原理</a>
 </p>
 
@@ -171,6 +180,116 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 
 <br>
 <br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">R 中的色彩函数</h2>
+<p>如何使用R语言画出漂亮的图，颜色很重要，既要协调，又有有一定的分辨力。</p>
+
+
+
+<a name='2_1'></a>
+<h3 class="tutheader">1. R 内置渐变色</h3>
+<p><b>彩虹色</b></p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#可以拿到任意多个颜色，当然颜色越多，分辨力越低。
+barplot(rep(1,8), col=rainbow(8),border=NA, axes=F)
+rainbow(8)
+# [1] "#FF0000FF" "#FFBF00FF" "#80FF00FF" "#00FF40FF" "#00FFFFFF" "#0040FFFF"
+# [7] "#8000FFFF" "#FF00BFFF"
+
+barplot(rep(1,20), col=rainbow(20),border=NA, axes=F) #分辨力降低</div>
+</div>
+<br>
+
+
+<p><b>其他几个预置渐变色</b></p>
+<img src="images/color/color_a1.png" /><br>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">par(mfrow=c(5,1), mar=c(0,0,2,0))
+n=10
+
+barplot(rep(1,n), col= rainbow(n), border=NA,axes=F, main="rainbow") #彩虹色
+
+#heat.colors()从红色渐变到黄色，再变到白色
+barplot(rep(1,n), col= heat.colors(n), border=NA,axes=F, main="heat.colors") 
+
+#terrain.colors() 从绿色渐变到黄色，再到棕色，最后到白色 
+barplot(rep(1,n),col=terrain.colors(n), border=NA,axes=F, main="terrain.colors")
+
+#topo.colors() 从蓝色渐变到青色，再到黄色，最后到棕色 
+barplot(rep(1,n),col=topo.colors(n), border=NA,axes=F, main="topo.colors")
+
+#cm.colors() 从青色渐变到白色，再到粉红色
+barplot(rep(1,n),col=cm.colors(n), border=NA,axes=F, main="cm.colors")</div>
+</div>
+<br>
+
+
+
+
+<a name='2_2'></a>
+<h3 class="tutheader">2. 自定义渐变色</h3>
+<p>使用预制配色集合 Set2/Dark2，通过函数colorRampPalette()插值生成任意个渐变颜色。</p>
+<img src="images/color/color_a2.png" /><br>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(RColorBrewer)
+display.brewer.all() #显示全部颜色集合
+
+## 选一个颜色集合，比如Dark2, Set2
+csn='Dark2'
+myColors=brewer.pal(8,csn) #该主题有n种颜色
+
+par( mfrow=c(3,1), mar=c(0,1,1,0)) #bottom, left, top, right
+barplot(rep(1,8),col= myColors, main=csn, axes=F,border=F)
+# 插值，生成15个颜色
+n=15
+colorN=colorRampPalette(colors = myColors, interpolate ="linear")( n )
+barplot(rep(1, n ),col= colorN, axes=F, border=F,
+        main="linear") #插值方式
+colorN2=colorRampPalette(colors = myColors, interpolate ="spline")( n )
+barplot(rep(1, n ),col= colorN2, axes=F, border=F,
+        main="spline") #插值方式</div>
+</div>
+<br>
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='3'></a>
+<h2 class="tutheader">ggplot2 中的色彩函数</h2>
+coding ...
+
+
+
 
 
 
