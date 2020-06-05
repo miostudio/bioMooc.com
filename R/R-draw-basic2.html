@@ -210,6 +210,11 @@ barplot(counts, main="Stacked bar plot",
 <a name="1_3"></a>
 <h3 class="tutheader">均值条形图及更多微调：阴影、barplot()返回值</h3>
 <p><b>怎么让barplot的标签倾斜45度？难点是怎么定标签坐标？</b> 1.barplot()返回值是条形的位置，2.使用text()自定义坐标轴文本</p>
+<pre>
+border = NA, bar图不要边框
+space=0, bar之间不要间距
+</pre>
+
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">#合并数据
@@ -251,6 +256,7 @@ text(x=posX,y=-0.1, #文字坐标
 
 <a name="1_4"></a>
 <h3 class="tutheader">脊状图（spinogram）: 归一化的条形图</h3>
+推荐: 更优美的 <a target="_blank" href='https://tool.biomooc.com/R_scripts/#t6'>6. barplot 百分数堆叠条形图(原生+ggplot2)</a>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">library(vcd)
 attach(Arthritis)
