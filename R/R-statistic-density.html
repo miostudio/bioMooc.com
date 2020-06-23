@@ -1,0 +1,466 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+<style>
+.red{color:red}
+.orange{color:orange}
+.blue{color:blue}
+.lime{color:lime}
+</style>
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R统计 </span> 常见的分布</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 概率函数，通常用来生成特征已知的模拟数据，以及在用户编写的统计函数中计算概率值。<br>
+[R In Action, 2nd, Chapter5.2.3][R语言与统计分析 汤银才 chapter3.3]</p>
+
+<ul>
+	<li><a href="#1">概率函数概述</a></li>
+	<li><a href="#2">离散型概率分布</a>
+		<ul>
+			<li><a href="#2_1">二项分布/负二项分布</a>
+			<li><a href="#2_2">泊松分布</a>
+			<li><a href="#2_3">几何分布/超几何分布</a>
+		</ul>
+	</li>
+	
+	<li><a href="#3">连续型概率分布</a>
+		<ul>
+			<li><a href="#3_1">均匀分布</a>
+			<li><a href="#3_2">指数分布</a>
+			<li><a href="#3_3">正态分布</a>
+			<li><a href="#3_4">Gamma 分布</a>
+		</ul>
+	</li>	
+	<li><a href="#4">三大抽样分布</a>
+		<ul>
+			<li><a href="#4_1">卡方分布</a>
+			<li><a href="#4_2">t分布</a>
+			<li><a href="#4_3">F分布</a>
+		</ul>
+	</li>
+	<li><a href="#5">分布之间的关系</a></li>
+	<li><a href="#6">大数定理、中心极限定理</a></li>
+	<li><a href="#100">参考资料</a></li>
+</ul>
+
+<p>α β</p>
+
+
+
+
+<a name="1"></a>
+<h2 class="tutheader">概率函数概述</h2>
+
+<p>[dpqr]distribution_abbreviation()<br>
+在R中，一般一种分布包含4个固定格式的函数，第一个字母表示其所指分布的某一方面:</p>
+<pre>
+d = 密度函数(density)
+p = 分布函数(distribution function)
+q = 分位数函数(quantile function)
+r = 生成随机数(随机偏差)
+</pre>
+
+<p>Base R provides 
+<b class="red">probability distribution functions p foo (), </b>
+<b class="orange">density functions d foo (), </b>
+<b class="blue">quantile functions q foo (), </b>
+<b class="lime">and random number generation r foo () </b>
+
+where foo indicates the type of distribution: <br />
+beta ( foo = beta), binomial binom, Cauchy cauchy, chi-squared chisq, exponential exp, Fisher F f, gamma gamma, geometric geom, hypergeometric hyper, logistic logis, lognormal lnorm, negative binomial nbinom, normal norm, Poisson pois, Student t t, uniform unif, Weibull weibull. </p>
+
+<p>Following the same naming scheme, but somewhat less standard are the following distributions in base R: probabilities of coincidences (also known as "birthday paradox") birthday (only p and q), studentized range distribution tukey (only p and q), Wilcoxon signed rank distribution signrank, Wilcoxon rank sum distribution wilcox.</p>
+
+<br>
+<p>离散型随机分布: 二项分布、几何分布、超几何分布、泊松分布等。</p>
+<p>连续型随机分布: 正态分布、均匀分布、指数分布、对数正态分布、柯西分布、Gamma分布、瑞利分布、韦伯分布等。</p>
+<p>三大抽样分布: 卡方分布、F分布、t分布。</p>
+
+<br>
+
+
+<table class="reference" style="width:100%">
+<tbody><tr>
+	<th><strong>distribution</strong></th>
+	<th><strong>R name </strong></th>
+	<th><strong>distribution</strong></th>
+	<th><strong>R name </strong></th>
+  </tr>
+  <tr>
+	<td><strong>Beta</strong></td>
+	<td>beta</td>
+	<td><strong>Lognormal 对数正态分布</strong></td>
+	<td>lnorm</td>
+  </tr>
+  <tr>
+	<td><strong>Binomial 二项分布</strong></td>
+	<td>binom</td>
+	<td><strong>Negative Binomial 负二项分布</strong></td>
+	<td>nbinom</td>
+  </tr>
+  <tr>
+	<td><strong>Cauchy 柯西分布</strong></td>
+	<td>cauchy</td>
+	<td><strong>Normal 正态分布</strong></td>
+	<td>norm</td>
+  </tr>
+  <tr>
+	<td><strong>Chisquare (非中心)卡方分布</strong></td>
+	<td>chisq</td>
+	<td><strong>Poisson 泊松分布</strong></td>
+	<td>pois</td>
+  </tr>
+  <tr>
+	<td><strong>Exponential 指数分布</strong></td>
+	<td>exp</td>
+	<td><strong>Student t </strong></td>
+	<td>t</td>
+  </tr>
+  <tr>
+	<td><strong>F</strong></td>
+	<td>f</td>
+	<td><strong>Uniform 均匀分布</strong></td>
+	<td>unif</td>
+  </tr>
+  <tr>
+	<td><strong>Gamma</strong></td>
+	<td>gamma</td>
+	<td><strong>Tukey</strong></td>
+	<td>tukey</td>
+  </tr>
+  <tr>
+	<td><strong>Geometric 几何分布</strong></td>
+	<td>geom</td>
+	<td><strong>Weibull</strong></td>
+	<td>weib</td>
+  </tr>
+  <tr>
+	<td><strong>Hypergeometric 超几何分布</strong></td>
+	<td>hyper</td>
+	<td><strong>Wilcoxon</strong></td>
+	<td>wilcox</td>
+  </tr>
+  <tr>
+	<td><strong>Logistic</strong></td>
+	<td>logis</td>
+	<td>多项式分布</td>
+	<td>nultinom</td>
+  </tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+<a name="2"></a>
+<h2 class="tutheader">离散型概率分布</h2>
+
+
+
+
+
+
+
+
+
+
+<a name="3"></a>
+<h2 class="tutheader">连续型概率分布</h2>
+
+
+
+<a name="3_4"></a>
+<h2 class="tutheader">伽玛分布 / 伽马分布 gamma(shape, scale)</h2>
+<p>意义: (1)“gamma分布，表示等到n个随机事件都发生，需要的时间。”(2)k个相互独立的参数为1/b的指数分布的和服从参数为(k,b)的伽玛分布。</p>
+<p>伽马分布 gamma(a,b) 有两个参数，a代表形状(shape parameter)，b代表尺度(scale parameter)</p>
+密度函数: <img src="images/stat_density/gamma.png"><br><br>
+<p>数字特征: EX=a*b; Var(X)=a*b*b;所以 alpha=Mean^2/Variance,  beta=Variance/Mean</p>
+<p>dgamma(x, shape, rate = 1, scale = 1/rate, log = FALSE); 默认第三个参数是rate，要特别指定scale参数。</p>
+<pre>
+a=2;b=0.5; d1=rgamma(100000, shape=a, scale=b);hist(d1)
+m1=mean(d1);m1 #[1] 1.000316
+s1=var(d1);s1 #[1] 0.5022628
+#
+a*b #m1 1
+a*b*b #s1 0.5
+</pre>
+
+<p>alpha （一般为整数）代表一件事发生的次数；beta代表它发生一次的概率（或者叫速率）。那么gamma 分布就代表这么一件事发生alpha 次所需要时间的分布。</p>
+<p>特例: alpha=1时是指数分布; a=n/2, b=2 时的分布为卡方分布。</p>
+
+<p>可以使用Gamma分布描述位点的进化速度。当alpha > 1时，分布呈钟形，表示大部分位点的进化速率位于均值附近，趋于一致；当alpha &lt;= 1时，分布为一个高度倾斜的L形，表示大部分位点的进化速率非常低，只有少部分位点属于进化的热点。一般情况下，对于真实的多序列比对数据，不同位点其碱基替换率是不一致的，推荐设置alpha = 0.5。</p>
+
+
+<br>
+<p><b>冗余系统（standby redundant system）</b>
+假设有一个系统有个部件，但实际需要的只有一个（其余的是备用）。当一个部件失效时，另一个自动接管。因此，只有当所有个部件都失效时，系统才会崩溃。在一定假设下，Gamma分布可以用来描述这样一个系统的寿命。</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#step1 产生服从伽马分布gamma(2,1)的数据。
+x = seq(0,6,length.out=100)
+y = dgamma(x,2,scale=1)
+
+#step2 采用plot函数~绘制gamma分布函数图的第一条曲线。
+plot(x, y, main="the Gamma Density Distribution",
+     ylab="PDF",
+     xlim = c(0,6),ylim = c(0,1) ,col = "red" , type="l",lwd=2)
+#绘制第一个gamma分布函数图，增加键值，使图形变得美观。
+
+#step3 为了观察参数不同时gamma分布的密度函数，采用lines函数。
+lines(x,dgamma(x,1,scale=0.5),col="grey",lwd=2)
+lines(x,dgamma(x,1.5,scale=0.5),col="orange",lwd=2)
+lines(x,dgamma(x,2,scale=0.5),col="blue",lwd=2)
+
+# step4 图例
+color2=c("red","gray","orange","blue");
+legend(x=3.5,y=0.9, bty="n", 
+       legend = paste0("α=", c(2,1,1.5,2), ", β=" , c(1,0.5,0.5,0.5)) , 
+       lwd = 2, col = color2)
+
+# step5 增加图注
+text(2,0.3,"gamma(2,β=1)",pos=4,cex=0.9, col=color2[1])
+text(0.3,1,"gamma(1,β=0.5)",pos=4,cex=0.9, col=color2[2])
+text(0.6,0.8,"gamma(1.5,β=0.5)",pos=4,offset=-0.05,cex=0.9, col=color2[3])
+text(1,0.5,"gamma(2,β=0.5)",pos=4,cex=0.9, col=color2[4])
+
+#http://blog.sina.com.cn/s/blog_c1e323d40102wyg3.html 原文用rate，本文改为beta/scale</div>
+</div>
+<img src="images/stat_density/dgamma.png"><br>
+<p>gamma分布参数有点多，又有积分，公式上看起来挺复杂，和其他很多分布有着千丝万缕的联系，比如指数分布、泊松分布、正态分布、对数正态分布。<br>
+可以脑洞大开地想: 伽玛分布=指数分布＊泊松分布。看看pdf的表达式，自己换一个写法就会发现伽玛把exponential和poisson的公式揉到一起了。</p>
+
+<p>延伸阅读: 
+<a target=_blank href="https://cosx.org/2014/07/gamma-function-1/">神奇的伽玛函数(上)</a>,
+<a target=_blank href="https://cosx.org/2014/07/gamma-function-2/">(下)</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<a name="4"></a>
+<h2 class="tutheader">三大抽样分布</h2>
+
+
+<a name="4_2"></a>
+<h2 class="tutheader">t分布</h2>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># Display the Student's t distributions with various
+# degrees of freedom and compare to the normal distribution
+
+x = seq(-4, 4, length=100)
+hx = dnorm(x)
+
+degf = c(1, 3, 8, 30)
+colors = c("red", "blue", "darkgreen", "gold", "black")
+labels = c("df=1", "df=3", "df=8", "df=30", "normal")
+
+plot(x, hx, type="l", lty=2, xlab="x value",
+     ylab="Density", main="Comparison of t Distributions")
+
+for (i in 1:4){
+  lines(x, dt(x,degf[i]), lwd=2, col=colors[i])
+}
+
+legend("topright", inset=.05, title="Distributions",
+       bty="n", #不要图例边框
+       labels, lwd=2, lty=c(1, 1, 1, 1, 2), col=colors)</div>
+</div>
+<img src="images/stat_density/dt.png"><br><br>
+<p>t分布比着正态分布扁平，但是随着df的增大而变尖，df=30时接近正态分布。</p><br>
+
+
+
+
+
+
+
+<a name="100"></a>
+<h2 class="tutheader">参考资料</h2>
+<pre>
+> Probability Plots
+https://www.statmethods.net/advgraphs/probability.html
+
+> CRAN Task View: Probability Distributions
+https://cran.r-project.org/web/views/Distributions.html
+> Distributions in the stats package
+https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Distributions.html
+
+> 6 Common Probability Distributions every data science professional should know
+https://www.analyticsvidhya.com/blog/2017/09/6-probability-distributions-data-science/
+
+> Probability distributions in R
+https://www.r-bloggers.com/probability-distributions-in-r/
+
+
+> Distribution is all you need
+https://baijiahao.baidu.com/s?id=1645256431232755893&wfr=spider&for=pc
+项目地址：https://github.com/graykode/distribution-is-all-you-need
+
+
+> 各种分布之间的关系
+https://www.zhihu.com/question/34866983
+
+
+> Gamma Distribution in R
+https://statisticsglobe.com/gamma-distribution-in-r-dgamma-pgamma-qgamma-rgamma
+https://www.tutorialspoint.com/statistics/gamma_distribution.htm
+
+
+> 数理统计中的估计问题
+http://blog.sina.com.cn/s/blog_c1e323d40102x1rl.html
+
+## pdf
+> Table of Common Distributions
+http://www.stat.tamu.edu/~twehrly/611/distab.pdf
+
+> 几种常见的分布
+https://wenku.baidu.com/view/ab59abb8c77da26925c5b0a3.html
+
+> FITTING DISTRIBUTIONS WITH R
+http://www.pitt.edu/~super1/ResearchMethods/Ricci-distributions-en.pdf
+
+
+</pre>
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

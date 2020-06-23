@@ -129,7 +129,8 @@ $(function(){
 			<li><a href="#6_5">多重图，一页多图</a></li>
 		</ul>
 	</li>
-	<li><a href="#7">保存图形</a></li>
+	<li><a href="#7">保存图片</a></li>
+	<li><a href="#8">深入学习 ggplot2</a></li>
 </ul>
 
 
@@ -823,13 +824,49 @@ grid.arrange(plots[[1]]...plots[[10]],ncol=1,nrow=10)</div>
 
 
 
-<h2>深入学习 ggplot2 </h2>
 
+
+<a name="7"></a>
+<h2>保存图片</h2>
 <pre>
-R语言实战 https://livebook.manning.com/book/r-in-action-second-edition/chapter-19/
+ggsave("diamonds.pdf", width=4, height=4) #units = c("in", "cm", "mm"), 默认是英寸，dpi = 300
+</pre>
 
-#ggplot2 
-http://www.cookbook-r.com/Graphs/</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="8"></a>
+<h2>深入学习 ggplot2 </h2>
+<p>微信: <a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247486262&idx=1&sn=d38221a4063d866b1f10f4c9ebab5f88">ggplot2高效实用指南 (可视化脚本、工具、套路、配色)</a></p>
+
+<p>R语言实战 <a target="_blank" href="https://livebook.manning.com/book/r-in-action-second-edition/chapter-19/">Chapter 19. Advanced graphics with ggplot2</a></p>
+<p>R cookbook <a target="_blank" href="http://www.cookbook-r.com/Graphs/">Graphs with ggplot2</a></p>
+<p>官网: <a target="_blank" href="https://ggplot2.tidyverse.org/">ggplot2 online documentation</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
 
 			</div>
 		</div>

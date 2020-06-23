@@ -30,6 +30,17 @@
 <style>
 /*本页R代码过长: 最长n px,超过了出现滚动条*/
 .maxHeight{max-height:400px; overflow:scroll;}
+
+.colorBox div{
+	height: 50px;
+    width: 60px;
+    display: inline-block;
+	text-align: center;
+	padding: 0;
+	margin:10px 0;
+}
+.colorBox div span{padding:2px; padding-bottom:8px; color:white;}
+h4{margin-top:30px; border-left:3px solid black; padding-left:2px;}
 </style>
 
 <body>
@@ -99,14 +110,16 @@ $(function(){
 
 
 <h2 class="tutheader">目录</h2>
-<p><b>要点</b>: R中的色彩很丰富，灵活运用才能提高图片的美感和区分度。本文前面是实例，后面是R中怎么做。</p>
+<p><b>要点</b>: R中的色彩很丰富，灵活运用才能提高图片的美感和区分度。本文前面是色彩理论和实例，后面是R中相关函数。</p>
 
 <ul>
+	<li><a href="#0">色彩理论知识</a></li>
 	<li><a href="#1">figure中的色彩实例</a>
 		<ul>
 			<li><a href="#1_1">色彩列表:微软的4种颜色</a>
 			<li><a href="#1_2">示意图色彩</a>
 			<li><a href="#1_3">条形图色彩</a>
+			<li><a href="#1_4">色卡集合 (使用Canvas展示)</a>
 		</ul>
 	</li>
 	<li><a href="#2">R 中的色彩函数</a>
@@ -117,8 +130,47 @@ $(function(){
 		</ul>
 	</li>
 	<li><a href="#3">ggplot2中的色彩函数</a></li>
+	<li><a href="#100">色彩进阶参考</a></li>
 
 </ul>
+
+<p>简书笔记: 
+	<a target="_blank" href="https://www.jianshu.com/p/8b0e34364b89">论文figure色彩实例 - 权衡美观与区分度</a> | 
+	[推荐]<a target="_blank" href="https://www.jianshu.com/p/4e6fb1269ece">R语言中的渐变色</a> | 
+	<a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247485182&idx=1&sn=7b5c1d800560eddcf898ed410720a2a3&scene=21#wechat_redirect">史上最全的图表色彩运用原理</a>
+</p>
+<hr />
+
+
+
+
+
+
+
+
+<a name='0'></a>
+<h2>色彩理论知识</h2>
+<h3>SCI 图片用色的基本原则</h3>
+<p>sci图片的目标: 整洁干净、简洁漂亮。</p>
+<ul>
+	<li>同一篇文章的图片颜色要注意色调的整体性，不宜出现特别鲜明刺眼的颜色（尤其是荧光绿）</li>
+	<li>避免使用红绿，照顾色盲读者。可以使用红蓝代替。</li>
+	<li>同一张图片色系最好统一，看起来会更加协调。</li>
+	<li>同一个指标在全篇图片中最好都使用同一个颜色贯彻始终。</li>
+	<li>一般用红色表示上调，绿色/蓝色表示下调。</li>
+	<li>可以用渐变色来表示程度，颜色越深越多，颜色越浅越少，能够使数据显示更加直观。</li>
+</ul>
+<p>以上，就是 SCI 图片用色上的一些小技巧。</p>
+
+<p>Nature Genetics 2016年发表一篇关于包菜的研究文章。<a target="_blank" href="http://blogs.nature.com/freeassociation/2016/10/october-issue-cover-whats-going-on-here-2.html">使用了很多颜色，怎么配色的？</a>首先尽量避免扎眼的颜色，色彩的亮度要减少，以显得柔和，暖色系和冷色系要分开。是不是觉得很干净，很好看？</p>
+
+
+<p>更复杂一些的，比如关于互补色、对比色的使用等颜色搭配相关的进阶知识，感兴趣的可以自行查看学习，对 SCI 图片或者是 PPT 的制作都是很有帮助的。</p>
+
+
+<h3>色彩概述</h3>
+<p>Complementary color combinations</p>
+
 
 
 
@@ -128,11 +180,7 @@ $(function(){
 
 <a name='1'></a>
 <h2 class="tutheader">figure中的色彩实例</h2>
-<p>简书笔记: 
-	<a target="_blank" href="https://www.jianshu.com/p/8b0e34364b89">论文figure色彩实例 - 权衡美观与区分度</a> | 
-	[推荐]<a target="_blank" href="https://www.jianshu.com/p/4e6fb1269ece">R语言中的渐变色</a> | 
-	<a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247485182&idx=1&sn=7b5c1d800560eddcf898ed410720a2a3&scene=21#wechat_redirect">史上最全的图表色彩运用原理</a>
-</p>
+
 
 
 
@@ -162,26 +210,294 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 
 
 
+
+<hr>
 <a name='1_2'></a>
-<p>示意图色彩</p>
+<h3>示意图色彩</h3>
 
 
-10x单细胞示意图<br>
+<h4>10x单细胞示意图</h4>
 <img src="images/color/color_002.png" /><br>
 
 
+<h4>碱基颜色 1</h4>
+<div class=colorBox>
+	<div style='background:#F88E3A'><span>A</span></div>
+	<div style='background:#616FB1'><span>T</span></div>
+	<div style='background:#FDE255'><span>G</span></div>
+	<div style='background:#0AB0E6'><span>C</span></div>
+</div>
+<h4>碱基颜色 2</h4>
+<div class=colorBox>
+	<div style='background:#71BE4B'><span>A</span></div>
+	<div style='background:#FAC319'><span>T</span></div>
+	<div style='background:#E84B50'><span>G</span></div>
+	<div style='background:#00A1DF'><span>C</span></div>
+	<div style='background:#fff'><span></span></div>
+	<div style='background:#ED245B'><span>Red</span></div>
+	<div style='background:#B780E1'><span>Purple</span></div>
+	<div style='background:#FE9E6F'><span>Orange</span></div>
+</div>
+
+
+
+<h4>Cell cycle 1</h4>
+<div class=colorBox>
+	<div style='background:#EECAD6'>G1<br><span style="background:#C83279"> Cyclin D </span></div>
+	<div style='background:#C5DCC2'>S<br><span style="background:#009551"> Cyclin E </span></div>
+	<div style='background:#B4B2CA'>G2<br><span style="background:#273074"> Cyclin A </span></div>
+	<div style='background:#EEC5AF'>M<br><span style="background:#F68041"> Cyclin B </span></div>
+</div>
+
+<h4>Cell cycle 2</h4>
+<div class=colorBox>
+	<div style='background:#5AC9FF'>G1 <br><span style="background:#0182D5"> Cyclin D </span></div>
+	<div style='background:#FE8C72'>S <br><span style="background:#C90C12"> Cyclin E </span></div>
+	<div style='background:#6E82C7'>G2 <br><span style="background:#092D83"> Cyclin A </span></div>
+	<div style='background:#97CA51'>M <br><span style="background:#039131"> Cyclin B </span></div>
+	<div style='background:#FFFFFF; border:1px solid #D2D2D2'>Inter <br><span style="background:#D2D2D2"> phase </span></div>
+</div>
+
+
 <br>
 <br>
 
 
 
 
+
+
+
+<hr>
 <a name='1_3'></a>
-<p>条形图色彩</p>
+<h3>条形图色彩</h3>
 
-条形图<br>
+<h4>条形图</h4>
 <img src="images/color/color_001.png" /><br>
 
+
+<h4>bar 色块提取1</h4>
+<div class=colorBox>
+	<div style='background:#EE3523'>#EE3523</div>
+	<div style='background:#919135'>#919135</div>
+	<div style='background:#68CBDD'>#68CBDD</div>
+	<div style='background:#F7921D'>#F7921D</div>
+	<div style='background:#029052'>#029052</div>
+	<div style='background:#902E8E'>#902E8E</div>
+	<div style='background:#323B97'>#323B97</div>
+	<div style='background:#00B8F0'>#00B8F0</div>
+	<div style='background:#EC188B'>#EC188B</div>
+</div>
+
+
+<h4>bar 色块提取2</h4>
+<div class=colorBox>
+	<div style='background:#76573B'><br><span style="background:#452D23">item 01</span></div>
+	<div style='background:#DC6C6B'><br><span style="background:#AF3D3C">item 02</span></div>
+	<div style='background:#4BA6AB'><br><span style="background:#167B81">item 03</span></div>
+	<div style='background:#E3DEBD'><br><span style="background:#D0BFA5">item 04</span></div>
+	<div style='background:#D8E755'><br><span style="background:#ADBC2E">item 05</span></div>
+	<div style='background:#3B78C8'><br><span style="background:#0248A4">item 06</span></div>
+	<div style='background:#A3C87B'><br><span style="background:#487F32">item 07</span></div>
+	<br>
+	
+	<div style='background:#8CC63F'></div>
+	<div style='background:#29ABE2'></div>
+</div>
+
+
+
+
+
+
+
+<hr>
+<a name='1_4'></a>
+<h3>色卡集合 (使用Canvas展示)</h3>
+
+<h4>集合1: 生活中的色彩</h4>
+<canvas id="canvas_colorBar1" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
+
+
+
+<h4>集合2: paper中单细胞可视化(tSNE/ UMAP/ heatmap/ boxplot) 的经典配色</h4>
+<canvas id="canvas_colorBar2" width="600" height="400" style="border:1px dashed #ccc;"></canvas>
+<script>
+	var canvas1 = document.getElementById('canvas_colorBar1');
+	var ctx1 = canvas1.getContext('2d');
+	//
+	var canvas2 = document.getElementById('canvas_colorBar2');
+	var ctx2 = canvas2.getContext('2d');
+	
+	// tools
+	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
+		var nPerRow=Math.floor(600/width)
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
+			ctx.fillStyle=colors[i]; ctx.fillRect(x,y,width,20);
+		}
+		ctx.fillText(text, x+width+5,y+15)
+	}
+	
+	// define colors
+	//1
+	showColors(ctx1,[ '#BB4791', '#DE99D0', 
+		'#CA901B', '#F2B23B', 
+		'#307832', '#BCCD7F', 
+		],5, '荷花');
+	
+	//2
+	showColors(ctx1,[
+	'#8D1865', '#C6248F', '#FD41BD', '#FE91D9', '#FFCFEF', 
+	'#0E5F0B', '#267D23', '#40B83B', '#78E874', '#BBFFB8', 
+	'#1E2D91', '#293FC9', '#314DFB', '#7487FE', '#B6C0FF'
+		],30, '樱花', width=35);
+	
+	//3
+	showColors(ctx1,['#0B5652', '#00AEA9', '#5BEAE6',
+		'#5D4022', '#944907', '#C5A27D', 
+		], 75, '鼠标和纸盒子');
+		
+	//4
+	showColors(ctx1,['#27921C', '#20CA25',  '#19D67D',//绿色
+		 '#C7862F', '#DACE93','#E2D44A', //黄色 '#B8883E', 
+		'#E00A3E', '#EB09C7', '#821B90', //红色
+		'#1898FD', '#211DFC', //蓝色'#40CDE0', 
+		], 100, '随机色彩');
+	//5. 'G1S'="#66C2A5" 'S'="#FC8D62" 'G2M'="#8DA0CB" 'M'="#E78AC3" 'MG1'="#A6D854"
+	//'6'="#FFD92F" '7'="#E5C494" '8'="#B3B3B3"
+	showColors(ctx1,["#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", 
+		"#A6D854", "#FFD92F", "#E5C494", "#B3B3B3"], 125, 'R Set2')
+	
+	//6. 所谓的44种可分辨颜色
+	showColors(ctx1,['#6c1717', '#b50b0b', '#ff0000', '#ff4c4c', '#ff9999', '#6c4e17', '#b5790b', '#ffa500', '#ffc04c', '#ffdb99', '#a52a2a', '#4f6c17', '#7bb50b', '#a8ff00', '#dcff99', '#0bb50b', '#00ff00', '#99ff99', '#17a16d', '#12e193', '#a0f4d4', '#0b610b', '#008000', '#4caa4c', '#99d599', '#0b0bb5', '#0000ff', '#4c4cff', '#9999ff', '#0d75f8', '#559efa', '#0bb5b5', '#00ffff', '#99ffff', '#b50bb5', '#ff00ff', '#ff4cff', '#ff99ff', '#800080', '#aa4caa', '#d599d5', '#730bb5', '#9c00ff', '#ba4cff'], 160, '44ByRGB', 12.5)
+	showColors(ctx1,['#0b610b', '#6c1717', '#6c4e17', '#4f6c17', '#008000', '#800080', '#17a16d', '#a52a2a', '#4caa4c', '#aa4caa', '#b50b0b', '#b5790b', '#7bb50b', '#0bb50b', '#0bb5b5', '#0b0bb5', '#730bb5', '#b50bb5', '#99d599', '#d599d5', '#12e193', '#a0f4d4', '#0d75f8', '#559efa', '#ff9999', '#ffdb99', '#dcff99', '#99ff99', '#99ffff', '#9999ff', '#ff99ff', '#ff4c4c', '#ffc04c', '#4c4cff', '#ba4cff', '#ff4cff', '#ff0000', '#ffa500', '#a8ff00', '#00ff00', '#00ffff', '#0000ff', '#9c00ff', '#ff00ff'], 185, '44ByHSL', 12.5)
+	
+	//7. 浅色
+	showColors(ctx1,['#B7B6BE', '#929199', '#A3DBAC', '#87BF90', '#E07C58', '#C25E39', '#BBA28E',  '#AD9480', 
+		'#F2D458', '#CBAD31', '#F9E2D2', '#DFC8B8', '#FCC2D7', '#DDA6B8', '#72BDCB', '#2B828D', 
+	], 220, '浅色', 25)
+	
+	//8. 
+	showColors(ctx1,['#F4C434', '#F18031', '#EB4742', '#872817', '#E86AEA', '#92357F', 
+		'#B85DE8', '#7640C4', '#C67E76', '#8B6161', 
+		'#B85D5A', '#7C2626', '#EFEBAC', '#E8B52F', '#A4AC3F', '#CDD25F', 
+		'#60C87E', '#317040', '#EA4E8D', '#D84B71'
+		], 245, '颜料盒', 25)
+	
+	//9. 彩色折纸
+	showColors(ctx1,[
+	'#F95F7F', '#FE9C68', '#F8D24F', '#4DBDB3','#7FE497', '#48CCFD', 
+	'#8050C0', '#A79EFB',  '#FD87D3','#F7B4E7', '#826373','#CFB789', //3 pair2
+	'#F3EEEF', //white
+		   '#5667C3', '#CBEDC8','#A8E1FF'
+		   ],270, '彩色折纸', 25)
+	//10. 
+	showColors(ctx1,[
+		'#ED285D', '#DFF1F8', '#8ECDE7','#00B0E3', 'white',
+		'#0A9AD7', '#F9C506', '#62BA46', '#ED245C', '#888B8D',
+		   ],300, '10X genomics', 25)
+	
+	//10. 大自然
+	showColors(ctx1,[
+		'#F98866', '#FF420E', '#80BD9E','#89DA59', '#FFFFFF', //花朵Fresh & Bright
+		'#90AFC5', '#336B87', '#2A3132', '#763626', '#FFFFFF', //Subdued 
+		'#46211A', '#693D3D', '#BA5536', '#A43820', '#FFFFFF', // Dark & Earthy
+		'#505160', '#68829E', '#AEBD38', '#598234', '#FFFFFF', // 04 Crisp & Dramatic
+		'#375E97', '#FB6542', '#FFBB00', '#3F681C', '#FFFFFF', // 08. Primary Colors With a Vibrant Twist
+		'#98DBC6', '#5BC8AC', '#E6D72A', '#F18D9E', '#FFFFFF', // 09. Refreshing & Pretty
+		'#4CB5F5', '#B7B8B6', '#34675C', '#B3C100', '#FFFFFF', // 11. Fresh & Energetic
+		'#F4CC70', '#DE7A22', '#20948B', '#6AB187', '#FFFFFF', // 12. Surf & Turf
+		'#F52549', '#FA6775', '#FFD64D', '#9BC01C', '#FFFFFF', // 20. Bright & Tropical
+		'#50312F', '#CB0000', '#E4EA8C', '#3F6C45', '#FFFFFF', // 22. Bold Berries
+		'#4D85BD', '#7CAA2D', '#FCD302', '#CB6318', '#FFFFFF', // 23. Summer Sunflower
+		'#00293C', '#1E656D', '#F1F3CE', '#F62A00', '#FFFFFF', // 25. Timeless & Nautical
+		'#258039', '#F5BE41', '#31A9B8', '#CF3721', '#FFFFFF', // 27. Cheerful Brights
+		'#5C8F22', '#752A07', '#FBCB7B', '#EB5E30', '#FFFFFF', // 29. Summer Barbeque
+		'#F70025', '#F7EFE2', '#F25C00', '#F9A603', '#FFFFFF', // 31. Lemonade Stand
+		'#A1BE95', '#E2DFA2', '#92AAC7', '#ED5752', '#FFFFFF', // 32. Serene & Spa-Like
+		'#4897D8', '#FFDB5C', '#FA6E59', '#F8A055', '#FFFFFF', // 33. Fun & Tropical
+		'#AF4425', '#662E1C', '#EBDCB2', '#C9A66B', '#FFFFFF', // 34. Spicy Neutrals
+		'#4C3F54', '#D13525', '#F2C057', '#486824', '#FFFFFF', // 36. Bold & Cultured
+		'#F77604', '#B8D20B', '#F56C57', '#231B12', '#FFFFFF', // 40. Neon Night
+		'#F47D48', '#E2305A', '#FDEC5C', '#018DCB', '#FFFFFF', // 60. Candy-Coated Brights
+		'#A5C9BB', '#EAB364', '#B3473E', '#ADBC77', '#FFFFFF', // 61. Muted & Antique
+			
+		'#000000',
+		], 335, '大自然 4 色组合', 30,deltaH=2)
+	
+	
+	
+	
+	
+
+/**==========================
+* 第二个色板
+*==========================*/
+	//1. umap colors:nb ansuman 2019 massively parallel: https://www.nature.com/articles/s41587-019-0206-z/figures/3
+	showColors(ctx2,[
+		'#6F4B9C', '#F9E800', '#BE71AF', '#3ABCA5', '#88288D', '#8C9FD2', '#F5797C', '#D71E26', '#D9A86A', '#D44D28', 
+		'#91D5E5', '#87C963', '#208A41', '#F57F2C', '#293069', '#9A83BD', '#FFFFFF',
+		'#495A90', '#7C8C6F', '#C99C62', 
+		'#2A585D', '#BF5F59', '#5287A4', '#8F2F22',
+		], 5, 'nb 2019, Ansuman, scATAC', 19)
+	//2.
+	showColors(ctx2,[
+		'#A2C7DA', '#73C5D3', '#3F879F', '#3F9546', '#69B546', '#93C48D',    '#DA3D2F', '#866269', 'white', //umap组1
+		'#B49674', '#E2A226', '#E26A46', '#E58F70', '#E57371', '#E76DA2', '#C5AAC3', '#7D5A92', '#BE2583', '#D7CE96', '#648BC9', '#A95729', 'white',//umap组2
+		'#1D1E89', '#7E348A', '#9E0A5A', '#07A49D', '#595957', '#F6B62A', '#888888', //基因类型，深色
+		], 35, 'N2018, ZhangZM, tSNE', 27, deltaH=2)
+	showColors(ctx2,[
+		'#62C8D5', '#428DA8', '#83C35F', '#8FCA98', '#E7443B', '#E0B122', '#18A8BD', 'white', //boxplot颜色
+		'#F9F398', '#B05928', '#359E4A', '#FDBF6E', 'white', // 热图分类color1
+		'#CAB2D6', '#E11F27', '#A6CCE0', '#1F78B3', '#B2D589', '#F79D9C', '#6B3F97', '#F47F21', // 热图分类color1
+		], 85, 'N2018, ZhangZM, heatmap', 22, deltaH=2)
+	//3.
+	showColors(ctx2,[
+		'#E41A1C', '#E6F5C9', '#377EB8', '#4DAF4A', '#F4CAE4', '#FFFF33', 
+		'#A65628', '#B3E2CD', '#CBD5E8', '#999999', '#FF7F00',  '#F781BF', '#FDCDAC', 'white', //tSNE cluster
+		'#D85DBD', '#06FF69', '#6C5B9B', '#1E77FE', '#0000FF', '#FDB408', '#A65628', '#00ECE5', 'white', //Cloud;
+		'#F5816C', '#71FFFF', '#003BFF', 'white',
+		'#1B9D76', '#DA5F02', '#7570B2', '#E7298B', '#66A61E', 'white',
+		'#A6CEE2', '#B3DF86', '#FF7F00', '#FB9AFF', '#1E78B5', '#984FA3', '#FEBF00', '#E31A1D', '#339F2A', '#CA00D6','white', //细胞类型
+		'#7FC980', '#BEAED3', '#FCC088', '#FE8AD1', '#386CB0', //patient ID
+		], 110, 'N2019, 脑胶质', 22, deltaH=2)
+	
+	//4.
+	showColors(ctx2,[
+		'#FDC06D', '#1579B6', '#6A3D97', '#E51E27', '#B15A26', '#2CA247', '#B3D88C', '#F69B9B',  '#A7CFE4', '#F58022', '#CBB4D7', 'white', // tumor type 
+		'#1BB1E7', '#31B557', '#F79033', '#E54459', '#5F6EB4', '#BDBEC1', 'white',//突变类型
+		'#C08EA9', '#4FA651', '#516FA2', '#B06728', '#E51E27', 
+			'#747B78', '#F8991D', '#E27598', '#9B9A9B', '#42A16C', '#F3EC3B', '#C26257', 
+			'#368B9D', '#9C425C', '#9452A0', '#BF6067','#FDCF16', '#D4AF29', '#E986B7', '#EA7425','white', //基因类型: TF, 组蛋白，基因组完整性，RTK信号，细胞周期等
+		'#6A3E98', '#1A79B5', '#2FA147', '#E41E27', '#FDBF6D', '#B3D78B', '#F6999A', '#F57F22', '#CAB2D6', '#A6CFE4', '#B05927', 'white',//boxplot dark
+		'#B4A2CE', '#A6BCDD', '#B1D1A9', '#F4A88E', '#FEE3BF', '#DEEECD', '#FBD4D0', '#FDC89A', '#E8DDED', '#DAEAF4', '#DBB192', //boxplot light
+		], 170, 'N2013, TCGA, Mutational landscape', 22, deltaH=2)
+	
+	
+	//100. CNS 色彩
+	showColors(ctx2,[
+		// nature杂志配色
+		'#E82162', '#AF4A9C', '#25B88C', '#E7B773', '#EDE4DD', '#FFFFFF',
+		'#EB98A0', '#CE9BC2', '#E5C575', '#EAB98B', '#EDE4DD', '#FFFFFF',
+		'#E82364', '#5BC4BA', '#37B770', '#24729D', '#D0A494', '#FFFFFF',
+		'#18ABC8', '#91B63D', '#E9B772', '#E86064', '#ECE6DB', '#FFFFFF',
+		'#ECB9BF', '#516A8A', '#A5CDEA', '#ECC8A9', '#ECE6DB', '#FFFFFF',
+		'#2696C9', '#E7C272', '#CF605D', '#EB9391', '#EDEDED', '#FFFFFF',
+		'#EB77A5', '#E41E25', '#F0810E', '#25AB3A', '#1179C1', 'white', //2018 张泽民
+		'#E6007D', '#F9B234', '#FCEA10', '#35B3A6', '#1D71B8', '#95C11F', '#82368C', '#36AFE5',
+		'#D1D0CB','#BC1E2D', '#E23929', 'white', 
+		'#BC42AC', '#7868C0', '#DEB82D', '#3A9425', '#B96A6D', '#C3B8B7', 'white', //barplot
+		'#5DB3DC', '#66C00F', 'black','#AFEDE0', '#FFF6BC', '#D1C9EF', '#FD8B7B', '#93B9D8', '#FEBE65', 'white',//barplot in ggplot2
+		'#9C1CAB', '#A8958F', '#F59200', '#79C714', '#00A3D3', '#111212', 'white',
+		'#971B1E', '#0055A6', '#8DD8F8', '#8EC63F', '#006F3B', '#C0252D',  		'#CDCCCC', '#807F7F', '#B8E3F9','#1E62AC', '#A888BF','#583694', 'white',
+		
+		'black'
+	], 280, 'nature 杂志色彩组合', 25,deltaH=2)
+	
+	
+</script>
 
 <br>
 <br>
@@ -380,6 +696,46 @@ text(posX, -0.05, labels=hmcols,
 <a name='3'></a>
 <h2 class="tutheader">ggplot2 中的色彩函数</h2>
 coding ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='100'></a>
+<h2 class="tutheader">色彩进阶参考</h2>
+<p><a target="_blank" href="https://www.canva.com/learn/100-color-combinations/">100 color combinations and how to apply them to your designs</a></p>
+
+<p><a target="_blank" href="https://www.canva.com/colors/color-wheel/">Color Wheel</a>: Want to know what colors look good together? Canva's Color Wheel makes color combinations easy.</p>
+<p><a target="_blank" href="https://www.canva.com/colors/color-palette-generator/">Color Palette Generator</a> </p>
+<p><a target="_blank" href="https://www.canva.com/colors/color-palettes/">Color Palette Ideas </a> </p>
+
+<pre>
+更多配色方案
+1. 花瓣网（https://huaban.com/）搜索「色卡」，查找别人上传的各种配色方案的卡片。
+2. Curated color palette inspiration. https://www.webdesignrankings.com/resources/lolcolors/
+3. https://colorhunt.co/
+4. https://vanschneider.com/colors
+5. https://www.canva.com/learn/100-color-combinations/
+
+http://color.biaozhiku.com/
+
+</pre>
 
 
 
