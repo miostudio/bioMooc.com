@@ -154,5 +154,43 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 # 独立写该更新日志。ReadMe更多的展示详情。
 	main0.2.5-9 补充R color内容: 伪时间热图渐变色
 	main0.2.6-0 补充R color内容: 用canvas展示paper中的颜色组合
+	main0.2.6-1 fix
 # commit
 ########>> push
+
+
+
+
+
+
+
+##
+
+
+
+
+
+
+
+
+
+##
+
+
+
+
+
+
+
+#
+
+
+
+
+
+
+
+
+
+
+#

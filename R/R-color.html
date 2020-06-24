@@ -41,6 +41,8 @@
 }
 .colorBox div span{padding:2px; padding-bottom:8px; color:white;}
 h4{margin-top:30px; border-left:3px solid black; padding-left:2px;}
+
+p{text-indent: 2em;}
 </style>
 
 <body>
@@ -162,7 +164,7 @@ $(function(){
 </ul>
 <p>以上，就是 SCI 图片用色上的一些小技巧。</p>
 
-<p>Nature Genetics 2016年发表一篇关于包菜的研究文章。<a target="_blank" href="http://blogs.nature.com/freeassociation/2016/10/october-issue-cover-whats-going-on-here-2.html">使用了很多颜色，怎么配色的？</a>首先尽量避免扎眼的颜色，色彩的亮度要减少，以显得柔和，暖色系和冷色系要分开。是不是觉得很干净，很好看？</p>
+<p>Nature Genetics 2016年发表一篇关于<a target="_blank" href="http://blogs.nature.com/freeassociation/2016/10/october-issue-cover-whats-going-on-here-2.html">包菜</a>的研究文章，使用了<a target="_blank" href="http://blogs.nature.com/freeassociation/files/2016/10/ng.3634-F1.jpg" title="点击查看物种聚类图">很多颜色</a>，怎么配色的？首先尽量避免扎眼的颜色，色彩的亮度要减少，以显得柔和，暖色系和冷色系要分开。是不是觉得很干净，很好看？</p>
 
 
 <p>更复杂一些的，比如关于互补色、对比色的使用等颜色搭配相关的进阶知识，感兴趣的可以自行查看学习，对 SCI 图片或者是 PPT 的制作都是很有帮助的。</p>
@@ -220,23 +222,29 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 <img src="images/color/color_002.png" /><br>
 
 
-<h4>碱基颜色 1</h4>
-<div class=colorBox>
-	<div style='background:#F88E3A'><span>A</span></div>
-	<div style='background:#616FB1'><span>T</span></div>
-	<div style='background:#FDE255'><span>G</span></div>
-	<div style='background:#0AB0E6'><span>C</span></div>
-</div>
-<h4>碱基颜色 2</h4>
+<h4>碱基颜色 1 (10x)</h4>
 <div class=colorBox>
 	<div style='background:#71BE4B'><span>A</span></div>
-	<div style='background:#FAC319'><span>T</span></div>
-	<div style='background:#E84B50'><span>G</span></div>
+	<div style='background:#E84B50'><span>T</span></div>
+	<div style='background:#FAC319'><span>G</span></div>
 	<div style='background:#00A1DF'><span>C</span></div>
 	<div style='background:#fff'><span></span></div>
 	<div style='background:#ED245B'><span>Red</span></div>
 	<div style='background:#B780E1'><span>Purple</span></div>
 	<div style='background:#FE9E6F'><span>Orange</span></div>
+</div>
+<h4>碱基颜色 2 (其他来源)</h4>
+<div class=colorBox>
+	<div style='background:#F88E3A'><span>A</span></div>
+	<div style='background:#616FB1'><span>T</span></div>
+	<div style='background:#FDE255'><span>G</span></div>
+	<div style='background:#0AB0E6'><span>C</span></div>
+	<div style='background:#fff'><span></span></div>
+	
+	<div style='background:#009600'>IGV:<span>A</span></div>
+	<div style='background:#FF0000'>IGV:<span>T</span></div>
+	<div style='background:#D17105'>IGV:<span>G</span></div>
+	<div style='background:#0000FF'>IGV:<span>C</span></div>
 </div>
 
 
@@ -307,7 +315,23 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 
 
 
-
+<div class=colorBox id='color001'>
+</div>
+<script>
+// 同画板2: NG2016, 包菜, 证明 相同颜色，显示效果不同。但是屏幕取色器认为是一样的。
+var box1 = document.getElementById('color001');
+var colors=['#FD6349', '#31CC30', '#FBD800', '#FF6FB5', '#E02046', '#078309', '#FF01FD', '#6F6F6F', '#446CFF', '#FDA602']
+for(var i=0;i<colors.length;i++){
+	var oSpan=document.createElement('span')
+	oSpan.innerHTML=colors[i];
+	//
+	var oDiv=document.createElement('div')
+	oDiv.setAttribute('style', 'font-size:8px; height:40px; background:'+colors[i])
+	//
+	oDiv.append(oSpan)
+	box1.append(oDiv)
+}
+</script>
 
 
 
@@ -315,13 +339,16 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 <a name='1_4'></a>
 <h3>色卡集合 (使用Canvas展示)</h3>
 
+
 <h4>集合1: 生活中的色彩</h4>
 <canvas id="canvas_colorBar1" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
 
-<h4>集合2: paper中单细胞可视化(tSNE/ UMAP/ heatmap/ boxplot) 的经典配色</h4>
-<canvas id="canvas_colorBar2" width="600" height="400" style="border:1px dashed #ccc;"></canvas>
+<h4>集合2: CNS paper中单细胞可视化(tSNE/ UMAP/ heatmap/ boxplot) 经典配色</h4>
+<canvas id="canvas_colorBar2" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
+
+
 <script>
 	var canvas1 = document.getElementById('canvas_colorBar1');
 	var ctx1 = canvas1.getContext('2d');
@@ -341,6 +368,9 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 	}
 	
 	// define colors
+/**==========================
+* 第1个色板: 自然色彩
+*==========================*/
 	//1
 	showColors(ctx1,[ '#BB4791', '#DE99D0', 
 		'#CA901B', '#F2B23B', 
@@ -433,7 +463,7 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 	
 
 /**==========================
-* 第二个色板
+* 第2个色板: cns文章色彩
 *==========================*/
 	//1. umap colors:nb ansuman 2019 massively parallel: https://www.nature.com/articles/s41587-019-0206-z/figures/3
 	showColors(ctx2,[
@@ -474,6 +504,11 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 		'#6A3E98', '#1A79B5', '#2FA147', '#E41E27', '#FDBF6D', '#B3D78B', '#F6999A', '#F57F22', '#CAB2D6', '#A6CFE4', '#B05927', 'white',//boxplot dark
 		'#B4A2CE', '#A6BCDD', '#B1D1A9', '#F4A88E', '#FEE3BF', '#DEEECD', '#FBD4D0', '#FDC89A', '#E8DDED', '#DAEAF4', '#DBB192', //boxplot light
 		], 170, 'N2013, TCGA, Mutational landscape', 22, deltaH=2)
+	//5.
+	showColors(ctx2,[
+		'#E6151B', '#E4C906', '#9DCD69', '#28692F', '#0C8E72', '#2F72B6', '#2295B4', '#40C0E3', '#F082A5', '#AD1D5B', '#E4CE18', '#6FBB34', 'white',// 物种分类聚类图
+		'#FD6349', '#31CC30', '#FBD800', '#FF6FB5', '#E02046', '#078309', '#FF01FD', '#6F6F6F', '#446CFF', '#FDA602'//基因组散点图
+		], 250, 'NG2016, 包菜', 22, deltaH=2)
 	
 	
 	//100. CNS 色彩
@@ -494,7 +529,7 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 		'#971B1E', '#0055A6', '#8DD8F8', '#8EC63F', '#006F3B', '#C0252D',  		'#CDCCCC', '#807F7F', '#B8E3F9','#1E62AC', '#A888BF','#583694', 'white',
 		
 		'black'
-	], 280, 'nature 杂志色彩组合', 25,deltaH=2)
+	], 300, 'nature 杂志色彩组合', 25,deltaH=2)
 	
 	
 </script>
@@ -732,6 +767,8 @@ coding ...
 3. https://colorhunt.co/
 4. https://vanschneider.com/colors
 5. https://www.canva.com/learn/100-color-combinations/
+6. https://color.adobe.com/zh/create/color-wheel
+
 
 http://color.biaozhiku.com/
 
