@@ -29,6 +29,18 @@
 .orange{color:orange}
 .blue{color:blue}
 .lime{color:lime}
+
+.notice{background:red; color:white; padding:5px; margin:10px; 
+	font-size:large; font-size: 15px!important;font-weight: bold;
+}
+
+h2{margin-top:30px!important;}
+h3, h4{ border-left:3px solid #E5502A; padding-left:3px; margin-top:20px!important;}
+
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+
+p{text-indent:2em;}
 </style>
 </head>
 
@@ -102,30 +114,35 @@ $(function(){
 <h2 class="tutheader">目录</h2>
 <p><b>要点</b>: 概率函数，通常用来生成特征已知的模拟数据，以及在用户编写的统计函数中计算概率值。<br>
 [R In Action, 2nd, Chapter5.2.3][R语言与统计分析 汤银才 chapter3.3]</p>
+<p class="notice">注意: 不同信息源在定义同一个概率时常常有细微的差异，本文讲解时都以R stats中的定义为准。</p>
 
 <ul>
 	<li><a href="#1">概率函数概述</a></li>
 	<li><a href="#2">离散型概率分布</a>
 		<ul>
-			<li><a href="#2_1">二项分布/负二项分布</a>
-			<li><a href="#2_2">泊松分布</a>
+			<li><a href="#2_1">二项分布/负二项分布</a></li>
+			<li><a href="#2_2">泊松分布</a></li>
 			<li><a href="#2_3">几何分布/超几何分布</a>
+				<ul>
+					<li><a href="#2_3_GO">超几何分布在基因富集分析中的应用</a></li>
+				</ul>
+			</li>
 		</ul>
 	</li>
 	
 	<li><a href="#3">连续型概率分布</a>
 		<ul>
-			<li><a href="#3_1">均匀分布</a>
-			<li><a href="#3_2">指数分布</a>
-			<li><a href="#3_3">正态分布</a>
-			<li><a href="#3_4">Gamma 分布</a>
+			<li><a href="#3_1">均匀分布</a></li>
+			<li><a href="#3_2">指数分布</a></li>
+			<li><a href="#3_3">正态分布</a></li>
+			<li><a href="#3_4">Gamma 分布</a></li>
 		</ul>
 	</li>	
 	<li><a href="#4">三大抽样分布</a>
 		<ul>
-			<li><a href="#4_1">卡方分布</a>
-			<li><a href="#4_2">t分布</a>
-			<li><a href="#4_3">F分布</a>
+			<li><a href="#4_1">卡方分布</a></li>
+			<li><a href="#4_2">t分布</a></li>
+			<li><a href="#4_3">F分布</a></li>
 		</ul>
 	</li>
 	<li><a href="#5">分布之间的关系</a></li>
@@ -247,6 +264,188 @@ beta ( foo = beta), binomial binom, Cauchy cauchy, chi-squared chisq, exponentia
 
 <a name="2"></a>
 <h2 class="tutheader">离散型概率分布</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="2_3"></a>
+<h2 class="tutheader">几何分布和超几何分布</h2>
+
+<h3 class="tutheader">几何分布(Geometric distribution) X~G(p): geom(p)</h3>
+<p>几何分布	 geom	 p:一次试验中事件发生的概率</p>
+<p>意义: 努里试验独立地重复进行, 一直到出现有成功出现时停止试验, 则试验失败的次数X=k服从一个参数为p的几何分布.</p>
+
+<p>分布律: f(x|p)=p*(1-p)^x, x=0,1,2,...,  p取值范围是(0,1]</p>
+<p>数字特征: E(X)=(1-p)/p; var(X)=(1-p)/p^2</p>
+<p>本文是R语言中的几何分布的定义。也有些教科书定义为第k2次试验才成功的概率，显然k2=k+1。分布律和数字特征都需要相应调整。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 几何分布
+p=0.3
+hist( rgeom(1000, p), n=20 )
+#数字特征
+mean(rgeom(1000, p)) #(1-p)/p
+var(rgeom(1000, p)) #(1-p)/p**2
+#
+colors=rainbow(6)
+x=1:50;
+plot(NULL, xlim=c(0,30), ylim=c(0,0.25), 
+     xlab="X", ylab="density", main="X~G(p)")
+ps=seq(0.1,1,0.2)
+for(i in 1:length(ps) ){
+  p=ps[i]
+  lines(x,dgeom(x,p), type="o", cex=0.5, col=colors[i])
+}
+legend('topright', lty=1, title = "p",
+       col=colors[1:length(ps)], legend=ps)</div>
+</div>
+<br>
+
+<img src="images/stat_density/dgeom.png"><br>
+<p>超几何分布跟二项分布的区别：抽取n个的过程中，抽得特定种类的概率会变化（因为不归还），但抽完后每个组合的发生概率是一样的。而二项分布重复n次实验，每次概率不变。</p>
+
+
+
+
+
+
+
+<h3 class="tutheader">超几何分布(hypergeometric distribution) hyper(M, N, k): 不放回取样</h3>
+<p>意义: 从装有M个白球和N个黑球的罐子中不放回地取出k(&lt; N + M)个球, 则其中的白球数X=x服从超几何分布。</p>
+<p>超几何分布：N+M中有M个特定种类，抽取k个时，会有x个特定种类的概率。</p>
+
+<p>p(x) = choose(m, x) * choose(n, k-x) / choose(m+n, k),  x = 0, …, k. <br />
+Note that p(x) is non-zero only for max(0, k-n) <= x <= min(k, m).</p>
+
+<p>数字特征: 记p=M/(N+M); E(X)=k*p; var(X)=(N+M-k)/(N+M-1) * k*p*(1-p) </p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 超几何分布
+T=1000; p=0.1; k=3; 
+M=T*p #目标集合
+N=T*(1-p) #非目标集合
+hist( rhyper(1000, M,N,k), n=20 )
+#数字特征
+mean( rhyper(1000, M,N,k) ) #k*p
+var( rhyper(1000, M,N,k) ) #(N+M-k)/(N+M-1) * k*p*(1-p)
+
+# 密度曲线
+ps=c(0.01,0.03,0.05,0.07, seq(0.1,1,0.2),1)
+colors=rainbow(length(ps)*1.2)
+x=1:50; T=200; k=40
+plot(NULL, xlim=c(0,k+1), ylim=c(0,1.2), 
+     xlab="X", ylab="density", main="X~hyper(M,N,k)")
+for(i in 1:length(ps) ){
+  p=ps[i]; M=T*p;  N=T*(1-p);
+  lines(x,dhyper(x, M,N,k), type="o", cex=0.5, col=colors[i])
+}
+legend('topleft', lty=1, title = "hyper(M,N,k)", bty='n', 
+	   legend=paste0( T*ps,", ",T*(1-ps), ', ', k, '(p=',ps,')' ),
+	   col=colors[1:length(ps)] )</div>
+</div>
+
+<br><b>扩展资料</b><br>
+<p>如果样本容量k=1，即从有限总体中只抽取一个个案，且恰好抽到符合要求个案的概率，那么超几何分布可以还原成二项分布。</p>
+<p>如果数据总体的容量(N+M)无穷大，也就是将有限总体换成无限总体，此时抽中的个案放回与不放回对于总体中符合要求的个案比例都没有影响，超几何分布也可视为二项分布。</p>
+<p>在实际应用时，只要数据总体的个案数目是样本容量的10倍以上，即(N+M)>10*k，就可用二项分布近似描述超几何分布，通过两种概率质量函数计算得到的概率几乎相同。</p>
+<br />
+
+
+
+
+<a name="2_3_GO"></a>
+<br><b>超几何分布在基因富集分析中的应用</b><br>
+<p>Hypergeometric test are useful for enrichment analysis. 超几何分布 常用于基因富集分析。总基因集合(N+M个基因)中，某通路基因有M个，则随机取出k个基因，包含某通路的基因个数为X=x的分布。其p值就是更极端情况的概率，也就是包含某通路的基因数大于k的概率p{X>x}。如果做了多次test，还需要对p做矫正。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">实例: phyper(q, m, n, k, lower.tail = TRUE, log.p = FALSE)
+#pop size : 5260 总基因数
+#Number of items in the pop that are classified as successes : 1998 某个通路的基因数
+#
+#sample size : 131 取样数量
+#Number of items in the sample that are classified as successes : 62 取样中包含的某个通路的基因数
+#
+#To compute a hypergeometric test, is that correct?
+phyper(62, 1998, 5260-1998, 131) #[1] 0.9892471
+### or
+#P(Observed 62 or more) = 1-P(Observed less than 62).
+1 - phyper(62-1, 1998, 5260-1998, 131) #[1] 0.01697598
+phyper(62-1, 1998, 5260-1998, 131,lower.tail=F) #[1] 0.01697598
+
+#(1) 4 method to get the p value:
+sum( dhyper(62:131, 1998, 5260-1998, 131) )
+1-sum( dhyper(0:61, 1998, 5260-1998, 131) )
+phyper(62-1, 1998, 5260-1998, 131, lower.tail=FALSE)
+1-phyper(62-1, 1998, 5260-1998, 131, lower.tail=T) #0.01697598
+
+
+#(2) 或者使用 fisher检验，其背后也是超几何检验，结果p值是一致的。
+# 先建立列联表，按照2种标准把总体基因分类，横着为是否被取样，竖着为是否为成功样品。排列如下: 
+# a b 
+# c d
+a=62; b=131-a; c=1998-a;
+d=5260-131-c
+5260-1998-b #also d
+
+mt=data.frame(
+  'inPathway'=c(a,c),
+  'notInPathway'=c(b,d)
+)
+rownames(mt)=c('DEG', 'notDE')
+mt
+#       inPathway notInPathway
+# DEG          62           69
+# notDE      1936         3193
+
+# 默认是双端，p值较大
+fisher.test(mt)$p.value #0.02857428
+fisher.test(mt, alternative='two.sided')$p.value #0.02857428
+
+# 这里需要指定是单端test，指定alternative='greater'后，p值和之前phyper计算结果一致
+fisher.test(mt, alternative='greater')$p.value # 0.01697598</div>
+</div>
+
+
+<br>
+<p>使用 permutation test(置换检验?) 进行1万次模拟抽样，在5260个整数中随机抽样，统计小于1998的个数的分布。</p>
+<img src="images/stat_density/dgeom_permutation.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># permutation test
+a1=1:5260
+#
+num=c()
+for(i in 1:10000){  #模拟1万次
+  a2=sample(a1, 131) #随机抽取131个
+  a3=length( a2[a2<1998] ) #小于1998的个数
+  num=c(num, a3 )
+}
+hist(num, n=50, prob=TRUE)
+lines(density(num), col='red')
+#sd(num)
+#mean(num)
+abline(v=mean(num)+2*sd(num), lty=2, col='red')
+abline(v=mean(num)-2*sd(num), lty=2, col='red')
+#
+abline(v=62, lty=3, col='blue') #62个确实在尾巴位置
+
+# 直接计算临界值， 发现62确实超过0.05临界值，属于小概率事件
+#(x-mu)/sd ~N(0,1)
+qnorm( 0.95, 0, 1) * sd(num) + mean(num) #58.80205
+qnorm( 0.95, mean(num), sd(num)) #58.80205</div>
+</div>
+<p>进一步阅读: 
+	<a target="_blank" href="https://www.jianshu.com/p/13f46bebebd4">浅探富集分析中的超几何分布</a> |  
+	<a target="_blank" href="https://blog.csdn.net/linkequa/article/details/86491665">超几何分布检验（hypergeometric test）</a> | 
+	<a target="_blank" href="https://stackoverflow.com/questions/8382806/hypergeometric-test-phyper">Hypergeometric test (phyper)</a> | 
+	<a target="_blank" href="http://mengnote.blogspot.com/2012/12/calculate-correct-hypergeometric-p.html">Hypergeometric test和fisher检验是一致的</a> | 
+</p>
 
 
 

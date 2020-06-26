@@ -30,6 +30,11 @@
 .blue{color:blue}
 .lime{color:lime}
 </style>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+</style>
 </head>
 
 
@@ -108,7 +113,7 @@ $(function(){
 	<li><a href="#3">拟合</a>
 		<ul>
 			<li><a href="#3_1">LOESS平滑化算法</a>
-			<li><a href="#3_2">泊松分布</a>
+			<li><a href="#3_2">局部加权回归LOWESS 平滑化</a>
 		</ul>
 	</li>
 	<li><a href="#100">参考资料</a></li>
@@ -192,8 +197,36 @@ legend(x=pos[2], y=pos[4], title="span",
 </div>
 
 
+<a name="3_2"></a>
+<h2 class="tutheader">局部加权回归LOWESS 平滑化</h2>
+<p>图略。参数和loess一致时，图也基本一致。</p>
+<p>f: the smoother span. This gives the proportion of points in the plot which influence the smooth at each value. Larger values give more smoothness.</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">y=mtcars$mpg # 造数据
+set.seed(10) # 或则模拟一组
+y=rnorm(40, 10, 20);y
+#
 
-
+n=length(y)
+x=1:n
+#
+par(mar=c(4,4,3,6))
+plot(x,y, type='o',col='grey',main="lowess demo")
+#f 取不同的参数
+lines(lowess(x,y, f = 0.2), col ='orange')
+lines(lowess(x,y, f = 0.4), col ='blue')
+lines(lowess(x,y, f = 0.6), col ='green')
+lines(lowess(x,y, f = 0.8), col ='purple')
+lines(lowess(x,y, f = 1), col ='cyan')
+lines(lowess(x,y, f = 2), col ='red', lty=2, lwd=2)
+#
+pos=par('usr');pos
+legend(x=pos[2], y=pos[4], title="f value", lty=1, 
+       xpd=T, #show outside figure
+       bty="n", #box type
+       col=c('orange','blue','green','purple','cyan','red'),
+       legend=c(0.2,0.4,0.6,0.8,1,2))</div>
+</div>
 
 
 
