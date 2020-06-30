@@ -156,6 +156,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.6-0 补充R color内容: 用canvas展示paper中的颜色组合
 	main0.2.6-1 fix
 	main0.2.6-2 LOWESS平滑化;超几何分布;
+	main0.2.6-3 添加对数正态分布
 # commit
 ########>> push
 

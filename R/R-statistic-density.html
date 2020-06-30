@@ -134,7 +134,7 @@ $(function(){
 		<ul>
 			<li><a href="#3_1">均匀分布</a></li>
 			<li><a href="#3_2">指数分布</a></li>
-			<li><a href="#3_3">正态分布</a></li>
+			<li><a href="#3_3">正态分布 与 对数正态分布 (log normal distribution)</a></li>
 			<li><a href="#3_4">Gamma 分布</a></li>
 		</ul>
 	</li>	
@@ -411,6 +411,8 @@ fisher.test(mt, alternative='two.sided')$p.value #0.02857428
 # 这里需要指定是单端test，指定alternative='greater'后，p值和之前phyper计算结果一致
 fisher.test(mt, alternative='greater')$p.value # 0.01697598</div>
 </div>
+<p><b>Note</b>: lower.tail使用的逻辑为： if TRUE (default), probabilities are P[X ≤ x], otherwise, P[X > x]. <p>
+
 
 
 <br>
@@ -458,6 +460,99 @@ qnorm( 0.95, mean(num), sd(num)) #58.80205</div>
 
 <a name="3"></a>
 <h2 class="tutheader">连续型概率分布</h2>
+
+
+
+<a name="3_3"></a>
+<h2 class="tutheader">正态分布 N(mu, sigma^2)</h2>
+<p>正态分布（Normal distribution），也称“常态分布”，又名高斯分布（Gaussian distribution）。</p>
+<p>正态曲线呈钟型，两头低，中间高，左右对称因其曲线呈钟形，因此人们又经常称之为钟形曲线。</p>
+<p>若随机变量X服从一个数学期望为μ、方差为σ^2的正态分布，记为N(μ，σ^2)。其概率密度函数为正态分布的期望值μ决定了其位置，其标准差σ决定了分布的幅度。当μ = 0,σ = 1时的正态分布是标准正态分布。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x=seq(-5,5,0.1)
+#画坐标系
+plot(NULL, xlim=c(-5, 5), ylim=c(0,1), xlab="X", ylab="density", 
+     main=expression( paste( N(mu, sigma^2)) ) )
+sds=c(0.5, 1, 1.5, 2, 2.5, 1.5)
+mus=c(0,0,0,0,0,-2)
+n=length(sds)
+colors=c('grey', 'red','orange','green','blue','cyan' )
+# 画线
+for(i in 1:n){
+  y=dnorm(x, mean=mus[i], sd=sds[i])
+  lines(x,y, type='l', cex=0.5, col=colors[i]) 
+}
+legend('topright', col=colors, lty=1,
+       legend=paste0("mu=",mus,', sd=',sds), bty='n')</div>
+</div>
+<img src="images/stat_density/dnorm.png"><br>
+<p>正态分布为什么常见？真正原因是中心极限定理（central limit theorem）: "多个独立统计量的和的平均值，符合正态分布。" 根据中心极限定理，如果一个事物受到多种因素的影响，不管每个因素本身是什么分布，它们加总后，结果的平均值就是正态分布。</p>
+
+
+
+<h3 class="tutheader">对数正态分布 (log normal distribution)</h3>
+<p>为什么收入分布右侧有长尾，而不是对称的？因为人的收入受到的影响(比如有钱人其家庭、教育、运气、工作、人脉等)不是独立的，而是互相加强的。这些因素对结果的影响不是相加，而是相乘，那么最终结果不是正态分布，而是对数正态分布（log normal distribution），即x的对数值log(x)满足正态分布。</p>
+<p>对数正态分布X是一种连续概率分布，其随机变量的对数ln(X)服从正态分布。或者说如果Y=ln(X)~N(mu,sigma^2)符合正态分布，则称X=exp(Y)~LN(mu, sigma^2)符合对数正态分布。其中mu和sigma不是对数正态分布的均值和标准差，而分别称它为对数均值和对数标准差。</p>
+<p>数字特征: E(X) = exp(μ + 1/2 * σ^2);  Var(X) = exp(2*μ + σ^2)*(exp(σ^2) - 1)</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">mu1=0.4;sig1=0.5;aa=rlnorm(100000, meanlog=mu1, sdlog=sig1)
+exp(mu1 + 1/2 * sig1^2) - mean(aa) ##对数正态分布的数字特征
+exp(2*mu1 + sig1^2)*(exp(sig1^2) - 1) - var(aa)
+#
+mean(log(aa)) #0.4 对数均值
+sd(log(aa)) #0.5 对数标准差
+#
+hist(aa, n=100, freq = F, xlim=c(-1, 5))
+hist(aa, n=100) #对数正态分布
+hist(log(aa), n=100) #取对数后,符合正态分布
+
+# 密度曲线
+x=seq(-1,6,0.01)
+plot(NULL, xlim=c(0,2.5), ylim=c(0,4),
+     main="X~LN(meanlog, sdlog^2)", xlab="X", ylab="density")
+sds=c(0.125, 0.25, 0.5, 1, 1.5, 10); n=length(sds)
+colors=c('grey','black', 'red', 'orange', 'green', 'blue')
+#
+for(i in 1:n){
+  y=dlnorm(x, meanlog = 0, sdlog = sds[i])
+  lines(x,y,type="l", col=colors[i])
+}
+legend('topright', col=colors, lty=1, bty='n', title="sdlog=0",
+       legend=paste0( "sdlog=", sds ))</div>
+</div>
+<br>
+<hr>
+
+<p><b>问题: 对数正态分布的数字特征和 对应的正态分布的数字特征之间的关系？</b></p>
+<img src="images/stat_density/dlnorm.png"><br>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x=seq(0.01,100,0.01);
+mu=0.4; sigma=0.5;
+y=dlnorm(x, meanlog = mu, sdlog = sigma)
+plot(x,y,type="l", lty=2, col='red', xlim=c(-1.5,4)) # 对数正态分布
+lines(log(x), y, type="l", col="blue") #!! 这样搞错误，因为x均匀分布。我们要操作随机变量！
+
+######### 重新画图:
+#其随机变量的对数服从正态分布，要先模拟出随机变量X，然后再看ln(X)的分布
+set.seed(20200629)
+aa=rlnorm(10000, meanlog=mu, sdlog=sigma)
+hist(aa, n=40, freq=F, col="#FF000022",
+     xlim=c(-1.5,5), ylim=c(0,0.9), xlab="X",main="") #随机变量的分布
+lines(x,y,type="l", col='red') #X~LN(mu, sigma^2) #参数生成的概率密度曲线
+
+# ln(X)~LN(mu, sigma^2)
+hist( log(aa), n=20, freq=F, col="#0000FF22", add=TRUE) #随机变量的分布
+x1=seq(-3,4,0.1); y1=dnorm(x1, mean=mu, sd=sigma )
+lines(x1, y1, col="blue", lwd=1) #参数生成的概率密度曲线
+abline(v=mu, col='blue', lty=2, lwd=2)
+#
+legend('topright', lty=1, col=c('red','blue'), bty="n",
+       legend=c("X~LN(mu,sigma^2)", "ln(X)~N(mu,sigma^2)"))</div>
+</div>
+<p>由以上模拟来看，X~LN(mu,sigma^2) 和 ln(X)~N(mu,sigma^2) 的参数完全相等。</p>
+
 
 
 
