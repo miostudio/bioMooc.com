@@ -349,12 +349,19 @@ for(var i=0;i<colors.length;i++){
 <canvas id="canvas_colorBar2" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
+
+
+<h4>集合3: 财经杂志 商务图表</h4>
+<canvas id="canvas_colorBar3" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
+
+
 <script>
 	var canvas1 = document.getElementById('canvas_colorBar1');
 	var ctx1 = canvas1.getContext('2d');
 	//
 	var canvas2 = document.getElementById('canvas_colorBar2');
 	var ctx2 = canvas2.getContext('2d');
+	var ctx3=document.getElementById('canvas_colorBar3').getContext('2d');
 	
 	// tools
 	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
@@ -530,7 +537,17 @@ for(var i=0;i<colors.length;i++){
 		
 		'black'
 	], 300, 'nature 杂志色彩组合', 25,deltaH=2)
-	
+
+
+
+/**==========================
+* 第3个色板: 商务图表
+*==========================*/
+	showColors(ctx3,[
+		'#D5E4EB', '#6594A4', '#004D63', '#02A3E1', '#ADADAF', 'white', 
+		'#F8F2E4', '#D1BB65', '#D6695C', '#5F8CA6', '#63A577', 'white', 
+		'black'
+	], 5, '经济学人', 40,deltaH=2)
 	
 </script>
 

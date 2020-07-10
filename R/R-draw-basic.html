@@ -723,10 +723,40 @@ par(opar)</div>
 <p>除lines()和mtext()外上文都讨论过了。
 lines()向现有图形添加线元素，比如在一幅图画两条或更多曲线。
 mtext()用于在图形边界添加文本。</p>
+<br />
+<br />
+
+
+
+
+
+<p><b>需求1: 怎么为y轴刻度值添加不同的颜色呢？</b></p>
+<p>因为axis的col.axis参数不能向量化，所以只能多次使用axis分别标注不同颜色的刻度，或者<a target="_blank" href="https://stackoverflow.com/questions/18839731/vary-colors-of-axis-labels-in-r-based-on-another-variable">使用mtext添加坐标轴刻度。</a></p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">palette ( c ( "steelblue", "orange" ))
+
+X = 1:5
+Cols = rep ( 1, length ( X ))
+Cols [ c ( 1, length ( X ))] = 2
+Cols
+#
+plot ( X, yaxt = "n", ylab="" )
+axis ( 2, at = X, labels = FALSE )
+mtext ( paste ( "Case", X ), at = pretty ( X ), las=2,
+        side = 2, line = 1, col = Cols )</div>
+</div>
+
+
+
+
+
+
+
 
 
 <br>
-<p><b>隐藏坐标轴刻度col.ticks = "transparent"，设置轴(col)、刻度标签(col.axis)的颜色</b></p>
+<p><b>需求2：隐藏坐标轴刻度？col.ticks = "transparent"，设置轴(col)、刻度标签(col.axis)的颜色</b></p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">plot(NA, xlim=c(-5,6), ylim=c(-7,6),
      #xaxt='n', yaxt='n', #分别不要x或y坐标
@@ -853,7 +883,7 @@ points( meansERCC, cv2ERCC, pch=20, cex=1, col="#0060B8A0" )</div>
 
 
 
-
+<hr />
 <a name="33"></a>
 <h3 class="tutheader">参考线 abline() </h3>
 <div class="code notranslate">
@@ -871,7 +901,7 @@ abline(v=seq(0,10,2), lty=2, col="grey",lwd=0.5) #n条灰色虚竖线，宽度�
 
 
 
-
+<hr />
 <a name="34"></a>
 <h3 class="tutheader">图例 legend() </h3>
 <table class="reference" style="width:100%">
@@ -929,7 +959,7 @@ par(opar)</div>
 
 
 
-
+<hr />
 <a name="35"></a>
 <h3 class="tutheader">文本标注 text(), mtext() </h3>
 <p>text()可向绘图区域内部添加文本，而mtext()则向图形的四个边界之一添加文本。</p>

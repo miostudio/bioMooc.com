@@ -150,7 +150,7 @@ $(function(){
 	<li><a href="#100">参考资料</a></li>
 </ul>
 
-<p>α β</p>
+<p>α β λ</p>
 
 
 
@@ -273,6 +273,135 @@ beta ( foo = beta), binomial binom, Cauchy cauchy, chi-squared chisq, exponentia
 <h2 class="tutheader">离散型概率分布</h2>
 
 
+
+<a name="2_1"></a>
+<h2 class="tutheader">二项分布/负二项分布</h2>
+
+<h3 class="tutheader">二项分布 X~B(n, p): binorm(n, p)</h3>
+<p>意义: 贝努里试验独立地重复n次, 则试验成功的次数服从一个参数为(n, p)的二项分布.</p>
+<p>大白话: 袋子里取道白球的概率是p，有放回的独立重复抽样n次为一个实验，则实验中白球的个数 X~binom(n, p)。</p>
+
+<pre>
+二项分布需满足以下条件：
+
+1.每次试验只有两个结果，成功或者失败
+2.试验之间相互独立
+3.每次试验成功的概率p是常数
+	(符合前3个的试验称为伯努利实验。)
+4.固定的试验次数，n
+二项分布就是重复n次独立的伯努利试验。
+</pre>
+<p>分布律: f(x|n,p)=C(n, x) * p^x * (1-p)^(n-x); x=0,1,...,n; 其中，组合数 C(n, k) =n!/(k!(n-k)!)</p>
+<p>二项分布的数字特征: EX=np, Var(x)=npq</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#(1) 二项分布的数字特征
+n=100; p=0.3; c1=c();c2=c();
+for(i in 1:10000){
+  x=rbinom(1000, size=n, prob=p);
+  c1=c( c1, mean(x)-n*p )
+  c2=c(c2, var(x)-n*p*(1-p) )
+}
+hist(x, n=100)
+#
+hist(c1, n=100)
+hist(c2, n=100)
+
+
+#(2) 二项分布2个参数，p影响形状，n*p影响在x轴的位置。
+x=seq(0,100)
+y=dbinom(x, size=100, prob=0.05)
+par(mar=c(4,4,3,8))
+#坐标轴
+plot(x, y, type='n', col='black', ylim=c(0, 0.2),
+     xlab="X", ylab='Density',main="X~binom(size, prob)")
+#横的辅助新
+ps2=c(0.1,0.3,0.5)
+abline(h=dbinom(100*ps2, 100, ps2), lty=2, col="grey80" )
+#分布曲线
+ps=c(0.05, 0.1, 0.3, 0.5, 0.7,  0.9, 0.9)
+colors=c('grey70','red','orange','green','blue','purple','grey50')
+sizes=c( rep(100,length(ps)-1), 90)
+ltys=c(2, rep(1,5),2)
+for(i in 1:length(ps)){
+  y=dbinom(x, size=sizes[i], prob=ps[i])
+  lines(x, y, col=colors[i], type='o', cex=0.5, lty=ltys[i])
+}
+#图例
+posL=par('usr')
+legend(x=posL[2]*1.05,y=posL[4]*0.8, col=colors, lty=1, 
+       bty='n',  #图例不要方框
+       xpd=T,  #显示到图外
+       pch=1, cex=0.8, #图例形状和整体缩放
+       title = 'size, p', legend =paste0( sizes,", ",ps) )</div>
+</div>
+<p>特例: n=1时的二项分布为贝努力分布。</p>
+<p>二项分布是对称的，binom(100, 0.3) 和 binom(100, 1-0.3) 的形状是一样的，但是对称轴(n*p)不同。</p>
+
+<img src="images/stat_density/dbinom.png"><br>
+
+
+
+
+<h3 class="tutheader">负二项分布(Negative binomial distribution) X~NB(k, p): nbinorm(k, p)</h3>
+<p>意义: 贝努里试验独立地重复进行, 一直到k次成功时停止试验，则试验失败的次数X服从一个参数为(k, p)的负二项分布.</p>
+<p>分布律: f(x|k,p)=Gamma(k+x) / ( Gamma(k)*Gamma(x) ) * p^k * (1-p)^x, x=0,1,...</p>
+<p>NB分布律: f(x|k,p)=C(k-1+x, x) * p^k * (1-p)^x; x=0,1,...</p>
+<p>NB数字特征: EX=k(1-p)/p; Var(X)=k(1-p)/p^2;</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#(1) NB数字特征
+k=100;p=0.3; c1=c();c2=c();
+for(i in 1:1000){
+  x=rnbinom(10000, k, p)
+  c1=c(c1, mean(x)-k*(1-p)/p)
+  c2=c(c2, var(x)-k*(1-p)/p^2)
+}
+hist(x,n=100)
+#
+hist(c1, n=100)
+hist(c2, n=100)
+
+#(2) 参数对NB分布的影响
+x=seq(1,200); y=dnbinom(x, 20, 0.3)
+plot(x,y, type='n', xlim=c(0,100), ylim=c(0,0.15),
+     xlab="X", ylab="Density", main="X~NB(k, p)")
+ps=c(0.25, 0.5, 0.75, 0.5); n=length(ps);
+sizes=c( rep(20, n-1), 15); colors=c('grey70','red','blue', 'orange');
+for(i in 1:n){
+  y=dnbinom(x, sizes[i], ps[i])
+  lines(x,y, col=colors[i], type='o', cex=0.5)
+}
+posL=par('usr')
+legend(x=posL[2]*0.6,y=posL[4]*0.9, col=colors, lty=1, 
+       bty='n', xpd=T, pch=1, cex=0.8, title = 'k, p', legend =paste0( sizes,", ",ps) )</div>
+</div>
+<p>对负二项分布，p越大，峰越靠近0，越尖；p特别小时太扁平而看不到明显的峰。</p>
+
+<p>推导 nb 均值和方差的关系: mu=k(1-p)/p, 则使用mu表示p=k/(mu+k); 1-p=mu/(mu+k); 
+带入上式方差中 <b>DX=Var(X)=mu + a*mu^2</b>, 其中a=1/k;
+可见 方差是均值的二次函数。方差随着均值的增加而进行二次函数形式的递增。
+其中a和k被称为dispersion parameter。负二项分布与泊松分布的关系，可以用α或k推出：(1)当 k -> ∞ 时，α -> 0，此时 σ2= μ，为泊松分布；(2)当 k -> 0 时，α -> ∞，此时overdispersion</p>
+<p>特例: k=1时的分布为几何分布。</p>
+
+
+
+
+
+
+
+
+
+
+<a name="2_2"></a>
+<h2 class="tutheader">泊松分布(Poisson): X~P(λ)</h2>
+<p>意义: 单位时间, 单位长度, 单位面积, 单位体积中发生某一事件的次数常可以用泊松(Poisson)分布来刻划, 例如某一服务设施在一定时间内到达的人数(<a target="_blank" href="https://blog.csdn.net/ccnt_2012/article/details/81114920">早上馒头店该准备多少个馒头？</a>)，电话交换机接到呼叫的次数，汽车站台的候客人数，机器出现的故障数，自然灾害发生的次数，一块产品上的缺陷数，显微镜下单位分区内的细菌分布数，某段高速公路上一年内的交通事故数，某办公室一天中收到的电话数可以认为近似服从泊松分布。泊松分布的参数λ是单位时间(或单位面积)内随机事件的平均发生次数。</p>
+<p>分布率: P(X=k)= λ^k / k! * exp(-λ); k=1,2,...</p>
+<p>泊松分布的期望和方差均为λ;</p>
+<p>xx</p>
+<p>xx</p>
+
+
+<p>当二项分布的n很大而p很小时，泊松分布可作为二项分布的近似，其中λ为np。通常当n≧20,p≦0.05时，就可以用泊松公式近似得计算。</p>
 
 
 
