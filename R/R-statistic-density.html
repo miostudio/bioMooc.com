@@ -30,6 +30,8 @@
 .blue{color:blue}
 .lime{color:lime}
 
+.grey{color:#aaa;}
+
 .notice{background:red; color:white; padding:5px; margin:10px; 
 	font-size:large; font-size: 15px!important;font-weight: bold;
 }
@@ -393,15 +395,133 @@ legend(x=posL[2]*0.6,y=posL[4]*0.9, col=colors, lty=1,
 
 
 <a name="2_2"></a>
-<h2 class="tutheader">泊松分布(Poisson): X~P(λ)</h2>
-<p>意义: 单位时间, 单位长度, 单位面积, 单位体积中发生某一事件的次数常可以用泊松(Poisson)分布来刻划, 例如某一服务设施在一定时间内到达的人数(<a target="_blank" href="https://blog.csdn.net/ccnt_2012/article/details/81114920">早上馒头店该准备多少个馒头？</a>)，电话交换机接到呼叫的次数，汽车站台的候客人数，机器出现的故障数，自然灾害发生的次数，一块产品上的缺陷数，显微镜下单位分区内的细菌分布数，某段高速公路上一年内的交通事故数，某办公室一天中收到的电话数可以认为近似服从泊松分布。泊松分布的参数λ是单位时间(或单位面积)内随机事件的平均发生次数。</p>
-<p>分布率: P(X=k)= λ^k / k! * exp(-λ); k=1,2,...</p>
-<p>泊松分布的期望和方差均为λ;</p>
-<p>xx</p>
-<p>xx</p>
+<h2 class="tutheader">泊松分布(Poisson Distribution): X~P(λ)</h2>
+<p>意义: 单位时间, 单位长度, 单位面积, 单位体积中发生某一事件的次数常可以用泊松(Poisson)分布来刻划, 例如某一服务设施在一定时间内到达的人数(<a target="_blank" href="https://blog.csdn.net/ccnt_2012/article/details/81114920">早上馒头店该准备多少个馒头？</a>)，电话交换机接到呼叫的次数，汽车站台的候客人数，机器出现的故障数，自然灾害发生的次数，一块产品上的缺陷数，显微镜下单位分区内的细菌分布数，某段高速公路上一年内的交通事故数，某办公室一天中收到的电话数
+一天内考研报名的人数，一个月内看知乎的人数，
+可以认为近似服从泊松分布。泊松分布的参数λ是单位时间(或单位面积)内随机事件的平均发生次数。</p>
+<p>意义: 一段时间内，某事发生的的期望是 10。分别求该事发生 1, 2, 3, ...., 19, 20 次的概率。</p>
+<p>分布率: P(X=k)= λ^k / k! * exp(-λ); 其中 常数 λ>0 是区间事件发生率的均值, k=0,1,2,...</p>
+<p>奇葩性质: 泊松分布的期望和方差相等 E(X)=Var(X)=λ</p>
+<img src="images/stat_density/dpois.png">
 
 
-<p>当二项分布的n很大而p很小时，泊松分布可作为二项分布的近似，其中λ为np。通常当n≧20,p≦0.05时，就可以用泊松公式近似得计算。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">## 泊松分布
+lambda=10
+hist( rpois(1000, lambda), n=20 )
+#数字特征
+mean(rpois(1000, lambda)) #lambda
+var(rpois(1000, lambda)) #lambda
+
+###########
+# 密度曲线1: lambda比较小的情况(less than 2)
+colors=c('red', 'orange', 'green','blue','cyan','purple')
+lambdas=c(0.1,0.5, 1,1.5,2,2.5)
+n=length(lambdas)
+x=0:150;
+plot(NULL, xlim=c(0,8), ylim=c(0, 0.9), xaxs ='i', #不要图与坐标轴间的空白
+     xlab="X", ylab="Density", main= expression( paste("X~Pois(",lambda,")") ) )
+for(i in 1:n ){
+  y=dpois(x, lambdas[i])
+  lines(x, y, lwd=1.5, type="o", cex=0.5, col=colors[i])
+}
+usr=par('usr')
+legend(x=usr[2]*0.75 ,y=usr[4]*0.9 , lty=1, title = expression(lambda),bty='n',
+       col=colors[1:n], legend=lambdas)
+
+###########
+# 密度曲线2: lambda比较大的情况(equal or more than 2)
+colors=c('red', 'orange', 'green','blue','purple')
+lambdas=c(2, 5, 10, 20, 30)
+n=length(lambdas)
+x=0:150;
+plot(NULL, xlim=c(-2,50), ylim=c(0, 0.3), xaxs ='i', #不要图与坐标轴间的空白
+     xlab="X", ylab="Density", main=expression( paste("X~Pois(",lambda,")") ) )
+for(i in 1:n ){
+  y=dpois(x, lambdas[i])
+  lines(x,y , type="o", cex=0.4, col=colors[i])
+}
+usr=par('usr')
+legend(x=usr[2]*0.75 ,y=usr[4]*0.9 , lty=1, title =expression(lambda), bty='n',
+       col=colors[1:n], legend=lambdas)</div>
+</div>
+
+<p>在统计学上，只要某类事件满足三个条件——小概率事件(即p很小，p^n可以小到不计)、独立(事件不会相互影响)、稳定(成功的概率不变)，它就服从"泊松分布"。</p>
+<p>泊松分布，在基因组和进化领域神一般存在。于无限中取有限，于连续中取间断，于线段中取点。一般来说，固定时空内小概率事件的出现次数，就是符合泊松分布。抓住两个要素，“固定时空”和“小概率”。<b class=red>泊松分布的精髓在于无记忆性。</b>泊松过程具有平稳、独立、增量性，更新过程的特例，参数不受时间影响。</p>
+
+
+
+
+<!-- 泊松分布和二项分布的关系，及图 -->
+<h4>泊松分布是二项分布n很大而p很小时的一种极限形式</h4>
+<p class=grey>二项分布是说，已知某件事情发生的概率是p，那么做n次试验，事情发生的次数就服从于二项分布。
+泊松分布是指某段连续的时间内某件事情发生的次数，而且“某件事情”发生所用的时间是可以忽略的。例如，在五分钟内，电子元件遭受脉冲的次数，就服从于泊松分布。
+
+假如你把“连续的时间”分割成无数小份，那么每个小份之间都是相互独立的。在每个很小的时间区间内，电子元件都有可能“遭受到脉冲”或者“没有遭受到脉冲”，
+这就可以被认为是一个p很小的二项分布。而因为“连续的时间”被分割成无穷多份，因此n(试验次数)很大。
+
+所以，泊松分布可以认为是二项分布的一种极限形式。
+因为二项分布其实就是一个最最简单的“发生”与“不发生”的分布，它可以描述非常多的随机的自然界现象，因此其极限形式泊松分布自然也是非常有用的。</p>
+
+
+<p>Binomial dist is common and poission is its limit. 当二项分布的n很大而p很小时，泊松分布可作为二项分布的近似，其中λ=np。
+时间分为很多份，就是n，分成很多份后发生的概率p很小。
+
+<b>问题：为什么n要足够大，p要足够小？因为在分时间窗口的时候有个假设：每个时间窗口最多只有一次事件发生。</b>
+
+通常当n≧20,p≦0.05时，就可以用泊松公式近似得计算。(也有说 n≥100，np≤10近似效果较好。)。n很大p很小时，单纯的二项分布里组合数计算起来运算量相当大，而用泊松近似后，计算量会大大减少，而与二项分布算出的结果几乎没有什么差异。</p>
+<p>当λ≥20时，泊松分布可以用正态分布来近似，当λ≥50，泊松分布基本上就等于正态分布了。</p>
+
+
+<img src="images/stat_density/dpois2.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">########## Pois vs Binorm
+# lambda=n*p=10
+# p = 0.5, n = 20 时，binom和poison的pmf不重合
+# p = 0.1, n=100时，已经重合度较高
+# p = 0.01, n = 1000时，几乎完全重合
+
+colors=c('red', 'green', 'blue','purple')
+ns=c(20,100,1000)
+ps=c(0.5,0.1,0.01)
+
+lambdas=ps*ns #10 10 10
+n=length(lambdas)
+
+x=0:150;
+y=dpois(x, lambdas[1])
+plot(x,y, xlim=c(0,20), ylim=c(0, 0.18), xaxs ='i', 
+     type='o', col='grey', lwd=5,
+     xlab="X", ylab="Density", main="Pois and binorm\n[Grey line is Pois(10)]")
+for(i in 1:n ){
+  y=dbinom(x, ns[i], ps[i])
+  lines(x,y , type="o", cex=0.6, lty=2, col=colors[i])
+}
+usr=par('usr')
+legend(x=usr[2]*0.6, y=usr[4]*0.9, lty=1, title ="Binorm\n(size, p)", bty='n',
+       col=colors[1:n], legend=paste(ns,',', ps))
+#
+
+
+########## Pois vs Norm
+colors=c('black', 'red')
+
+x=-5:50;
+x2=seq(-5,50,0.01)
+plot(NULL,NULL, xlim=c(-2,30), ylim=c(0, 0.20), xaxs ='i', 
+     xlab="X", ylab="Density", main="Pois and Norm")
+for(lambda in c(5, 20, 50)){
+  # 泊松分布：离散
+  lines(x, dpois(x, lambda), type="o",cex=0.3, lty=1, col=colors[1])
+  # 正态分布：连续
+  lines(x2, dnorm(x2, lambda, lambda**0.5), type="l", lty=2, col=colors[2])
+}
+usr=par('usr')
+legend(x=usr[2]*0.6, y=usr[4]*0.9, lty=c(1,2), bty='n',
+       col=colors, legend=c('Pois', 'Norm'))</div>
+</div>
+
+
 
 
 
