@@ -338,7 +338,7 @@ for(var i=0;i<colors.length;i++){
 <hr>
 <a name='1_4'></a>
 <h3>色卡集合 (使用Canvas展示)</h3>
-
+<p>如果使用Chrome浏览器，可以按F12打开控制台Console, 鼠标打开单击颜色，自动获取16进制(hex)颜色值; 双击则获取一行unique color的hex; 控制台的字符可以复制粘贴。</p>
 
 <h4>集合1: 生活中的色彩</h4>
 <canvas id="canvas_colorBar1" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
@@ -356,12 +356,9 @@ for(var i=0;i<colors.length;i++){
 
 
 <script>
-	var canvas1 = document.getElementById('canvas_colorBar1');
-	var ctx1 = canvas1.getContext('2d');
-	//
-	var canvas2 = document.getElementById('canvas_colorBar2');
-	var ctx2 = canvas2.getContext('2d');
-	var ctx3=document.getElementById('canvas_colorBar3').getContext('2d');
+	var ctx1 = document.getElementById('canvas_colorBar1').getContext('2d');
+	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d');
+	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d');
 	
 	// tools
 	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
@@ -559,8 +556,85 @@ for(var i=0;i<colors.length;i++){
 		'#9ED6D3',  '#9E392A',  '#F07B05', '#0082C0', 'white',
 		'#96C83A', '#007BBB',     '#EB771F', '#0E2B52',     '#ECAA21', '#487433',     
 		'#5AB7B2', '#004E49',     '#B21D81', '#64203E', 
-
 	], 60, 'GeneCards', 30,deltaH=2)
+	
+	showColors(ctx3,[
+		'#173F5F', '#20639B', '#3CAEA3', '#F6D55C', '#ED553B',
+	], 110, 'web UI', 30,deltaH=2)
+//
+
+
+
+
+
+
+
+
+/**==========================
+* 功能： 单击、双击获取颜色hex
+*==========================*/
+console.log('Tips: 对于canvas上的色彩，单击获取一个颜色，双击获取一行颜色(unique colors);')
+// rgb to hex
+function rgb2hex(rgbArr) {
+	var rgb =  rgbArr; //color.split(',');
+	var r = rgb[0]
+	var g = rgb[1]
+	var b = rgb[2];
+	var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	return hex;
+}
+
+//get one color
+function getColor(event){
+	//获取鼠标的canvas画布坐标，通过js方法 [经典语句]
+	var canvas=this;
+	var ctx=canvas.getContext('2d');
+	var x=event.clientX-canvas.getBoundingClientRect().left;//当前鼠标x位置，减去画布左侧的区域
+	var y=event.clientY-canvas.getBoundingClientRect().top;
+	
+	//获取颜色
+	var imgData=ctx.getImageData(x,y,1,1);
+	//getImageData() 方法返回 ImageData 对象，该对象拷贝了画布指定矩形的像素数据。
+	var r=imgData.data[0];
+	var g=imgData.data[1];
+	var b=imgData.data[2];
+	var hex=rgb2hex([r,g,b])
+	console.log('%c'+hex, 'background:'+hex)
+}
+
+// get a line color
+function getColors(event){
+	//获取鼠标的canvas画布坐标，通过js方法 [经典语句]
+	//console.log(this)
+	var canvas=this;
+	var ctx=canvas.getContext('2d');
+	var x=event.clientX-canvas.getBoundingClientRect().left;//当前鼠标x位置，减去画布左侧的区域
+	var y=event.clientY-canvas.getBoundingClientRect().top;
+	
+	//获取这一行的全部颜色
+	var colorSet=[]
+	for(var i=0;i<canvas.width; i++){
+		var imgData=ctx.getImageData(i,y,1,1);
+		//getImageData() 方法返回 ImageData 对象，该对象拷贝了画布指定矩形的像素数据。
+		var r=imgData.data[0];
+		var g=imgData.data[1];
+		var b=imgData.data[2];
+		var hex=rgb2hex([r,g,b])
+		if(colorSet.indexOf(hex)==-1){
+			colorSet.push(hex)
+		}
+	}
+	console.log(colorSet, colorSet.length)
+	//
+	var bgcolor=('background:'+colorSet.join('; |background:') ).split(' |');
+	console.log.apply(null, ['%c "'+colorSet.join('", %c "')].concat(bgcolor) )
+}
+for(var i in [0,1,2]){
+	var ctx=[ctx1, ctx2, ctx3][i]
+	ctx.canvas.addEventListener('click', getColor); //单击单个颜色
+	ctx.canvas.addEventListener('dblclick', getColors); //双击一行，uniq color
+}
+
 </script>
 
 <br>
@@ -792,11 +866,16 @@ coding ...
 <pre>
 更多配色方案
 1. 花瓣网（https://huaban.com/）搜索「色卡」，查找别人上传的各种配色方案的卡片。
+	很多色板Trending color palettes https://coolors.co/palettes/trending
 2. Curated color palette inspiration. https://www.webdesignrankings.com/resources/lolcolors/
 3. https://colorhunt.co/
 4. https://vanschneider.com/colors
 5. https://www.canva.com/learn/100-color-combinations/
 6. https://color.adobe.com/zh/create/color-wheel
+	https://www.sessions.edu/color-calculator/
+
+7. 如何创建和谐的颜色
+https://www.sensationalcolor.com/creating-color-harmony/
 
 
 http://color.biaozhiku.com/
