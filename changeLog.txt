@@ -162,6 +162,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.6-6 添加泊松分布
 	main0.2.6-7 添加百度统计
 	main0.2.6-8 单双击canvas显示console hex功能
+	main0.2.6-9 fix
 # commit
 ########>> push
 
