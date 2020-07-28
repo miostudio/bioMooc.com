@@ -1,5 +1,5 @@
 >dir: biomooc.com
-www.biomooc.com
+https://www.biomooc.com
 URL at south: biomooc.dawneve.cc
 
 
@@ -164,6 +164,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.6-8 单双击canvas显示console hex功能
 	main0.2.6-9 fix
 	main0.2.7-0 新增指数分布
+	main0.2.7-1 添加支付信息
 # commit
 ########>> push
 
