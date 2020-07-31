@@ -1,0 +1,263 @@
+<meta charset="utf-8">
+
+<h1>仿PS取色器</h1>
+
+<style>
+input[type='range']{
+	width:400px;
+}
+
+canvas {cursor: crosshair;}
+#cur0,
+#cur {
+    width: 3px;
+    height: 3px;
+    outline: 2px solid #535353;
+    margin-left: -1px;
+    margin-top: -1px;
+    position: absolute;
+}
+#cur0{width:22px;}
+</style>
+
+
+
+<canvas id="canvas_colorBar4" width="450" height="450" style="border:1px dashed #ccc;"></canvas>
+<em id="cur0"></em>
+<em id="cur"></em>
+<br>
+rgb(<em id="rgb"></em>)
+
+<script>
+var cur = document.getElementById('cur');
+
+function $2(s){return document.getElementById(s);}
+
+	var ctx = document.getElementById('canvas_colorBar4').getContext('2d');
+	// tool 1: 方框填充
+	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
+		var nPerRow=Math.floor(600/width)
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
+			ctx.fillStyle=colors[i]; ctx.fillRect(x,y,width,20);
+		}
+		ctx.fillText(text, x+width+5,y+15)
+	}
+	// tool 2: 圆形填充
+	var showColors2=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
+		var nPerRow=Math.floor(600/width), r=width;
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
+			ctx.beginPath(); ctx.arc(x+r/2, y+r/2, r/2*0.95, 0, Math.PI*2); ctx.closePath();
+			ctx.fillStyle=colors[i]; ctx.fill();
+		}
+		ctx.fillText(text, x+width+5,y+15+r/8)
+	}
+//
+
+
+var width=400
+/**
+https://win7killer.github.io/#/vue_demo/ColorPicker
+*/
+//1. 颜色条
+//比如红色到白色过渡，然后加一层黑色到透明过渡？是滴，就是这么个方案。（我自己之前弯路到了红色到黑色，白色到透明）
+// 那么就是借助两次过渡色的填充，实现中间色块区域。
+function colorBar(ctx) {
+    var gradientBar = ctx.createLinearGradient(width+10, 0, width+10, width);
+    gradientBar.addColorStop(0, '#f00');
+    gradientBar.addColorStop(1 / 6, '#f0f');
+    gradientBar.addColorStop(2 / 6, '#00f');
+    gradientBar.addColorStop(3 / 6, '#0ff');
+    gradientBar.addColorStop(4 / 6, '#0f0');
+    gradientBar.addColorStop(5 / 6, '#ff0');
+    gradientBar.addColorStop(1, '#f00');
+
+    ctx.fillStyle = gradientBar;
+    ctx.fillRect(10+width, 0, 20, width);
+}
+//colorBar(ctx)
+
+
+//2. 大方块
+function colorBox(ctx, color) {
+    // 底色填充: 左到右，白色到彩色
+    var gradientBase = ctx.createLinearGradient(0, 0, width, 0);
+    gradientBase.addColorStop(0, 'rgba(255,255,255,1)');
+    gradientBase.addColorStop(1, color);
+    ctx.fillStyle = gradientBase;
+    ctx.fillRect(0, 0, width, width);
+    
+    // 第二次填充，黑色到透明: 
+    var my_gradient1 = ctx.createLinearGradient(0, 0, 0, width);
+    my_gradient1.addColorStop(0, 'rgba(0,0,0,0)');
+    my_gradient1.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx.fillStyle = my_gradient1;
+    ctx.fillRect(0, 0, width, width);
+}
+//colorBox(ctx, 'red')
+
+
+
+/**
+1.选择左侧colorbar（比如#ff0）,中间base颜色要跟着变化,右上角也要是对应颜色（#ff0）【这个时候其实也可以得到选择的颜色，可以结束交互】;
+2.选择中间区域的颜色，左侧不变，可以获取到对应的颜色值，结束交互。
+*/
+ctx.canvas.addEventListener('click', function(e) {
+	//console.log('clicked!', e)
+    var ePos = {
+        x: e.offsetX || e.layerX,
+        y: e.offsetY || e.layerY
+    }
+	var event=e;
+	var canvas=ctx.canvas;
+	
+    var rgbaStr = '#000';
+    if (ePos.x >= width+10 && ePos.x < width+30 && ePos.y >= 0 && ePos.y < width) {
+        // in
+        rgbaStr = getRgbaAtPoint(ePos, 'bar');
+		//console.log('>>>', rgbaStr)
+        colorBox(ctx, 'rgba(' +  rgbaStr +  ')', width);
+    } else if (ePos.x >= 0 && ePos.x < width && ePos.y >= 0 && ePos.y < width) {
+        rgbaStr = getRgbaAtPoint(ePos, 'box');
+    } else {
+        return;
+    }
+    outColor(rgbaStr.slice(0, 3).join()); //输出颜色
+	if(ePos.x > width){ //bar
+		var cur_=cur0;
+		cur_.style.left = width+11+canvas.getBoundingClientRect().left + 'px';
+	}else{ //box
+		var cur_=cur;
+		cur_.style.left = ePos.x+canvas.getBoundingClientRect().left + 'px';
+	}
+    cur_.style.top = ePos.y+canvas.getBoundingClientRect().top + 'px';
+    cur_.style.outlineColor = (rgbaStr[0] > 256 / 2 || rgbaStr[1] > 256 / 2 || rgbaStr[2] > 256 / 2) ? '#000' : '#fff';
+});
+
+
+
+var can=ctx.canvas;
+can.addEventListener('mousedown', function(e) {
+	var ePos = {
+		x: e.layerX || e.offsetX,
+		y: e.layerY || e.offsetY
+	}
+	if (ePos.x >= 0 && ePos.x < width && ePos.y >= 0 && ePos.y < width) {
+		document.onmousemove = function(e) {
+			var pos = {
+				x: e.layerX || e.offsetX,
+				y: e.layerY || e.offsetY
+				//x: e.clientX,
+				//y: e.clientY
+			}
+
+			pos.x = pos.x < 0 ? 0 : pos.x && (pos.x > (width - 1) ? (width - 1) : pos.x);
+			pos.y = pos.y < 0 ? 0 : pos.y && (pos.y > (width - 1) ? (width - 1) : pos.y);
+
+			rgbaStr = getRgbaAtPoint(pos, 'box');
+			
+			if(pos.x > width){ //bar
+				var cur_=cur0;
+				cur_.style.left = width+11+can.getBoundingClientRect().left + 'px';
+			}else{ //box
+				var cur_=cur;
+				cur_.style.left = pos.x+can.getBoundingClientRect().left + 'px';
+			}
+			cur_.style.top = pos.y+can.getBoundingClientRect().top + 'px';
+			
+			cur_.style.outlineColor = (rgbaStr[0] > 256 / 2 || rgbaStr[1] > 256 / 2 || rgbaStr[2] > 256 / 2) ? '#000' : '#fff';
+			outColor(rgbaStr.slice(0, 3).join());
+		};
+		document.onmouseup = function() {
+			// outColor(rgbaStr.slice(0, 3).join());
+			document.onmouseup = document.onmousemove = null;
+		}
+	}
+
+});
+
+//获取鼠标处的颜色
+function getRgbaAtPoint(pos, area) {
+    if (area == 'bar') {
+        var imgData = ctx.getImageData(width+10, 0, 20, width);
+    } else {
+        var imgData = ctx.getImageData(0, 0, width, width);
+    }
+	//console.log(pos, area, '||', imgData.width, imgData.height)
+
+    var data = imgData.data;
+    var dataIndex = (pos.y * imgData.width +  (pos.x-410) ) * 4;
+    return [
+        data[dataIndex],
+        data[dataIndex + 1],
+        data[dataIndex + 2],
+        (data[dataIndex + 3] / 255).toFixed(2),
+    ];
+}
+
+
+// rgb2hex('255,0,0') //"ff0000"
+function rgb2hex(rgb) {
+    var aRgb = rgb instanceof Array ? rgb : (rgb.split(',') || [0, 0, 0]);
+    var temp;
+    return [
+        (temp = Number(aRgb[0]).toString(16)).length == 1 ? ('0' +  temp) : temp,
+        (temp = Number(aRgb[1]).toString(16)).length == 1 ? ('0' +  temp) : temp,
+        (temp = Number(aRgb[2]).toString(16)).length == 1 ? ('0' +  temp) : temp,
+    ].join('');
+}
+function hex2rgb(hex) {
+    if (hex.length == 3) {
+        hex = hex[0] +  hex[0] +  hex[1]  + hex[1] +  hex[2] +  hex[2];
+    }
+    return [
+        parseInt(hex[0] +  hex[1], 16),
+        parseInt(hex[2] +  hex[3], 16),
+        parseInt(hex[4] +  hex[5], 16),
+    ].join();
+}
+
+
+//输出颜色
+function outColor(rgb) {
+	var color="rgb("+rgb+")";
+	console.log(rgb, color)
+	showColors(ctx, [ color ], width+20, 'current color', 50);
+	$2('rgb').innerHTML=rgb;
+}
+
+//初始化
+function init(){
+	colorBar(ctx)
+	//colorBox(ctx, 'red')
+	
+	var evObj = document.createEvent('MouseEvents');
+	// 模拟第一次单击 bar
+	var evObj = new MouseEvent("click", {
+		isTrusted:true,
+		view: window,
+		bubbles: true,
+		cancelable: true,
+		screenX:456, screenY:257, 
+		clientX:432, clientY:177
+		/* whatever properties you want to give it */
+	});
+	ctx.canvas.dispatchEvent(evObj);//chrome
+	
+	// 模拟第二次单击 box
+	evObj = new MouseEvent("click", {
+		isTrusted:true,
+		view: window,
+		bubbles: true,
+		cancelable: true,
+		screenX:240, screenY:155, 
+		clientX:216, clientY:75
+		/* whatever properties you want to give it */
+	});
+	ctx.canvas.dispatchEvent(evObj);//chrome
+}
+init()
+</script>

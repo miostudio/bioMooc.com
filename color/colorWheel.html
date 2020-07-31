@@ -1,0 +1,271 @@
+<meta charset="utf-8">
+
+<h1>Inner to outer: lightness 0(black) to 1(white)</h1>
+
+<style>
+/*
+v1.0
+*/
+input[type='range']{
+	width:400px;
+}
+
+canvas {cursor: crosshair;}
+#cur {
+    width: 3px;
+    height: 3px;
+    outline: 2px solid #535353;
+    margin-left: -1px;
+    margin-top: -1px;
+    position: absolute;
+}
+</style>
+
+
+Saturation: 0<input type="range" value=1 min=0 max=1 step=0.01 id='hsl_s'>1. Current:<span id='hsl_s_value'>1</span>
+<br>
+colorNumber: 2<input type="range" value=5 min=2 max=20 step=1 id='colorNumber'>20. Current:<span id='colorNumber_value'>5</span>
+<br>
+
+
+<canvas id="canvas2" width="600" height="100" style="border:1px dashed #ccc;"></canvas>
+<br>
+<canvas id="canvas1" width="450" height="450" style="border:1px dashed #ccc;"></canvas>
+<br>
+<textarea style="width:600px; height:50px;" id="colors"></textarea>
+
+<em id="cur"></em>
+
+<script>
+function $2(s){return document.getElementById(s);}
+var cur = $2('cur');
+
+var Settings={'colorNumber':5, 's':1}
+function getSettings(key){
+	if(key in Settings){
+		return Settings[key]
+	}
+	return null;
+}
+
+// light
+$2('hsl_s').onmousemove=$2('hsl_s').onchange=function(){
+	$2('hsl_s_value').innerHTML=this.value;
+	Settings['s']=this.value-0;
+	refreshColorWheel()
+}
+// colorNumber
+$2('colorNumber').onmousemove=$2('colorNumber').onchange=function(){
+	$2('colorNumber_value').innerHTML=this.value;
+	Settings['colorNumber']=this.value-0;
+}
+
+
+
+//初始化画布
+var DIM=600;
+var canvas=document.getElementById('canvas1');
+var ctx = canvas.getContext('2d');
+canvas.width=DIM;canvas.height=DIM;
+drawColorWheel(ctx)
+//
+var canvas2=document.getElementById('canvas2');
+var ctx2 = canvas2.getContext('2d');
+
+	// tool 1: 方框填充
+	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
+		var nPerRow=Math.floor(600/width)
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
+			ctx.fillStyle=colors[i]; 
+			ctx.fillRect(x,y,width,height);
+		}
+		ctx.fillStyle='black';
+		ctx.fillText(text, x+width+5,y+15)
+	}
+	// tool 2: 圆形填充
+	var showColors2=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
+		var nPerRow=Math.floor(600/width), r=width;
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(height+deltaH)+initHeight;
+			ctx.beginPath(); ctx.arc(x+r/2, y+r/2, r/2*0.95, 0, Math.PI*2); ctx.closePath();
+			ctx.fillStyle=colors[i]; ctx.fill();
+		}
+		ctx.fillStyle='black';
+		ctx.fillText(text, x+width+5,y+15+r/8)
+	}
+	/**(4) 
+	* input: h:[0,360], s,l : [0, 1]
+	* output: rgb array, [0,255]
+	* ref: https://www.rapidtables.com/convert/color/hsl-to-rgb.html
+	*/
+	function hsl2rgb(hsl){
+		var h=hsl[0], s=hsl[1], l=hsl[2];
+		var c=(1-Math.abs(2*l -1))*s;
+		var x=c*(1- Math.abs( (h/60) % 2 -1 ) );
+		var m=l-c/2;
+		var r=0, g=0, b=0;
+		if(h<60){r=c;g=x;
+		}else if(h<120){r=x;g=c;
+		}else if(h<180){    g=c;b=x;
+		}else if(h<240){    g=x;b=c;
+		}else if(h<300){r=x;    b=c;
+		}else if(h<360){r=c;    b=x;
+		}else{return false;}
+		
+		return([(r+m)*255, (g+m)*255, (b+m)*255])
+	}
+	//hsl2rgb([0,1,0.5]) # [255, 0, 0]
+
+
+
+
+
+
+
+
+	// tools
+	function _sq(x,y){return Math.sqrt(x**2+y**2);}
+	
+	// get angle [0, 2*PI]
+	function getAngle(x,y, cx,cy){
+		var dist=_sq(x-cx,y-cy);
+		var angle=Math.asin( (y-cy)/dist); //1
+		if( x-cx >=0){ if(angle<0){angle += 2*Math.PI} }//4
+		if( x-cx <0){ angle=Math.PI-angle;} //3, 2
+		return angle;
+	}
+	// 位置x,y, 圆形cx,cy;
+	function getHSLbyCoord(x,y,cx,cy,R){
+		// get angle
+		var angle=getAngle(x,y, cx,cy)
+		// get hsl
+		var h=angle/Math.PI*180;
+		//
+		var s=1; //------------------ 手动设定，或通过url传入
+		var getS=getSettings('s'); 
+		if(getS!=null && getS>=0 && getS<=1){ s=getS; }
+		//
+		var dist=_sq(x-cx,y-cy);
+		var l=dist/R;
+		return [h,s,l];
+	}
+
+//method5: HSL 色环
+// const DIM=1024 时效果最好;
+function drawColorWheel(ctx){
+	//1.创建imageData
+	var canvas=ctx.canvas;
+	var imgData=ctx.createImageData(canvas.width, canvas.height);
+	
+	//填充点
+	for (var y=0;y<imgData.height;y++){
+		for (var x=0;x<imgData.width;x++){
+			var rgb=[255,255,255];
+			// to rgb;
+			var R=DIM/2; // 圆心(DIM/2, DIM/2)
+			var dist=_sq(x-R,y-R);
+			if(dist<=R){ 
+				var hsl=getHSLbyCoord(x,y, R,R, R);
+				rgb=hsl2rgb( hsl ); 
+			}
+			//console.log(x,y, "hsl(",h,s,l,"); rgb(", rgb ,')')
+			//填充
+			var p=y*imgData.width+x; //点的位置	
+			imgData.data[4*p+0]=rgb[0];
+			imgData.data[4*p+1]=rgb[1];
+			imgData.data[4*p+2]=rgb[2];
+			imgData.data[4*p+3]=255;
+		}
+	}
+	
+	//3.填充画布
+	ctx.putImageData(imgData,0,0, 0,0, canvas.width, canvas.height);
+}
+
+//
+function refreshColorWheel(){
+	console.log('refresh...')
+	drawColorWheel(ctx)
+	return null;
+}
+
+// 单击事件
+ctx.canvas.addEventListener('click', function(e){ clicked(e) });
+ctx.canvas.addEventListener('mousedown', function(e){
+	document.onmousemove = function(e) {
+		clicked(e);	
+	}
+	document.onmouseup = function() {
+		document.onmouseup = document.onmousemove = null;
+	}
+});
+
+function clicked(e) {
+	var ctx=this;
+	var canvas=ctx.canvas;
+    var ePos = {
+        x: e.offsetX || e.layerX,
+        y: e.offsetY || e.layerY
+    }
+	//console.log(ePos, e.offsetY)
+	
+    var rgbaStr = getRgbaAtPoint(ePos)
+	//鼠标单击位置添加小方块
+	cur.style.left = ePos.x+canvas.getBoundingClientRect().left + 'px';
+    cur.style.top = ePos.y+canvas.getBoundingClientRect().top + 'px';
+    cur.style.outlineColor = (rgbaStr[0] > 256 / 2 || rgbaStr[1] > 256 / 2 || rgbaStr[2] > 256 / 2) ? '#000' : '#fff';
+	//获取颜色，并显示到右侧
+	ctx2.fillStyle="white";
+	ctx2.fillRect(0,0, ctx2.canvas.width, ctx2.canvas.height)
+    var color=rgb2hex( rgbaStr.slice(0, 3).join() ); //输出颜色
+	//showColors(ctx2, [color], 5, 'Current color', 40)
+	//
+	var R=DIM/2;
+	var colors=getColors(ePos.x,ePos.y, R,R,R);
+	//outColor(colors, 120);
+	//var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
+	showColors2(ctx2, colors, 5, '', 40, 20, height=20)
+	$2('colors').innerHTML='"'+colors.join('",')+'"'
+	console.log(colors)
+}
+
+// 根据位置获取指定数量的颜色array，同一个色环上
+function getColors(x,y, cx,cy, R){
+	var colorNumber=getSettings('colorNumber');
+	var binwidth=Math.PI*2/colorNumber;
+	var angleInit=getAngle(x,y, cx,cy);
+	var dist=_sq(x-cx,y-cy);
+	var colors=[ rgb2hex(getRgbaAtPoint({x:x, y:y}))]
+	for(var i=1; i<colorNumber; i++){
+		var angle=angleInit+binwidth*i;
+		var x=R+dist*Math.cos(angle);
+		var y=R+dist*Math.sin(angle);
+		var color=getRgbaAtPoint({x: x, y:y});
+		colors.push( rgb2hex(color) );
+	}
+	
+	return colors;
+}
+
+//获取鼠标处的颜色
+function getRgbaAtPoint(pos) {
+    var imgData = ctx.getImageData(pos.x, pos.y, 1, 1);
+    var p = imgData.data;
+    //return [ p[0], p[1], p[2], (p[3] / 255).toFixed(2) ];
+    return [ p[0], p[1], p[2] ];
+}
+// rgb2hex('255,0,0') //"ff0000"
+function rgb2hex(rgb) {
+    var aRgb = rgb instanceof Array ? rgb : (rgb.split(',') || [0, 0, 0]);
+    var temp;
+    var hex=[
+        (temp = Number(aRgb[0]).toString(16)).length == 1 ? ('0' +  temp) : temp,
+        (temp = Number(aRgb[1]).toString(16)).length == 1 ? ('0' +  temp) : temp,
+        (temp = Number(aRgb[2]).toString(16)).length == 1 ? ('0' +  temp) : temp,
+    ].join('');
+	return '#'+hex;
+}
+</script>

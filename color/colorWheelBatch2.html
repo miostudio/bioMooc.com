@@ -1,0 +1,158 @@
+<meta charset="utf-8">
+
+<h1>Inner to outer: Saturation</h1>
+<style>
+input[type='range']{
+	width:400px;
+}
+</style>
+
+<h4>集合4: 色环</h4>
+Lightness: 0<input type="range" value=0.5 min=0 max=1 step=0.01 id='hsl_l'>1. Current:<span id='hsl_l_value'>0.5</span>
+<br>
+colorNumber: 2<input type="range" value=5 min=2 max=100 step=1 id='colorNumber'>100. Current:<span id='colorNumber_value'>5</span>
+<br>
+rotation: 0<input type="range" value=0 min=0 max=360 step=0.1 id='rotate'>360. Current:<span id='rotate_value'>0</span>
+<br>
+wearProof: 5<input type="range" value=25 min=5 max=80 step=1 id='wearProof'>80. Current:<span id='wearProof_value'>25</span>
+<br>
+
+
+<canvas id="canvas_colorBar4" width="800" height="550" style="border:1px dashed #ccc;"></canvas>
+
+
+<script>
+function $2(s){return document.getElementById(s);}
+
+// light
+$2('hsl_l').onmousemove=$2('hsl_l').onchange=function(){
+	$2('hsl_l_value').innerHTML=this.value;
+	refresh()
+}
+
+// colorNumber
+$2('colorNumber').onmousemove=$2('colorNumber').onchange=function(){
+	$2('colorNumber_value').innerHTML=this.value;
+	refresh()
+}
+
+
+// rotate
+$2('rotate').onmousemove=$2('rotate').onchange=function(){
+	$2('rotate_value').innerHTML=this.value;
+	refresh()
+}
+
+// wearProof
+$2('wearProof').onmousemove=$2('wearProof').onchange=function(){
+	$2('wearProof_value').innerHTML=this.value;
+	refresh()
+}
+
+	var ctx4 = document.getElementById('canvas_colorBar4').getContext('2d');
+	// tool 1: 方框填充
+	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
+		var nPerRow=Math.floor(600/width)
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
+			ctx.fillStyle=colors[i]; ctx.fillRect(x,y,width,20);
+		}
+		ctx.fillText(text, x+width+5,y+15)
+	}
+	// tool 2: 圆形填充
+	var showColors2=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
+		var nPerRow=Math.floor(600/width), r=width;
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
+			ctx.beginPath(); ctx.arc(x+r/2, y+r/2, r/2*0.95, 0, Math.PI*2); ctx.closePath();
+			ctx.fillStyle=colors[i]; ctx.fill();
+		}
+		ctx.fillText(text, x+width+5,y+15+r/8)
+	}
+
+	/**
+	* 添加颜色
+	*/
+	showColors(ctx4, [ // change hue
+		"hsl(0,100%, 50%)","hsl(120,100%, 50%)","hsl(240,100%, 50%)", 'white', 
+		//change saturation
+		"hsl(0,0%, 50%)",
+		"hsl(0,10%, 50%)",
+		"hsl(0,20%, 50%)",
+		"hsl(0,30%, 50%)",
+		"hsl(0,50%, 50%)",
+		"hsl(0,70%, 50%)",
+		"hsl(0,90%, 50%)",
+		"hsl(0,100%, 50%)",
+		'white',
+		//chang lightness;
+		"hsl(0,100%, 0%)",
+		"hsl(0,100%, 10%)",
+		"hsl(0,100%, 30%)",
+		"hsl(0,100%, 50%)",
+		"hsl(0,100%, 70%)",
+		"hsl(0,100%, 90%)",
+		"hsl(0,100%, 100%)", 
+		'black'
+	],5, 'HSL color', 25, deltaH=5);
+//
+
+
+
+/**==========================
+* 第4个色板: 色环
+*==========================*/
+/**
+* 产生色环
+* @params: ctx canvas_context 已经初始化后的 canvas context
+* @params: x float 圆心 x 坐标
+* @params: y float 圆心 y 坐标
+* @params: outterRadius float 圆的外径
+* @params: innerRadius float 圆的内径
+* @params: wearProof float 细腻度(>0,越小越细腻)
+* @returs: false
+* https://blog.csdn.net/samed/article/details/51385872
+*/
+var colorRing = function(ctx, x, y, outterRadius, innerRadius, wearProof, l=0.5, colorNumber=5, delta=10){
+	delta=delta/180*Math.PI
+
+	ctx.lineWidth=wearProof*0.8;
+	var binwidth= 360/colorNumber //45 60 90 120 150 180 200 240 280
+	//console.log(colorNumber, '; binwidth=',binwidth)
+	for (var i = outterRadius; i >= innerRadius; i-=wearProof) {
+		// i: Radius of the circle;
+		var s = (i-innerRadius) / (outterRadius-innerRadius); //饱和度[0,1]，由半径决定
+		//很诡异: 把Math.PI换成180就会出错;
+		for (var j = 0; j < Math.PI*2; j+=Math.PI/720*4*binwidth) {
+			// j: angle 0-360
+			var h=(j+delta)/Math.PI*180;
+			//var h=j;
+			var color='hsl('+ h +','+s*100+'%,'+l*100+'%)'; //动态生成颜色，h由角度j决定， s由半径i决定;
+			ctx.beginPath();
+			ctx.strokeStyle = color;
+			ctx.arc(x,y,i, j+delta,j+delta+Math.PI/720*binwidth*4*0.9, false); //弧线
+			ctx.stroke();
+			//console.log("(",i, ',',j,")",h, s, l, color)
+		};		
+	};
+	return false;
+}
+//ctx, x, y, outterRadius, innerRadius, wearProof
+//colorRing(ctx4, 250,300, 200,50, 20);
+function refresh(isClear=true){
+	if(isClear){
+		var canvas=ctx4.canvas;
+		ctx4.clearRect(0, 0, canvas.width, canvas.height);
+	}
+	
+	var l=$2('hsl_l_value').innerHTML;
+	var colorNumber=$2('colorNumber_value').innerHTML;
+	var rotate=$2('rotate_value').innerHTML;
+	var wearProof=$2('wearProof_value').innerHTML;
+	
+	colorRing(ctx4, 250,300, 200,50, wearProof, l, colorNumber, rotate);
+}
+refresh(false)
+</script>

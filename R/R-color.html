@@ -170,8 +170,23 @@ $(function(){
 <p>更复杂一些的，比如关于互补色、对比色的使用等颜色搭配相关的进阶知识，感兴趣的可以自行查看学习，对 SCI 图片或者是 PPT 的制作都是很有帮助的。</p>
 
 
+
 <h3>色彩概述</h3>
-<p>Complementary color combinations</p>
+
+<p>可以直接用色轮中的相邻色和互补色确定主色。</p>
+<p><a target="_blank" href="https://www.w3schools.com/colors/colors_palettes.asp">color palettes</a></p>
+<p><a target="_blank" href="https://www.w3schools.com/colors/colors_wheels.asp">color wheels</a></p>
+<p><a target="_blank" href="https://www.w3schools.com/colors/colors_schemes.asp">color schemes</a></p>
+<p><a target="_blank" href="https://www.w3schools.com/colors/colors_psychology.asp">color psychology</a></p>
+
+<p>单色(hue相同，饱和度不同)Monochromatic schemes use different tones from the same angle on the color wheel (the same hue).</p>
+<p>相似色 Analogous color schemes are created by using colors that are next to each other on the color wheel.</p>
+<p>互补色(hue在色轮两端) Complementary schemes are created by combining colors from opposite sides of the color wheel.</p>
+<p>三色系 Triadic schemes are made up of hues equally spaced around color wheel.</p>
+<p>复合方案 Compound schemes are almost the same as complementary schemes.
+Instead of using colors that are opposites, it uses colors on both sides of the opposite hue.</p>
+
+
 
 
 
@@ -184,10 +199,6 @@ $(function(){
 <h2 class="tutheader">figure中的色彩实例</h2>
 
 
-
-
-
-
 <a name='1_1'></a>
 <h3>色彩列表</h3>
 <p>微软的四种颜色</p>
@@ -197,14 +208,26 @@ ul.color li{margin:0; padding:0; list-style-type: none;}
 </style>
 <ul class=color>
 	<li>
-		<span style="display:inline-block; background:#F54D22; height:40px; width:40px;"></span>
-		<span style="display:inline-block; background:#83BA00; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#F65314; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#7CBB00; height:40px; width:40px;"></span>
 	</li>
 	<li>
-		<span style="display:inline-block; background:#00A5F0; height:40px; width:40px;"></span>
-		<span style="display:inline-block; background:#FFBA00; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#00A1F1; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#FFBB00; height:40px; width:40px;"></span>
 	</li>
 </ul>
+
+
+<p>Google的四种颜色</p>
+<ul class=color>
+	<li>
+		<span style="display:inline-block; background:#4285F4; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#FBBC05; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#34A853; height:40px; width:40px;"></span>
+		<span style="display:inline-block; background:#EA4335; height:40px; width:40px;"></span>
+	</li>
+</ul>
+
 <br>
 <br>
 
@@ -340,18 +363,26 @@ for(var i=0;i<colors.length;i++){
 <h3>色卡集合 (使用Canvas展示)</h3>
 <p>如果使用Chrome浏览器，可以按F12打开控制台Console, 鼠标<b>单击</b>颜色，控制台输出16进制(hex)颜色值; <b>双击</b>则输出一整行unique color的hex值; 控制台带背景色的颜色字符可以复制粘贴。</p>
 
-<h4>集合1: 生活中的色彩</h4>
+<p>小工具: 批量选取自己喜欢的颜色,  
+	<a target="_blank" href="/color/colorWheel.html">批量By色环</a> | 
+	<a target="_blank" href="/color/colorWheelBatch.html">批量ByL</a> | 
+	<a target="_blank" href="/color/colorWheelBatch2.html">批量ByS</a> | 
+	<a target="_blank" href="/color/colorPicker_PS.html">仿PS颜色设置</a> | 
+</p>
+
+
+<h4>Color Palette 1: 生活中的色彩</h4>
 <canvas id="canvas_colorBar1" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
 
-<h4>集合2: CNS paper中单细胞可视化(tSNE/ UMAP/ heatmap/ boxplot) 经典配色</h4>
+<h4>Color Palette 2: CNS paper中单细胞可视化(tSNE/ UMAP/ heatmap/ boxplot) 经典配色</h4>
 <canvas id="canvas_colorBar2" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
 
 
-<h4>集合3: 财经杂志 商务图表</h4>
+<h4>Color Palette 3: 财经杂志 商务图表</h4>
 <canvas id="canvas_colorBar3" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
@@ -360,18 +391,33 @@ for(var i=0;i<colors.length;i++){
 	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d');
 	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d');
 	
-	// tools
-	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0){
+	// tool 1: 方框填充
+	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
 		var nPerRow=Math.floor(600/width)
 		for(var i=0; i<colors.length; i++ ){
 			var x=(i%nPerRow)*width
 			var y=Math.floor(i/nPerRow)*(20+deltaH)+initHeight;
-			ctx.fillStyle=colors[i]; ctx.fillRect(x,y,width,20);
+			ctx.fillStyle=colors[i]; ctx.fillRect(x,y,width,height);
 		}
 		ctx.fillText(text, x+width+5,y+15)
 	}
 	
-	// define colors
+	// tool 2: 圆形填充
+	var showColors2=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
+		var nPerRow=Math.floor(600/width), r=width;
+		for(var i=0; i<colors.length; i++ ){
+			var x=(i%nPerRow)*width
+			var y=Math.floor(i/nPerRow)*(height+deltaH)+initHeight;
+			ctx.beginPath(); ctx.arc(x+r/2, y+r/2, r/2*0.95, 0, Math.PI*2); ctx.closePath();
+			ctx.fillStyle=colors[i]; ctx.fill();
+		}
+		ctx.fillText(text, x+width+5,y+15+r/4)
+	}
+//
+
+
+
+
 /**==========================
 * 第1个色板: 自然色彩
 *==========================*/
@@ -514,6 +560,13 @@ for(var i=0;i<colors.length;i++){
 		'#FD6349', '#31CC30', '#FBD800', '#FF6FB5', '#E02046', '#078309', '#FF01FD', '#6F6F6F', '#446CFF', '#FDA602'//基因组散点图
 		], 250, 'NG2016, 包菜', 22, deltaH=2)
 	
+	//6.
+	showColors2(ctx2,[
+		'#F9A31C', '#6BCCDF', '#F01A2A', '#B84E9D', '#ECEB5C',
+		], 275, 'nature 2013,GPCR', 22, deltaH=2)
+	
+	
+	
 	
 	//100. CNS 色彩
 	showColors(ctx2,[
@@ -534,21 +587,23 @@ for(var i=0;i<colors.length;i++){
 		
 		'black'
 	], 300, 'nature 杂志色彩组合', 25,deltaH=2)
+	
 
 
 
 /**==========================
 * 第3个色板: 商务图表
 *==========================*/
+	// 1
 	showColors(ctx3,[
 		'#D5E4EB', '#6594A4', '#004D63', '#02A3E1', '#ADADAF', 'white', 
 		'#F8F2E4', '#D1BB65', '#D6695C', '#5F8CA6', '#63A577', 
 	], 5, '经济学人', 40,deltaH=2)
-	
+	// 2
 	showColors(ctx3,[
 		'#E7EAED', '#2B579A', '#A5B9D1', '#217346', '#9FCDB3', '#B7472A', '#FAC7B3', 
 	], 30, 'ms office color', 40,deltaH=2)
-	
+	// 3
 	showColors(ctx3,[
 		'#DE7E1E', '#002E5F','#AFB5C0','#417630', 'white',  
 		'#A61F7D','#DAABB4',/*桃红-浅*/  '#005652','#9ED6D3', /*重绿-浅*/ 'white',
@@ -557,13 +612,24 @@ for(var i=0;i<colors.length;i++){
 		'#96C83A', '#007BBB',     '#EB771F', '#0E2B52',     '#ECAA21', '#487433',     
 		'#5AB7B2', '#004E49',     '#B21D81', '#64203E', 
 	], 60, 'GeneCards', 30,deltaH=2)
-	
-	showColors(ctx3,[
+	// 4
+	showColors2(ctx3,[
 		'#173F5F', '#20639B', '#3CAEA3', '#F6D55C', '#ED553B',
-	], 110, 'web UI', 30,deltaH=2)
+	], 115, 'web UI', 30)
+	
+	// 5
+/* Light Green /Green/Dark Green/Magenta/Light Purple/
+Purple/Dark Purple/Darken/Teal/Light Blue/
+Blue/Dark Blue/Yellow/Orange/Dark Orange/
+Red/Dark Red/ */
+	showColors(ctx3,[
+		'#99b433', '#00a300', '#1e7145', '#ff0097', '#9f00a7', 
+		'#7e3878', '#603cba', '#eff4ff','#1d1d1d',  'white',
+		'#00aba9', '#2d89ef', '#2b5797', '#ffc40d', '#e3a21a', '#da532c', 
+		'#ee1111', '#b91d47', 
+	], 160, 'Metro UI', 60, deltaH=25, 40)
+
 //
-
-
 
 
 
@@ -629,6 +695,7 @@ function getColors(event){
 	var bgcolor=('background:'+colorSet.join('; |background:') ).split(' |');
 	console.log.apply(null, ['%c "'+colorSet.join('", %c "')].concat(bgcolor) )
 }
+// 为画板绑定事件: 单击、双击
 for(var i in [0,1,2]){
 	var ctx=[ctx1, ctx2, ctx3][i]
 	ctx.canvas.addEventListener('click', getColor); //单击单个颜色
