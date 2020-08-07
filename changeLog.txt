@@ -168,6 +168,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	main0.2.7-2 fix
 	main0.2.7-3 添加色环
 	main0.2.7-4 fix
+	page0.2.7-5 R 中可视化颜色 scales::show_col
+		单独拿出来 cavas_tools.js
 # commit
 ########>> push
 

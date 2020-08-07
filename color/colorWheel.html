@@ -7,6 +7,7 @@
 <style>
 /*
 v1.0
+v1.1 设定默认值colorNumber=6
 */
 input[type='range']{
 	width:400px;
@@ -21,12 +22,13 @@ canvas {cursor: crosshair;}
     margin-top: -1px;
     position: absolute;
 }
+.red{ color:red; }
 </style>
 
 
-Saturation: 0<input type="range" value=1 min=0 max=1 step=0.01 id='hsl_s'>1. Current:<span id='hsl_s_value'>1</span>
+Saturation: 0<input type="range" value=1 min=0 max=1 step=0.01 id='hsl_s'>1. [ <span class='red' id='hsl_s_value'>1</span> ]
 <br>
-colorNumber: 2<input type="range" value=5 min=2 max=20 step=1 id='colorNumber'>20. Current:<span id='colorNumber_value'>5</span>
+colorNumber: 2<input type="range" value=6 min=2 max=20 step=1 id='colorNumber'>20. [ <span class='red' id='colorNumber_value'>6</span> ]
 <br>
 
 
@@ -42,7 +44,7 @@ colorNumber: 2<input type="range" value=5 min=2 max=20 step=1 id='colorNumber'>2
 function $2(s){return document.getElementById(s);}
 var cur = $2('cur');
 
-var Settings={'colorNumber':5, 's':1}
+
 function getSettings(key){
 	if(key in Settings){
 		return Settings[key]
@@ -62,6 +64,11 @@ $2('colorNumber').onmousemove=$2('colorNumber').onchange=function(){
 	Settings['colorNumber']=this.value-0;
 }
 
+//初始化
+var Settings={
+	'colorNumber':$2('colorNumber').value-0, 
+	's':$2('hsl_s').value-0
+}
 
 
 //初始化画布

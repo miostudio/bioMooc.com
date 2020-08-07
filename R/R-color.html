@@ -31,6 +31,9 @@
 /*本页R代码过长: 最长n px,超过了出现滚动条*/
 .maxHeight{max-height:400px; overflow:scroll;}
 
+
+canvas {cursor: crosshair;}
+
 .colorBox div{
 	height: 50px;
     width: 60px;
@@ -126,6 +129,7 @@ $(function(){
 	</li>
 	<li><a href="#2">R 中的色彩函数</a>
 		<ul>
+			<li><a href="#2_0">查看颜色效果</a>
 			<li><a href="#2_1">内置渐变色</a>
 			<li><a href="#2_2">预置配色与自定义渐变色</a>
 			<li><a href="#2_3">伪时间热图的渐变色设置原理</a>
@@ -152,7 +156,7 @@ $(function(){
 
 <a name='0'></a>
 <h2>色彩理论知识</h2>
-<h3>SCI 图片用色的基本原则</h3>
+<h3>SCI 图片用色的<a target="_blank" href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003833">基本原则</a></h3>
 <p>sci图片的目标: 整洁干净、简洁漂亮。</p>
 <ul>
 	<li>同一篇文章的图片颜色要注意色调的整体性，不宜出现特别鲜明刺眼的颜色（尤其是荧光绿）</li>
@@ -372,7 +376,7 @@ for(var i=0;i<colors.length;i++){
 
 
 <h4>Color Palette 1: 生活中的色彩</h4>
-<canvas id="canvas_colorBar1" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
+<canvas id="canvas_colorBar1" width="600" height="550" style="border:1px dashed #ccc;"></canvas>
 
 
 
@@ -386,10 +390,17 @@ for(var i=0;i<colors.length;i++){
 <canvas id="canvas_colorBar3" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
+
+
+<h4>Color Palette 4: HSL色彩模型</h4>
+<canvas id="canvas_colorBar4" width="600" height="600" style="border:1px dashed #ccc;"></canvas>
+
+
 <script>
 	var ctx1 = document.getElementById('canvas_colorBar1').getContext('2d');
 	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d');
 	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d');
+	var ctx4 = document.getElementById('canvas_colorBar4').getContext('2d');
 	
 	// tool 1: 方框填充
 	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
@@ -479,7 +490,20 @@ for(var i=0;i<colors.length;i++){
 		'#0A9AD7', '#F9C506', '#62BA46', '#ED245C', '#888B8D',
 		   ],300, '10X genomics', 25)
 	
-	//10. 大自然
+	//11
+	showColors(ctx1,[
+		'#E34595', '#C50F55', '#A10328', '#F3DF37', '#DFC425', '#AE8605', 
+		'#B5CE37', '#4E8A06', '#426B16', '#FBC867', '#DF7731', '#9C0402', 
+		'#411C0B', '#D7B984', '#201F24',
+	], 330, '线团', 30, deltaH=2)
+
+	//12
+	showColors(ctx1,[
+		'#B2FDFD', '#01DDFA', '#01AFDD', '#834E24', '#F6D738', '#FD8E03', '#FA4101', '#BABABA',
+		'#FFFFDA','#F59038', '#F9671A'
+	], 360, '蝴蝶', 30, deltaH=2)
+
+	//100. 大自然
 	showColors(ctx1,[
 		'#F98866', '#FF420E', '#80BD9E','#89DA59', '#FFFFFF', //花朵Fresh & Bright
 		'#90AFC5', '#336B87', '#2A3132', '#763626', '#FFFFFF', //Subdued 
@@ -505,7 +529,8 @@ for(var i=0;i<colors.length;i++){
 		'#A5C9BB', '#EAB364', '#B3473E', '#ADBC77', '#FFFFFF', // 61. Muted & Antique
 			
 		'#000000',
-		], 335, '大自然 4 色组合', 30,deltaH=2)
+		], 390, '大自然 4 色组合', 30,deltaH=2)
+		
 	
 	
 	
@@ -627,82 +652,75 @@ Red/Dark Red/ */
 		'#7e3878', '#603cba', '#eff4ff','#1d1d1d',  'white',
 		'#00aba9', '#2d89ef', '#2b5797', '#ffc40d', '#e3a21a', '#da532c', 
 		'#ee1111', '#b91d47', 
-	], 160, 'Metro UI', 60, deltaH=25, 40)
+	], 160, 'Metro UI', 60, deltaH=2, 20)
 
+	//6 PicPick 柔和色
+	showColors(ctx3,[
+		'#000000', '#7F7F7F', '#880015', '#ED1C24', '#FF7F27', '#FFF200', '#22B14C', '#00A2E8', '#3F48CC', '#A349A4',
+		'#FFFFFF', '#C3C3C3', '#B97A57', '#FFAEC9', '#FFC90E', '#EFE4B0', '#B5E61D', '#99D9EA', '#7092BE', '#C8BFE7',
+	], 210, 'PicPick', 55, deltaH=2, 20)
+	//7
+	showColors(ctx3,[
+		'#C00000', '#FF0000', '#FFC000', '#FFFF00', '#92D050', '#00B050', '#00B0F0', '#0070C0', '#002060', '#7030A0', 
+	], 260, 'PPT 标准色', 50, deltaH=2, 20)
+
+	
+	//7
+	showColors(ctx3,[
+		'#BBCC33','#A5A500', '#74A5D7', '#E78463', '#E3D382', '#F8A5B6', '#95D7F8', '#42B695', '#DDDDDD',  
+	], 290, 'blind friendly palettes', 50, deltaH=2, 20)
 //
 
 
 
 
 
-
 /**==========================
-* 功能： 单击、双击获取颜色hex
+* 第4个色板: HSL色彩模型、算法获得的颜色
 *==========================*/
-console.log('Tips: 对于canvas上的色彩，单击获取一个颜色，双击获取一行颜色(unique colors);')
-// rgb to hex
-function rgb2hex(rgbArr) {
-	var rgb =  rgbArr; //color.split(',');
-	var r = rgb[0]
-	var g = rgb[1]
-	var b = rgb[2];
-	var hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-	return hex;
-}
-
-//get one color
-function getColor(event){
-	//获取鼠标的canvas画布坐标，通过js方法 [经典语句]
-	var canvas=this;
-	var ctx=canvas.getContext('2d');
-	var x=event.clientX-canvas.getBoundingClientRect().left;//当前鼠标x位置，减去画布左侧的区域
-	var y=event.clientY-canvas.getBoundingClientRect().top;
-	
-	//获取颜色
-	var imgData=ctx.getImageData(x,y,1,1);
-	//getImageData() 方法返回 ImageData 对象，该对象拷贝了画布指定矩形的像素数据。
-	var r=imgData.data[0];
-	var g=imgData.data[1];
-	var b=imgData.data[2];
-	var hex=rgb2hex([r,g,b])
-	console.log('%c'+hex, 'background:'+hex)
-}
-
-// get a line color
-function getColors(event){
-	//获取鼠标的canvas画布坐标，通过js方法 [经典语句]
-	//console.log(this)
-	var canvas=this;
-	var ctx=canvas.getContext('2d');
-	var x=event.clientX-canvas.getBoundingClientRect().left;//当前鼠标x位置，减去画布左侧的区域
-	var y=event.clientY-canvas.getBoundingClientRect().top;
-	
-	//获取这一行的全部颜色
-	var colorSet=[]
-	for(var i=0;i<canvas.width; i++){
-		var imgData=ctx.getImageData(i,y,1,1);
-		//getImageData() 方法返回 ImageData 对象，该对象拷贝了画布指定矩形的像素数据。
-		var r=imgData.data[0];
-		var g=imgData.data[1];
-		var b=imgData.data[2];
-		var hex=rgb2hex([r,g,b])
-		if(colorSet.indexOf(hex)==-1){
-			colorSet.push(hex)
+	var get_HSL_color=function(hue){
+		var arr=[];
+		for(var i=100; i>=0;i-=5){
+			arr.push( "hsl("+hue+",100%,"+i+"%)" );
+		}
+		//console.log(arr)
+		return arr;
+	}
+	//1
+	// http://www.chaospro.de/documentation/html/paletteeditor/colorspace_hsl.htm
+	// http://www.chaospro.de/documentation/html/intro/intro.htm 分形软件
+	ctx4.save()
+	ctx4.font="bold 12px Arial"; //文字样式
+	ctx4.fillStyle="#000"
+	for(var i=0; i<=20; i++){
+		ctx4.fillText(i*5, i*25+5,10);
+	}
+	ctx4.fillText('Lightness%', 21*25+5,10);
+	ctx4.restore();
+	showColors(ctx4, get_HSL_color(0), 15, 'hue=0', 25)
+	showColors(ctx4, get_HSL_color(60), 15+22, 'hue=60', 25)
+	showColors(ctx4, get_HSL_color(120), 15+22*2, 'hue=120', 25)
+	showColors(ctx4, get_HSL_color(180), 15+22*3, 'hue=180', 25)
+	showColors(ctx4, get_HSL_color(240), 15+22*4, 'hue=240', 25)
+	showColors(ctx4, get_HSL_color(300), 15+22*5, 'hue=300', 25)
+	// more colors:
+	var MAX={X:25*21, Y:360};
+	for(var x=0;x<=MAX.X;x++){
+		var lightness=x/MAX.X*100
+		for(var y=0;y<=MAX.Y; y++){
+			var hue=y/MAX.Y*360;
+			var color="hsl("+hue+",100%,"+lightness+"%)"
+			ctx4.fillStyle=color;
+			ctx4.fillRect(MAX.X-x,y+ 15+22*6,1,1)
 		}
 	}
-	console.log(colorSet, colorSet.length)
-	//
-	var bgcolor=('background:'+colorSet.join('; |background:') ).split(' |');
-	console.log.apply(null, ['%c "'+colorSet.join('", %c "')].concat(bgcolor) )
-}
-// 为画板绑定事件: 单击、双击
-for(var i in [0,1,2]){
-	var ctx=[ctx1, ctx2, ctx3][i]
-	ctx.canvas.addEventListener('click', getColor); //单击单个颜色
-	ctx.canvas.addEventListener('dblclick', getColors); //双击一行，uniq color
-}
+
+
+
+
 
 </script>
+<script type="text/javascript" src="part/canvas_tools.js"></script>
 
 <br>
 <br>
@@ -723,6 +741,21 @@ for(var i in [0,1,2]){
 <h2 class="tutheader">R 中的色彩函数</h2>
 <p>如何使用R语言画出漂亮的图，颜色很重要，既要协调，又要有一定的分辨力。</p>
 R原生的颜色请参考本站 <a href="R-draw-basic.html#22">R 颜色</a>。
+
+
+<a name='2_0'></a>
+<h3 class="tutheader">查看颜色效果</h3>
+<pre>
+R中目测查看几种颜色的区分度: 
+scales::show_col( c('red','blue', '#FF9600', '#0096FF') )
+barplot(rep(1,4), col=c('red','blue', '#FF9600', '#0096FF'), border = NA)
+
+library(scales)
+show_col(viridis_pal()(16), labels = FALSE)
+show_col(hue_pal()(9), borders = NA) #效果见下图
+</pre>
+<img src="images/color/show_col.png" /><br>
+
 
 
 <a name='2_1'></a>
@@ -940,9 +973,13 @@ coding ...
 5. https://www.canva.com/learn/100-color-combinations/
 6. https://color.adobe.com/zh/create/color-wheel
 	https://www.sessions.edu/color-calculator/
+	https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
 
 7. 如何创建和谐的颜色
 https://www.sensationalcolor.com/creating-color-harmony/
+
+8. D3 demo 用到的颜色 https://github.com/d3/d3/wiki/Gallery
+
 
 
 http://color.biaozhiku.com/

@@ -281,7 +281,7 @@ beta ( foo = beta), binomial binom, Cauchy cauchy, chi-squared chisq, exponentia
 
 <h3 class="tutheader">二项分布 X~B(n, p): binorm(n, p)</h3>
 <p>意义: 贝努里试验独立地重复n次, 则试验成功的次数服从一个参数为(n, p)的二项分布.</p>
-<p>大白话: 袋子里取道白球的概率是p，有放回的独立重复抽样n次为一个实验，则实验中白球的个数 X~binom(n, p)。</p>
+<p>大白话: 袋子中白球概率是p，有放回的独立重复抽样n次为一个实验，则实验中取到白球的个数 X~binom(n, p)。</p>
 
 <pre>
 二项分布需满足以下条件：
@@ -346,6 +346,7 @@ legend(x=posL[2]*1.05,y=posL[4]*0.8, col=colors, lty=1,
 
 <h3 class="tutheader">负二项分布(Negative binomial distribution) X~NB(k, p): nbinorm(k, p)</h3>
 <p>意义: 贝努里试验独立地重复进行, 一直到k次成功时停止试验，则试验失败的次数X服从一个参数为(k, p)的负二项分布.</p>
+<p>大白话: 袋子中白球概率是p，有放回的独立重复抽样，直到取到k次白球停止，则停止前取到黑球个数 X~NB(k, p)。</p>
 <p>分布律: f(x|k,p)=Gamma(k+x) / ( Gamma(k)*Gamma(x) ) * p^k * (1-p)^x, x=0,1,...</p>
 <p>NB分布律: f(x|k,p)=C(k-1+x, x) * p^k * (1-p)^x; x=0,1,...</p>
 <p>NB数字特征: EX=k(1-p)/p; Var(X)=k(1-p)/p^2;</p>
@@ -377,12 +378,13 @@ posL=par('usr')
 legend(x=posL[2]*0.6,y=posL[4]*0.9, col=colors, lty=1, 
        bty='n', xpd=T, pch=1, cex=0.8, title = 'k, p', legend =paste0( sizes,", ",ps) )</div>
 </div>
-<p>对负二项分布，p越大，峰越靠近0，越尖；p特别小时太扁平而看不到明显的峰。</p>
+<p>负二项分布，p越大，峰越靠近0，越尖；p特别小时太扁平而看不到明显的峰。</p>
 
 <p>推导 nb 均值和方差的关系: mu=k(1-p)/p, 则使用mu表示p=k/(mu+k); 1-p=mu/(mu+k); 
-带入上式方差中 <b>DX=Var(X)=mu + a*mu^2</b>, 其中a=1/k;
+带入上式方差中 <b class=blue>DX=Var(X)=mu + a*mu^2</b>, 其中a=1/k;
 可见 方差是均值的二次函数。方差随着均值的增加而进行二次函数形式的递增。
-其中a和k被称为dispersion parameter。负二项分布与泊松分布的关系，可以用α或k推出：(1)当 k -> ∞ 时，α -> 0，此时 σ2= μ，为泊松分布；(2)当 k -> 0 时，α -> ∞，此时overdispersion</p>
+其中a和k被称为dispersion parameter。</p>
+<p>负二项分布与泊松分布的关系，可以用α或k推出：(1)当 k -> ∞ 时，α -> 0，此时 σ2= μ，为泊松分布；(2)当 k -> 0 时，α -> ∞，此时overdispersion</p>
 <p>特例: k=1时的分布为几何分布。</p>
 
 
@@ -400,8 +402,9 @@ legend(x=posL[2]*0.6,y=posL[4]*0.9, col=colors, lty=1,
 一天内考研报名的人数，一个月内看知乎的人数，
 可以认为近似服从泊松分布。泊松分布的参数λ是单位时间(或单位面积)内随机事件的平均发生次数。</p>
 <p>意义: 一段时间内，某事发生的的期望是 10。分别求该事发生 1, 2, 3, ...., 19, 20 次的概率。</p>
-<p>分布率: P(X=k)= λ^k / k! * exp(-λ); 其中 常数 λ>0 是区间事件发生率的均值, k=0,1,2,...</p>
+<p>分布律: P(X=k)= λ^k / k! * exp(-λ); 其中 常数 λ>0 是区间事件发生率的均值, k=0,1,2,...</p>
 <p>奇葩性质: 泊松分布的期望和方差相等 E(X)=Var(X)=λ</p>
+<p>一种神奇的推导: <b class=blue>泰勒(Tailor)展开式 e^x = 1 + x + x^2/2! + x^3/3! +...+ x^k/k! + Rk, 其中k=0,1,2,...; </b>两边同时除以e^x，右边得到一个和为1、通项公式为 x^k/k!*exp(-x) 的数列，这很符合概率分布律的定义。这就是 泊松分布及其分布律。</p>
 <img src="images/stat_density/dpois.png">
 
 
@@ -809,7 +812,7 @@ for(i in 1:n){
   y=dlnorm(x, meanlog = 0, sdlog = sds[i])
   lines(x,y,type="l", col=colors[i])
 }
-legend('topright', col=colors, lty=1, bty='n', title="sdlog=0",
+legend('topright', col=colors, lty=1, bty='n', title="meanlog=0",
        legend=paste0( "sdlog=", sds ))</div>
 </div>
 <br>
@@ -926,6 +929,10 @@ text(1,0.5,"gamma(2,β=0.5)",pos=4,cex=0.9, col=color2[4])
 
 <a name="4_2"></a>
 <h2 class="tutheader">t分布</h2>
+<p>意义: 随机变量X与Y 独立, X服从标准正态分布, Y 服从自由度为n卡方分布, 则 T=X/sqrt(Y/n) 服从自由度为n的t分布.</p>
+<p>密度函数: f(x|n)=(1+x^2/n)^(-(n+1)/2) * Gam( (n+1)/2 ) / ( sqrt(n*PI) * Gam(n/2) ); </p>
+<p>数字特征: EX=0; Var(X)=n/(n-2), n>2;</p>
+
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># Display the Student's t distributions with various
 # degrees of freedom and compare to the normal distribution
@@ -950,6 +957,47 @@ legend("topright", inset=.05, title="Distributions",
 </div>
 <img src="images/stat_density/dt.png"><br><br>
 <p>t分布比着正态分布扁平，但是随着df的增大而变尖，df=30时接近正态分布。</p><br>
+
+
+<h3 class="tutheader">自由度为1的分布就是柯西分布cauchy(0, 1)</h3>
+<p>柯西分布的期望与方差都不存在。</p>
+<p>下图目的: 1) 证明t(1)和cauchy(0, 1)等价; 2) 黄线证明t分布密度函数和t(1)是一致的。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x = seq(-5, 5, length=100)
+#(1) 正态分布N(0,1)
+plot(x, dnorm(x), type="l", col='grey60', lty=2, lwd=2, xlab="X",
+     ylab="Density", main="t(1) == cauchy(0, 1)")
+#(2) 自由度为1的t分布
+lines(x, dt(x, 1), lwd=1, col='red')
+#(3) 柯西分布(0,1)就是df=1的t分布
+f1=function(x){
+  PI=3.1415926535897932
+  1/(1+x^2)/PI #t分布的解析式
+}
+lines(x, f1(x), lty=3, lwd=4, col='blue')
+
+#(4) t分布的密度函数
+f2=function(x, df){
+  PI=3.1415926535897932
+  Gam=function(x){ gamma(x) }
+  n=df
+  (1+x^2/n)^(-(n+1)/2) * Gam( (n+1)/2 ) / ( sqrt(n*PI) * Gam(n/2) )
+}
+lines(x, f2(x,1), lty=1, lwd=5, col='#F0FF0055')
+#(5) 图例
+legend('topleft', lty=c(3,1,2,1), lwd=c(4,1,2,5), bty='n',
+       col=c('blue', 'red', 'grey60', '#F0FF0055'), #title="Distribution",
+       legend=c('cauchy(0, 1)','t(df=1)','N(0,1)', 't(1)_fn'))</div>
+</div>
+<img src="images/stat_density/dt2.png"><br><br>
+
+
+
+
+
+
+
+
 
 
 
