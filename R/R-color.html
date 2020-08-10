@@ -386,7 +386,7 @@ for(var i=0;i<colors.length;i++){
 
 
 
-<h4>Color Palette 3: 财经杂志 商务图表</h4>
+<h4>Color Palette 3: 财经杂志 商务图表 知名网站</h4>
 <canvas id="canvas_colorBar3" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
 
 
@@ -436,15 +436,24 @@ for(var i=0;i<colors.length;i++){
 	showColors(ctx1,[ '#BB4791', '#DE99D0', 
 		'#CA901B', '#F2B23B', 
 		'#307832', '#BCCD7F', 
-		],5, '荷花');
+		],0, '荷花');
 	
 	//2
 	showColors(ctx1,[
 	'#8D1865', '#C6248F', '#FD41BD', '#FE91D9', '#FFCFEF', 
 	'#0E5F0B', '#267D23', '#40B83B', '#78E874', '#BBFFB8', 
 	'#1E2D91', '#293FC9', '#314DFB', '#7487FE', '#B6C0FF'
-		],30, '樱花', width=35);
-	
+		],22, '樱花', width=35);
+	//2.1
+	showColors(ctx1,[
+	'#347176',  '#41907D', /*'#56937E',*/ '#668051','#8CA883', 
+	'#BA9359',  '#E19971', '#D45E3E',  '#DE3919',  
+	'#EAEAE8','#E2DFCF', 
+	'#8E3366', '#0B3981', 
+	'white','#ED6C00','#2BB7B3', '#003F43'
+	/*'#E46713','#01ABA8', */
+		],45, 'sustech', width=30);
+		
 	//3
 	showColors(ctx1,['#0B5652', '#00AEA9', '#5BEAE6',
 		'#5D4022', '#944907', '#C5A27D', 
@@ -617,7 +626,7 @@ for(var i=0;i<colors.length;i++){
 
 
 /**==========================
-* 第3个色板: 商务图表
+* 第3个色板: 商务图表 知名网站
 *==========================*/
 	// 1
 	showColors(ctx3,[
@@ -664,11 +673,18 @@ Red/Dark Red/ */
 		'#C00000', '#FF0000', '#FFC000', '#FFFF00', '#92D050', '#00B050', '#00B0F0', '#0070C0', '#002060', '#7030A0', 
 	], 260, 'PPT 标准色', 50, deltaH=2, 20)
 
-	
-	//7
+
+	//8
 	showColors(ctx3,[
 		'#BBCC33','#A5A500', '#74A5D7', '#E78463', '#E3D382', '#F8A5B6', '#95D7F8', '#42B695', '#DDDDDD',  
 	], 290, 'blind friendly palettes', 50, deltaH=2, 20)
+
+	//9
+	showColors(ctx3,[
+		'#BD1829','#F79421', '#844A9C', 'white', //metascape
+		'#9DD29C', '#00AEEF', '#EC008C', '#D1D3D4', '#AAE1FA', //https://upload.wikimedia.org/wikipedia/commons/f/f4/Histone_tails_and_their_function_in_chromatin_formation.svg
+		'#EFEFEF',  '#FFA8AA','#FF8288','#F23D45', '#FFDFA9','#FFCC80','#FFBA52','#F2A93D',  '#B1D8FC','#80C7FF','#309DF2','#0078D4',  '#E2F2D2','#ACCE79','#0FAD2C','#FF0404', '#CCCCFF', '#006699','#990000',
+	], 315, 'wiki', 20, deltaH=2, 20)
 //
 
 
