@@ -64,6 +64,12 @@ $(function(){
 <style>
 /*本页R代码过长: 最长n px,超过了出现滚动条*/
 .notranslate{max-height:400px; overflow:scroll;}
+
+h4{
+	margin-top: 30px;
+    border-left: 3px solid red;
+    padding-left: 2px;
+}
 </style>
 	
 	
@@ -130,7 +136,8 @@ $(function(){
 		</ul>
 	</li>
 	<li><a href="#7">保存图片</a></li>
-	<li><a href="#8">深入学习 ggplot2</a></li>
+	<li><a href="#8">添加文字</a></li>
+	<li><a href="#100">深入学习 ggplot2</a></li>
 </ul>
 
 
@@ -846,9 +853,43 @@ ggsave("diamonds.pdf", width=4, height=4) #units = c("in", "cm", "mm"), 默认�
 
 
 
-
-
 <a name="8"></a>
+<h2>添加文字</h2>
+<p>ggplot2在图中添加文字的函数主要是geom_text和annotate。参考 <a href="http://www.cookbook-r.com/Graphs/Fonts/">cookbook-r Fonts</a>, <a href="https://blog.csdn.net/woodcorpse/article/details/106552046">怎样加标签、注释</a>。</p>
+<p>fontface：可设置粗体或斜体， “plain”默认普通值, “bold” 粗体、 “italic”斜体。</p>
+
+
+<h4>怎么防止文字锯齿、模糊?</h4>
+<p>这种情况主要出现在只有一个标签、且不用df的时候。构建成df形式就好了。</p>
+<img src="images/draw-adv-ggplot2/geom_text.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(ggplot2) #ggplot 3.2.1
+p=ggplot(iris, aes(Sepal.Length, Sepal.Width, color=Species))+
+  geom_point(size=0.8)+theme_bw();#p
+#(1) add text in picture, 文字不清晰
+p+geom_text(aes(x=5, y=4.2, label="setosa"), color='black' )
+#(2) add text in picture, 文字清晰
+df1=data.frame( x=5, y=4.2, label="setosa" )
+p+geom_text(data=df1, aes(x, y, label=label), color='black' )</div>
+</div>
+<br>
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="100"></a>
 <h2>深入学习 ggplot2 </h2>
 <p>微信: <a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247486262&idx=1&sn=d38221a4063d866b1f10f4c9ebab5f88">ggplot2高效实用指南 (可视化脚本、工具、套路、配色)</a></p>
 

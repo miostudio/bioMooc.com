@@ -140,6 +140,11 @@ $(function(){
 
 </ul>
 
+<p class=saying>A programmer who subconsciously views himself as an artist will enjoy what he does and will do it better.         —— Donald E. Knuth 1978
+</p>
+
+
+
 <p>简书笔记: 
 	<a target="_blank" href="https://www.jianshu.com/p/8b0e34364b89">论文figure色彩实例 - 权衡美观与区分度</a> | 
 	[推荐]<a target="_blank" href="https://www.jianshu.com/p/4e6fb1269ece">R语言中的渐变色</a> | 
@@ -496,7 +501,8 @@ for(var i=0;i<colors.length;i++){
 	//10. 
 	showColors(ctx1,[
 		'#ED285D', '#DFF1F8', '#8ECDE7','#00B0E3', 'white',
-		'#0A9AD7', '#F9C506', '#62BA46', '#ED245C', '#888B8D',
+		'#0A9AD7', '#F9C506', '#62BA46', '#ED245C', '#888B8D','white',
+		'#E84B50', '#EFBC1B', '#00B398', '#153057', '#00A1DF', '#71BE4B', '#965EC8', '#999999', '#00AB9F',
 		   ],300, '10X genomics', 25)
 	
 	//11
@@ -685,6 +691,15 @@ Red/Dark Red/ */
 		'#9DD29C', '#00AEEF', '#EC008C', '#D1D3D4', '#AAE1FA', //https://upload.wikimedia.org/wikipedia/commons/f/f4/Histone_tails_and_their_function_in_chromatin_formation.svg
 		'#EFEFEF',  '#FFA8AA','#FF8288','#F23D45', '#FFDFA9','#FFCC80','#FFBA52','#F2A93D',  '#B1D8FC','#80C7FF','#309DF2','#0078D4',  '#E2F2D2','#ACCE79','#0FAD2C','#FF0404', '#CCCCFF', '#006699','#990000',
 	], 315, 'wiki', 20, deltaH=2, 20)
+	
+	//10
+	showColors2(ctx3,[
+		'#32A1CE', '#C84F44', '#3F9765', '#DDB925', 'black'  //https://zhuanlan.zhihu.com/p/29126173
+	], 340, '弧形漏斗图', 30, deltaH=2, 20)	
+	//11
+	showColors(ctx3,[
+		'#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf','#999999'
+	], 375, 'python Set1', 40, deltaH=2, 20)
 //
 
 
@@ -980,6 +995,9 @@ coding ...
 <p><a target="_blank" href="https://www.canva.com/colors/color-palettes/">Color Palette Ideas </a> </p>
 
 <pre>
+最佳多色(n>10)配色程序: https://medialab.github.io/iwanthue/
+
+
 更多配色方案
 1. 花瓣网（https://huaban.com/）搜索「色卡」，查找别人上传的各种配色方案的卡片。
 	很多色板Trending color palettes https://coolors.co/palettes/trending
@@ -997,6 +1015,9 @@ https://www.sensationalcolor.com/creating-color-harmony/
 8. D3 demo 用到的颜色 https://github.com/d3/d3/wiki/Gallery
 
 
+9. 对图片的颜色进行聚类 http://www.cssdrive.com/imagepalette/
+
+10.R中的颜色 https://qinqianshan.com/r_code/r_draw/colors-in-r/
 
 http://color.biaozhiku.com/
 

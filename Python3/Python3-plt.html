@@ -67,7 +67,7 @@ $(function(){
 
 <style>
 /*本页R代码过长: 最长n px,超过了出现滚动条*/
-.notranslate{max-height:400px; overflow-y:scroll;}
+.notranslate{max-height:400px; overflow:scroll;}
 </style>
 
 
@@ -100,68 +100,93 @@ $(function(){
 		
 			<div class="article-intro" id="content">
 			
-			<h1><span class="color_h1">Python web </span>服务</h1>
+			<h1><span class="color_h1">Python 绘图 </span> 常见图形</h1>
 
 
 
 <h2 class="tutheader">目录</h2>
-<p><b>要点</b>: Python的网络功能。</p>
+<p><b>要点</b>: matplotlib.pyplot, seaborn 画图。</p>
 
 <ul>
-	<li><a href="#1"> 开启简单web服务</a></li>
-	<li><a href="#2"> 基于python的笔记管理系统txtBlog.py</a></li>
+	<li><a href="#1">柱状图、线图(plt.plot, ax.hist, plt.text)</a></li>
 
 </ul>
 
-
-
-
+<pre>
+import numpy as np 
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+</pre>
 
 
 <a name='1'></a>
-<h2 class="tutheader">开启简单web服务</h2>
-<p>开启web服务，就可以通过浏览器直接查看图片、pdf、txt等常规文件，而无需下载。</p>
-<p>这特别适合调试画图脚本参数：shell中修改并运行，浏览器刷新立刻预览效果。</p>
-
+<h2 class="tutheader">柱状图、线图(plt.plot, ax.hist, plt.text)</h2>
+<p>涉及到图片的大小控制，线的形状、颜色，图的保存等;</p>
+<img src="images/simple/01_hist_plot.png">
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">## 在centOS + python3.6测试通过
-$ python -m http.server --bind 192.168.2.100 8890
+	<div style="white-space: pre-wrap;"># coding:utf-8
+import numpy as np
+from numpy.linalg import norm
+from matplotlib import pyplot as plt
+plt.style.use('ggplot')
 
-## 要在待预览图片所在目录或其父目录运行该命令;
-## --bind 后面是服务器公网IP地址 和 端口号；
-##   IP地址可以使用ifconfig查看，也可以使用指向该IP的域名;
-##   端口号一般在6000-65535之间的整数。需要服务器防火墙允许 或者 关掉防火墙。只能使用没被占用的端口。</div>
+
+def sne_crowding():
+    npoints = 1000 # 抽取1000个m维球内均匀分布的点
+    plt.figure(figsize=(20, 5))
+    for i, m in enumerate((2, 3, 5, 8)):
+        # 这里模拟m维球中的均匀分布用到了拒绝采样，
+        # 即先生成m维立方中的均匀分布，再剔除m维球外部的点
+        accepts = []
+        while len(accepts) < 1000:
+            points = np.random.rand(500, m)
+            accepts.extend([d for d in norm(points, axis=1)
+                            if d <= 1.0]) # 拒绝采样
+        accepts = accepts[:npoints]
+        ax = plt.subplot(1, 4, i+1)
+        if i == 0:
+            ax.set_ylabel('count')
+        if i == 2:
+            ax.set_xlabel('distance')
+        ax.hist(accepts, bins=np.linspace(0., 1., 50))
+        ax.set_title('m=%s' %m)
+    plt.savefig("sne_crowding.png")
+ 
+ 
+def sne_norm_t_dist_cost():
+    x = np.linspace(0, 4, 100)
+    ta = 1 / (1 + np.square(x))
+    tb = np.sum(ta) - 1
+    qa = np.exp(-np.square(x))
+    qb = np.sum(qa) - 1
+    #
+    plt.figure(figsize=(8, 5))
+    plt.plot(qa/qb, c="b", label="normal-dist")
+    plt.plot(ta/tb, c="g", label="t-dist")
+    plt.plot((0, 20), (0.025, 0.025), 'r--')
+    plt.text(10, 0.022, r'$q_{ij}$')
+    plt.text(20, 0.026, r'$p_{ij}$')
+ 
+    plt.plot((0, 55), (0.005, 0.005), 'r--')
+    plt.text(36, 0.003, r'$q_{ij}$')
+    plt.text(55, 0.007, r'$p_{ij}$')
+ 
+    plt.title("probability of distance")
+    plt.xlabel("distance")
+    plt.ylabel("probability")
+    plt.legend()
+    plt.savefig("sne_norm_t_dist_cost.png")
+ 
+if __name__ == '__main__':
+    sne_crowding()
+    sne_norm_t_dist_cost()
+    print('==end==')</div>
 </div>
 
-<p>以上代码建议在tmux中运行，这样http服务就可以常驻后台了。</p>
-<p>运行这一行代码后，会输出一个url，打开浏览器，就可以用该url访问资源了，可以预览图片、pdf、txt等，也可用于局域网传输大文件。</p>
 
 
 
-
-
-
-
-
-
-
-
-
-
-<a name='2'></a>
-<h2 class="tutheader">基于python的笔记管理系统txtBlog.py</h2>
-
-<p>txtBlog.py(<a target="_blank" href="https://github.com/DawnEve/txtBlog.py">github</a>, <a target="_blank" href="https://mp.weixin.qq.com/s/8sKdMKgXhUB274A5z0-daQ">简介</a>)</p>
-<p>[知识管理]A simple yet powerful blog system for reading and organizing txt files, based on Python3 flask framework. 支持txt, html, markdown 格式的笔记。</p>
-
-
-<p>整体结构</p>
-<img src="images/screenshot.png">
-
-<br>
-<br>
-<p>对markdown的支持，自动代码行号，左下角自动生成悬浮目录。</p>
-<img src="images/screenshot2.png">
 
 
 

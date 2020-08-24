@@ -143,7 +143,13 @@ attach(mtcars)
 plot(wt,mpg)
 abline(lm(mpg~wt))
 detach(mtcars)
-dev.off() #关闭绘图设备</div>
+dev.off() #关闭绘图设备
+
+
+# 输出 svg 格式
+svg(file="plot.svg",width=3,height=3.5)
+plot(c(1,6,3,7,6,9),type="l", col='red', ylab="Density")
+dev.off()</div>
 </div>
 
 <p>除了pdf()，还可以使用函数win.metafile()、png()、jpeg()、bmp()、tiff()、xfig()和postscript()将图形保存为其他格式。（注意，Windows图元文件格式仅在Windows系统中可用。）</p>
@@ -172,6 +178,12 @@ dev.off()</div>
 	CairoPDF: 对应grDevices:pdf()
 我常用的图形输出，就是pdf和png。
 </pre>
+
+
+
+
+
+
 
 
 

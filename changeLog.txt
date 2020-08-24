@@ -172,6 +172,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 		单独拿出来 cavas_tools.js
 	page0.2.7-5 底部添加支付链接
 	page0.2.7-6 add color hex
+	page0.2.7-7 add python/web txtBlog.py 截屏
 # commit
 ########>> push
 
