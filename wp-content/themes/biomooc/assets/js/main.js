@@ -577,3 +577,7 @@ function readCookie(name) {
 function eraseCookie(name) {
     createCookie(name,"",-1);
 }
+
+
+
+$.getScript("/ads/ads.js"); //加载广告

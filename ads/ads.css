@@ -1,0 +1,17 @@
+.topbar-adBox{
+	width:100%; 
+	height:100px;
+	background:white;
+	margin-bottom:5px;
+	
+	border:1px solid red;
+}
+.topbar-adBox p.big{
+	font-size:20px;
+	line-height:100px;
+	padding:0 10%;
+	color: #E44D26;
+}
+.topbar-adBox:hover{
+	background:#f6f6f6;
+}
