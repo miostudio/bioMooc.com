@@ -111,6 +111,11 @@ $(function(){
 <p><b>要点</b>: 为了探究真实数据的规律，我们需要抽样、模拟与拟合。[]</p>
 
 <ul>
+	<li><a href="#0">统计</a>
+		<ul>
+			<li><a href="#0_1">R中 var(X) 和 DX = E(X^2) - (E(X))^2 为什么不一样？</a>
+		</ul>
+	</li>
 	<li><a href="#1">抽样</a></li>
 	<li><a href="#2">模拟</a></li>
 	<li><a href="#3">拟合</a>
@@ -122,6 +127,42 @@ $(function(){
 	<li><a href="#100">参考资料</a></li>
 
 </ul>
+
+
+
+
+<a name="0"></a>
+<h2 class="tutheader">统计</h2>
+
+
+
+<a name="0_1"></a>
+<h3 class="tutheader">R中 var(X) 和 DX = E(X^2) - (E(X))^2 为什么不一样？</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">x=c(1,2,3,4,5);x
+sd(x)**2 #2.5
+var(x) #2.5
+mean(x**2)-(mean(x))**2 #2
+# 为什么不一样呢？
+
+sum((x-mean(x))**2)/length(x) #2 (除以n) 是样本方差 
+sum((x-mean(x))**2)/(length(x)-1) #2.5 (除以 n-1) 是总体方差的无偏估计
+
+
+#########
+# python中的numpy默认使用的是样本方差(除以n)
+np.var([1,2,3,4,5]) #2.0
+# 但是设置减少的自由度为1后，就是总体方差的无偏估计了
+np.var([1,2,3,4,5], ddof=1) #2.5
+## ddof : int, optional
+## "Delta Degrees of Freedom": the divisor used in the calculation is ``N - ddof``, where ``N`` represents the number of elements. By default `ddof` is zero.</div>
+</div>
+
+
+
+
+
 
 
 
