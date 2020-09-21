@@ -6,13 +6,15 @@ R/ 绘图部分
 	R 色彩
 	ggplot绘图
 	apply家族
-	
+
 
 Python/ py 色彩
+	web
+	3D图
 
 
 
-	
+
 ####
 Q:par(mar和mai的区别)  A:单位不同，mar行，mai是inche
 

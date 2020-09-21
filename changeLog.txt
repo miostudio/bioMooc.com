@@ -176,6 +176,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.7-8 add ads info
 	page0.2.7-9 美化about.html
 	page0.2.8-0 美化about.html 纠语法错
+	page0.2.8-1 add python 3D
 # commit
 ########>> push
 

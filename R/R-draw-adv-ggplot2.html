@@ -860,7 +860,8 @@ ggsave("diamonds.pdf", width=4, height=4) #units = c("in", "cm", "mm"), 默认�
 
 
 <h4>怎么防止文字锯齿、模糊?</h4>
-<p>这种情况主要出现在只有一个标签、且不用df的时候。构建成df形式就好了。</p>
+<p><a target="_blank" href="https://github.com/tidyverse/ggplot2/issues/4202">This issue at github</a>: 
+这种情况出现在只有一个标签、且不用df的时候。构建成df形式就好了。</p>
 <img src="images/draw-adv-ggplot2/geom_text.png">
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">library(ggplot2) #ggplot 3.2.1
@@ -870,7 +871,13 @@ p=ggplot(iris, aes(Sepal.Length, Sepal.Width, color=Species))+
 p+geom_text(aes(x=5, y=4.2, label="setosa"), color='black' )
 #(2) add text in picture, 文字清晰
 df1=data.frame( x=5, y=4.2, label="setosa" )
-p+geom_text(data=df1, aes(x, y, label=label), color='black' )</div>
+p+geom_text(data=df1, aes(x, y, label=label), color='black' )
+
+
+#原因: 没有指定data，则使用上下文的iris，模糊是因为有150个文字互相覆盖。
+#(3)只有一个文字的应该使用 annotate()
+p+annotate(geom="text",x=5, y=4.2, label="setosa", color="black")
+</div>
 </div>
 <br>
 <br>
