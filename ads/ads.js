@@ -17,7 +17,7 @@ document.body.append(oCss)
 // top ads
 var oP=document.createElement('p')
 oP.setAttribute('class', 'big')
-oP.innerHTML='广告位出租(编号:A1)  联系: jimmymall at 163 dot com'
+oP.innerHTML='生信QQ群: 187923577; 广告位(A1): jimmyMall at 163.com'
 //
 var oA=document.createElement('a')
 oA.setAttribute('target', '_blank')

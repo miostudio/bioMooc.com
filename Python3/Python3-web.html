@@ -108,7 +108,12 @@ $(function(){
 <p><b>要点</b>: Python的网络功能。</p>
 
 <ul>
-	<li><a href="#1"> 开启简单web服务</a></li>
+	<li><a href="#1"> 开启简单web服务</a>
+		<ul>
+			<li><a href="#1_2"> 运行服务器上的 Jupyter notebook</a></li>
+		</ul>
+	</li>
+	
 	<li><a href="#2"> 基于python的笔记管理系统txtBlog.py</a></li>
 
 </ul>
@@ -136,6 +141,28 @@ $ python -m http.server --bind 192.168.2.100 8890
 <p>以上代码建议在tmux中运行，这样http服务就可以常驻后台了。</p>
 <p>运行这一行代码后，会输出一个url，打开浏览器，就可以用该url访问资源了，可以预览图片、pdf、txt等，也可用于局域网传输大文件。</p>
 
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='1_2'></a>
+<h3 class="tutheader">运行服务器上的 Jupyter notebook</h3>
+<pre>jupyter notebook --no-browser --port 7000 --ip=192.168.2.120
+# 以上代码建议在tmux中运行，这样jupyter服务就可以常驻后台了。</pre>
+<p>然后通过本地浏览器作为客户端，就可以直接使用服务器硬件和文件了。
+<br>
+http://192.168.2.120:7000/?token=3816b9c204abfd22c38ba70cd298c262d01ad826215beffb (注意替换IP、端口号为当前设置的值，token为每次运行自动生成的登陆凭证) </p>
+$ jupyter notebook list # 查询当前主机可用的jupyter及其token
+<br>
+<br>
 
 
 

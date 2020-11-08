@@ -877,6 +877,8 @@ p+geom_text(data=df1, aes(x, y, label=label), color='black' )
 #原因: 没有指定data，则使用上下文的iris，模糊是因为有150个文字互相覆盖。
 #(3)只有一个文字的应该使用 annotate()
 p+annotate(geom="text",x=5, y=4.2, label="setosa", color="black")
+#(4)或者显示指定空df，而指定data=NULL不行。
+p+geom_text(data=data.frame(), aes(x=5, y=4.2, label="setosa"), color='black' )
 </div>
 </div>
 <br>

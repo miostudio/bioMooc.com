@@ -179,6 +179,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.8-1 add python 3D [2020.9.21]
 	page0.2.8-2 add counter at footer [2020.10.3]
 	page0.2.8-3 修改index.html ggplot2地址 [2020.10.5]
+	page0.2.8-4 顶部广告添加QQ群号 [2020.11.8]
 # commit
 ########>> push miostudio
 
@@ -199,22 +200,3 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 
 
 ##
-
-
-
-
-
-
-
-#
-
-
-
-
-
-
-
-
-
-
-#
