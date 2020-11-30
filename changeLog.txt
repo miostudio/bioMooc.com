@@ -182,6 +182,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.8-4 顶部广告添加QQ群号 [2020.11.8]
 	page0.2.8-5 导航页微调 [2020.11.12]
 	page0.2.8-6 R-color新增一组 [2020.11.30]
+	page0.2.8-7 scRNAseq修正链接 [2020.11.30]
 # commit
 ########>> push miostudio
 
