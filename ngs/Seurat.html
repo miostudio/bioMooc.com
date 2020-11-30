@@ -1,0 +1,248 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>NGS 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.maxHeight{max-height:400px; overflow:scroll;}
+
+
+canvas {cursor: crosshair;}
+
+.colorBox div{
+	height: 50px;
+    width: 60px;
+    display: inline-block;
+	text-align: center;
+	padding: 0;
+	margin:10px 0;
+}
+.colorBox div span{padding:2px; padding-bottom:8px; color:white;}
+h4{margin-top:30px; border-left:3px solid black; padding-left:2px;}
+
+p{text-indent: 2em;}
+</style>
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">Seurat </span> 原理和使用实例</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 单细胞实验最大的目的是：划分细胞亚群，寻找分化及发育轨迹。Seurat能完成第一个目标，其原理参考官网，实例看文章及解读。</p>
+
+<ul>
+	<li><a href="#0">Seurat官网</a></li>
+	<li><a href="#1">Seurat分析实例(IF>5)</a>
+		<ul>
+			<li><a href="#1_1">发育过程中</a>
+			<li><a href="#1_2">免疫过程中</a>
+			<li><a href="#1_3">衰老过程中</a>
+		</ul>
+	</li>
+</ul>
+
+
+
+
+
+
+<a name='0'></a>
+<h2 class="tutheader">Seurat官网</h2>
+<p>SATIJA LAB: <a target="_blank" href="https://satijalab.org/seurat/">seurat首页</a>, <a target="_blank" href="https://satijalab.org/seurat/vignettes.html">seurat实例</a>, </p>
+<p>单细胞分析教程: <a target="_blank" href="https://scrnaseq-course.cog.sanger.ac.uk/website/index.html">Analysis of single cell RNA-seq data</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">Seurat分析实例(IF>5)</h2>
+
+
+<a name='1_1'></a>
+<h3>发育过程中</h3>
+<p><a target="_blank" href="https://mp.weixin.qq.com/s/WYl02iTpP2xRkYLc5v7EBQ">六个样本的单细胞数据如何发一篇10分以上的文章</a>[cellranger+Seurat]： 
+主要研究对象是人类肠道组织，我们知道肠道主要分为回肠、结肠及直肠，所以这篇文章就采集了每个部位2个样本，来自于6个不同个人的手术中切除肠道组织。采用10XGenomics技术检测到了14537个肠道细胞，其中2个人类回肠6167个细胞，2个结肠4472个细胞，以及两个直肠3898个细胞。
+</p>
+
+
+
+
+<br>
+<br>
+
+
+
+
+<a name='1_2'></a>
+<h3>免疫过程中</h3>
+
+
+
+
+
+
+<a name='1_3'></a>
+<h3>衰老过程中</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='100'></a>
+<h2 class="tutheader">单细胞分析展望</h2>
+<p>整合是单细胞的利器，空间是单细胞的未来。</p>
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
