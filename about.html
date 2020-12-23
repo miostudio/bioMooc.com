@@ -1,41 +1,90 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+
 <style>
 html{background: #f6f6f6;}
 body{width:800; margin:0 auto; background: white; padding:0 10px;}
 h2{background:#FFD7CD; border-left: #E44D26 10px solid; padding:5px; }
+
+
+@media screen and (min-width: 1000px) {
+	#sideMenu{
+		position: fixed;
+	}
+}
+#sideMenu{
+	background: #FFD7CD;
+	left:10px; top:5px;
+	padding:15px;
+	list-style-type: none;
+	border-radius:10px;
+	opacity: 0.9;
+}
+#sideMenu a{ text-decoration:none; color: black; }
+#sideMenu a:hover{ color:white; }
+#sideMenu li:hover{ background: #E44D26;}
+#sideMenu b{ margin-bottom:15px; display: inline-block;}
+
 </style>
 <body>
 <a href="/">&lt;&lt;返回首页</a>
 
 
+
+<ul id=sideMenu>
+	<b>目录</b>
+	<li><a href="#us">关于我们</a></li>
+	<li><a href="#plan">近期规划</a></li>
+	<li><a href="#ads">广告服务中心</a></li>
+	<li><a href="#logo">关于 logo</a></li>
+	<li><a href="#donate">捐赠 Donate</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
 <pre>
+<a name="us"></a>
 <h2>About Us 关于我们</h2>
 <b>起因</b>
 博客是很好的知识管理工具，能梳理和积累日常遇到的凌乱的片段化知识。
-之前我很喜欢用博客，无奈sina的上下左右都是广告，感觉好用的百度空间、网易博客也相继关闭。
+之前我很喜欢记博客，无奈sina的上下左右都是广告，感觉好用的百度空间、网易博客也相继关闭。
 
-尝试了其他工具，感觉都挺复杂的，同时担心它们倒闭或关闭后再次失去我宝贵的笔记，
-遂决定用python自己编一个简单的纯文本的笔记系统。
-即便python倒闭了，至少我还有纯文本可以直接阅读，虽然那么不方便。
+尝试了其他工具，有好有坏，但都很担心它们倒闭或关闭后再次失去我宝贵的笔记，
+遂决定用熟悉的编程语言自己编一个简单的基于纯文本的笔记系统。
+即便python倒闭了，至少我还有纯文本可以直接阅读，虽然那么不便捷。
 
-就是现在并行使用的
+现在并行使用的
     图文的 biomooc.com 和
     文字为主的<a target="_blank" href="https://github.com/dawneve/txtBlog.py">txtBlog.py系统</a>: 生物慕课 微信公众号后台回复 txtBlog.py 获得更多信息。
 
 
 <b>关于域名</b>
-本网站的域名是我盯了很久的一个域名，它到期的当天晚上熬夜买下来的。
-买域名的钱是我带的一个郑州大学大学生创新项目的经费报销的，他们本打算做生信视频教程网站的，
-后来发现视频技术太难太复杂，做出粗糙的demo后就基本放弃了。
+这个域名我盯了很久，它到期的当天晚上熬夜抢购的。
+买域名的钱后来用我带的一个郑州大学大学生创新项目的经费报销了。
+他们本打算做生信视频教程网站的，后来发现视频技术太难太复杂，做了个粗糙的demo，然后就基本放弃了。
 
-荒废掉挺可惜的，就继续基于github pages，使用该域名做起了图文为主的生信教程网站。
+荒废掉挺可惜的，基于github pages，本域名开启了图文为主的生信参考资料分享之路。
+界面几经修改，变成了现在这个样子。
 感谢那几个小朋友，也感谢郑州大学大创项目的资助。
 
 
 
+
+
+
+
 <b>加入我们 / 关注我们</b>
-自愿原则、分享原则，是IT界的一股清流。
-我们希望用自己的微小力量，分享便捷、优质生信知识。
+自愿分享，主动分享，是IT界的一股清流。
+我们希望用自己的微小力量，分享便捷、优质的生信知识。
 
 
 联系邮箱：wjl314649593 at qq dot com
@@ -46,14 +95,17 @@ h2{background:#FFD7CD; border-left: #E44D26 10px solid; padding:5px; }
 欢迎入QQ群讨论
     NGS分析群: 322719050
     生物信息与R语言: 187923577
-
+<!--
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=211014&auto=1&height=32"></iframe>
+-->
 
 
 
 
 
 
+
+<a name="plan"></a>
 <h2>近期规划</h2>
 - 完善最日常需要、而又很容易混淆的知识块。
 - 在网易公开课上线一个视频课程。
@@ -142,7 +194,7 @@ jimmymall at 163 dot com
 
 
 
-
+<a name="logo"></a>
 <h2>关于logo</h2>
 我们是一团星星之火，点燃您学习的热情。
 我们是一团三昧真火，助您探求真知灼见。
@@ -167,9 +219,9 @@ favicon.ico <img src="/img/favicon.ico" />
 
 
 
-
+<a name="donate"></a>
 <h2>捐赠 Donate</h2>
-您的支持是我写作的动力。
+您的支持很重要。
 <img src="https://ielts.biomooc.com/en/images/zhifu-wx.png" /> <img src="https://ielts.biomooc.com/en/images/zhifu-zfb.png" />
 
 <a href="/">返回首页</a>

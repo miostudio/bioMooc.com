@@ -1,0 +1,258 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Linux 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/linux/linux-tutorial.html" />
+<meta name="keywords" content="Linux 教程,linux">
+<meta name="description" content="Linux  教程    Linux 英文解释为 Linux is not Unix。 本教程，我们将为大家介绍如何使用Linux。 Linux其实很容易学，相信你们能很快学会。 现在开始学习 Linux ！    谁适合阅读？ 本教程针对的是Linux服务器方面的知识，适合从事运维或后端开发的人员阅读。  需要具备的知识？ 如果你熟悉操作系统方面的知识，相信你会很快学会Linux。 本教程将于Linux的发行版本Centos为例来为大..">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> <i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/linux/linux-intro.html" rel="pre">Linux 教程</a></div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">Linux </span> 系统目录结构</h1>
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 文件系统和系统目录。</p>
+
+<ul>
+	<li><a href="#1"> 系统目录结构</a></li>
+	
+	<li><a href="#2"> 文件权限</a>
+		<ul>
+			<li><a href="#1_1">xx</a></li>
+		</ul>
+	</li>
+	
+	<li><a href="#3"> xx</a></li>
+
+</ul>
+
+
+
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">linux 系统目录结构</h2>
+<pre>
+/ 下级目录结构
+bin (binaries)存放二进制可执行文件
+sbin (super user binaries)存放二进制可执行文件，只有root才能访问
+etc (etcetera)存放系统配置文件
+usr (unix shared resources)用于存放共享的系统资源
+
+home 存放用户文件的根目录
+root 超级用户目录
+
+dev (devices)用于存放设备文件
+mnt (mount)系统管理员安装临时文件系统的安装点
+
+lib (library)存放跟文件系统中的程序运行所需要的共享库及内核模块
+boot 存放用于系统引导时使用的各种文件
+tmp (temporary)用于存放各种临时文件
+var (variable)用于存放运行时需要改变数据的文件
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">文件权限</h2>
+<pre>
+$ ls -lth
+drwxrwxr-x 3 wangjl wangjl 4.0K Dec 16 21:03 clean_qc
+-rw-rw-r-- 1 wangjl wangjl  37K Dec 17 11:24 c12.bam
+
+第一列是权限控制部分，共10个字符。
+第一个是文件类型：-表示文件，d表示目录，l表示软链接。
+2-4 位rwx所属用户权限，u(user)
+5-7 位rwx所属组权限，g(group)
+8-10位rwx其他用户权限，o(other)
+2-10位，所有权限，a(all)
+</pre>
+<p></p>
+
+
+
+
+
+
+
+
+
+
+<a name='1_1'></a>
+<h3 class="tutheader">shell 数组</h3>
+
+<p>常用循环结构。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='3'></a>
+<h2 class="tutheader">xx</h2>
+
+<p>xx</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> code here;
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+			
+			
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Linux 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/linux/linux-tutorial.html" />
+<meta name="keywords" content="Linux 教程,linux">
+<meta name="description" content="Linux  教程    Linux 英文解释为 Linux is not Unix。 本教程，我们将为大家介绍如何使用Linux。 Linux其实很容易学，相信你们能很快学会。 现在开始学习 Linux ！    谁适合阅读？ 本教程针对的是Linux服务器方面的知识，适合从事运维或后端开发的人员阅读。  需要具备的知识？ 如果你熟悉操作系统方面的知识，相信你会很快学会Linux。 本教程将于Linux的发行版本Centos为例来为大..">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> <i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/linux/linux-intro.html" rel="pre">Linux 教程</a></div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">Linux </span> 常用生信模板</h1>
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 常用shell模板。</p>
+
+<ul>
+	<li><a href="#1"> shell 常用语法</a>
+		<ul>
+			<li><a href="#1_1">shell 数组</a></li>
+			<li><a href="#1_1_2">shell xargs的使用</a></li>
+			<li><a href="#1_2">shell while 循环结构</a></li>
+			<li><a href="#1_3">shell for 循环结构</a></li>
+		</ul>
+	</li>
+	
+	<li><a href="#2"> 处理fastq</a></li>
+	<li><a href="#3"> 处理 bam/sam</a></li>
+
+</ul>
+
+
+
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">shell 常用语法</h2>
+
+
+
+<a name='1_1'></a>
+<h3 class="tutheader">shell 数组</h3>
+
+
+
+
+
+
+
+
+
+<a name='1_1_2'></a>
+<h3 class="tutheader">shell xargs的使用</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">##(1) 直接管道符流入的是字符串
+$ find ../clean/*fq |  wc
+      7       7     231
+$ find ../clean/*fq |  wc -
+      7       7     231 -
+
+##(2) 使用xargs后流入的是文件名。
+$ find ../clean/*fq | xargs wc
+11892588   14865735  969517037 ../clean/c12_R2_trimmed.fq
+...
+
+## 下面效果同上。不过可以多次使用被替代变量。
+## xargs 中的 -i启用占位符，使用默认占位符{}，不能指定；而-I则需要手动指定替代符。
+$ find ../clean/*fq | xargs -i  wc {}  
+$ find ../clean/*fq | xargs -I -  wc -
+$ find ../clean/*fq | xargs -I {-}  wc {-}
+## 多次使用
+$ ls /xx | xargs -t -I{}  cp {} /tmp/{}
+## -t ： 打印内容，去掉\n之后的字符串
+
+
+(3) 一个对比更明显的例子
+$ echo '--help' | cat  ## 相当于管道符|仅仅是把前一个的输出，重定向到后一个的输入。
+--help
+
+$ echo '--help' | xargs cat  ##而加上 xargs后，则相当于 cat --help，就是把前一个的输出，当做后一个的命令参数。
+Usage: cat [OPTION]... [FILE]...
+Concatenate FILE(s) to standard output.
+...
+
+
+
+## 为什么这个能生效呢？比对和转bam排序一行搞定。
+$ bwa mem -t 5 /data/wangjl/soft/GATK/resources/bundle/hg38/bwa_index/gatk_hg38.fasta c12.fq | samtools sort -@ 5 -o c12.bam -
+$ samtools view  c12.bam
+
+
+ref:
+https://www.jianshu.com/p/61242c8c0113
+</div>
+</div>
+
+
+
+
+<br>
+<a name='1_2'></a>
+<h3 class="tutheader">shell while 循环结构</h3>
+
+<p>常用循环结构。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ ls >fileName.txt
+
+$ cat fileName.txt | while read id; do  echo $id; done;
+c12.fq
+c12.fq
+c14.fq
+
+## 把这个结构分解成多行，就是
+$ cat fileName.txt | while read id; 
+do  
+	## 这里是循环体，可以写很多语句
+	echo $id; 
+done; 
+
+
+# basename函数：去掉后缀名 
+$ echo ../clean/c12_R2_trimmed.fq | while read id; do  echo $id;  echo $(basename $id '_R2_trimmed.fq'); done;
+../clean/c12_R2_trimmed.fq
+c12
+
+
+# basename函数：去掉后缀名，替换为新的后缀名
+$ echo ../clean/c12_R2_trimmed.fq | while read id; do  echo $id;  echo $(basename $id '_R2_trimmed.fq').bam; done;
+../clean/c12_R2_trimmed.fq
+c12.bam
+</div>
+</div>
+
+
+
+
+
+
+<br>
+<a name='1_3'></a>
+<h3 class="tutheader">shell for 循环</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+for id in {cell1,cell2,cell3} ##{}内不能有空格
+do
+	echo ${id}
+	echo //${id}//
+done;
+
+cell1
+//cell1//
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">处理fastq</h2>
+<p>把fastq文件map到hg38上，并得到sort后的bam文件。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">Usage: bwa mem [options] <idxbase> <in1.fq> [in2.fq] 
+
+$ samtools --version
+samtools 1.7
+Using htslib 1.7-2
+Copyright (C) 2018 Genome Research Ltd.
+
+
+## 测试：使用循环输出文件名
+$ find ../clean/*fq | while read id; do echo $id; done;
+../clean/c12_ROW03_R2_trimmed.fq
+
+## 测试：去掉文件名的路径
+$ echo ../clean/c12_ROW03_R2_trimmed.fq | while read id; do  echo $id;  echo $(basename $id '_R2_trimmed.fq'); done;
+../clean/c12_ROW03_R2_trimmed.fq
+c12_ROW03
+
+## 测试：1个文件 一行
+$ echo ../clean/c12_ROW03_R2_trimmed.fq | while read id; do 
+	echo $id; 
+	bwa mem -t 10 /data/wangjl/soft/GATK/resources/bundle/hg38/bwa_index/gatk_hg38.fasta $id | samtools sort -@ 10 -o $(basename $id '_R2_trimmed.fq').bam -
+done;
+## 报错 samtools sort: couldn't allocate memory for bam_mem
+
+## 测试2：1个文件，分成2行
+$ echo ../clean/c12_ROW03_R2_trimmed.fq | while read id; do 
+	echo $id; 
+	cid=$(basename $id '_R2_trimmed.fq');
+	bwa mem -t 10 /data/wangjl/soft/GATK/resources/bundle/hg38/bwa_index/gatk_hg38.fasta $id > ${cid}.sam;
+	samtools sort -@ 10 -o ${cid}.bam ${cid}.sam;
+done;
+
+
+
+## 运行，分拆成几句：比对，并生成sort过的bam
+$ cd align
+$ find ../clean/*fq | while read filename; 
+do 
+	echo $filename; 
+	sampleID=$(basename $filename '_R2_trimmed.fq'); 
+	bwa mem -t 10 -R "@RG\tID:${sampleID}\tLB:mRNAseq\tPL:ILLUMINA\tPM:X10\tSM:${sampleID}" /data/wangjl/soft/GATK/resources/bundle/hg38/bwa_index/gatk_hg38.fasta $filename > ${sampleID}.sam;
+	samtools sort -@ 10 -o ${sampleID}.bam ${sampleID}.sam;
+	## rm ${sampleID}.sam
+done;
+## [main] Real time: 153.696 sec per file.
+
+## bwa mem -t 5 /data/wangjl/soft/GATK/resources/bundle/hg38/bwa_index/gatk_hg38.fasta $id | samtools sort -@ 5 -o ${id}.bam -
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='3'></a>
+<h2 class="tutheader">处理 bam/sam</h2>
+
+<p>xx</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> code here;
+
+</div>
+</div>
+
+<pre>
+生信人的Linux练习
+https://www.jianshu.com/p/9dd75d848964 
+</pre>
+
+
+
+
+
+
+
+
+
+			
+			
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

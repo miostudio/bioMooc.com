@@ -183,6 +183,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.8-5 导航页微调 [2020.11.12]
 	page0.2.8-6 R-color新增一组 [2020.11.30]
 	page0.2.8-7 scRNAseq修正链接 [2020.11.30]
+	page0.2.8-8 添加linux循环; 添加about页目录;[2020.12.23]
 # commit
 ########>> push miostudio
 

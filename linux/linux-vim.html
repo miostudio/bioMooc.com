@@ -1,0 +1,311 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Linux 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/linux/linux-tutorial.html" />
+<meta name="keywords" content="Linux 教程,linux">
+<meta name="description" content="Linux  教程    Linux 英文解释为 Linux is not Unix。 本教程，我们将为大家介绍如何使用Linux。 Linux其实很容易学，相信你们能很快学会。 现在开始学习 Linux ！    谁适合阅读？ 本教程针对的是Linux服务器方面的知识，适合从事运维或后端开发的人员阅读。  需要具备的知识？ 如果你熟悉操作系统方面的知识，相信你会很快学会Linux。 本教程将于Linux的发行版本Centos为例来为大..">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> <i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/linux/linux-intro.html" rel="pre">Linux 教程</a></div>
+			<div class="next-design-link"><a href="/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">Linux </span> vim编辑器</h1>
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: vim编辑文本。</p>
+
+<ul>
+	<li><a href="#1"> 三种模式切换</a></li>
+	<li><a href="#2"> 常用操作</a>
+		<ul>
+			<li><a href="#2_1">修改文本</a></li>
+			<li><a href="#2_2">定位命令</a></li>
+			<li><a href="#2_3">替换和取消命令</a></li>
+			<li><a href="#2_4">删除命令</a></li>
+			<li><a href="#2_5">查找</a></li>
+			<li><a href="#2_100">其他快捷键</a></li>
+
+		</ul>
+	</li>
+</ul>
+
+
+
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">三种模式切换</h2>
+
+<p>一般模式，插入模式，底行模式。</p>
+<p>vim filename 进入一般模式， :wq退出编辑器。</p>
+<p>一般模式时，按 i a o进入插入模式。 Esc退出到一般模式。</p>
+<p>一般模式时，按: 进入底行模式。 输入命令后按回车Enter执行，并回到一般模式。</p>
+
+
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">VIM常用操作</h2>
+
+<a name='2_1'></a>
+<br>
+<h3 class="tutheader">修改文本</h3>
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>快捷键</th>   <th>作用</th></tr>
+		<tr><td>i</td> <td>在光标前插入</td></tr>
+		<tr><td>I</td> <td>在光标当前行开始插入</td></tr>
+		
+		<tr><td>a</td> <td>在光标后插入</td></tr>
+		<tr><td>A</td> <td>在光标当前行末尾插入</td></tr>
+		
+		<tr><td>o</td> <td>在光标当前行的下一行插入新行</td></tr>
+		<tr><td>O</td> <td>在光标当前行的上一行插入新行</td></tr>
+		
+		<tr><td>:wq</td> <td>保存并退出</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+<a name='2_2'></a>
+<br>
+<h3 class="tutheader">定位命令</h3>
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>快捷键</th>   <th>作用</th></tr>
+		<tr><td>:set nu</td> <td>显示行号</td></tr>
+		<tr><td>:set nonu</td> <td>取消行号</td></tr>
+		
+		<tr><td>gg</td> <td>跳到首行</td></tr>
+		<tr><td>G</td> <td>跳到末行</td></tr>
+		
+		<tr><td>:n</td> <td>跳到第n行</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+<a name='2_3'></a>
+<br>
+<h3 class="tutheader">替换和取消命令</h3>
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>快捷键</th>   <th>作用</th></tr>
+		<tr><td>u</td> <td>undo，取消上一步操作</td></tr>
+		<tr><td>ctrl+r</td> <td>redo，返回undo之前</td></tr>
+		
+		<tr><td>r</td> <td>替换光标所在处的字符</td></tr>
+		<tr><td>R</td> <td>从光标所在处开始替换，按Esc键结束</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+<a name='2_4'></a>
+<br>
+<h3 class="tutheader">删除命令</h3>
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>快捷键</th>   <th>作用</th></tr>
+		<tr><td>x</td> <td>删除光标所在处字符</td></tr>
+		<tr><td>nx</td> <td>删除光标所在处后的n个字符</td></tr>
+		
+		<tr><td>dd</td> <td>删除光标所在行。ndd删除n行</td></tr>
+		<tr><td>dG</td> <td>删除光标所在行到末尾行的所有内容</td></tr>
+		<tr><td>D</td> <td>删除光标所在行到行尾的内容</td></tr>
+		<tr><td>:5,7d</td> <td>删除指定范围(5-7)的行</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+<a name='2_5'></a>
+<br>
+<h3 class="tutheader">查找</h3>
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>快捷键</th>   <th>作用</th></tr>
+		<tr><td>/line</td> <td>查找line字符串</td></tr>
+		<tr><td>n</td> <td>查找下一个</td></tr>
+
+	</tbody>
+</table>
+
+
+
+
+
+
+<a name='2_100'></a>
+<br>
+<h3 class="tutheader">其他快捷键</h3>
+
+<table class="reference" style="width:100%">
+	<tbody>
+		<tr><th>快捷键</th>   <th>作用</th></tr>
+		<tr><td>shift+zz</td> <td>保存退出，与 ":wq"作用相同</td></tr>
+		<tr><td>v</td> <td>进入字符可视模式</td></tr>
+		<tr><td>V</td> <td>进入行可视模式</td></tr>
+		<tr><td>ctrl+v</td> <td>进入块可视模式</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+			
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
