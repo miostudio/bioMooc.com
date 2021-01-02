@@ -108,8 +108,10 @@ $(function(){
 <p><b>要点</b>: Python的网络功能。</p>
 
 <ul>
-	<li><a href="#1"> 开启简单web服务</a>
+	<li><a href="#1"> Python与网络服务</a>
 		<ul>
+			<li><a href="#1_0"> 开启简单web服务</a></li>
+			<li><a href="#1_1"> iptables开放端口访问权限</a></li>
 			<li><a href="#1_2"> 运行服务器上的 Jupyter notebook</a></li>
 		</ul>
 	</li>
@@ -124,13 +126,19 @@ $(function(){
 
 
 <a name='1'></a>
-<h2 class="tutheader">开启简单web服务</h2>
+
+<h2 class="tutheader">Python与网络服务</h2>
+<p>查询IP地址: $ ifconfig 看 eno1网卡的 inet 192.168.2.120 就是IP地址。</p>
+
+
+<a name='1_0'></a>
+<h3 class="tutheader">开启简单web服务</h3>
 <p>开启web服务，就可以通过浏览器直接查看图片、pdf、txt等常规文件，而无需下载。</p>
 <p>这特别适合调试画图脚本参数：shell中修改并运行，浏览器刷新立刻预览效果。</p>
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">## 在centOS + python3.6测试通过
-$ python -m http.server --bind 192.168.2.100 8890
+$ python -m http.server --bind 192.168.2.120 8890
 
 ## 要在待预览图片所在目录或其父目录运行该命令;
 ## --bind 后面是服务器公网IP地址 和 端口号；
@@ -142,6 +150,22 @@ $ python -m http.server --bind 192.168.2.100 8890
 <p>运行这一行代码后，会输出一个url，打开浏览器，就可以用该url访问资源了，可以预览图片、pdf、txt等，也可用于局域网传输大文件。</p>
 
 
+
+
+
+
+
+
+
+
+
+
+
+<a name='1_1'></a>
+<h3 class="tutheader">iptables开放端口访问权限</h3>
+<pre>开放8787端口访问
+# iptables -I IN_public_allow -p tcp --dport 8787 -j ACCEPT</pre>
+<p>开端口是系统资源，需要root权限或者sudo权限。</p>
 
 
 

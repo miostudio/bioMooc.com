@@ -59,8 +59,12 @@ $(function(){
 </script>
 
 
-	
-	
+
+
+
+<style>
+p{text-indent:2em;}
+</style>
 
 <!--  内容  -->
 <div class="container main">
@@ -110,8 +114,23 @@ $(function(){
 
 <br>
 <br>
-<p>数据集 <a href="https://support.10xgenomics.com/single-cell-gene-expression/datasets">10xgenomics</a>: 10x官方数据集</p>
-<p>教程 <a href="https://scrnaseq-course.cog.sanger.ac.uk/website/index.html">Analysis of single cell RNA-seq data</a>: 一步一步的操作步骤。</p>
+<p>数据集 <a target="_blank" href="https://support.10xgenomics.com/single-cell-gene-expression/datasets">10xgenomics</a>: 10x官方数据集</p>
+<p>教程 <a target="_blank" href="https://scrnaseq-course.cog.sanger.ac.uk/website/index.html">Analysis of single cell RNA-seq data</a>: 一步一步的操作步骤。</p>
+
+<ul>
+<p>公众号教程: 基于Seurat的基础分析、以及基于clusterProfiler、Monocle、SingleR等R包的延伸分析。</p>
+	<li><b><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzAxMDkxODM1Ng==&mid=2247496154&idx=3&sn=d3cfaa4a5b18235e0192619f64641635">单细胞课程</a>, 初级8讲和高级分析8讲: </b></li>
+	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488332&idx=2&sn=a61862ffb546a70eecfe9b03827a27fe">4细胞类型鉴定</a>: CellMarker库 /PanglaoDB库， SingleR包;</li>
+	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzIyMzMwNDQ2MA==&mid=2247483784&idx=1&sn=37cf87fe9b26566731a1afe264aad0ce">5细胞再聚类</a>: 细胞子集的提取使用subset函数，主要依据meta.data的分类项目选择，也可以自定义细胞barcode提取。</li>
+	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488352&idx=2&sn=c08863668cbde5d66fd5d3e592f3aac9">6伪时间分析</a>: Monocle假设轨迹是树状结构，一端是“根”，另一端是“叶”。Monocle2使用DDTree降维图，Monocle3使用UMAP降维图。</li>
+	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488367&idx=1&sn=52b69246c2b352abc0343ccc95d76229">7差异基因富集分析</a>: seurat聚类分析得到的按cluster分类，singleR分析得到的按细胞类型分类，monocle分析得到的按拟时状态（state）分类。不同的细胞类型之间，有哪些表达差异基因呢，这些差异基因有特别的意义吗？</li>
+	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488367&idx=2&sn=18a60dab3cde76139872026febd7d9a0">8可视化工具总结</a>: RidgePlot山脊图 /VInPlot小提琴图 /FeaturePlot特征图 /DotPlot点图 /DoHeatmap热图 /FeatureScatter散点图 /DimPlot降维图</li>
+	<!--
+	<li><a target="_blank" href="xx">xx</a>xx</li>
+	<li><a target="_blank" href="xx">xx</a>xx</li>
+	-->
+
+</ul>
 
 
 
