@@ -26,6 +26,9 @@ p{text-indent:2em;}
 
 /*本页R代码过长: 最长n px,超过了出现滚动条*/
 .notranslate{max-height:400px; overflow-y:scroll;}
+
+.light{color: #aaa;}
+.red{color:red;}
 </style>
 </head>
 
@@ -98,7 +101,7 @@ $(function(){
 
 
 <h2 class="tutheader">目录</h2>
-<p><b>要点</b>: OOP是一门计算机语言成熟的标志。[R In Action, 2nd, Chapter20]</p>
+<p><b>要点</b>: OOP是一门计算机语言成熟的标志。[R In Action, 2nd, Chapter20] [Adv R, 2nd, Chpater15]</p>
 
 
 <ul>
@@ -112,7 +115,13 @@ $(function(){
 	</li>
 	<li><a href="#3">S4</a>
 		<ul>
-			<li><a href="#3_1">S4实例</a></li>
+			<li><a href="#3_1">1. Defining Classes 定义类</a></li>
+			<li><a href="#3_2">2. New Objects 实例化对象</a></li>
+			<li><a href="#3_3">3. Accessing Slots 访问属性</a></li>
+			<li><a href="#3_4">4. Inheritance 继承</a></li>
+			<li><a href="#3_5">5. Generics and methods 泛型(接口)与方法</a></li>
+			<li><a href="#3_6">6. 自定义实现show(): 默认打印对象的方法</a></li>
+			<li><a href="#3_7">7. Method dispatch 方法调度</a></li>
 		</ul>
 	</li>
 	<li><a href="#4">Reference classes(RC)</a></li>
@@ -459,20 +468,675 @@ doit(x)
 <h2 class="tutheader">S4</h2>
 
 
-<p>S4 提供了基本的定义helper模板，比S3正式、严谨很多。S4定义在R base的methods包中，交互式环境一般都加载过了，但是批处理模式(如 Rscript)不一定，最好手动添加 library(methods)</p>
+<p>S4 提供了基本的定义helper模板，低层逻辑和S3类似，比S3正式、严谨很多。
+使用专门的函数来创建类(setClass()), 泛型 (类似于Java的接口)(setGeneric()), 和方法 (setMethod())。
+S4定义在R base的methods包中，交互式环境一般都加载过了，但是批处理模式(如 Rscript)不一定，最好手动添加 library(methods)</p>
 
 <p>记住2点：没有一个能回答所有疑问的S4参照标准，R的内部文档偶尔和社区最佳实践矛盾！当使用高级用法时，要仔细阅读文档，还要常搜索、常实验。</p>
 <p>Bioconductor 社区是S4的长期用户，对S4的高效利用很有研究，比如 <a href="https://bioconductor.org/help/course-materials/2017/Zurich/S4-classes-and-methods.html">S4 classes and
 methods</a> taught by Martin Morgan and Hervé Pagès, 或者查看新版本 <a href="https://bioconductor.org/help/course-materials/">Bioconductor course materials</a>. Martin Morgan 是R-core成员，也是Bioconductor项目领导，是世界上S4领域的应用专家。建议仔细阅读他回答过的问题 <a href="http://stackoverflow.com/search?tab=votes&amp;q=user%3a547331%20%5bs4%5d%20is%3aanswe">stackoverflow</a>。</p>
-<p>xx</p>
-<p>xx</p>
 
+
+
+<h3>Object-Oriented Programming in R: S4 Classes</h3>
+<p>S4对象系统是一种标准的R语言面向对象实现方式，S4对象有明确的类定义，参数定义，参数检查，继承关系，实例化等的面向对象系统的特征。
+S4对象系统具有明显的结构化特征，更适合面向对象的程序设计。Bioconductor社区，以S4对象系统做为基础架构，只接受符合S4定义的R包。</p>
+<p>权威资料链接: 
+	<a target="_blank" href="https://adv-r.hadley.nz/s4.html">hadley 书中的S4类</a> | 
+	<a target="_blank" href="https://cran.r-project.org/doc/contrib/Genolini-S4tutorialV0-5en.pdf">A (Not So) Short Introduction to S4</a>
+</p>
+
+
+
+
+<a name="3_1"></a>
+<h3>1. Defining Classes 定义类</h3>
+<p>class和slots是定义R S4类最重要的参数。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">MyClass = setClass("MyClass", slots= ...., contains =....)
+
+setClass(Class, representation, prototype, contains=character(), 
+	 validity, access, where, version, sealed, package,
+	 S3methods = FALSE)</div>
+</div>
+
+<p>相关参数如下: </p>
+<table class="reference">
+	<thead>
+		<tr><th>Argument</th><th>Description</th><th>Default</th></tr>
+	</thead>
+
+	<tbody>
+		<tr><td>Class</td><td>A character value specifying the name for the new class. (Only required argument.) 类名，唯一必须参数。</td><td>&nbsp;</td></tr>
+		<tr><td>slots</td><td> 定义属性和属性类型。slots=c(name = "character", age = "numeric"). </td><td>伪类 ANY 接受任何类型。</td></tr>
+
+		<tr><td>prototype</td><td> 定义属性的默认值 </td><td></td></tr>
+
+		<tr><td>contains</td><td>A character vector containing the names of the classes that this class extends (usually called <span class="emphasis"><em>superclasses</em></span>). 父类字符串数组，继承关系。</td><td>character()</td></tr>
+
+
+		<tr><td>prototype, where, validity, sealed, package</td><td>都有替代品，不提倡用了。</td><td>&nbsp;</td></tr>
+		<tr class=light><td>representation, access, version, S3methods</td><td>deprecated from version 3.0.0 of R。</td><td>&nbsp;</td></tr>
+	</tbody>
+</table>
+
+
+
+
+
+<h4>prototype 定义类属性的默认值</h4>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">x
+	<div style="white-space: pre-wrap;"># 设置属性age的默认值20
+> setClass("Person", slots=list(name="character",age="numeric"), 
+           prototype = list(name="NoName", age = 20)) # 也可以定义为 NA_character_, NA_real_
+
+# 属性age为空
+> p1=new("Person",name="XiaoMing")
+> p1
+An object of class "Person"
+Slot "name":
+[1] "XiaoMing"
+
+Slot "age":
+[1] 20</div>
+</div>
+
+
+
+
+
+
+<br />
+<h4>Redefinition 类的重定义错误</h4>
+
+<p>这是由于R的类 both definition and construction occur at run time. 运行 setClass()时，相当于在全局变量注册了一个隐藏的类定义。
+与所有修改状态的函数一样，需要小心使用setClass()。实例化后再重定义该类，有可能产生一个属性不存在错误。</p>
+<p>这让在交互状态下创建新类变得迷惑。R6类也有这个问题。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">## 类的重定义冲突
+setClass("A", slots = c(x = "numeric"))
+a <- new("A", x = 10);a
+# An object of class "A"
+# Slot "x":
+# [1] 10
+
+setClass("A", slots = c(a_different_slot = "numeric"))
+a
+# An object of class "A"
+# Slot "a_different_slot":
+# Error in slot(object, what) : 
+#   no slot of name "a_different_slot" for this object of class "A"
+# Error during wrapup: no slot of name "a_different_slot" for this object of class "A"
+
+
+
+## 查看全局种的这个隐藏的类定义，发现它只有新定义时的一个属性
+> .GlobalEnv$.__C__A
+Class "A" [in ".GlobalEnv"]
+
+Slots:
+                       
+Name:  a_different_slot
+Class:          numeric
+
+> str(.__C__A)
+Formal class 'classRepresentation' [package "methods"] with 11 slots
+  ..@ slots     :List of 1
+  .. ..$ a_different_slot: chr "numeric"
+  .. .. ..- attr(*, "package")= chr "methods"
+  ..@ contains  : list()
+  ..@ virtual   : logi FALSE
+  ..@ prototype :Formal class 'S4' [package ""] with 0 slots
+ list()
+  ..@ validity  : NULL
+  ..@ access    : list()
+  ..@ className : chr "A"
+  .. ..- attr(*, "package")= chr ".GlobalEnv"
+  ..@ package   : chr ".GlobalEnv"
+  ..@ subclasses: list()
+  ..@ versionKey:<externalptr> 
+  ..@ sealed    : logi FALSE
+
+# 而根据老模板定义的类还有属性x
+> str(a)
+Formal class 'A' [package ".GlobalEnv"] with 1 slot
+  ..@ x : num 10
+  ..@ NA: NULL
+Warning message:
+Not a validObject(): no slot of name "a_different_slot" for this object of class "A" </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<a name="3_2"></a>
+<h3>2. New Objects 实例化对象</h3>
+<p>有3种实例化R S4对象的方法：使用new实例化，使用类名实例化，从已有对象initialize(oldObj)出新实例。</p>
+<p>查对象的类名is()、class()、str()，查一个对象是不是S4类mode()或isS4()。</p>
+<p>查类的全部属性 showClass("类名")</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">## 实例
+## 方法1: 定义类Student, slots定义成员变量及变量类型
+> setClass("Student", slots=list(name="character", age="numeric", GPA="numeric"))
+
+## 实例化对象
+> s1 = new("Student",name="John", age=21, GPA=3.5)
+> s1
+An object of class "Student"
+Slot "name":
+[1] "John"
+
+Slot "age":
+[1] 21
+
+Slot "GPA":
+[1] 3.5
+
+## 可以单独设置数字的NA
+> john = new("Student", name = "John Smith", age = NA_real_)
+> str(john)
+Formal class 'Student' [package ".GlobalEnv"] with 3 slots
+  ..@ name: chr "John Smith"
+  ..@ age : num NA
+  ..@ GPA : num(0) 
+
+
+
+
+## 方法2: 定义类时也可以有返回值
+> Student=setClass("Student", slots=list(name="character", age="numeric", GPA="numeric"))
+> Student
+class generator function for class “Student” from package ‘.GlobalEnv’
+function (...) 
+new("Student", ...)
+
+> s2=Student(name="John", age=21, GPA=3.5)
+> s2
+An object of class "Student"
+Slot "name":
+[1] "John"
+
+Slot "age":
+[1] 21
+
+Slot "GPA":
+[1] 3.5
+
+
+## 方法3: 从实例s2中，创建实例s3，并修改name的属性值
+s3=initialize(s2, name="s3Name");s3
+An object of class "Student"
+Slot "name":
+[1] "s3Name"
+
+Slot "age":
+[1] 21
+
+Slot "GPA":
+[1] 3.5
+
+
+
+
+# 查看对象是不是S4类
+> mode(s1) ##而S3的mode是list
+[1] "S4"
+
+> isS4(s1)
+[1] TRUE
+
+> typeof(p1)
+[1] "S4"
+
+> class(s1)
+[1] "Student"
+attr(,"package")
+[1] ".GlobalEnv"
+
+## 查看对象的类名
+> is(s1)
+[1] "Student"
+
+> str(s2)
+Formal class 'Student' [package ".GlobalEnv"] with 3 slots
+  ..@ name: chr "John"
+  ..@ age : num 21
+  ..@ GPA : num 3.5
+
+## 查看定义过的类有哪些slots
+> showClass("Student")
+Class "Student" [in ".GlobalEnv"]
+
+Slots:
+                                    
+Name:       name       age       GPA
+Class: character   numeric   numeric</div>
+</div>
+
+
+
+<br />
+<h4>Helper 助手函数 创建实例</h4>
+<p>new()是一个低级命令。我们可以包装的更好用一些。助手函数要点: 1.与类同名; 2.接口良好，默认值合适; 3.为终端用户提供友好的报错; 4.最后调用new()</p>
+<p>比如我们可以使用助手函数，明确name是必须的，age是可选的；还把age强制转为double类型。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">### 助手函数
+Person=function(name, age=NA){
+  age=as.double(age)
+  new("Person", name=name, age=age)
+}
+
+Person("Jim")
+# An object of class "Person"
+# Slot "name":
+# [1] "Jim"
+# 
+# Slot "age":
+# [1] NA
 
 </div>
 </div>
+
+
+
+
+
+
+
+<a name="3_3"></a>
+<h3>3. Accessing Slots 访问属性</h3>
+<p>访问成员变量使用@符号，或者slot()函数。</p>
+<p>也可以定义属性的 setter和getter。</p>
+<p>setValidity()实现对象的类型检查。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">> s1@name
+[1] "John"
+
+> slot(s1, "name")
+[1] "John"
+
+## 访问不存在的属性，则直接报错。防止错误拼写，更安全稳健。
+## 而S3类不会报错，而是直接添加新属性。
+> s1@age2
+Error: no slot of name "age2" for this object of class "Student"
+
+
+## 可以直接修改对象
+> s1@name="Tom"
+> s1@name
+[1] "Tom"
+
+> slot(s1,"name") = "Robin"
+> slot(s1,"name")
+[1] "Robin"
+> s1@name
+[1] "Robin"</div>
+</div>
+
+<p>我们可以为age属性设置setter 和 getter，先用setGeneric()创建(generics 泛型)接口，再用setMethod()实现方法。</p>
+<p>showMethods('方法名') 获得一个该泛型方法当前可用的方法定义。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">## 定义 getter 和 setter 的接口:
+setGeneric("age", function(x) standardGeneric("age"))
+setGeneric("age<-", function(x, value) standardGeneric("age<-"))
+
+## 实现接口
+setMethod("age", "Student", function(x) x@age)
+setMethod("age<-", "Student", function(x, value) {
+  x@age <- value
+  x
+})
+
+age(s1) #21
+age(s1) <- 50
+age(s1) #> [1] 50
+
+
+# 像Java一样定义 getter和setter
+# getAge()
+setGeneric("getAge", function(x) standardGeneric("getAge"))
+setMethod("getAge", "Student", function(x) x@age)
+getAge(s1)
+
+# setAge() 实现方法的参数，要和接口定义的参数一致
+setGeneric("setAge", function(x, value) standardGeneric("setAge"))
+setMethod("setAge", "Student", function(x, value){
+  x@age=value
+  x
+})
+getAge(s1)
+s1=setAge(s1, 16) #不会自动覆盖，只能主动覆盖
+s1
+
+getAge(s1)=20
+## Error in getAge(s1) = 20 : could not find function "getAge<-" 
+
+
+## 查看一个可用的S4类的方法
+is(s1) #"Student"
+mode(s1) #"S4"
+
+showMethods(age)
+# Function: age (package .GlobalEnv)
+# x="Student"
+showMethods('age')
+showMethods('age<-')
+
+showMethods(getAge)
+setAge
+showMethods('setAge')</div>
+</div>
+
+
+
+
+<br />
+<h4>属性类型检查</h4>
+<p>S4只对属性值的类型做检查，对属性值个数、范围的检查需要借助setValidity()函数实现。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">## 类型检查
+setClass("Person",slots=list(name="character",age="numeric"))
+
+# 传入错误的age类型
+bad<-new("Person",name="bad",age="abc")
+# Error in validObject(.Object) : 
+#   invalid class “Person” object: invalid object for slot "age" in class "Person": got class "character", should be or extend class "numeric"
+
+
+# 设置age的非负检查
+setValidity("Person",function(object) {
+  if (object@age < 0) stop("Age is negative.")
+})
+new("Person", name='Lily', age=20)
+new("Person", name='Lily', age=-20) #Error in validityMethod(object) : Age is negative.  
+
+
+# 传入参数长度必须一致
+new("Person", name=c('Lily', 'LiLei'), age=20 )
+
+setValidity("Person", function(object){
+  if ( length(object@name) != length(object@age) ){
+    "@name and @age must be the same length"
+  }else{
+    TRUE
+  }
+})
+new("Person", name=c('Lily', 'LiLei'), age=20 )
+# Error in validObject(.Object) : 
+#   invalid class “Person” object: @name and @age must be the same length
+
+
+# 不过，只有最近定义的setValidity有效; 只有new()会自动调用验证，其后再修改就不受验证函数限制了。
+p2=Person(name="Tom", age=2)
+p2@age=1:10
+p2
+# An object of class "Person"
+# Slot "name":
+# [1] "Tom"
+# 
+# Slot "age":
+#  [1]  1  2  3  4  5  6  7  8  9 10
+
+# 也可以明式的手动验证
+validObject(p2)
+# Error in validObject(p2) : 
+#  invalid class “Person” object: @name and @age must be the same length
+</div>
+</div>
+
+
+
+<br />
+<h4>更完善的助手类: 包含validObject()</h4>
+<p>在R中定义字面函数 setter 不能修改对象的值，还要返回值主动覆盖一次。而定义 <a target="_blank" href="https://adv-r.hadley.nz/functions.html#function-forms">方法名<- 则可以</a>。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 更完善的助手类: 在setter中包含validObject()
+setGeneric("name", function(x) standardGeneric("name"))
+setMethod("name", "Person", function(x) x@name )
+name(p1) #"XiaoMing"
+
+# 定义 setter
+setGeneric("name<-", function(x, value) standardGeneric("name<-"))
+setMethod("name<-", "Person", function(x, value){
+  x@name=value
+  validObject(x) ## 设置新值的时候主动校验。
+  x
+})
+
+name(p1) #"XiaoMing"
+name(p1)="Tom"
+name(p1) #"Tom"
+
+name(p1)=letters
+# Error in validObject(x) : 
+#invalid class “Person” object: @name and @age must be the same length
+name(p1) #"Tom"</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="3_4"></a>
+<h3>4. Inheritance 继承</h3>
+<p>使用关键词 contains 指定父类。R支持继承多个父类，不过多个父类容易混乱，单继承更稳健。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 定义父类
+setClass("Person", 
+         slots=list(name="character",age="numeric"), 
+         prototype = list(name="NoName", age = 20)
+)
+p1=new("Person",name="XiaoMing")
+p1
+
+# 定义子类
+setClass("Employee", 
+         contains = "Person", #指定父类
+         slots = c(
+           boss = "Person"
+         ),
+         prototype = list(
+           boss = new("Person")
+         )
+)
+e1=new("Employee", name="Tom", boss=p1)
+str(e1)
+# Formal class 'Employee' [package ".GlobalEnv"] with 3 slots
+#   ..@ boss:Formal class 'Person' [package ".GlobalEnv"] with 2 slots
+#   .. .. ..@ name: chr "XiaoMing"
+#   .. .. ..@ age : num 20
+#   ..@ name: chr "Tom"
+#   ..@ age : num 20
+
+
+
+# 自省：对象的类名
+> is(p1)
+[1] "Person"
+> is(e1)
+[1] "Employee" "Person"
+
+# 自省：对象是不是某个类，使用第二个参数
+> is(e1, 'Person')
+[1] TRUE
+> is(e1, 'Employee')
+[1] TRUE
+> is(e1, 'Student')
+[1] FALSE
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+<a name="3_5"></a>
+<h3>5. Generics and methods 泛型(接口)与方法</h3>
+<p>通过S4对象系统，把原来的函数定义和调用2步，为成了4步进行：
+定义数据对象类型，定义接口函数，定义实现函数，把数据对象以参数传入到接口函数，执行实现函数。
+S4对象系统是一个结构化的、完整的面向对象实现。</p>
+<p>对于已经存在的方法原型, 可以直接使用 setMethod(f='方法名', signature='类名', definition=函数定义体) 定义，never use other arguments.</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># show()接口系统定义过，这里为Student类实现。
+setMethod("show",
+          "Student",
+          function(object) {
+            cat(object@name, "\n")
+            cat(object@age, "years old\n")
+            cat("GPA:", object@GPA, "\n")
+          }
+)
+show(s1)
+# Robin
+# 21 years old
+# GPA: 3.5</div>
+</div>
+
+
+<p>而对于自定义的方法则需要先使用 setGenerics()定义接口，再用setMethod实现方法。S4 中的 standardGeneric() 相当于 S3中的 UseMethod() 。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 定义一个没有预定义过泛型的函数，报错。要先定义接口。
+setMethod("getXXX", "Person", function(x){ x})
+# no existing definition for function ‘getXXX’
+
+# 定义接口时，函数体不要使用{}，否则会触发一步计算，浪费资源。方法体用小驼峰
+setGeneric("myGeneric", function(x) standardGeneric("myGeneric"))
+
+## 搞不懂 setGeneric的参数 signature ="x" 有什么用？ //todo
+setGeneric("myGeneric", 
+  function(x, ..., verbose = TRUE) standardGeneric("myGeneric"),
+  signature = "x" #可能是通过第n个传入参数x来区别对哪个类使用哪个实现。其中...参数不参与。只有一个参数时，不用指定。
+)
+
+setGeneric("myGeneric", function(x) standardGeneric("myGeneric"))
+setMethod("myGeneric", "Person", function(x){
+  cat("Class:", is(x)[[1]], "\n", 
+      " Name: ", x@name, "\n", 
+      " age: ", x@age, "\n",
+      sep="") 
+})
+myGeneric(p1)
+# Class:Person
+#  Name: XiaoMing
+#  age: 20
+
+# 自省
+typeof(p1) #S4
+showMethods(myGeneric)
+# Function: myGeneric (package .GlobalEnv)
+# x="Person"
+
+
+# 查泛型函数在某类的实现  selectMethod("generic", "class").
+> selectMethod("myGeneric", "Person")
+Method Definition:
+
+function (x) 
+{
+    cat("Class:", is(x)[[1]], "\n", " Name: ", x@name, "\n", 
+        " age: ", x@age, "\n", sep = "")
+}
+
+Signatures:
+        x       
+target  "Person"
+defined "Person"</div>
+</div>
+
+<p>由接口查实现函数:methods("generic"); 由类查该类的实现函数: methods(class = "class"); 某泛型对某类的实现 selectMethod("generic", "class").</p>
+
+
+<p class=red>思考：定义泛型接口时，为什么要重复两遍函数名？ //todo</p>
+
+
+
+
+
+
+
+
+
+
+<a name="3_6"></a>
+<h3>6. 自定义实现show(): 默认打印对象的方法</h3>
+<p>show()是默认打印对象的方法，为自己的类自定义show()方法能优化显示。</p>
+
+<p>为了实现方法体，就需要先查看泛型方法怎么定义的参数。泛型方法的自省用 getGeneric()函数。</p>
+<p></p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">> getGeneric("show")
+standardGeneric for "show" defined from package "methods"
+
+function (object) 
+standardGeneric("show")
+&lt;bytecode: 0x3618e20&gt;
+&lt;environment: 0x35561c8&gt;
+Methods may be defined for arguments: object
+Use  showMethods("show")  for currently available ones. 泛型方法不实现是不能用的。
+(This generic function excludes non-simple inheritance; see ?setIs)
+
+
+# 查看接口的参数定义
+> args(getGeneric("show"))
+function (object) 
+NULL
+
+> args(getGeneric("myGeneric"))
+function (x) 
+NULL</div>
+</div>
+
+<p>为自己的类实现接口。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 自定义打印对象的方法 show()
+setMethod("show", "Person", function(object) {
+  cat(is(object)[[1]], "\n",
+      "  Name: ", object@name, "\n",
+      "  Age:  ", object@age, "\n",
+      sep = ""
+  )
+})
+p1
+# Person
+#   Name: XiaoMing
+#   Age:  20</div>
+</div>
+
+
+
+
+
+
+<a name="3_7"></a>
+<h3>7. Method dispatch 方法调度</h3>
+<p>R S4类有2个特点，多继承，就是一个类可以有多个父类；多重调度，一个接口可以根据参数选择使用的函数。这让R很强大，当然也不好理解给定的输入会选择哪个方法。实践中，要尽量单继承，让方法调度尽量简化，除非不得不用采用。</p>
+
+<p>在单继承链条上，调用具体类的实例方法时，会沿着继承链向上查找，直到找到则返回该方法。还有2个伪类，一个是最顶层的 ANY 类（类似S3中的default伪类），可以在这上面定义方法。第二个伪类是 MISSING 类，当没有参数时调用。对单调度没用，但对于使用+和-的使用双调度、并依赖参数是一个或两个的情况很重要。</p>
+
+<p>对于双继承，方法调度的原则是选择路径最短的方法(closest == fewest arrows)；如果一样距离，按字母顺序(comes earlier in the alphabet will be picked); ANY 伪类上定义的方法被认为十分的远，不影响模糊性。<b>忠告</b>：最好别用双继承，非要用计算好方法调度距离，为模糊的节点单独实现方法。</p>
+
+
+
 
 
 
@@ -489,9 +1153,9 @@ methods</a> taught by Martin Morgan and Hervé Pagès, 或者查看新版本 <a 
 <a name="4"></a>
 <h2 class="tutheader">Reference classes(RC)</h2>
 
+<p>RC 对象是 S4 和 environments（一个特殊的基本类型）的结合体。</p>
 <p>Reference classes in R are similar to object-oriented classes in other programming languages. They have all the features of S4 classes with an added environment. To create a reference class, we use the setRefClass() function. The methods in a reference class belong to the class itself.</p>
 
-<p>xx</p>
 <p>xx</p>
 
 
