@@ -187,6 +187,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.8-9 Python3 web开端口; [2021.1.2]
 	page0.2.9-0 R OOP S4 [2021.1.4]
 	page0.2.9-1 R OOP RC [2021.1.7]
+	page0.2.9-2 fix [2021.1.7]
 # commit
 ########>> push miostudio
 
