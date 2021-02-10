@@ -224,7 +224,27 @@ c12.bam
 <h3 class="tutheader">shell for 循环</h3>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">
+	<div style="white-space: pre-wrap;">## 打印[17, 39]
+# 类C风格
+for ((i=17; i<=39; i ++))
+do
+echo $i;
+done;
+
+# in语句
+for i in {17..39}
+do
+echo ${i};
+done
+
+# 使用seq: seq - print a sequence of numbers
+for i in `seq 17 39`
+do
+echo $i;
+done
+
+
+# 分析常用
 for id in {cell1,cell2,cell3} ##{}内不能有空格
 do
 	echo ${id}

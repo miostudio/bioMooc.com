@@ -1,0 +1,287 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>NGS 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.maxHeight{max-height:400px; overflow:scroll;}
+
+
+canvas {cursor: crosshair;}
+
+.colorBox div{
+	height: 50px;
+    width: 60px;
+    display: inline-block;
+	text-align: center;
+	padding: 0;
+	margin:10px 0;
+}
+.colorBox div span{padding:2px; padding-bottom:8px; color:white;}
+h4{margin-top:30px; border-left:3px solid black; padding-left:2px;}
+
+p{text-indent: 2em;}
+</style>
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">数据库 </span> 及数据下载</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 熟悉生信分析常用的数据库及数据下载方法。</p>
+
+<ul>
+	<li><a href="#1">参考基因组</a>
+		<ul>
+			<li><a href="#1_1">Ensembl /GENCODE </a>
+			<li><a href="#1_2">UCSC</a>
+			<li><a href="#1_3">NCBI</a>
+		</ul>
+	</li>
+	<li><a href="#2">GEO /SRA</a></li>
+	<li><a href="#3">TCGA</a></li>
+</ul>
+
+
+
+
+
+
+
+
+<!--
+<p><a target="_blank" href="xx">xx</a>xx</p>
+-->
+<a name='1'></a>
+<h2 class="tutheader">参考基因组</h2>
+<p>参考基因组主要包括序列文件fa和注释文件gtf。</br >
+本文主要关注物种是人和鼠。以human为例，常见的版本有 hg19和hg38。有三个提供者 ensemble，UCSC和NCBI。</p>
+<p>注意：下载的时候要注意配套，即从同一个提供者下载fa和gtf，否则后期会多很多麻烦。</p>
+
+<a name='1_1'></a>
+<h3>Ensembl /GENCODE</h3>
+
+<h4>Ensembl</h4>
+	<p>官网: <a target="_blank" href="https://asia.ensembl.org/index.html">https://asia.ensembl.org/index.html</a>，建议自己到主页找，不要用下面的链接，因为每个月都在更新。</p>
+	<p>单击中部的 human，新页面右侧Gene annotation中 <a target="_blank" href="ftp://ftp.ensembl.org/pub/release-102/fasta/homo_sapiens/">Download FASTA files</a> for genes, cDNAs, ncRNA, proteins，及  
+		<a target="_blank" href="ftp://ftp.ensembl.org/pub/release-102/gtf/homo_sapiens/">Download GTF</a> or GFF3 files for genes, cDNAs, ncRNA, proteins，
+	</p>
+<pre>
+# fasta: ftp://ftp.ensembl.org/pub/release-102/fasta/homo_sapiens/dna/
+$ wget ftp://ftp.ensembl.org/pub/release-102/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+$ gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+几个版本的区别:
+* 'dna' - unmasked genomic DNA sequences.
+* 'dna_rm' - masked genomic DNA.  Interspersed repeats and low complexity regions are detected with the RepeatMasker tool and masked by replacing repeats with 'N's.
+* 'dna_sm' - soft-masked genomic DNA. All repeats and low complexity regions have been replaced with lowercased versions of their nucleic base
+
+
+# gtf: ftp://ftp.ensembl.org/pub/release-102/gtf/homo_sapiens/
+$ wget ftp://ftp.ensembl.org/pub/release-102/gtf/homo_sapiens/Homo_sapiens.GRCh38.102.chr.gtf.gz
+# In the case of human and mouse, the GTF files found here are equivalent to the GENCODE gene set.
+
+
+# mouse 
+$ wget ftp://ftp.ensembl.org/pub/release-102/gtf/mus_musculus/Mus_musculus.GRCm38.102.chr.gtf.gz #带chr的少很多行，可能是只有染色体，不包含未拼接上的。
+$ wget ftp://ftp.ensembl.org/pub/release-102/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz
+</pre>
+
+<h4>GENCODE</h4>
+	<p>官网: <a target="_blank" href="https://www.gencodegenes.org/">https://www.gencodegenes.org/</a>，建议自己到主页找，不要用下面的链接，因为每个月都在更新。</p>
+<pre>
+# https://www.gencodegenes.org/human/ 
+## Nucleotide sequences of all transcripts on the reference chromosomes:
+$ wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.transcripts.fa.gz
+
+## This is the main annotation file for most users:
+$ wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.annotation.gtf.gz
+</pre>
+
+
+
+
+
+
+<a name='1_2'></a>
+<h3>UCSC</h3>
+
+<pre>
+# ftp://hgdownload.soe.ucsc.edu/goldenPath/hg19/
+
+# ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/
+$ wget ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
+
+# ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/
+hg38.ensGene.gtf.gz	26.5 MB	2020/1/10 上午8:00:00
+hg38.knownGene.gtf.gz	32.4 MB	2020/1/10 上午8:00:00
+hg38.ncbiRefSeq.gtf.gz	34.2 MB	2020/1/10 上午8:00:00
+hg38.refGene.gtf.gz	22.5 MB	2020/1/10 上午8:00:00
+## 这四个版本的gtf有啥区别？ //todo
+$ wget ftp://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/genes/hg38.knownGene.gtf.gz
+</pre>
+
+
+
+
+
+<a name='1_3'></a>
+<h3>NCBI</h3>
+<pre>
+解释: https://www.ncbi.nlm.nih.gov/genbank/genomes_gff/
+
+下载: https://www.ncbi.nlm.nih.gov/refseq/
+$ wget https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.gtf.gz
+
+$ wget https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/annotation_releases/current/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.gtf.gz
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">GEO /SRA</h2>
+<p>$ fasterq-dump --split-files -e 10 SRR9689351 #下载rsa并转为2个fa文件(R1,R2)</p>
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
