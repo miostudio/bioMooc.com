@@ -129,10 +129,23 @@ h4{
 				</ul>
 			</li>
 			
-			<li><a href="#6_2">图例(legend): 饼图</a></li>
+			<li><a href="#6_2">图例(legend): 饼图</a>
+				<ul>
+					<li><a href="#6_2_2">图例点放大</a></li>
+					<li><a href="#6_2_3">共用一个图例</a></li>
+				</ul>
+			</li>
+			
 			<li><a href="#6_3">标度(scale) todo</a></li>
 			<li><a href="#6_4">主题(theme) </a></li>
-			<li><a href="#6_5">多重图，一页多图</a></li>
+			<li><a href="#6_5">多重图，一页多图</a>
+				<ul>
+					<li><a href="#6_5_2">母子图，图片嵌套</a></li>
+				
+				</ul>
+			</li>
+			
+			
 		</ul>
 	</li>
 	<li><a href="#7">保存图片</a></li>
@@ -233,7 +246,35 @@ p2 = ggplot(df,aes(x=seurat_clusters,y=value,fill=variable))+
         strip.text.x = element_text(angle=90,vjust=1,hjust = 1,size=15), #分面标签 文字倾斜; 字号
         strip.background = element_blank() #分面标签 不要背景
     )
-print(p2)</div>
+print(p2)
+# v0.2 facet_wrap 添加 scales ="free_x" 参数效果更佳。
+
+# 附录: 
+# 数据整理代码
+gene_list1=c(
+    "CD3D","CD3E", "CD4", #naive CD4
+    'CD8A','CD8B') #CD8
+cluster_list=levels(scRNA@meta.data$seurat_clusters)
+#
+df1=NULL;
+for( cluster in cluster_list){
+    message(cluster)
+    rs=scRNA@meta.data
+    cid=rownames( rs[which(rs$seurat_clusters== cluster),] )
+    #
+    mtx=scRNA@assays$RNA@data[, cid]
+    for( gene in gene_list1){
+        df2=data.frame(value=as.numeric( mtx[gene, ]) )
+        df2$variable=gene
+        df2$seurat_clusters=cluster
+        #
+        df1=rbind(df1, df2)
+    }
+}
+rm(cluster, rs, df2)
+
+dim(df1)
+head(df1)</div>
 </div>
 <br><br>
 
@@ -719,6 +760,53 @@ print( ggPie(df_2) ) #fig2</div>
 
 
 
+
+
+
+
+
+
+
+
+
+
+<a name="6_2_2"></a>
+<h3 class="tutheader">图例点放大</h3>
+<p>图略。使用对数坐标，自定义点的颜色。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(ggplot2) # Seurat对象的meta.data画图
+g1=ggplot(scRNA@meta.data, aes(nCount_RNA, nFeature_RNA, color = cellType)) +
+  geom_point(size = 0.1) +
+  # scale_color_brewer( type = "qual", palette = "Set2",name = "cell type") + #Spectral
+  # scale_color_manual( values =  c( brewer.pal(8,'Set2'), "black",'red','blue'), name = "cell type") +
+  scale_x_log10() + scale_y_log10() +
+  theme_classic()+ #theme_bw() +
+  # Make points larger in legend
+  guides(color = guide_legend(override.aes = list(size = 6))) +
+  labs(x = "Total UMI counts", y = "Number of genes detected")
+
+options(repr.plot.width=6, repr.plot.height=4.5) #jupyter 显示图片的宽高，单位和pdf()一致。
+g1</div>
+</div>
+<br><br>
+
+
+
+<a name="6_2_3"></a>
+<h3 class="tutheader">共用一个图例</h3>
+<pre>
+plotc <- plot1+plot2+ plot_layout(guides = 'collect') #公用图例
+</pre>
+
+
+
+
+
+
+
+
+
+
 <a name="6_4"></a>
 <h3 class="tutheader">自定义主题</h3>
 <p>图略。输入主题名字，不加括号，就能看到该主题的定义，如: theme_bw。自定义主题就是模仿该函数定义的。</p>
@@ -810,6 +898,85 @@ grid.arrange(p1,p2,nrow=1)
 
 grid.arrange(plots[[1]]...plots[[10]],ncol=1,nrow=10)</div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+<a name="6_5_2"></a>
+<h4 class="tutheader">母子图，图片嵌套</h4>
+<p>效果：主图是颜色分组的散点图，右上角显示每个分组的样本个数条形图。</p>
+<img src="images/draw-adv-ggplot2/nesting_Mother_son.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#- 子图的背景要透明，否则覆盖后会很丑。
+#- 指定子图位置使用 grid包的 viewport() 函数 
+
+library(ggplot2)
+g=ggplot(mtcars, aes(mpg, wt, col=factor(gear) ))+
+  geom_point()+#theme_bw()+
+  scale_color_discrete("Gear");g
+
+# barplot 
+rs=as.data.frame( table(mtcars$gear) );rs
+# 3  4  5 
+# 15 12  5 
+barDf=data.frame(
+  x=rs$Var1,
+  y=rs$Freq
+)
+barDf$label=barDf$y  #paste0(barDf$x, "gear: ", barDf$y)
+barDf
+
+p1=ggplot(barDf, aes(x, y, fill=factor(x)))+
+  geom_bar(stat = "identity")+
+  #scale_fill_manual("",values=c('red','blue'), labels=NULL)+
+  labs(title="", x="", y="")+
+  theme_classic()+
+  # 添加条形图顶部文本
+  geom_text( mapping=aes(x, y=y+3, label=label, angle=90 ), size=3 )+
+  scale_y_continuous(expand = c(0,0), #y轴与底部无间隙
+                     limits=c(0,21), #y轴范围
+                     breaks = seq(0,20,10))+ #y轴刻度
+  theme(legend.position="none", #不要图例
+        
+        axis.text = element_text(size = rel(0.7)),#y轴字体
+        
+        # no bg 背景透明，否则覆盖原图后很丑
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        plot.background = element_rect(fill = "transparent",colour = NA),
+        
+        # no x axis
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.x = element_blank());p1
+print(p1)
+
+# 
+library(grid)
+print(g) #主图
+
+# 子图定位
+vp = viewport(width = 0.3, height = 0.5, #width\height表示插入图形的大小
+               x = 0.5,y = 1, #x\y表示插入图形相对于图片底层just的位置
+               just=c("left","top")) #按照左上角定位
+print(p1,vp=vp)</div>
+</div>
+<br>
+
+
+
+
+
+
+
 <br>
 <br>
 
@@ -836,7 +1003,7 @@ grid.arrange(plots[[1]]...plots[[10]],ncol=1,nrow=10)</div>
 <a name="7"></a>
 <h2>保存图片</h2>
 <pre>
-ggsave("diamonds.pdf", width=4, height=4) #units = c("in", "cm", "mm"), 默认是英寸，dpi = 300
+ggsave("diamonds.pdf", p, width=4, height=4) #units = c("in", "cm", "mm"), 默认是英寸，dpi = 300
 </pre>
 
 

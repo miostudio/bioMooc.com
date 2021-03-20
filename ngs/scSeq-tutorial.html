@@ -40,8 +40,8 @@ $(function(){
 		$('#footer').after(data);//右下角按钮
 	});
 
-	
-			
+
+
 	//左右菜单
 	$.get('./part/menu-left.html',function(data,status){
 		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
@@ -126,16 +126,22 @@ p{text-indent:2em;}
 
 
 <hr>
-<h2>10x 公司</h2>
-<p>10xgenomics资料: 
+<h2>10x scRNA-seq</h2>
+<p>10X genomics资料: 
 	<a target="_blank" href="https://support.10xgenomics.com/single-cell-gene-expression/datasets">10x 官方数据集</a> | 
 	<a target="_blank" href="https://www.10xgenomics.com/resources/publications">10x 文章</a> | 
+	<a target="_blank" href="https://www.10xgenomics.com/blog/single-cell-rna-seq-an-introductory-overview-and-tools-for-getting-started">单细胞技术扫盲</a> | 
 </p>
 <p>教程 <a target="_blank" href="https://scrnaseq-course.cog.sanger.ac.uk/website/index.html">Analysis of single cell RNA-seq data</a>: 一步一步的操作步骤。</p>
 
 <ul>
 <p>公众号教程: 基于Seurat的基础分析、以及基于clusterProfiler、Monocle、SingleR等R包的延伸分析。</p>
-	<li><b><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzAxMDkxODM1Ng==&mid=2247496154&idx=3&sn=d3cfaa4a5b18235e0192619f64641635">单细胞课程</a>, 初级8讲和高级分析8讲: </b></li>
+	<li>单细胞课程：<b>
+		<a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzAxMDkxODM1Ng==&mid=2247496154&idx=3&sn=d3cfaa4a5b18235e0192619f64641635"> 初级8讲和高级分析8讲</a>, 
+		<a target="_blank" href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzIyMzMwNDQ2MA==&action=getalbum&album_id=1593332494622359552"> 单细胞分析十八般武艺</a>, 
+		<a target="_blank" href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzIyMzMwNDQ2MA==&action=getalbum&album_id=1711160922095845377"> 单细胞分析环境</a>, 
+	
+	</b></li>
 	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488332&idx=2&sn=a61862ffb546a70eecfe9b03827a27fe">4细胞类型鉴定</a>: CellMarker库 /PanglaoDB库， SingleR包;</li>
 	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzIyMzMwNDQ2MA==&mid=2247483784&idx=1&sn=37cf87fe9b26566731a1afe264aad0ce">5细胞再聚类</a>: 细胞子集的提取使用subset函数，主要依据meta.data的分类项目选择，也可以自定义细胞barcode提取。</li>
 	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488352&idx=2&sn=c08863668cbde5d66fd5d3e592f3aac9">6伪时间分析</a>: Monocle假设轨迹是树状结构，一端是“根”，另一端是“叶”。Monocle2使用DDTree降维图，Monocle3使用UMAP降维图。</li>

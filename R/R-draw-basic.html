@@ -923,6 +923,14 @@ abline(v=seq(0,10,2), lty=2, col="grey",lwd=0.5) #n条灰色虚竖线，宽度�
 	<tr><td>title</td>   <td> 图例标题的字符串（可选）</td></tr>
 	<tr><td>legend</td>   <td> 图例标签组成的字符型向量</td></tr>
 	<tr><td>ncol</td>   <td>图例的列数目。如果horiz为true，则此项无意义。</td></tr>
+	
+	<tr><td>y.intersp=2</td>   <td>图形之间的y距离，高度差</td></tr>
+	<tr><td>x.intersp=3</td>   <td>图形和文字的x距离</td></tr>
+	<tr><td>text.width=4</td>   <td>两个图例之间的距离，水平距离。</td></tr>
+	<tr><td>xpd=T</td>   <td>图例显示到图形外部</td></tr>
+	
+	
+	
 	<tr><td>… </td>   <td>其他选项。如果图例标示的是颜色不同的线条，需要指定col=加上颜色值组成的向量。如果图例标示的是符号不同的点，则需指定pch=加上符号的代码组成的向量。如果图例标示的是不同的线条宽度或线条类型，请使用lwd=或lty=加上宽度值或类型值组成的向量。要为图例创建颜色填充的盒形（常见于条形图、箱线图或饼图），需要使用参数fill=加上颜色值组成的向量</td></tr>
 	</tbody>
 </table>
@@ -967,6 +975,28 @@ par(opar)</div>
 
 
 
+<h3 class="tutheader">legend() 设置间距(x和y方向)，不要小方块外边框 </h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">par(oma=c(1,5, 1.5, 0.1)) # 使用了par设置oma，mar图的边距
+#par(mar=c(0,0,0,0)) # 设置绘图边距
+
+plot(c(1), ylab="L")
+legend(x=0.6,y=1.7,legend = c("KO","Ctrl"),
+       xpd=T,
+       
+       x.intersp=0.2, #图形和文字的x距离
+       y.intersp=3, #图形之间的y距离，高度差
+       
+       
+       text.width=2, #两个图例之间的距离(这里没作用)
+       
+       cex=1.8, #图例缩放倍数
+       bty="n", #不要图例的外方框
+       border=NA, #不要图例小方块描边
+       
+       fill = c( rgb(255,192,203,max=255),rgb(165,75,42,max=255) ) )</div>
+</div>
+<img src="images/draw-basic/para-legend-2.png"><br><br>
 
 
 
