@@ -30,3 +30,18 @@ oDiv.append(oA)
 //
 var oArticle=document.getElementsByClassName('article')[0]
 oArticle.parentElement.insertBefore(oDiv, oArticle)
+
+
+
+
+/*****************
+* google adsense 
+*******************/
+//<script data-ad-client="ca-pub-9506119208881563" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+var oAdSense=document.createElement('script');
+oAdSense.setAttribute('data-ad-client', 'ca-pub-9506119208881563')
+oAdSense.setAttribute('async','async')
+oAdSense.setAttribute('src', "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
+//
+var oHead=document.getElementsByTagName("head")[0]
+oHead.append(oAdSense)
