@@ -125,6 +125,9 @@ $(function(){
 <pre>
 # jupyter中控制图形宽高，和pdf中宽高一致。放到每个图形之前。
 options(repr.plot.width=12.5, repr.plot.height=5.5)
+
+# 保留2位小数
+formatC(0.00012583, format = "e", digits = 2) # "1.26e-04"
 </pre>
 
 

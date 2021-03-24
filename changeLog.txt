@@ -191,6 +191,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.9-3 更新底部年份 [2021.1.14]
 	page0.2.9-4 明天过年 [2021.2.10]
 	page0.2.9-5 补充R作图 [2021.3.20]
+	page0.2.9-6 add blank pages for adsense [2021.3.24]
 # commit
 ########>> push miostudio
 
