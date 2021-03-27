@@ -194,6 +194,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.9-6 add blank pages for adsense [2021.3.24]
 	page0.2.9-7 add adsense script [2021.3.24]
 		<script data-ad-client="ca-pub-9506119208881563" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	page0.2.9-8 add Python3-parallel [2021.3.27]
+		R/R-apply 透视表
 # commit
 ########>> push miostudio
 

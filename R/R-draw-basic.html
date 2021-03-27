@@ -121,7 +121,7 @@ $(function(){
 		<ul>
 			<li><a href="#41">par()参数mfrow控制布局</a>
 			<li><a href="#42">layout()函数更精细排版：matrix, widths和heights</a>
-			<li><a href="#43">layout()函数自由嵌入图形:fig参数</a>	
+			<li><a href="#43">fig参数精细布局，自由嵌入图形： par(fig=c(), new=T)</a>	
 		</ul>
 	</li>
 </ul>
@@ -138,11 +138,13 @@ $(function(){
 	<div style="white-space: pre-wrap;">#输出pdf格式
 setwd("F://Temp//") #设定工作目录
 
-pdf("pic1.pdf") # 设定文件名
+pdf("pic1.pdf", width=4, height=4) # 设定文件名
+
 attach(mtcars)
 plot(wt,mpg)
 abline(lm(mpg~wt))
 detach(mtcars)
+
 dev.off() #关闭绘图设备
 
 
@@ -1132,7 +1134,7 @@ myDraw()</div>
 
 
 <br><a name="42"></a>
-<p><b>使用layout()函数更精细的排版</b></p>
+<h3>使用layout()函数更精细的排版: matrix, widths和heights</h3>
 <p>如果页面不均等分隔绘制多图，用layout函数分隔页面。它有四个参数，mat，widths，heights和respect。后三个参数有默认值，示例2我们只设置第一个参数mat。它是一个矩阵，表示绘图区分隔的各部分，相同数字的部分合并成一个绘图区，数字也是它们作图时的顺序。下面的矩阵mat有2行3列，我们看看它绘出的图形：</p>
 <p><b>注意：</b>mat参数的值必需从1-n顺序依次取值，不能有间隔。</p>
 <div class="code notranslate">
@@ -1191,8 +1193,9 @@ plot(1:5)</div>
 
 
 <br><a name="43"></a>
-<h3 class="tutheader">图形布局的精细控制：fig参数自由嵌入图形 </h3>
+<h3 class="tutheader">fig参数精细布局，自由嵌入图形： par(fig=c(), new=T) </h3>
 <p>可以使用fig=c(x1,x2,y1,y2)的方式将若干图形以任意排布方式组合到单幅图中。</p>
+<p>需要把画布理解成左下角为坐标(0,0)，右上角为(1,1)的一个坐标系。fig=c(x1,x2,y1,y2)来设置该参，x1,x2定位绘图区的x轴范围，y1,y2定位绘图区的y轴范围。使用new=TRUE参数来确认是否在原画布上继续画，还重新在一张新画布上开始画。</p>
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">#左下角为(0,0)，右上角为(1,1)。fig=(x1,x2,y1,y2)表示绘图区间
@@ -1212,6 +1215,28 @@ mtext("Enhanced Scatterplot",side=3,outer=T,line=-5)
 par(opar)</div>
 </div>
 <img src="images/draw-basic/par-layout-fig.png" /><br>
+
+
+
+
+
+
+<br><a name="44"></a>
+<h3 class="tutheader">图形叠加： par(new=T) </h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> #画 hist+density 叠加图
+par(mfrow = c(3,1), mar = c(4,1,2,1), oma = c(1,3,0,0))
+sapply(levels(iris$Species), function(f) {
+  hist(iris$Sepal.Length[iris$Species == f], main = f, xlab = "", n=25, xlim=c(4,8) )
+  par(new=T)
+  plot(density(iris$Sepal.Length[iris$Species == f], n=50), xlim=c(4,8),
+       col='red', ann=F, axes=F )
+})
+mtext(side = 1, outer = T, line = -1, "Sepal.Length", cex = 0.8)
+mtext(side = 2, outer = T, line = 2, "Freq", cex = 0.8)</div>
+</div>
+
 
 
 

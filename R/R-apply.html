@@ -110,12 +110,14 @@ $(function(){
 		<ul>
 			<li><a href="#22">按照条件f拆分x: split(x, f, drop = FALSE, ...)</a>
 			<li><a href="#23">sapply函数返回矩阵(simple apply)</a>
+			<li><a href="#23_2">|-- 使用sapply(data, fn)分面</a>
 			<li><a href="#24">vapply, 类似sapply，FUN.VALUE参数可控制返回值的行名</a>
-			<li><a href="#25">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据//todo</a>
+			<li><a href="#25">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据</a>
 		</ul>
 	</li>
-	<li><a href="#3">tapply: table(), by() //todo</a>
+	<li><a href="#3">tapply: table(), by()</a>
 		<ul>
+			<li><a href="#3_2">tapply() 实现excel透视表功能</a>
 			<li><a href="#31">gl() 产生因子/函数table（求因子出现的频数）//todo</a>
 			<li><a href="#32">by(dataframe, INDICES, FUN, ..., simplify=TRUE)//todo</a>
 		</ul>
@@ -448,6 +450,7 @@ split(d$income, d$income>0.5*mean(d$income) & d$age&lt;25)
 
 <br><a name="23"></a>
 <h3 class="tutheader">sapply函数返回矩阵(simple apply)</h3>
+<p>sapply(data, fn) 还可以用来画图，批量画几个panel。</p>
 <p>sapply 函数是一个简化版的lapply，sapply增加了2个参数simplify和USE.NAMES，
 主要就是让输出看起来更友好，返回值为向量，而不是list对象。</p>
 
@@ -523,6 +526,22 @@ sapply(airByMonth, function(x){colMeans(x)}) #不加na.rm=T则结果中有NA
 
 
 
+<br><a name="23_2"></a>
+<h3>使用sapply(data, fn)分面</h3>
+<img src="images/apply/01_sapply_facet.png" />
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 例: 3行1列, hist+density
+par(mfrow = c(3,1), mar = c(2,1,2,1), oma = c(2,3,0,0))
+sapply(levels(iris$Species), function(f) {
+  hist(iris$Sepal.Length[iris$Species == f], main = f, xlab = "", n=25, xlim=c(4,8) )
+  par(new=T)
+  plot(density(iris$Sepal.Length[iris$Species == f], n=50), xlim=c(4,8), 
+       lwd=5,col='#FF000066', ann=F, axes=F )
+  #lines(density(iris$Sepal.Length[iris$Species==f], n=50), xlim=c(4,8), col='green')
+})
+mtext(side = 1, outer = T, line = 1, "Sepal.Length", cex = 0.8) #x标签
+mtext(side = 2, outer = T, line = 2, "Freq", cex = 0.8) #y标签</div>
+</div>
 
 
 
@@ -630,9 +649,19 @@ vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
 
 <br><a name="25"></a>
 <h3 class="tutheader">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据</h3>
+<p>由于mapply是可以接收多个参数的，所以我们在做数据操作的时候，就不需要把数据先合并为data.frame了，
+直接一次操作就能计算出结果了。</p>
 
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#例1
+mapply(sum, list(a=1,b=2,c=3), list(a=10,b=20,d=30))
+#a  b  c 
+#11 22 33 
 
-
+#例2
+mapply(function(x,y) x^y, c(-1:-5), c(1:5))
+#[1]    -1     4   -27   256 -3125</div>
+</div>
 
 
 
@@ -649,11 +678,91 @@ vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
 
 <br><a name="3"></a>
 <h2 class="tutheader">tapply: table(), by() </h2>
+<p>tapply用于分组的循环计算，通过INDEX参数可以把数据集X进行分组，相当于group by的操作。</p>
+
+<pre>
+函数定义：tapply(X, INDEX, FUN = NULL, ..., simplify = TRUE)
+参数列表：
+X: 向量
+INDEX: 用于分组的索引
+FUN: 自定义的调用函数
+...:	optional arguments to FUN: the Note section. 接收多个数据 
+simplify : 是否数组化，当值array时，输出结果按数组进行分组
+</pre>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#tapply(a,b,c)
+# a是一个一维数据，如 1,2,3,4,5,6
+# b是和a等长度的一维数据，如   a，a，b，c，b，c
+# c是执行函数，如求和-sum，结果是a的求和值为 1+2 = 3, b的求和值为 3+5=8，c的求和值为4+6=10
+
+# 例1: 对不同位置求和
+tapply(c(1,2,3,4,5,6), c('a','a','b','c','b','c'), sum)
+# a  b  c 
+# 3  8 10
+
+
+#例2: 计算不同品种的鸢尾花花瓣长度均值
+# 通过iris$Species品种进行分组
+tapply(iris$Petal.Length,iris$Species,mean)
+# setosa versicolor  virginica 
+# 1.462      4.260      5.552 
+
+
+# 例3: 传入更多参数
+#由于 tapply 只接收一个向量参考，通过’…’可以把再传给你FUN其他的参数，那么我们想去y向量也进行求和，
+#把y作为tapply的第4个参数进行计算。
+y=1:150
+tapply(iris$Petal.Length,iris$Species,sum)
+#setosa versicolor  virginica 
+#  73.1      213.0      277.6 
+
+tapply(iris$Petal.Length,iris$Species,sum, y)
+#setosa versicolor  virginica 
+# 11398.1    11538.0    11602.6
+
+sum(y) #[1] 11325
+## 警告: 
+#得到的结果并不符合我们的预期，结果不是把X和Y对应的Indx分组后求和，而是得到了其他的结果。
+#第4个参数y传入sum时，并不是按照循环一个一个传进去的，而是每次传了完整的向量数据，
+#那么再执行sum时sum(y)=11325，所以 73.1 + 11325=11398.1
+
+#那么，我们在使用’…’去传入其他的参数的时候，一定要看清楚传递过程的描述，才不会出现的算法上的错误。
+
+tapply(iris$Petal.Length,iris$Species,sum) + tapply(y,  iris$Species,sum) 
+#setosa versicolor  virginica 
+#1348.1     3988.0     6552.6 </div>
+</div>
+<br>
 
 
 
 
 
+
+
+
+
+
+<br><a name="3_2"></a>
+<h3 class="tutheader">tapply() 实现excel透视表功能</h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 实例
+head(mtcars)
+
+# 1维：gear	 Number of forward gears
+tapply(mtcars$mpg, mtcars$gear, mean) #参数1 数据，参数2 分组， 参数3 处理函数
+#       3        4        5 
+# 16.10667 24.53333 21.38000 
+
+# 2维：cyl	 Number of cylinders
+tapply(mtcars$mpg, list(mtcars$gear, mtcars$cyl), mean)
+#       4     6     8
+#3 21.500 19.75 15.05
+#4 26.925 19.75    NA
+#5 28.200 19.70 15.40</div>
+</div>
+<br>
 
 
 
