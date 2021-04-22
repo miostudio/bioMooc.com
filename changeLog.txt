@@ -194,8 +194,22 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.2.9-6 add blank pages for adsense [2021.3.24]
 	page0.2.9-7 add adsense script [2021.3.24]
 		<script data-ad-client="ca-pub-9506119208881563" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		# https://www.google.com/adsense/new/u/0/pub-9506119208881563/home
 	page0.2.9-8 add Python3-parallel [2021.3.27]
 		R/R-apply 透视表
+##############
+怀疑被爬虫了，特征: 定时浏览很多页面，没有浏览器信息，
+29		2021/03/25 04:33:47	龙岩	直接访问	/R/R-tutorial.html	--	203.208.60.63	5620054279096407924	未知	1	 
+30		2021/03/25 04:31:00	龙岩	直接访问	/R/R-draw-sketch.html	--	203.208.60.110	8787047671535088232	未知	1	 
+31		2021/03/25 04:27:41	龙岩	直接访问	/R/R-draw-adv-ggplot2.html	--	203.208.60.23	50859981161263
+		
+查询IP来源: 
+203.208.60.110来自北京市北京 谷歌云
+203.208.60.23来自北京市北京 谷歌云
+	page0.2.9-9 python/ add 1 line[2021.4.22]
+
+
+##############
 # commit
 ########>> push miostudio
 
@@ -216,3 +230,4 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 
 
 ##
+

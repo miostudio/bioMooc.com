@@ -44,7 +44,7 @@ $(function(){
 	});
 
 	
-			
+
 	//左右菜单
 	$.get('./part/menu-left.html',function(data,status){
 		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
@@ -139,6 +139,7 @@ $(function(){
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">## 在centOS + python3.6测试通过
 $ python -m http.server --bind 192.168.2.120 8890
+$ python -m http.server 8900 # 使用默认IP地址
 
 ## 要在待预览图片所在目录或其父目录运行该命令;
 ## --bind 后面是服务器公网IP地址 和 端口号；
