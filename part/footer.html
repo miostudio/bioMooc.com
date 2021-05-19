@@ -125,7 +125,12 @@
     </div>
    </div>
    <div class="w-1000 copyright">
-		<a target="_blank" href="http://stuff.mit.edu/doc/counter-howto.html"><img src="https://stuff.mit.edu/cgi/counter/biomooc"></a>
+		<!-- 浏览计数器: 异步 -->		
+		<a target="_blank" href="http://stuff.mit.edu/doc/counter-howto.html" id='viewCounter'>
+			<!-- 
+			<img src="https://stuff.mit.edu/cgi/counter/biomooc"> 
+			-->
+		</a>
 		<br>
      Copyright &copy; 2009-
 	 2021
@@ -135,3 +140,18 @@
 		<br /> "不疯魔，不成活！"
 
    </div>
+<script>
+/** 异步 获取页面底部的计数器
+*/
+window.addEventListener('load', function(){
+	var oA=document.getElementById("viewCounter");
+	var url="https://stuff.mit.edu/cgi/counter/biomooc"
+	setTimeout(function(){
+		//var oImg=createElement("img", {src:url, alt:"浏览次数[异步获取]"})
+		var oImg=document.createElement('img');
+		oImg.setAttribute('src', url);
+		oImg.setAttribute('alt', "浏览次数[异步获取]");
+		oA.append(oImg)
+	}, 0)
+}, true)
+</script>

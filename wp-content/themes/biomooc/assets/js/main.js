@@ -1,4 +1,4 @@
-// author: runoob
+// author: xx
 jQuery(document).ready(function ($){
 	//搜索
 	$(".search-reveal").click(function() {
@@ -354,7 +354,7 @@ jQuery(document).ready(function($){
 		
 		login_flag= false;
 	$.ajaxSetup({ 
-	    async : false 
+	    async : true 
 	});     
 	//判断是否登陆
 	if(readCookie('checklogin_ajax')) {
