@@ -401,11 +401,17 @@ for(var i=0;i<colors.length;i++){
 <canvas id="canvas_colorBar4" width="600" height="600" style="border:1px dashed #ccc;"></canvas>
 
 
+
+<h4>Color Palette 5: barplot/lineplot 等色彩搭配</h4>
+<canvas id="canvas_colorBar5" width="600" height="300" style="border:1px dashed #ccc;"></canvas>
+
+
 <script>
 	var ctx1 = document.getElementById('canvas_colorBar1').getContext('2d');
 	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d');
 	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d');
 	var ctx4 = document.getElementById('canvas_colorBar4').getContext('2d');
+	var ctx5 = document.getElementById('canvas_colorBar5').getContext('2d');
 	
 	// tool 1: 方框填充
 	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
@@ -783,6 +789,11 @@ Red/Dark Red/ */
 
 
 
+/**==========================
+* 第5个色板: barplot/lineplot 等色彩搭配
+*==========================*/
+	//1
+	showColors(ctx5,[ '#5BC4BA', '#E82364' ],0, 'barplot(2 colors)', width=100);
 
 
 </script>

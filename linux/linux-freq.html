@@ -211,6 +211,13 @@ c12
 $ echo ../clean/c12_R2_trimmed.fq | while read id; do  echo $id;  echo $(basename $id '_R2_trimmed.fq').bam; done;
 ../clean/c12_R2_trimmed.fq
 c12.bam
+
+
+# 对几个自定义字符串循环
+$ echo 'a1' 'a2' 'b2' | xargs -n 1 | while read id; do echo $id; done;
+a1
+a2
+b2
 </div>
 </div>
 
@@ -251,8 +258,38 @@ do
 	echo //${id}//
 done;
 
+输出: 
 cell1
 //cell1//
+cell2
+//cell2//
+cell3
+//cell3//
+
+
+
+
+# 定义内外双循环 (为什么交互式这么写报错，写到文件中OK，或者写成一行就OK?)
+$ cat tx.sh
+for type in `echo 'WT' 'KO' | xargs -n 1` 
+do 
+	for ((i=1;i<=3;i++))
+	do 
+		echo ${type}_${i}.fq; 
+	done; 
+done;
+
+$ bash tx.sh #输出同下面这一行
+$ for type in `echo 'WT' 'KO' | xargs -n 1`; do for i in `seq 1 3`;	do  echo ${type}_${i}.fq; 	done; done;
+WT_1.fq
+WT_2.fq
+WT_3.fq
+KO_1.fq
+KO_2.fq
+KO_3.fq
+
+
+注: for ((i=1;i<=3;i++)) 和  for i in `seq 1 3` 等价。
 </div>
 </div>
 
@@ -338,10 +375,20 @@ done;
 <a name='3'></a>
 <h2 class="tutheader">处理 bam/sam</h2>
 
-<p>xx</p>
+<p>samtools: 单文件模式，shell批量模式。</p>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;"> code here;
+	<div style="white-space: pre-wrap;"># 常用语句：
+samtools view -bS input.sam >aln.bam 	#1.sam转换为bam
+samtools sort -o aln.sorted.bam aln.bam #2.排序
+samtools index aln.sorted.bam 		#3.建索引
+
+
+// 批量索引
+$ ls *bam| while read id; do 
+echo $id;
+samtools index ${id};
+done;
 
 </div>
 </div>
