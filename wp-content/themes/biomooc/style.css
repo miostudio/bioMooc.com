@@ -1,7 +1,7 @@
 /*
 Theme Name: biomooc
 Theme URI: http://www.biomooc.com/
-Version: 1.0
+Version: 1.0-1
 Author: 生物慕课网
 Author URI: http://www.biomooc.com/
 Description:生物慕课网 -- 生物信息常备参考！
@@ -55,4 +55,15 @@ img.desaturate { -webkit-filter: grayscale(100%); filter: grayscale(100%); }
     word-wrap: break-word;
     border-radius: 3px;
     margin: 10px;
+}
+
+
+
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+
+h4{
+	margin-top: 30px;
+    border-left: 3px solid red;
+    padding-left: 2px;
 }

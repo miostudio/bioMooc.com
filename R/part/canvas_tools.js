@@ -27,7 +27,11 @@ function getColor(event){
 	var g=imgData.data[1];
 	var b=imgData.data[2];
 	var hex=rgb2hex([r,g,b])
-	console.log('%c'+hex, 'background:'+hex)
+	// set font color according to backgroundColor
+	var grey=r*0.3 +g*0.59 +b*0.11;
+	var fontColor = grey>125?"black":"white";
+	
+	console.log('%c'+hex, 'background:'+hex+"; color:"+fontColor)
 }
 
 // get a line color
@@ -59,7 +63,7 @@ function getColors(event){
 }
 
 // 为画板绑定事件: 单击、双击
-var ctxArr=[ctx1, ctx2, ctx3, ctx4];
+var ctxArr=[ctx1, ctx2, ctx3, ctx4, ctx5];
 for(var i=0; i<ctxArr.length; i++){
 	var ctx=ctxArr[i]
 	//console.log(i, ctx)

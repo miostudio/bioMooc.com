@@ -129,8 +129,9 @@ h4{
 				</ul>
 			</li>
 			
-			<li><a href="#6_2">图例(legend): 饼图</a>
+			<li><a href="#6_2">图例(legend) 精雕细琢</a>
 				<ul>
+					<li><a href="#6_2_1">饼图的图例</a></li>
 					<li><a href="#6_2_2">图例点放大</a></li>
 					<li><a href="#6_2_3">共用一个图例</a></li>
 				</ul>
@@ -174,7 +175,19 @@ h4{
 
 
 
+<p>"一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点、线、条形等)的图形属性(aesthetic attributes, 缩写为aes, 包括颜色、形状、大小等)的一个映射。此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats), 最后绘制在某个特定的坐标系(coordinate system,  缩写为coord)中, 而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据中不同子集的图形。"</p>
+<p>  ----- Hadley Wickham </p>
 
+
+
+
+
+
+
+
+
+<br>
+<br>
 <a name="2"></a>
 
 
@@ -572,7 +585,133 @@ ggplot(td,aes(x = hjust,y = vjust))+
 
 
 <a name="6_2"></a>
+<h3 class="tutheader">图例</h3>
+<p>目的：通过参数的设置完成对所绘制图形的legend的细节修改，得到自己所需要的图形。</p>
+<pre>
+library(ggplot2)
+df1=mtcars
+df1$gear=factor(df1$gear)
+head(df1)
+p=ggplot(df1, aes(x=gear, y=mpg, fill=gear ))+geom_boxplot();p
+
+# 综合示例 legend at bottom-right, inside the plot
+p + theme(legend.title = element_text(size=12, color = "salmon", face="bold"),
+          legend.justification=c(1,0),
+          legend.position=c(0.6, 0.05),  
+          legend.background = element_blank(),
+          legend.key = element_blank()) +
+  labs(subtitle="Legend: Bottom-Right Inside the Plot")
+</pre>
+<table class="reference" style="width:100%"><tbody>
+	<tr>
+		<th>目的</th>
+		<th>代码</th>
+		<th>解释</th>
+	</tr>
+
+	<tr>
+		<td>图例位置</td>
+		<td>p + theme(legend.position="bottom"); <br>
+			p + theme(legend.position = c(0.8, 0.2))</td>
+		<td>可选: 'left','top', 'right', 'bottom'.<br>
+			或坐标值 c(x,y)</td>
+	</tr>
+
+	<tr>
+		<td>更改legend 的title 字体颜色</td>
+		<td>p + theme(legend.title = element_text(colour="blue", size=10,
+                                      face="bold"))</td>
+		<td></td>
+	</tr>
+
+	<tr>
+		<td>更改 legend labels 字体颜色</td>
+		<td>p + theme(legend.text = element_text(colour="red", size=10,
+                                     face="bold"))</td>
+		<td></td>
+	</tr>
+
+	<tr>
+		<td>背景色</td>
+		<td>p + theme(legend.background = element_rect(fill="lightblue",
+                                           size=0.5, linetype=2,
+                                           color ="darkblue"))</td>
+		<td>#fill设置legend box背景色，colour设置边框颜色</td>
+	</tr>
+
+	<tr>
+		<td>去除legend</td>
+		<td>p + theme(legend.title = element_blank());<br>
+		p + theme(legend.position='none')</td>
+		<td>去除legend title<br>
+		去除整个legend</td>
+	</tr>
+</tbody></table>
+
+
+
+
+<hr>
+<h3>guides 设置specific aesthetic</h3>
+<p>使用guides()参数来设置或移除特定的美学映射(fill, color, size, shape等).</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#因子变量cyl和gear映射为点图的颜色和形状，qsec决定点的大小。
+#更多用法参考官方文档
+
+df2=mtcars
+df2$gear=as.factor(df2$gear)
+df2$cyl=as.factor(df2$cyl)
+
+p2 <- ggplot(data = df2,
+            aes(x=mpg, y=wt, color=cyl, size=qsec, shape= gear))+
+  geom_point()
+# 不设定specific aesthetic时候
+p2
+
+
+#(2)设置多个legend的位置
+# 更改 legend position
+p2 +theme(legend.position="bottom") #底部，一横排
+# Horizontal legend box
+p2 +theme(legend.position="bottom", legend.box = "") #底部，三横排
+
+
+# (3)设置multiple guides顺序, The function guide_legend() is used
+p2+guides(color = guide_legend(order=1), 
+          size = guide_legend(order=2),
+          shape = guide_legend(order=3))
+
+# (4) 去除某个图例 particular aesthetic
+# 通过设置FALSE，可不展示对应的legend
+p2+guides(color = FALSE)
+
+
+# 也可以使用scale_xx.函数去掉特定的legend
+# Remove legend for the point shape
+p2+scale_shape(guide=FALSE)
+# Remove legend for size
+p2 +scale_size(guide=FALSE)
+# Remove legend for color
+p2 + scale_color_manual(values=c('#999999','#E69F00','#56B4E9'), guide=F)
+</div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br />
+<a name="6_2_1"></a>
 <h3 class="tutheader">饼图，ggplot2 theme和legend的修改</h3>
+
 <p>注意：分类变量一定要手动转为因子，自动转换的很可能不是预期的顺序。 df$xx=factor(df$xx, levels=('z1', 'a2', 'd3'))</p>
 <p>目标: <a target="_blank" href="https://academic.oup.com/nar/article/47/19/10027/5566587">Eldad et al, nar 2019, Fig3C</a></p>
 <p><a target="_blank" href="https://rkabacoff.github.io/datavis/modifyingthemes.pdf">modifyingThemes.pdf</a></p>
@@ -808,6 +947,83 @@ plotc <- plot1+plot2+ plot_layout(guides = 'collect') #公用图例
 
 
 <a name="6_4"></a>
+<h3 class="tutheader">主题 精雕细琢</h3>
+
+<p>theme是解决图是否美观的一个工具，其与scale最大的区别在于不受数据左右。</p>
+<p>先把scale做好，就是一张<b>合格</b>的图；再处理theme，则是一张<b>出色</b>的图。</p>
+<p>R控制台输入?theme即可以看到theme函数的大量参数，可以实现更改图形外观的大多数要求，有四种主要类型：</p>
+
+<table class="reference" style="width:100%"><tbody>
+	<tr><th>类 型</th>   <th>解释</th></tr>
+	<tr><td>element_text() </td> <td>使用element_text()函数设置基于文本的组件，如title,subtitle 和caption等。</td></tr>
+	<tr><td>element_line() </td> <td>使用element_line()设置基于线的组件，如轴线，主网格线和次网格线等。</td></tr>
+	<tr><td>element_rect() </td> <td>使用element_rect()修改基于矩形的组件，如绘图区域和面板区域的背景。</td></tr>
+	<tr><td>element_blank()</td> <td>使用element_blank()关闭显示的主题内容。</td></tr>
+</tbody></table>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#1. 更改绘图背景和绘图区域
+p + theme(panel.background = element_rect(fill = 'lightblue'),
+          plot.background=element_rect(fill="khaki"),
+          plot.margin = unit(c(3, 2, 1, 0.5), "cm")) +  #设置绘图区域距离边的据类，上，右，下，左
+  labs(title="Modified Background", subtitle="Change Plot Margin")  
+
+
+#2. 更改主次网格线以及X,Y坐标轴 Change Plot Background elements 
+p + theme(
+    panel.grid.major = element_line(colour = "burlywood", size=1.5),
+    panel.grid.minor = element_line(colour = "tomato",
+                                    size=0.25,
+                                    linetype = "dashed"),
+    panel.border = element_blank(),
+    axis.line.x = element_line(colour = "darkorange", size=1.5, lineend = "butt"),
+    axis.line.y = element_line(colour = "skyblue", size=1.5)
+  ) +
+  labs( subtitle="Change Major and Minor grid, Axis Lines")
+
+
+#3. 删除主，次网格线，边框，轴标题，文本和刻度
+p + theme(panel.grid.major = element_blank(), #主网格线
+          panel.grid.minor = element_blank(), #次网格线
+          panel.border = element_blank(), #边框
+          axis.title = element_blank(),  #轴标题
+          axis.text = element_blank(), # 文本
+          axis.ticks = element_blank()) + # 刻度
+  labs(title="Modified Background", subtitle="Remove major and minor axis grid, border, axis title, text and ticks")
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+<a name="6_4_1"></a>
+<h3 class="tutheader">自带主题及扩展包</h3>
+<p>theme_grey()为默认主题，theme_bw()为白色背景主题，theme_classic()为经典主题。</p>
+<pre>
+p + theme_bw() +
+    labs(subtitle="Change theme_bw")
+
+
+library(ggthemes)
+p + theme_economist() +
+    labs(subtitle="Change theme_economist")
+#其他可选
+#theme_economist theme_economist_white theme_wsj 	 	theme_excel theme_few	 
+#theme_foundation theme_igray 	theme_solarized theme_stata 	theme_tufte
+</pre>
+
+
+
+
+
+
+
+<a name="6_4_2"></a>
 <h3 class="tutheader">自定义主题</h3>
 <p>图略。输入主题名字，不加括号，就能看到该主题的定义，如: theme_bw。自定义主题就是模仿该函数定义的。</p>
 <div class="code notranslate">
@@ -1073,7 +1289,11 @@ p+geom_text(data=data.frame(), aes(x=5, y=4.2, label="setosa"), color='black' )
 <p>R cookbook <a target="_blank" href="http://www.cookbook-r.com/Graphs/">Graphs with ggplot2</a></p>
 <p>官网: <a target="_blank" href="https://ggplot2.tidyverse.org/">ggplot2 online documentation</a></p>
 
+<pre>
+ggplot2|详解八大基本绘图要素
+https://mp.weixin.qq.com/s?__biz=MzIyNDI1MzgzOQ==&mid=2650394184&idx=1&sn=11f28193202b0714aadef44f5304eb9d
 
+</pre>
 
 
 
