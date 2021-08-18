@@ -1,0 +1,334 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+<style>
+.red{color:red}
+.orange{color:orange}
+.blue{color:blue}
+.lime{color:lime}
+</style>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+
+h2.tutheader{margin-top:30px!important;}
+h3, h4{ border-left:3px solid #E5502A; padding-left:3px; margin-top:20px!important;}
+</style>
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R假设检验 </span> Hypothesis testing</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: Hypothesis testing is one of the workhorses of science. It is how we can draw conclusions or make decisions based on finite samples of data.[stanford - bios221 - chapter6]</p>
+
+<ul>
+	<li><a href="#0">统计学检验概述</a></li>
+	<li><a href="#1">参数检验</a>
+		<ul>
+			<li><a href="#1_1">二项检验</a>
+		</ul>
+	</li>
+
+	<li><a href="#2">非参数检验</a>
+		<ul>
+			<li><a href="#2_1">置换检验 Permutation test</a>
+			<li><a href="#2_2">Bootstrap test</a>
+		</ul>
+	</li>
+	<li><a href="#100">参考资料</a></li>
+
+</ul>
+
+
+
+
+<a name="0"></a>
+<h2 class="tutheader">统计学检验概述</h2>
+
+<p>1.常见的检验包括 参数检验 和 非参数检验。参数检验包括 t.test, fisher.test 等, 非参数检验包括 wilcox.test 等。</p>
+
+
+<br>
+<p>2.假设检验的五个步骤</p>
+<pre>
+1. 根据目的，设计实验，选择合适的统计量。
+2. 设置 零假设 (null hypothesis)。就是认为没有差别，没有影响。
+3. 确定拒绝区间 rejection region
+4. 收集处理数据，计算统计量。
+5. 做决定：如果统计学参数落在一个小概率事件的范围，则根据小概率事件在一次实验中不可能发生，拒绝原假设。
+</pre>
+
+
+
+
+<br>
+<p>3.假设检验的两类错误 Types of error。</p>
+
+<table class="reference">
+<thead>
+	<tr class="header">
+	<th align="left">Test vs reality</th>
+	<th align="left">Null hypothesis is true</th>
+	<th align="left">... is false</th>
+	</tr>
+</thead>
+<tbody>
+	<tr class="odd">
+	<td align="left"><strong>Reject null hypothesis</strong></td>
+	<td align="left">Type I error (false positive)</td>
+	<td align="left">True positive</td>
+	</tr>
+	
+	<tr class="even">
+	<td align="left"><strong>Do not reject</strong></td>
+	<td align="left">True negative</td>
+	<td align="left">Type II error (false negative)</td>
+	</tr>
+</tbody>
+</table>
+
+
+<p>通常可以根据具体情况权衡降低两种错误中的哪一类。</p>
+
+<pre>
+两类错误总是有一个权衡。
+对于非典等流行病的公开与上报，标准要适当宽松，因为弃真的代价太大。
+而对于(孕产妇等)新药的临床试验，标准要尽量严格，因为纳伪的代码太大。
+
+弃真: 
+	条件严格了(更小的p值，比如0.01)，筛选到的真值比例高了，但是被错误过滤掉的真值也多了。
+	I类错误 假阳性，false positive rate (FPR) 
+	the FPR is the same as the probability α that we mentioned above. 1−α is also called the specificity of a test. 
+纳伪: 
+	条件宽松了(更大的p值，比如0.05)，筛选到的真值总数多了，但是被错误接受的假值也多了。
+	II类错误 假阴性，false negative rate (FNR)
+	The FNR is sometimes also called β, and 1−β the power, sensitivity or true positive rate of a test.
+</pre>
+
+
+
+
+
+
+
+<a name="1"></a>
+<h2 class="tutheader">参数检验</h2>
+
+
+<a name="0_1"></a>
+<h3 class="tutheader">t检验</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 检验鸢尾花花萼的长宽是否有差异
+# 分组t检验
+> t1=t.test(iris$Sepal.Length, iris$Sepal.Width); t1
+
+	Welch Two Sample t-test
+
+data:  iris$Sepal.Length and iris$Sepal.Width
+t = 36.463, df = 225.68, p-value < 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ 2.63544 2.93656
+sample estimates:
+mean of x mean of y 
+ 5.843333  3.057333 
+> t1$p.value
+[1] 1.459543e-96
+
+# 配对 t 检验，检验效率更高
+> t2=t.test(iris$Sepal.Length - iris$Sepal.Width); t2
+
+	One Sample t-test
+
+data:  iris$Sepal.Length - iris$Sepal.Width
+t = 34.815, df = 149, p-value < 2.2e-16
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 2.627874 2.944126
+sample estimates:
+mean of x 
+    2.786 
+
+> t2$p.value
+[1] 1.849554e-73</div>
+</div>
+
+
+
+
+
+
+
+
+
+<a name="2"></a>
+<h2 class="tutheader">非参数检验</h2>
+
+
+
+
+
+
+
+
+
+<a name="2"></a>
+<h3 class="tutheader">抽样检验</h3>
+<p>抽样检验的步骤:</p>
+<p>1). 计算开始的统计量 Determine & calculate the initial test-statistic.</p>
+<p>2). 抽样重新计算该统计量，重复N次(足够大)，得到其分布 Construct approximate test-statistic distribution.</p>
+<p>3). 超出最初统计量的值/n就是p值 Calculate the p-value.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="100"></a>
+<h2 class="tutheader">参考资料</h2>
+<pre>
+http://web.stanford.edu/class/bios221/book/Chap-Testing.html
+
+</pre>
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

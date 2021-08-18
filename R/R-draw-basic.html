@@ -1339,6 +1339,33 @@ mtext(side = 1, outer = T, line = -1, "Sepal.Length", cex = 0.8)
 mtext(side = 2, outer = T, line = 2, "Freq", cex = 0.8)</div>
 </div>
 
+<img src="images/draw-basic/overlay.png" /><br>
+<p>叠加hist和density图: 柱状图 + 密度图。左图 通过 par(new=T)来叠加图片。右图 通过次级作图函数叠加图片。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> #通过次级作图函数叠加图片。
+# 造数据
+set.seed(2021)
+permZ=rnorm(10000, 2, 0.7)
+
+#画频率图
+# hist(permZ, n=20, xlim=c(-1, 5)) #y=频数
+hist(permZ, n=20, freq = F) #y=频率
+# 画密度图
+lines(density(permZ, n=20), col='red', lty=2, lwd=2 )
+
+# 画标准正如态分布曲线图
+#lines(density( rnorm(100000), n=50), col='blue', ann=F)
+# 更细腻的画法
+x1=seq(-1,5,0.1); y1=dnorm(x1, mean=0, sd=1 )
+lines(x1, y1, col="blue", lty=2, lwd=2)
+
+# 图例
+legend('topright', col=c('red','blue'), bty="n",
+       lty=2, lwd=2,
+       legend=c("real", "theoretical"))</div>
+</div>
+
 
 
 

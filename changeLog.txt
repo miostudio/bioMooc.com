@@ -213,6 +213,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.0-3 update about.html [202.6.21]
 	page0.3.0-4 fix [202.6.21]
 	page0.3.0-5 R 公式 [202.7.5]
+	page0.3.0-6 R 叠加图; curve函数; 统计学检验 新页面 [202.8.18]
 
 ##############
 # commit

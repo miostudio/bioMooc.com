@@ -31,6 +31,9 @@
 <body>
 <!-- 头尾自动加载 -->
 <script>
+
+
+
 $(function(){
 	$.get('/part/header-nav.html',function(data,status){
 		$('body').prepend(data);//header-nav
@@ -53,8 +56,6 @@ $(function(){
 	$.get('/part/menu-right.html',function(data,status){
 		$('.main .row').first().append(data);//右侧菜单-全局通用
 		//没有事件，还需要绑定事件
-		
-		
 	});
 	
 	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
@@ -120,6 +121,7 @@ $(function(){
 	<li><a href="#7">点带图 stripchart()</a></li>
 	<li><a href="#8">热图 image(x, y, z)</a></li>
 	<li><a href="#9">其他图形：segments(),arrows(),rect(),polygon()</a></li>
+	<li><a href="#10">绘制函数 curve(expr, from, to)</a></li>
 </ul>
 
 
@@ -811,6 +813,67 @@ polygon(1:9, c(2,1,2,1,NA,2,1,2,1),
         density = c(10, 20), angle = c(-45, 45))
 </pre>
 <img src="images/draw-basic2/polygon.png"><br><br>
+
+
+
+
+
+
+
+
+
+
+<a name="10"></a>
+<h2 class="tutheader">绘制函数 curve(expr, from, to)</h2>
+<img src="images/draw-basic2/curve.png"><br><br>
+
+<p>Draws a curve corresponding to a function over the interval [from, to]. curve can plot also an expression in the variable xname, default x.</p>
+<p>Usage: curve(expr, from = NULL, to = NULL) </p>
+<p>'expr'要么是函数，要么调用，要么是包含'x'的表达式。</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 曲线1: 内置函数
+curve(sin, -2*pi, 2*pi)
+
+# 曲线2：叠加一个自定义函数
+my_func=function(z){
+  (z**2-2*z+1)/10
+}
+curve( my_func, -1, 5, col ="blue", lty = 2, lwd = 2)
+
+
+# 曲线3：叠加到已有曲线上
+x1=seq(-2, 4, 0.1)
+y=dnorm( x1, mean=1, sd=0.8)
+plot(x1, y, type="l", cex=0.5, lwd=2, col="#aaaaaa")
+# 曲线
+curve( dnorm(x, mean=0, sd=1), -2, 4, 
+       col ="red", lty = 2, lwd = 2, add = TRUE)
+# 图例
+legend("topright", lwd=2, bty="n",
+       legend=c("N(1, 0.8)","N(0, 1)"),
+       lty=c(1,2), col=c("#aaaaaa", "red"))</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
