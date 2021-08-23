@@ -1,0 +1,573 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Linux 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/linux/linux-tutorial.html" />
+<meta name="keywords" content="Linux 教程,linux">
+<meta name="description" content="Linux  教程    Linux 英文解释为 Linux is not Unix。 本教程，我们将为大家介绍如何使用Linux。 Linux其实很容易学，相信你们能很快学会。 现在开始学习 Linux ！    谁适合阅读？ 本教程针对的是Linux服务器方面的知识，适合从事运维或后端开发的人员阅读。  需要具备的知识？ 如果你熟悉操作系统方面的知识，相信你会很快学会Linux。 本教程将于Linux的发行版本Centos为例来为大..">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+  <style>
+.article-body p {
+    margin-bottom: 1em;
+}
+  </style>
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> <i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/linux/linux-intro.html" rel="pre">Linux 教程</a></div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">正则表达式 </span> 从入门到精通</h1>
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 正则表达式是现代编程语言的必备模块，用于识别符合指定特征的字符串。本文主要介绍其常用用例。</p>
+
+<ul>
+	<li><a href="#1"> 正则表达式概述</a>
+		<ul>
+			<li><a href="#1_1">语法速查表</a></li>
+			<li><a href="#1_2">常用正则表达式实例</a></li>
+		</ul>
+	</li>
+	
+	<li><a href="#2"> 编程语言中的使用</a>
+		<ul>
+			<li><a href="#2_1">shell 中的正则表达式</a></li>
+			<li><a href="#2_2">Python3 中的正则表达式</a></li>
+			<li><a href="#2_3">JavaScript 中的正则表达式</a></li>
+		</ul>
+	</li>
+	<li><a href="#100"> 参考资料</a></li>
+
+</ul>
+
+
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">概述</h2>
+
+<p>正则表达式主要用于匹配、查找、替换、提取子字符串等。最早是由Unix中的工具软件（例如sed和grep）普及开的。很多编程语言（shell/R/Python/JS/SQL/Perl等）都有不同程度的支持。</p>
+
+
+
+
+
+<a name='1_1'></a>
+<h3 class="tutheader">语法速查表</h3>
+
+<table class="reference">
+	<tbody>
+		<tr>
+			<th>字符</th>
+			<th>说明</th>
+		</tr>
+		<tr>
+			<td>\</td>
+			<td>将下一字符标记为特殊字符、文本、反向引用或八进制转义符。例如，“n”匹配字符“n”。“\n”匹配换行符。序列“\\”匹配“\”，“\(”匹配“(”。</td>
+		</tr>
+		<tr>
+			<td>^</td>
+			<td>匹配输入字符串开始的位置。如果设置了&nbsp;<b>RegExp</b>&nbsp;对象的&nbsp;<b>Multiline</b>&nbsp;属性，^ 还会与“\n”或“\r”之后的位置匹配。</td>
+		</tr>
+		<tr>
+			<td>$</td>
+			<td>匹配输入字符串结尾的位置。如果设置了&nbsp;<b>RegExp</b>&nbsp;对象的&nbsp;<b>Multiline</b>&nbsp;属性，$ 还会与“\n”或“\r”之前的位置匹配。</td>
+		</tr>
+		<tr>
+			<td>*</td>
+			<td>零次或多次匹配前面的字符或子表达式。例如，zo* 匹配“z”和“zoo”。* 等效于 {0,}。</td>
+		</tr>
+		<tr>
+			<td>+</td>
+			<td>一次或多次匹配前面的字符或子表达式。例如，“zo+”与“zo”和“zoo”匹配，但与“z”不匹配。+ 等效于 {1,}。</td>
+		</tr>
+		<tr>
+			<td>?</td>
+			<td>零次或一次匹配前面的字符或子表达式。例如，“do(es)?”匹配“do”或“does”中的“do”。? 等效于 {0,1}。</td>
+		</tr>
+		<tr>
+			<td>{<em>n</em>}</td>
+			<td><em>n&nbsp;</em>是非负整数。正好匹配&nbsp;<em>n</em>&nbsp;次。例如，“o{2}”与“Bob”中的“o”不匹配，但与“food”中的两个“o”匹配。</td>
+		</tr>
+		<tr>
+			<td>{<em>n</em>,}</td>
+			<td><em>n&nbsp;</em>是非负整数。至少匹配&nbsp;<em>n&nbsp;</em>次。例如，“o{2,}”不匹配“Bob”中的“o”，而匹配“foooood”中的所有 o。“o{1,}”等效于“o+”。“o{0,}”等效于“o*”。</td>
+		</tr>
+		<tr>
+			<td>{<em>n</em>,<em>m</em>}</td>
+			<td><em>M</em>&nbsp;和&nbsp;<em>n</em>&nbsp;是非负整数，其中&nbsp;<em>n</em>&nbsp;&lt;=&nbsp;<em>m</em>。匹配至少&nbsp;<em>n</em>&nbsp;次，至多&nbsp;<em>m</em>&nbsp;次。例如，“o{1,3}”匹配“fooooood”中的头三个 o。'o{0,1}' 等效于 'o?'。注意：您不能将空格插入逗号和数字之间。</td>
+		</tr>
+		<tr>
+			<td>?</td>
+			<td>当此字符紧随任何其他限定符（*、+、?、{<em>n</em>}、{<em>n</em>,}、{<em>n</em>,<em>m</em>}）之后时，匹配模式是“非贪心的”。“非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的“贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串“oooo”中，“o+?”只匹配单个“o”，而“o+”匹配所有“o”。</td>
+		</tr>
+		<tr>
+			<td>.</td>
+			<td>匹配除“\n”之外的任何单个字符。若要匹配包括“\n”在内的任意字符，请使用诸如“[\s\S]”之类的模式。</td>
+		</tr>
+		<tr>
+			<td>(<em>pattern</em>)</td>
+			<td>匹配&nbsp;<em>pattern</em>&nbsp;并捕获该匹配的子表达式。可以使用&nbsp;<b>$0…$9</b>&nbsp;属性从结果“匹配”集合中检索捕获的匹配。若要匹配括号字符 ( )，请使用“\(”或者“\)”。</td>
+		</tr>
+		<tr>
+			<td>(?:<em>pattern</em>)</td>
+			<td>匹配&nbsp;<em>pattern</em>&nbsp;但不捕获该匹配的子表达式，即它是一个非捕获匹配，不存储供以后使用的匹配。这对于用“or”字符 (|) 组合模式部件的情况很有用。例如，'industr(?:y|ies) 是比 'industry|industries' 更经济的表达式。</td>
+		</tr>
+		<tr>
+			<td>(?=<em>pattern</em>)</td>
+			<td>执行正向预测先行搜索的子表达式，该表达式匹配处于匹配&nbsp;<em>pattern</em>&nbsp;的字符串的起始点的字符串。它是一个非捕获匹配，即不能捕获供以后使用的匹配。例如，'Windows (?=95|98|NT|2000)' 匹配“Windows 2000”中的“Windows”，但不匹配“Windows 3.1”中的“Windows”。预测先行不占用字符，即发生匹配后，下一匹配的搜索紧随上一匹配之后，而不是在组成预测先行的字符后。</td>
+		</tr>
+		<tr>
+			<td>(?!<em>pattern</em>)</td>
+			<td>执行反向预测先行搜索的子表达式，该表达式匹配不处于匹配&nbsp;<em>pattern</em>&nbsp;的字符串的起始点的搜索字符串。它是一个非捕获匹配，即不能捕获供以后使用的匹配。例如，'Windows (?!95|98|NT|2000)' 匹配“Windows 3.1”中的 “Windows”，但不匹配“Windows 2000”中的“Windows”。预测先行不占用字符，即发生匹配后，下一匹配的搜索紧随上一匹配之后，而不是在组成预测先行的字符后。</td>
+		</tr>
+		<tr>
+			<td><em>x</em>|<em>y</em></td>
+			<td>匹配&nbsp;<em>x</em>&nbsp;或&nbsp;<em>y</em>。例如，'z|food' 匹配“z”或“food”。'(z|f)ood' 匹配“zood”或“food”。</td>
+		</tr>
+		<tr>
+			<td>[<em>xyz</em>]</td>
+			<td>字符集。匹配包含的任一字符。例如，“[abc]”匹配“plain”中的“a”。</td>
+		</tr>
+		<tr>
+			<td>[^<em>xyz</em>]</td>
+			<td>反向字符集。匹配未包含的任何字符。例如，“[^abc]”匹配“plain”中的“p”。</td>
+		</tr>
+		<tr>
+			<td>[<em>a-z</em>]</td>
+			<td>字符范围。匹配指定范围内的任何字符。例如，“[a-z]”匹配“a”到“z”范围内的任何小写字母。</td>
+		</tr>
+		<tr>
+			<td>[^<em>a-z</em>]</td>
+			<td>反向范围字符。匹配不在指定的范围内的任何字符。例如，“[^a-z]”匹配任何不在“a”到“z”范围内的任何字符。</td>
+		</tr>
+		<tr>
+			<td>\b</td>
+			<td>匹配一个字边界，即字与空格间的位置。例如，“er\b”匹配“never”中的“er”，但不匹配“verb”中的“er”。</td>
+		</tr>
+		<tr>
+			<td>\B</td>
+			<td>非字边界匹配。“er\B”匹配“verb”中的“er”，但不匹配“never”中的“er”。</td>
+		</tr>
+		<tr>
+			<td>\c<em>x</em></td>
+			<td>匹配&nbsp;<em>x</em>&nbsp;指示的控制字符。例如，\cM 匹配 Control-M 或回车符。<em>x</em>&nbsp;的值必须在 A-Z 或 a-z 之间。如果不是这样，则假定 c 就是“c”字符本身。</td>
+		</tr>
+		<tr>
+			<td>\d</td>
+			<td>数字字符匹配。等效于 [0-9]。</td>
+		</tr>
+		<tr>
+			<td>\D</td>
+			<td>非数字字符匹配。等效于 [^0-9]。</td>
+		</tr>
+		<tr>
+			<td>\f</td>
+			<td>换页符匹配。等效于 \x0c 和 \cL。</td>
+		</tr>
+		<tr>
+			<td>\n</td>
+			<td>换行符匹配。等效于 \x0a 和 \cJ。</td>
+		</tr>
+		<tr>
+			<td>\r</td>
+			<td>匹配一个回车符。等效于 \x0d 和 \cM。</td>
+		</tr>
+		<tr>
+			<td>\s</td>
+			<td>匹配任何空白字符，包括空格、制表符、换页符等。与 [&nbsp;\f\n\r\t\v] 等效。</td>
+		</tr>
+		<tr>
+			<td>\S</td>
+			<td>匹配任何非空白字符。与 [^&nbsp;\f\n\r\t\v] 等效。</td>
+		</tr>
+		<tr>
+			<td>\t</td>
+			<td>制表符匹配。与 \x09 和 \cI 等效。</td>
+		</tr>
+		<tr>
+			<td>\v</td>
+			<td>垂直制表符匹配。与 \x0b 和 \cK 等效。</td>
+		</tr>
+		<tr>
+			<td>\w</td>
+			<td>匹配任何字类字符，包括下划线。与“[A-Za-z0-9_]”等效。</td>
+		</tr>
+		<tr>
+			<td>\W</td>
+			<td>与任何非单词字符匹配。与“[^A-Za-z0-9_]”等效。</td>
+		</tr>
+		<tr>
+			<td>\x<em>n</em></td>
+			<td>匹配&nbsp;<em>n</em>，此处的&nbsp;<em>n</em>&nbsp;是一个十六进制转义码。十六进制转义码必须正好是两位数长。例如，“\x41”匹配“A”。“\x041”与“\x04”&amp;“1”等效。允许在正则表达式中使用 ASCII 代码。</td>
+		</tr>
+		<tr>
+			<td>\<em>num</em></td>
+			<td>匹配&nbsp;<em>num</em>，此处的&nbsp;<em>num</em>&nbsp;是一个正整数。到捕获匹配的反向引用。例如，“(.)\1”匹配两个连续的相同字符。</td>
+		</tr>
+		<tr>
+			<td>\<em>n</em></td>
+			<td>标识一个八进制转义码或反向引用。如果 \<em>n</em>&nbsp;前面至少有&nbsp;<em>n</em>&nbsp;个捕获子表达式，那么&nbsp;<em>n</em>&nbsp;是反向引用。否则，如果&nbsp;<em>n</em>&nbsp;是八进制数 (0-7)，那么&nbsp;<em>n</em>&nbsp;是八进制转义码。</td>
+		</tr>
+		<tr>
+			<td>\<em>nm</em></td>
+			<td>标识一个八进制转义码或反向引用。如果 \<em>nm</em>&nbsp;前面至少有&nbsp;<em>nm</em>&nbsp;个捕获子表达式，那么&nbsp;<em>nm</em>&nbsp;是反向引用。如果 \<em>nm</em>&nbsp;前面至少有&nbsp;<em>n</em>&nbsp;个捕获，则&nbsp;<em>n</em>&nbsp;是反向引用，后面跟有字符&nbsp;<em>m</em>。如果两种前面的情况都不存在，则 \<em>nm</em>&nbsp;匹配八进制值&nbsp;<em>nm</em>，其中&nbsp;<em>n&nbsp;</em>和&nbsp;<em>m</em>&nbsp;是八进制数字 (0-7)。</td>
+		</tr>
+		<tr>
+			<td>\nml</td>
+			<td>当&nbsp;<em>n</em>&nbsp;是八进制数 (0-3)，<em>m</em>&nbsp;和&nbsp;<em>l</em>&nbsp;是八进制数 (0-7) 时，匹配八进制转义码&nbsp;<em>nml</em>。</td>
+		</tr>
+		<tr>
+			<td>\u<em>n</em></td>
+			<td>匹配&nbsp;<em>n</em>，其中&nbsp;<em>n</em>&nbsp;是以四位十六进制数表示的 Unicode 字符。例如，\u00A9 匹配版权符号 (©)。</td>
+		</tr>
+	</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+<a name='1_2'></a>
+<h3 class="tutheader">常用正则表达式实例</h3>
+
+<p>匹配中文字符的正则表达式： [\u4e00-\u9fa5]<br>
+评注：匹配中文还真是个头疼的事，有了这个表达式就好办了</p>
+
+<p>匹配双字节字符(包括汉字在内)：[^\x00-\xff]<br>
+评注：可以用来计算字符串的长度（一个双字节字符长度计2，ASCII字符计1）</p>
+
+<p>匹配空白行的正则表达式：\n\s*\r<br>
+评注：可以用来删除空白行</p>
+
+<p>匹配HTML标记的正则表达式：&lt;(\S*?)[^&gt;]*&gt;.*?&lt;/\1&gt;|&lt;.*? /&gt;<br>
+评注：网上流传的版本太糟糕，上面这个也仅仅能匹配部分，对于复杂的嵌套标记依旧无能为力</p>
+
+<p>匹配首尾空白字符的正则表达式：^\s*|\s*$<br>
+评注：可以用来删除行首行尾的空白字符(包括空格、制表符、换页符等等)，非常有用的表达式</p>
+
+<p>匹配Email地址的正则表达式：\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*<br>
+评注：表单验证时很实用</p>
+
+<p>匹配网址URL的正则表达式：[a-zA-z]+://[^\s]*<br>
+评注：网上流传的版本功能很有限，上面这个基本可以满足需求</p>
+
+<p>匹配帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]{4,15}$<br>
+评注：表单验证时很实用</p>
+
+<p>匹配国内电话号码：\d{3}-\d{8}|\d{4}-\d{7}<br>
+评注：匹配形式如 0511-4405222 或 021-87888822</p>
+
+<p>匹配腾讯QQ号：[1-9][0-9]{4,}<br>
+评注：腾讯QQ号从10000开始</p>
+
+<p>匹配中国邮政编码：[1-9]\d{5}(?!\d)<br>
+评注：中国邮政编码为6位数字</p>
+
+<p>匹配身份证：\d{15}|\d{18}<br>
+评注：中国的身份证为15位或18位</p>
+
+<p>匹配ip地址：\d+\.\d+\.\d+\.\d+<br>
+评注：提取ip地址时有用</p>
+
+<h4 class="tutheader">匹配特定数字：</h3>
+
+<ul>
+	<li>^[1-9]\d*$　 　 //匹配正整数</li>
+	<li>^-[1-9]\d*$ 　 //匹配负整数</li>
+	<li>^-?[1-9]\d*$　　 //匹配整数</li>
+	<li>^[1-9]\d*|0$　 //匹配非负整数（正整数 + 0）</li>
+	<li>^-[1-9]\d*|0$　　 //匹配非正整数（负整数 + 0）</li>
+	<li>^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$　　 //匹配正浮点数</li>
+	<li>^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$　 //匹配负浮点数</li>
+	<li>^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$　 //匹配浮点数</li>
+	<li>^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0$　　 //匹配非负浮点数（正浮点数 + 0）</li>
+	<li>^(-([1-9]\d*\.\d*|0\.\d*[1-9]\d*))|0?\.0+|0$　　//匹配非正浮点数（负浮点数 + 0）</li>
+</ul>
+
+<p>评注：处理大量数据时有用，具体应用时注意修正</p>
+
+
+
+
+<h4 class="tutheader">匹配特定字符串：</h4>
+
+<ul>
+	<li>^[A-Za-z]+$　　//匹配由26个英文字母组成的字符串</li>
+	<li>^[A-Z]+$　　//匹配由26个英文字母的大写组成的字符串</li>
+	<li>^[a-z]+$　　//匹配由26个英文字母的小写组成的字符串</li>
+	<li>^[A-Za-z0-9]+$　　//匹配由数字和26个英文字母组成的字符串</li>
+	<li>^\w+$　　//匹配由数字、26个英文字母或者下划线组成的字符串</li>
+</ul>
+
+<p>评注：最基本也是最常用的一些表达式</p>
+
+<p><b>一些更多的例子：</b></p>
+
+<p>"^The"：表示所有以"The"开始的字符串（"There"，"The cat"等）；<br>
+"of despair$"：表示所以以"of despair"结尾的字符串；<br>
+"^abc$"：表示开始和结尾都是"abc"的字符串——呵呵，只有"abc"自己了；<br>
+"notice"：表示任何包含"notice"的字符串。<br>
+<br>
+'*'，'+'和'?'这三个符号，表示一个或一序列字符重复出现的次数。它们分别表示“没有或<br>
+更多”，“一次或更多”还有“没有或一次”。下面是几个例子：</p>
+
+<p>"ab*"：表示一个字符串有一个a后面跟着零个或若干个b。（"a", "ab", "abbb",……）；<br>
+"ab+"：表示一个字符串有一个a后面跟着至少一个b或者更多；<br>
+"ab?"：表示一个字符串有一个a后面跟着零个或者一个b；<br>
+"a?b+$"：表示在字符串的末尾有零个或一个a跟着一个或几个b。</p>
+
+<p>也可以使用范围，用大括号括起，用以表示重复次数的范围。</p>
+
+<p>"ab{2}"：表示一个字符串有一个a跟着2个b（"abb"）；<br>
+"ab{2,}"：表示一个字符串有一个a跟着至少2个b；<br>
+"ab{3,5}"：表示一个字符串有一个a跟着3到5个b。</p>
+
+<p>请注意，你必须指定范围的下限（如："{0,2}"而不是"{,2}"）。还有，你可能注意到了，'*'，'+'和<br>
+'?'相当于"{0,}"，"{1,}"和"{0,1}"。<br>
+还有一个'¦'，表示“或”操作：</p>
+
+<p>"hi|hello"：表示一个字符串里有"hi"或者"hello"；<br>
+"(b|cd)ef"：表示"bef"或"cdef"；<br>
+"(a|b)*c"：表示一串"a""b"混合的字符串后面跟一个"c"；</p>
+
+<p>'.'可以替代任何字符：</p>
+
+<p>"a.[0-9]"：表示一个字符串有一个"a"后面跟着一个任意字符和一个数字；<br>
+"^.{3}$"：表示有任意三个字符的字符串（长度为3个字符）；</p>
+
+<p>方括号表示某些字符允许在一个字符串中的某一特定位置出现：</p>
+
+<p>"[ab]"：表示一个字符串有一个"a"或"b"（相当于"a¦b"）；<br>
+"[a-d]"：表示一个字符串包含小写的'a'到'd'中的一个（相当于"a¦b¦c¦d"或者"[abcd]"）；<br>
+"^[a-zA-Z]"：表示一个以字母开头的字符串；<br>
+"[0-9]%"：表示一个百分号前有一位的数字；<br>
+",[a-zA-Z0-9]$"：表示一个字符串以一个逗号后面跟着一个字母或数字结束。</p>
+
+<p>你也可以在方括号里用'^'表示不希望出现的字符，'^'应在方括号里的第一位。（如："%[^a-zA-Z]%"表<br>
+示两个百分号中不应该出现字母）。</p>
+
+<p>为了逐字表达，必须在"^.$()¦*+?{\"这些字符前加上转移字符'\'。</p>
+
+<p>请注意在方括号中，不需要转义字符。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">编程语言中的使用</h2>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+</div>
+</div>
+
+
+
+
+
+
+<a name='2_1'></a>
+<h3 class="tutheader">shell 中的正则表达式</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+</div>
+</div>
+
+
+
+
+
+<a name='2_2'></a>
+<h3 class="tutheader">Python3 中的正则表达式</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+</div>
+</div>
+
+
+
+
+<a name='2_3'></a>
+<h3 class="tutheader">JavaScript 中的正则表达式</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+</div>
+</div>
+
+
+
+
+
+
+
+<a name='100'></a>
+<h2 class="tutheader">参考资料</h2>
+
+<pre>
+http://web.mit.edu/gnu/doc/html/regex_1.html
+http://web.mit.edu/gnu/doc/html/regex_9.html
+
+Regular Expressions: The Complete Tutorial by Jan Goyvaerts https://www.regular-expressions.info/index.html
+
+在线练习 https://regexr.com/
+
+https://www3.ntu.edu.sg/home/ehchua/programming/howto/Regexe.html
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+
+https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+			
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

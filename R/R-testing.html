@@ -114,14 +114,15 @@ $(function(){
 	<li><a href="#0">统计学检验概述</a></li>
 	<li><a href="#1">参数检验</a>
 		<ul>
-			<li><a href="#1_1">二项检验</a>
+			<li><a href="#1_1">t检验</a>
+			<li><a href="#1_2">二项检验//todo</a>
 		</ul>
 	</li>
 
 	<li><a href="#2">非参数检验</a>
 		<ul>
 			<li><a href="#2_1">置换检验 Permutation test</a>
-			<li><a href="#2_2">Bootstrap test</a>
+			<li><a href="#2_2">Bootstrap test //todo</a>
 		</ul>
 	</li>
 	<li><a href="#100">参考资料</a></li>
@@ -134,6 +135,14 @@ $(function(){
 <a name="0"></a>
 <h2 class="tutheader">统计学检验概述</h2>
 
+<p><b>大数定理</b>：当样本量足够多时，样本发生的频率近似于概率。</p>
+
+<br>
+<p><b>中心极限定理：</b>
+中心极限定理以严格的数学形式阐明了在大样本条件下，不论总体的分布如何，样本的均值总是近似地服从正态分布。如果一个随机变量能够分解为独立同分布的随机变量序列之和，则可以直接利用中心极限定理进行解决。总之，恰当地使用中心极限定理解决实际问题有着极其重要意义。</p>
+
+
+<br>
 <p>1.常见的检验包括 参数检验 和 非参数检验。参数检验包括 t.test, fisher.test 等, 非参数检验包括 wilcox.test 等。</p>
 
 
@@ -204,7 +213,7 @@ $(function(){
 <h2 class="tutheader">参数检验</h2>
 
 
-<a name="0_1"></a>
+<a name="1_1"></a>
 <h3 class="tutheader">t检验</h3>
 
 <div class="code notranslate">
@@ -262,12 +271,96 @@ mean of x
 
 
 
-<a name="2"></a>
-<h3 class="tutheader">抽样检验</h3>
-<p>抽样检验的步骤:</p>
-<p>1). 计算开始的统计量 Determine & calculate the initial test-statistic.</p>
-<p>2). 抽样重新计算该统计量，重复N次(足够大)，得到其分布 Construct approximate test-statistic distribution.</p>
-<p>3). 超出最初统计量的值/n就是p值 Calculate the p-value.</p>
+<a name="2_1"></a>
+<h3 class="tutheader">置换检验</h3>
+
+<p>置换检验常常用来比较均值，和 bootstrap 很像，基本区别是后者重抽样时允许重复，前者不重复。 
+//The so-called permutation test, introduced by R. A. Fisher in the 1930s, is sometimes recommended for comparing means. The method is somewhat similar in spirit to the <b>bootstrap</b>, but a fundamental difference between it and the bootstrap is that the bootstrap resamples with replacement and the permutation test does not. </p>
+
+<p>置换检验是怎么工作的呢？ 在H0假设下，2个样本来自相同的分布，所以随机置换两组中的元素会给出相同分布下的新的一套数据。
+//Why permutation test works? It works because under H0, the two samples are from the same distribution. Thus, randomly exchanging the elements in the two samples should give us a new set of data from the same distribution</p>
+
+<p>置换检验的步骤:</p>
+<p>1). 计算开始的统计量 d0=mean(X1)-mean(X2); Determine & calculate the initial test-statistic.</p>
+<p>2). 抽样重新计算该统计量，重复N次(足够大)，得到其分布 dn=mean(X1new)-mean(X2new); Construct approximate test-statistic distribution.</p>
+<p>3). 超出最初统计量的值/n就是p值 p=(larger than d0)/N; Calculate the p-value.</p>
+
+<p> 如果想要控制I类错误为0.05，就是要让95%的d1,...,dN 不包含 d0。
+//If we want the Type I error probability to be .05, we conclude that the groups differ if the middle 95% of the values d1, …, dB do not contain d.</p>
+
+
+<p>
+//Both are nonparametric procedures in the sense that they make no specific assumptions about the form of any underlying probability distributions.</p>
+
+
+<p> Bootstrap方法能够测量一个参数的估计值的有效性，而置换检验产生了检验某些统计假设的新方法。
+// Bootstrap methods enable to measure the efficacy of an estimator of a parameter, while permutation tests yield new ways to test certain statistical hypotheses. </p>
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 计算两组数据的均值是否有差异
+Group1 =c(6, 19, 34, 15)
+Group2 =c(9, 21,  8, 53, 25)
+d0=mean(Group1)-mean(Group2); d0 #-4.7
+
+# 组合到一起
+pool=c(Group1, Group2); pool
+
+# 置换后，前4个一组，后5个一组，计算平均值差
+oneTest=function(){
+  dt2=sample(pool, size=length(pool), replace = F)
+  mean(dt2[1:4]) - mean(dt2[5:9])
+}
+N=10000
+set.seed(2021)
+dn=replicate(N, oneTest())
+
+# 画图展示
+hist(dn, n=50)
+abline(v=c(d0, -d0), lty=2, lwd=2, col="red")
+
+# 看超过d0的百分比
+len=length( dn[which( abs(dn) > abs(d0) )] ); len
+
+# 计算p值
+p=len/N; p #[1] 0.7111
+# p值很大，无法拒绝原假设，就是说接受两组间无显著差异。</div>
+</div>
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#计算两组数据的 中位数 是否有差异
+SX = c(-2, -1, -1, 0, -2, -1, 0, -1, -2, 100)
+SY = c(7, 13, 11, 5, 14, 9, 8, 10, 12, 11)
+
+#检验统计量是 中位数差 
+d0=median(SX) - median(SY); d0 #-11.5
+
+length(SX) #10
+length(SY) #10
+
+oneTest=function(){
+  SS=sample( c(SX, SY) )
+  median(SS[1:10]) - median(SS[11:20])
+}
+
+# 重排后，计算均值差；重复多次
+set.seed(202108)
+TestNum=10000
+result=replicate(TestNum, oneTest() )
+# 画分布
+hist(result, n=50)
+abline(v=c(d0, -d0), lty=2, lwd=2, col="red")
+
+#计算超过 |T1| 的个数
+len=length( result[abs(result) > abs(d0)] ); len #33
+p=len/(TestNum); p #0.0033</div>
+</div>
+
+
+
 
 
 
@@ -284,7 +377,8 @@ mean of x
 <h2 class="tutheader">参考资料</h2>
 <pre>
 http://web.stanford.edu/class/bios221/book/Chap-Testing.html
-
+https://www.sciencedirect.com/topics/mathematics/permutation-test
+https://www.sciencedirect.com/topics/mathematics/bootstrap-method
 </pre>
 
 

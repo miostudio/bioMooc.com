@@ -1,0 +1,308 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Linux 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/linux/linux-tutorial.html" />
+<meta name="keywords" content="Linux 教程,linux">
+<meta name="description" content="Linux  教程    Linux 英文解释为 Linux is not Unix。 本教程，我们将为大家介绍如何使用Linux。 Linux其实很容易学，相信你们能很快学会。 现在开始学习 Linux ！    谁适合阅读？ 本教程针对的是Linux服务器方面的知识，适合从事运维或后端开发的人员阅读。  需要具备的知识？ 如果你熟悉操作系统方面的知识，相信你会很快学会Linux。 本教程将于Linux的发行版本Centos为例来为大..">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+  <style>
+.article-body p {
+    margin-bottom: 1em;
+}
+  </style>
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> <i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/linux/linux-intro.html" rel="pre">Linux 教程</a></div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">下载测序数据 </span> SRA/</h1>
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 下载和批量下载测序数据的一般流程。</p>
+
+<ul>
+	<li><a href="#1"> 下载SRA上的测序数据</a> </li>
+	
+
+	<li><a href="#100"> 参考资料</a></li>
+
+</ul>
+
+
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">下载SRA上的测序数据</h2>
+
+<p>以下为一个下载示例。</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">1. 准备
+(1) 安装软件: SRA Toolkit
+
+https://www.ncbi.nlm.nih.gov/sra/docs/sradownload/
+下载 https://github.com/ncbi/sra-tools/wiki
+配置 https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
+
+https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit
+
+# on centOS
+$ wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.9/sratoolkit.2.10.9-centos_linux64.tar.gz
+$ tar zxvf sratoolkit.2.10.9-centos_linux64.tar.gz
+$ cd sratoolkit.2.10.9-centos_linux64/
+
+$ echo 'export PATH=/home/wangjl/software/sratoolkit.2.10.9-centos_linux64/bin:$PATH' >> ~/.bashrc
+$ source ~/.bashrc
+
+设置，否则无法启动下载：
+$ vdb-config --interactive
+
+# test
+$ prefetch SRR1511730 -O ./ #下载数据的路径
+
+注：aspera 加速 2020.6 年至今不可用，不用折腾了(https://github.com/ncbi/sra-tools/issues/304)。目前只有https慢速下载这一条路可用了。
+
+
+(2) 准备 SRR id列表
+
+先找到合适的文献，文献中最后会说测序数据放到哪里了，有了GEO编号就可以开始下载数据了。
+比如 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75790
+底部有 SRA Run Selector ，点击跳转到SRA。
+左侧根据条件做筛选，比如我挑选 scrb-seq，剩下 168 个文件。
+右侧 Found 168 Items 勾选前面的对勾，然后上一行的 Selected 168	16.61 Gb	27.14 G	
+  右侧表格的信息显示，SRR3729829 对应的就是 GSM2220384，通过第二列 样本编号 SAMN05326970，可知它的另一端的测序文件是 SRR5197345。
+  也即是说 我们也要下载 这个表格上面的 Metadata，方便对应上。
+单击后面的 Accession List，会下载一个txt文件 SRR_Acc_List.txt ，传到服务器上。
+
+$ head SRR_Acc_List.txt 
+SRR3729829
+SRR3729830
+SRR3729831
+
+
+
+
+2. 测试几个常用命令
+(1) 下载sra文件
+$ prefetch `head -n 1 SRR_Acc_List.txt` 
+
+2021-08-23T07:09:59 prefetch.2.10.9: 1) Downloading 'SRR3729829'...
+2021-08-23T07:09:59 prefetch.2.10.9:  Downloading via HTTPS...
+2021-08-23T07:10:13 prefetch.2.10.9:  HTTPS download succeed
+2021-08-23T07:10:13 prefetch.2.10.9:  'SRR3729829' is valid
+2021-08-23T07:10:13 prefetch.2.10.9: 1) 'SRR3729829' was downloaded successfully
+2021-08-23T07:10:13 prefetch.2.10.9: 'SRR3729829' has 0 unresolved dependencies
+
+加上输出文件夹，发现和没加一样，因为默认就是当前文件夹。
+$ prefetch `head -n 2 SRR_Acc_List.txt | tail -n 1` -O . 
+
+2021-08-23T07:10:59 prefetch.2.10.9: 1) Downloading 'SRR3729830'...
+2021-08-23T07:10:59 prefetch.2.10.9:  Downloading via HTTPS...
+2021-08-23T07:11:09 prefetch.2.10.9:  HTTPS download succeed
+2021-08-23T07:11:09 prefetch.2.10.9:  'SRR3729830' is valid
+2021-08-23T07:11:09 prefetch.2.10.9: 1) 'SRR3729830' was downloaded successfully
+2021-08-23T07:11:09 prefetch.2.10.9: 'SRR3729830' has 0 unresolved dependencies
+
+发现都是在文件夹内，有一个同名的.sra文件。
+$ ls -lth
+total 12K
+drwxr-xr-x. 2 wangjl jinwf 4.0K Aug 23 15:11 SRR3729830
+drwxr-xr-x. 2 wangjl jinwf 4.0K Aug 23 15:10 SRR3729829
+
+
+(2) 转sra文件为 fastq 文件
+$ fasterq-dump --split-files SRR3729830/SRR3729830.sra
+spots read      : 3,426,841
+reads read      : 3,426,841
+reads written   : 3,426,841
+
+$ ls -lht
+total 545M
+-rw-r--r--. 1 wangjl jinwf 545M Aug 23 15:13 SRR3729830.fastq
+
+(3) 把下载和上传 二合一
+警告：一定要先测试，合适了在二合一测试，最后再批量化。
+因为有些文件的测序方式很特别，需要特殊处理。有些是一个sra转成.1和.2两个fastq文件。遇到情况自己百度吧。
+
+$ fasterq-dump -e 20 --split-files `head -n 3 SRR_Acc_List.txt | tail -n 1`
+spots read      : 5,226,718
+reads read      : 5,226,718
+reads written   : 5,226,718
+
+-e|threads, 用于选择使用多少线程进行运行，默认是6个线程。
+
+$ ls -lth 
+-rw-r--r--. 1 wangjl jinwf 834M Aug 23 15:19 SRR3729831.fastq
+
+
+(4) 批量化运行 
+$ cat SRR_Acc_List.txt| while read id;
+do
+	echo $id;
+	fasterq-dump --split-files -e 10 $id;
+done
+
+
+优化版本：多开几个tmux窗口，手动修改head -n 20, 30, ...，一个窗口中下载10个文件。
+相当于手动多进程 + 程序内多进程
+$ cat SRR_Acc_List.txt | head -n 10 | tail -n 10 | while read id; do echo $id; 
+fasterq-dump --split-files -e 10 $id;
+done;</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='100'></a>
+<h2 class="tutheader">参考资料</h2>
+
+<pre>
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+			
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="http://www.biomooc.com/linux/linux-intro.html" rel="next"> Linux 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
