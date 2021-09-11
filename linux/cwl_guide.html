@@ -1,0 +1,3082 @@
+<head>
+<meta charset=UTF-8>
+<title>通用工作流语言(cwl)教程 - 
+v0.1
+</title>
+
+<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+<style>
+html, body{margin:0; padding:0;}
+html{background:#eee;}
+.wrap{width:900px; margin:10px auto; 
+	border:1px solid #ddd;
+	background:#fff;
+	border-radius:10px;
+	padding:10px;
+}
+h2{border-top:1px solid #aaa;margin-top:50px;}
+pre.code{
+	background:#2D0922;color:#fff; 
+	padding:5px 5px; 
+	border-radius:5px; 
+	border-left:4px solid #000;
+	max-height:600px;
+	overflow-y: scroll;
+}
+ul a{color:#E95420; text-decoration:none;}
+ul a:hover{color:#BA3222; text-decoration:underline;}
+p{text-indent:2em;}
+.header,
+.footer{padding:10px; background:#BA3222; color:#eee; margin:0; text-align: center;}
+.header{background:#fff; color:#000;}
+
+pre.quote{
+	max-height:200px; 
+	overflow-y: scroll;
+	border: 1px solid #d4d4d4;
+	padding:5px;
+	background:#f6f4f0; color:#444;
+	border-radius:5px; max-width:90%;
+}
+
+
+#gotoTop {
+    visibility: hidden;
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    background: #fff;
+    color: #999;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+</style>
+</head>
+
+
+
+
+<body>
+<div class=header><h1>Common Workflow Language(cwl)</h1></div>
+
+<div class=wrap>
+
+<pre class=quote>
+<b>cwl 参考资料</b>
+<b>https://www.commonwl.org/user_guide</b>
+Github: https://github.com/common-workflow-language/user_guide
+可用实现：cwltool、toil 和 SBG
+https://toil.readthedocs.io/en/latest/running/cwl.html
+
+其他资料、示例：
+https://github.com/common-workflow-library/bio-cwl-tools
+https://mmb.irbbarcelona.org/biobb/availability/tutorials/cwl
+
+
+My Note:
+NGS/pipeline: https://github.com/DawnEve/txtBlog/blob/master/data/NGS/pipeline.txt
+Local Dir: 
+	/home/wangjl/data/test/testCWL
+	/home/wangjl/test/cwl_test
+
+如果临时文件/tmp 下总是报错，作者建议使用修改后的语句:
+https://github.com/common-workflow-language/common-workflow-language/issues/927
+$ TMPDIR=$PWD cwltool arguments.cwl --src Hello.java
+
+$ sudo systemctl restart docker #重启docker也不是万能的
+</pre>
+
+
+
+<ul>
+	<li><a href="#1">1. Install</a></li>
+	<li><a href="#2">2. First Example: hello world</a></li>
+	<li><a href="#3">3. Essential Input Parameters</a></li>
+	<li><a href="#4">4. Returning Output Files</a></li>
+	<li><a href="#5">5. Capturing Standard Output</a></li>
+	<li><a href="#6">6. Parameter References</a></li>
+	<li><a href="#7">7. Running Tools Inside Docker</a></li>
+	<li><a href="#8">8. Additional Arguments and Parameters //运行不顺利</a></li>
+	<li><a href="#9">9. Array Inputs</a></li>
+	<li><a href="#10">10. Array Outputs</a></li>
+	<li><a href="#11">11. Advanced Inputs</a></li>
+	<li><a href="#12">12. Environment Variables</a></li>
+	<li><a href="#13">13. JavaScript Expressions</a></li>
+	<li><a href="#14">14. Creating Files at Runtime</a></li>
+	<li><a href="#15">15. Staging Input Files //运行不顺利</a></li>
+	<li><a href="#16">16. File Formats</a></li>
+	<li><a href="#17">17. Metadata and Authorship //运行失败</a></li>
+	<li><a href="#18">18. Custom Types //运行失败</a></li>
+	<li><a href="#19">19. Specifying Software Requirements //运行失败</a></li>
+	<br>
+	<li><a href="#20">20. Writing Workflows</a></li>
+	<li><a href="#21">21. Nested Workflows</a></li>
+	<li><a href="#22">22. Scattering Workflows</a></li>
+	<li><a href="#23">23. Conditional workflows //无法运行</a></li>
+</ul>
+
+
+
+<h2 class=section><a name=1></a>1. Install</h2>
+<p>这两个名字(cwltool, cwl-runner)有什么区别？cwl-runner is the generic name for any CWL implementation. cwltool is the reference implementation. Others are listed at https://www.commonwl.org/#Implementations.</p>
+<p>I'm guessing you installed cwlref-runner which installs cwltool under the cwl-runner name.</p>
+
+
+<pre class=code>
+依赖 node.js, Java compiler。
+
+$ git clone https://github.com/common-workflow-language/cwltool.git
+$ cd cwltool# Switch to source directory
+$ pip3 install . -i https://pypi.douban.com/simple/ # Install `cwltool` from source
+
+$ cwltool --version# Check if the installation works correctly
+/home/wangjl/.local/bin/cwltool 3.1.20210825140344
+
+$ cwl-runner --version
+/usr/bin/cwl-runner 1.0.20180302231433 #有点过时了
+
+
+## try1: 升级
+$ pip3 install cwlref-runner -i https://pypi.douban.com/simple/
+$ whereis cwl-runner
+cwl-runner: /usr/bin/cwl-runner /home/wangjl/.local/bin/cwl-runner
+
+## try2: 升级
+$ pip3 update cwl-runner -i https://pypi.douban.com/simple/
+
+$ whereis cwl-runner
+cwl-runner: /usr/bin/cwl-runner /home/wangjl/.local/bin/cwl-runner
+
+$ /home/wangjl/.local/bin/cwl-runner --version
+pkg_resources.ContextualVersionConflict: (decorator 5.0.9 (/home/wangjl/.local/lib/python3.6/site-packages), Requirement.parse('decorator<5,>=4.3'), {'networkx'})
+
+
+
+
+看样子需要对包 decorator 降级：
+$ python3 -V
+Python 3.6.9
+
+$ pip3 -V
+pip 9.0.1 from /usr/lib/python3/dist-packages (python 3.6)
+
+$ pip3 freeze | grep decorator 
+decorator==5.0.9
+
+随便蒙一个版本
+$ pip install decorator==4.5.1 -i https://pypi.douban.com/simple/
+ERROR: Could not find a version that satisfies the requirement decorator==4.5.1 (from versions: 3.3.1, 3.3.2, 3.3.3, 3.4.0, 3.4.2, 4.0.0, 4.0.1, 4.0.2, 4.0.3, 4.0.4, 4.0.6, 4.0.8, 4.0.9, 4.0.10, 4.0.11, 4.1.0, 4.1.1, 4.1.2, 4.2.1, 4.3.0, 4.3.1, 4.3.2, 4.4.0, 4.4.1, 4.4.2)
+ERROR: No matching distribution found for decorator==4.5.1
+选一个满足要求的最新的
+$ pip install decorator==4.4.2 --user -i https://pypi.douban.com/simple/
+
+$ pip3 install --upgrade pip -i https://pypi.douban.com/simple/
+Successfully installed pip-21.2.4
+
+$ python3 -m pip -V
+pip 21.2.4 from /home/wangjl/.local/lib/python3.6/site-packages/pip (python 3.6)
+
+$ python3 -m pip freeze | grep decorator
+decorator==5.0.9
+版本没变？
+
+先删掉高版本
+$ python3 -m pip uninstall decorator
+Would remove:
+    /home/wangjl/.local/lib/python3.6/site-packages/decorator-5.0.9.dist-info/*
+    /home/wangjl/.local/lib/python3.6/site-packages/decorator.py
+
+删完高版本，低版本就出来了。
+$ python3 -m pip freeze | grep decorator
+decorator==4.4.2
+
+
+
+
+$ whereis cwl-runner
+cwl-runner: /usr/bin/cwl-runner /home/wangjl/.local/bin/cwl-runner
+
+$ /home/wangjl/.local/bin/cwl-runner --version
+/home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+
+默认版本还是古老版本
+$ cwl-runner --version
+/usr/bin/cwl-runner 1.0.20180302231433
+$ ls -lth /usr/bin/cwl-runner
+lrwxrwxrwx 1 root root 28 Nov 26  2018 /usr/bin/cwl-runner -> /etc/alternatives/cwl-runner
+
+## 修改链接
+$ sudo ln -s -f /home/wangjl/.local/bin/cwl-runner /usr/bin/cwl-runner
+$ cwl-runner --version
+/usr/bin/cwl-runner 3.1.20210825140344
+
+
+# 升级 docker? 百度一下，这已经是次新版了。
+$ docker --version
+Docker version 20.10.8, build 3967b7d
+
+
+## 此前的版本 cwl-runner 1.0.20180302231433
+## 后来的版本 cwl-runner 3.1.20210825140344
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=2></a>2. First Example: hello world</h2>
+<p>用法: cwltool [tool-or-workflow-description] [input-job-settings]</p>
+<p>需要准备2个文件：第一个cwl文件描述做什么，第二个yaml文件设置IO。</p>
+<pre class=code>
+$ cat 1st-tool.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0  #版本号
+class: CommandLineTool  #声明这是个命令行工具
+baseCommand: echo #实际运行的命令
+inputs:   #设置输入，使用yaml格式
+  message:  #变量名字
+    type: string  #变量类型：字符串
+    inputBinding:  #可选 在命令行的位置等信息
+      position: 1  #第一个参数
+outputs: []  #没有指定输出格式。value是空。
+
+
+$ cat echo-job.yml
+message: Hello world! from cwl
+
+
+$ cwl-runner 1st-tool.cwl echo-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved '1st-tool.cwl' to 'file:///data/wangjl/test/testCWL/1st-tool.cwl'  #解析cwl文件绝对地址
+[job 1st-tool.cwl] /tmp/tmpm2AZXd$ echo \  #实际执行的命令
+    'Hello world! from cwl'          #第一个参数
+Hello world! from cwl               #输出
+[job 1st-tool.cwl] completed success
+{}
+Final process status is success
+</pre>
+
+
+
+
+<h2 class=section><a name=3></a>3. Essential Input Parameters</h2>
+<p>type 支持  string, int, long, float, double, and null; complex types are array and record; 另外还有特殊类型 File, Directory and Any.</p>
+<p>本例展示不同类型的输入参数，并设置其在命令行的位置。</p>
+
+<pre class=code>
+$ cat inp.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: echo
+inputs:
+  example_flag:
+    type: boolean  #布尔值
+    inputBinding:
+      position: 1 #决定着这是第几个参数，可选。
+      prefix: -f  #如果值是true，则加上参数 -f，否则不加。
+  example_string:
+    type: string
+    inputBinding:
+      position: 3
+      prefix: --example-string  #这个参数可选，如果提供了，参数会渲染成 --example-string hello
+  example_int:
+    type: int
+    inputBinding:
+      position: 2
+      prefix: -i
+      separate: false #该参数是false，就是不分开前缀，参数渲染成 -i42
+  example_file:  #注意：这是一个文件，提供的输入必须注明 class: File, path: 路径
+    type: File?  #后面的？表示这是可选参数，如果输入文件不提供该参数也不会报错。
+    inputBinding:
+      prefix: --file=
+      separate: false
+      position: 4
+
+outputs: []
+
+
+$ cat inp-job.yml 
+example_flag: true
+example_string: hello
+example_int: 42
+example_file:
+  class: File
+  path: whale.txt
+
+$ vim whale.txt 
+this is whale txt #随便写点东西。
+
+运行程序
+$ cwl-runner inp.cwl inp-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'inp.cwl' to 'file:///data/wangjl/test/testCWL/inp.cwl'
+[job inp.cwl] /tmp/tmpSlo05_$ echo \
+    -f \
+    -i42 \
+    --example-string \
+    hello \
+    --file=/tmp/tmpGVfLSg/stg16effb79-831d-43f1-903d-2e0a6548d048/whale.txt
+-f -i42 --example-string hello --file=/tmp/tmpGVfLSg/stg16effb79-831d-43f1-903d-2e0a6548d048/whale.txt
+[job inp.cwl] completed success
+{}
+Final process status is success
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=4></a>4. Returning Output Files</h2>
+<p>outputs 中描述输出格式。</p>
+<p>本例展示如何从tar压缩文件解压。</p>
+
+<pre class=code>
+$ cat tar.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: [tar, --extract] #基本命令
+inputs:
+  tarfile:
+    type: File
+    inputBinding:
+      prefix: --file
+outputs:
+  example_out:
+    type: File
+    outputBinding: #如何设置每个输出参数
+      glob: hello.txt #设置输出文件夹内的文件名，如果不确定，可以使用通配符  glob: '*.txt'.
+# 这个只能输出单个文件，输出多个文件则报错
+
+$ cat tar-job.yml
+tarfile:
+  class: File
+  path: hello.tar
+
+## 准备输入文件
+$ touch hello.txt bar.txt
+$ vim hello.txt #随便写点东西
+$ tar -cf hello.tar hello.txt bar.txt
+$ rm hello.txt bar.txt
+
+
+运行程序
+$ cwl-runner tar.cwl tar-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'tar.cwl' to 'file:///data/wangjl/test/testCWL/tar.cwl'
+[job tar.cwl] /tmp/tmpyT5glu$ tar \
+    --extract \
+    --file \
+    /tmp/tmpe45IvX/stg8640c9f0-3984-4bd3-bb9a-c3ab9bee6557/hello.tar
+[job tar.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$adf860ab98c892f8e37318745b782dd1e9494b4f", 
+        "basename": "hello.txt", 
+        "location": "file:///data/wangjl/test/testCWL/hello.txt", 
+        "path": "/data/wangjl/test/testCWL/hello.txt", 
+        "class": "File", 
+        "size": 21
+    }
+}
+Final process status is success
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=5></a>5. Capturing Standard Output</h2>
+<p>使用 stdout 指定一个文件名，来截获标准输出流。</p>
+<p>相应的输出参数必须注明 type: stdout.</p>
+
+<pre class=code>
+$ cat stdout.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: echo
+stdout: output.txt #把stdout输出到文件
+inputs:
+  message:
+    type: string
+    inputBinding:
+      position: 1
+outputs:
+  example_out:
+    type: stdout  #输出到stdout
+
+$ cat echo-job.yml
+message: Hello world!
+
+
+运行程序：
+$ cwl-runner stdout.cwl echo-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'stdout.cwl' to 'file:///data/wangjl/test/testCWL/stdout.cwl'
+[job stdout.cwl] /tmp/tmpazbm3f$ echo \
+    'Hello world! from cwl' > /tmp/tmpazbm3f/output.txt
+[job stdout.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$8f24a97752ec555e86e165f8ad005ed389776dda", 
+        "basename": "output.txt", 
+        "location": "file:///data/wangjl/test/testCWL/output.txt", 
+        "path": "/data/wangjl/test/testCWL/output.txt", 
+        "class": "File", 
+        "size": 22
+    }
+}
+Final process status is success
+
+检查输出的文件
+$ cat output.txt 
+Hello world! from cwl
+</pre>
+
+
+
+
+
+
+<h2 class=section><a name=6></a>6. Parameter References</h2>
+<p>如何重用参数值？使用符号 $(...)，是一种JS子集的语法。</p>
+<p>前面做过tar解压的例子，其局限性很大，就是 hello.txt 是写死到cwl脚本中的，怎么能在yml中更灵活的指定呢？</p>
+
+<pre class=code>
+$ cat tar-param.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: [tar, --extract]
+inputs:
+  tarfile:
+    type: File
+    inputBinding:
+      prefix: --file
+  extractfile:
+    type: string
+    inputBinding:
+      position: 1
+outputs:
+  extracted_file:
+    type: File
+    outputBinding:
+      glob: $(inputs.extractfile)  # 可以引用输入文件的值，
+
+## 输入文件。每个压缩包能解压出什么东西，不应该依赖程序，而应该是压缩包本身的属性。
+$ cat tar-param-job.yml 
+tarfile:
+  class: File
+  path: hello.tar
+extractfile: goodbye.txt #改成 goodbye2.txt 报错，还是不够灵活啊
+
+
+造输入文件
+$ vim goodbye.txt 
+$ tar -cvf hello.tar goodbye.txt
+$ rm goodbye.txt
+
+
+$ cwl-runner tar-param.cwl tar-param-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'tar-param.cwl' to 'file:///data/wangjl/test/testCWL/tar-param.cwl'
+[job tar-param.cwl] /tmp/tmpY0EG0b$ tar \
+    --extract \
+    --file \
+    /tmp/tmpG7pXtJ/stg9840099e-8e6a-40e9-94a6-59374734209a/hello.tar \
+    goodbye.txt
+[job tar-param.cwl] completed success
+{
+    "extracted_file": {
+        "checksum": "sha1$260eb2c9cd323ee68f72df1a0f9d1d176634e9c5", 
+        "basename": "goodbye.txt", 
+        "location": "file:///data/wangjl/test/testCWL/goodbye.txt", 
+        "path": "/data/wangjl/test/testCWL/goodbye.txt", 
+        "class": "File", 
+        "size": 13
+    }
+}
+Final process status is success
+</pre>
+
+
+<p>只有在某些域使用参数引用：</p>
+<pre class=quote>
+1.From CommandLineTool
+arguments
+  valueFrom
+stdin
+stdout
+stderr
+
+From CommandInputParameter
+  format
+  secondaryFiles
+  From inputBinding
+    valueFrom
+From CommandOutputParamater
+  format
+  secondaryFiles
+From CommandOutputBinding
+  glob
+  outputEval
+
+2.From Workflow
+From InputParameter and WorkflowOutputParameter
+  format
+  secondaryFiles
+  From steps
+    From WorkflowStepInput
+      valueFrom
+
+3.From ExpressionTool
+  expression
+  From InputParameter and ExpressionToolOutputParameter
+    format
+    secondaryFiles
+
+4.From ResourceRequirement
+  coresMin
+  coresMax
+  ramMin
+  ramMax
+  tmpdirMin
+  tmpdirMax
+  outdirMin
+  outdirMax
+
+5. From InitialWorkDirRequirement
+  listing
+  in Dirent
+    entry
+    entryname
+
+6.From EnvVarRequirement
+  From EnvironmentDef
+    envValue
+</pre>
+
+
+
+
+
+<h2 class=section><a name=7></a>7. Running Tools Inside Docker</h2>
+<p>容器是一个隔离的环境，如何保证容器内可以获得input文件，容器外能解析到输出文件？cwl可以自动完成。cwl的一个任务就是，映射输入文件和容器内的路径。</p>
+<p>容器可以简化软件依赖的管理。在cwl中指定Docker镜像的语句实 hints 中的 DockerRequirement 参数。</p>
+<p>本例展示容器内的 Node.js 输出 hellow world 到标准输出。</p>
+
+<pre class=code>
+$ cat docker.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: node
+hints:
+  DockerRequirement:  #这里依赖docker
+    dockerPull: node:slim #这是告诉docker源
+inputs:
+  src:
+    type: File #提供了js源代码文件
+    inputBinding:
+      position: 1
+outputs:
+  example_out:
+    type: stdout
+stdout: output.txt
+
+
+$ cat docker-job.yml
+src:
+  class: File
+  path: hello.js
+
+
+输入文件 
+$ echo "console.log(\"Hello World, from docker\");" > hello.js
+$ cat hello.js
+console.log("Hello World, from docker");
+
+
+
+
+
+############################
+## 接下来是 docker 本身的调试：镜像下载问题、运行报错等。
+# 中间一个bug不知道什么原因、怎么解决？
+$ docker --version #物理机的docker版本
+Docker version 20.10.8, build 3967b7d
+
+$ node --version #物理机的node版本，比镜像新
+v14.16.1
+
+原版docker.com拉取失败。
+error pulling image configuration: 
+#Get https://production.cloudflare.docker.com/registry-v2/docker/...: dial tcp 104.18.124.25:443: i/o timeout
+
+拉取国内镜像替代
+$ docker pull hub.c.163.com/library/node:slim
+slim: Pulling from library/node
+bc2a558c8dfc: Pull complete 
+29cb6f6be636: Pull complete 
+9cef66688ce2: Pull complete 
+2aca22233faa: Pull complete 
+096ff65f16a8: Pull complete 
+a4ef5a464551: Pull complete 
+Digest: sha256:8395d2c578dc420998a726686f57d0231ad634d05b6c6198e2e02557bd130687
+Status: Downloaded newer image for hub.c.163.com/library/node:slim
+hub.c.163.com/library/node:slim
+
+改名字
+$ docker tag hub.c.163.com/library/node:slim node:slim
+$ docker images
+REPOSITORY                   TAG         IMAGE ID       CREATED        SIZE
+node                         slim        914ef9e2ccb0   4 years ago    227MB
+
+报错及可能原因:
+- 要把-v放到容器名字前面。
+- 报错: 有人说不能有软连接。https://stackoverflow.com/questions/50817985/docker-tries-to-mkdir-the-folder-that-i-mount
+docker: Error response from daemon: 
+error while creating mount source path '/home/wangjl/data/test/testCWL': mkdir /home/wangjl/data: file exists.
+- 报错：/home/可以，但是 /data/ 不行，why?
+docker: Error response from daemon: 
+error while creating mount source path '/data/wangjl/test/testCWL': mkdir /data: read-only file system.
+
+
+#这个地址可以，不含软链接
+$ docker run -it -d --name try1 -v /home/wangjl/test/cwl_test:/home/wangjl/ node:slim bash
+e8f8105
+$ docker ps
+CONTAINER ID   IMAGE       COMMAND   CREATED          STATUS          PORTS     NAMES
+e8f8105cc79e   node:slim   "bash"    19 seconds ago   Up 18 seconds             try1
+
+修改地址 $ cp hello.js /home/wangjl/test/cwl_test/
+使用绝对地址: /home/wangjl/test/cwl_test/hello.js
+
+$ docker exec -it e8f bash
+root@e8f8105cc79e:/# node --version #镜像中的docker版本
+v8.4.0
+root@e8f8105cc79e:/# node /home/wangjl/hello.js #运行文件映射后的虚拟机中的脚本
+Hello World, from docker
+root@e8f8105cc79e:/# exit
+exit
+$ docker stop e8f
+
+也可以直接运行：路径映射 + 运行脚本
+$ docker run -v /home/wangjl/test/cwl_test:/home/wangjl/ node:slim node /home/wangjl/hello.js
+Hello World, from docker
+############################
+
+
+
+
+
+使用绝对路径 /home/wangjl/test/cwl_test/hello.js
+$ cat docker-job.yml 
+src:
+  class: File
+  path: /home/wangjl/test/cwl_test/hello.js
+
+
+运行程序
+$ cwl-runner docker.cwl docker-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'docker.cwl' to 'file:///data/wangjl/test/testCWL/docker.cwl'
+[job docker.cwl] /tmp/tmpYizLGR$ docker \
+    run \
+    -i \
+    --volume=/tmp/tmpYizLGR:/var/spool/cwl:rw \
+    --volume=/tmp/tmp3ATtsb:/tmp:rw \
+    --volume=/home/wangjl/test/cwl_test/hello.js:/var/lib/cwl/stg5ca094dc-00bb-45fa-9064-3388bec4119a/hello.js:ro \
+    --workdir=/var/spool/cwl \
+    --read-only=true \
+    --log-driver=none \
+    --user=1001:1001 \
+    --rm \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/var/spool/cwl \
+    node:slim \
+    node \
+    /var/lib/cwl/stg5ca094dc-00bb-45fa-9064-3388bec4119a/hello.js > /tmp/tmpYizLGR/output.txt
+[job docker.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$de3bc1b9891d98a2929ca4fdd2cab229dc775baa", 
+        "basename": "output.txt", 
+        "location": "file:///data/wangjl/test/testCWL/output.txt", 
+        "path": "/data/wangjl/test/testCWL/output.txt", 
+        "class": "File", 
+        "size": 25
+    }
+}
+Final process status is success
+
+检查输出：
+$ cat output.txt 
+Hello World, from docker
+
+检查 $ docker ps -a 无残留。不知道怎么做到的。
+</pre>
+
+<p>cwl创建了一个很长的、包含路径映射的命令，来运行docker，然后在docker内运行该脚本并输出。</p>
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=8></a>8. Additional Arguments and Parameters //运行不顺利</h2>
+<p>如何指定不需要输入也不依赖于输入的参数(比如CPU核心数)？如何引用运行时参数？</p>
+<p>本例使用Java从源文件编译出class文件。默认状态javac会把class文件输出到源文件所在文件夹，但是cwl的输入文件是只读的，所以需要指定另外的输出路径。</p>
+
+<pre class=code>
+/home/wangjl/test/cwl_test/
+
+$ cat arguments.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+label: Example trivial wrapper for Java 9 compiler
+hints:
+  DockerRequirement:
+    dockerPull: openjdk:9.0.1-11-slim #dawneve/openjdk:latest
+baseCommand: javac
+arguments: ["-d", $(runtime.outdir)]
+inputs:
+  src:
+    type: File
+    inputBinding:
+      position: 1
+outputs:
+  classfile:
+    type: File
+    outputBinding:
+      glob: "*.class"
+
+
+$ cat arguments-job.yml
+src:
+  class: File
+  path: Hello.java
+
+
+
+创建 java 源文件
+$ cat Hello.java
+public class Hello { 
+	public static void main(String args[])  {    
+		System.out.println("Hello world, from Java!");  
+	}
+}
+编译
+$ javac Hello.java #生成 Hello.class
+$ java Hello
+Hello world, from Java!
+$ rm Hello.class
+
+
+
+#################################
+docker 需要先登录，否则下载大概率失败
+$ docker login -u 用户名
+输入密码
+$ docker pull openjdk:9.0.1-11-slim
+$ docker run openjdk:9.0.1-11-slim java -version
+openjdk version "9.0.1"
+OpenJDK Runtime Environment (build 9.0.1+11-Debian-1)
+OpenJDK 64-Bit Server VM (build 9.0.1+11-Debian-1, mixed mode)
+
+在容器中编译
+$ docker run -v /home/wangjl/test/cwl_test:/home/wangjl/ openjdk:9.0.1-11-slim bash -c 'cd /home/wangjl/ && javac Hello.java'
+
+
+
+
+拉取国内镜像替代
+$ docker pull hub.c.163.com/library/openjdk
+重命名
+$ docker tag hub.c.163.com/library/openjdk:latest dawneve/openjdk:latest
+$ docker images
+dawneve/openjdk   latest      4551430cfe80   4 years ago    738MB
+
+$ docker run dawneve/openjdk java --version
+
+$ docker run -it -d dawneve/openjdk bash
+$ docker exec -it 308 bash
+root@308b5227d32b:/# java -version
+openjdk version "1.8.0_141"  #版本好古老
+OpenJDK Runtime Environment (build 1.8.0_141-8u141-b15-1~deb9u1-b15)
+OpenJDK 64-Bit Server VM (build 25.141-b15, mixed mode)
+
+$ docker run -v /home/wangjl/test/cwl_test:/home/wangjl/ dawneve/openjdk java -version #同样的输出
+#################################
+
+
+
+
+运行程序 
+$ cwl-runner arguments.cwl arguments-job.yml
+报错：/var/lib/cwl/stg1c0b948a-9fa3-4638-a880-5a13ee27324a/Hello.java:1: 
+error: error while writing Hello: /var/spool/cwl/Hello.class (Permission denied)
+报错：
+/var/lib/cwl/stgfb95dc9c-cefb-4061-9b7d-e36e1828e102/Hello.java:1: 
+error: error while writing Hello: /var/spool/cwl/Hello.class
+public class Hello { 
+       ^
+1 error
+
+
+
+$ cwltool arguments.cwl arguments-job.yml
+报错： 
+docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/iu6dz91d.
+
+https://www.coder.work/article/7044398
+
+
+
+
+
+cwl的作者建议: TMPDIR=$PWD cwltool arguments.cwl --src Hello.java
+我是用的: 就是把 /tmp 作临时目录，换成当前目录做临时目录。
+$ cwltool --tmpdir-prefix=$PWD/ arguments.cwl --src Hello.java #这个似乎更符合命令行工具的使用习惯。
+
+$ TMPDIR=$PWD cwltool arguments.cwl arguments-job.yml
+INFO /home/wangjl/.local/bin/cwltool 3.1.20210825140344
+INFO Resolved 'arguments.cwl' to 'file:///home/wangjl/test/cwl_test/arguments.cwl'
+INFO [job arguments.cwl] /home/wangjl/test/cwl_test/ki_j2ajd$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/ki_j2ajd,target=/jSRUIq \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/wq21fiv3,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/var/lib/cwl/stgf45b5122-4676-4659-8af6-02862ce21df9/Hello.java,readonly \
+    --workdir=/jSRUIq \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/home/wangjl/test/cwl_test/1imr1hve/20210911160940-668311.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/jSRUIq \
+    openjdk:9.0.1-11-slim \
+    javac \
+    -d \
+    /jSRUIq \
+    /var/lib/cwl/stgf45b5122-4676-4659-8af6-02862ce21df9/Hello.java
+INFO [job arguments.cwl] Max memory used: 28MiB
+INFO [job arguments.cwl] completed success
+{
+    "classfile": {
+        "location": "file:///home/wangjl/test/cwl_test/Hello.class",
+        "basename": "Hello.class",
+        "class": "File",
+        "checksum": "sha1$6f2a091492a911598cbc1f01a5c73993a00abb22",
+        "size": 427,
+        "path": "/home/wangjl/test/cwl_test/Hello.class"
+    }
+}
+INFO Final process status is success
+</pre>
+
+<p>==>> 这个报错我无法解决，没有得到预期结果。</p>
+<p>其他运行时变量 $(runtime.tmpdir), $(runtime.ram), $(runtime.cores), $(runtime.outdirSize), and $(runtime.tmpdirSize)， 更多介绍：https://www.commonwl.org/v1.0/CommandLineTool.html#Runtime_environment</p>
+
+
+
+
+<p>提供一个 gcc 编译的例子</p>
+<pre class=code>
+$ cat Hello.c
+#include<stdio.h>
+int main(){
+  printf("hello, c!\n");
+}
+
+#################
+$ docker pull gcc
+$ docker run gcc gcc --version
+gcc (GCC) 11.2.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ docker run -v /home/wangjl/test/cwl_test:/home/wangjl/ gcc gcc /home/wangjl/Hello.c -o /home/wangjl/Hello.out
+$ ./Hello.out 
+hello, c!
+#################
+</pre>
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=9></a>9. Array Inputs</h2>
+<p>2种方式提供一个数组作为参数。1. type: array, 2. 使用方括号，如type: string[];</p>
+
+<pre class=code>
+$ cat array-inputs.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+inputs:
+  filesA:
+    type: string[]
+    inputBinding:
+      prefix: -A
+      position: 1
+
+  filesB:
+    type:
+      type: array #数组
+      items: string #类型
+      inputBinding: #可以在数组内定义
+        prefix: -B=
+        separate: false
+    inputBinding:
+      position: 2
+
+  filesC:
+    type: string[]
+    inputBinding:
+      prefix: -C=
+      itemSeparator: "," #参数分隔符
+      separate: false
+      position: 4
+
+outputs:
+  example_out:
+    type: stdout
+stdout: output.txt #截获标准输出到文件
+baseCommand: echo  #基础命令
+
+
+$ cat array-inputs-job.yml
+filesA: [one, two, three]
+filesB: [four, five, six]
+filesC: [seven, eight, nine]
+
+
+
+运行程序：
+$ cwl-runner array-inputs.cwl array-inputs-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'array-inputs.cwl' to 'file:///home/wangjl/test/cwl_test/array-inputs.cwl'
+[job array-inputs.cwl] /tmp/tmpOq2vlf$ echo \
+    -A \
+    one \
+    two \
+    three \
+    -B=four \
+    -B=five \
+    -B=six \
+    -C=seven,eight,nine > /tmp/tmpOq2vlf/output.txt
+[job array-inputs.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$91038e29452bc77dcd21edef90a15075f3071540", 
+        "basename": "output.txt", 
+        "location": "file:///home/wangjl/test/cwl_test/output.txt", 
+        "path": "/home/wangjl/test/cwl_test/output.txt", 
+        "class": "File", 
+        "size": 60
+    }
+}
+Final process status is success
+
+检查输出 
+$ cat output.txt 
+-A one two three -B=four -B=five -B=six -C=seven,eight,nine
+</pre>
+<p>数组参数，定义在包含 type: array 的 type 下。</p>
+<p>数组参数在命令行的样式，由inputBinding 指定。</p>
+<p>itemSeparator 域控制数组参数的连接符。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=10></a>10. Array Outputs</h2>
+<p>如何输出多个文件？如何指定保留哪个？</p>
+<p>使用 glob 捕获多个输出文件到数组中，可以使用通配符：glob: "*.txt"</p>
+
+<pre class=code>
+$ cat array-outputs.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: touch
+inputs:
+  touchfiles:
+    type:
+      type: array
+      items: string
+    inputBinding:
+      position: 1
+outputs:
+  output:
+    type:
+      type: array  #如果type是array，则用 items 指定 File
+      items: File  
+    outputBinding:
+      glob: "*.txt"  #只保留 *.txt，不保留*.bat。
+
+
+$ cat array-outputs-job.yml
+touchfiles:
+  - foo.txt
+  - bar.dat
+  - baz.txt
+
+运行程序
+$ cwl-runner array-outputs.cwl array-outputs-job.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'array-outputs.cwl' to 'file:///home/wangjl/test/cwl_test/array-outputs.cwl'
+[job array-outputs.cwl] /tmp/tmpEvH1Io$ touch \
+    foo.txt \
+    bar.dat \
+    baz.txt
+[job array-outputs.cwl] completed success
+{
+    "output": [
+        {
+            "checksum": "sha1$da39a3ee5e6b4b0d3255bfef95601890afd80709", 
+            "basename": "baz.txt", 
+            "location": "file:///home/wangjl/test/cwl_test/baz.txt", 
+            "path": "/home/wangjl/test/cwl_test/baz.txt", 
+            "class": "File", 
+            "size": 0
+        }, 
+        {
+            "checksum": "sha1$da39a3ee5e6b4b0d3255bfef95601890afd80709", 
+            "basename": "foo.txt", 
+            "location": "file:///home/wangjl/test/cwl_test/foo.txt", 
+            "path": "/home/wangjl/test/cwl_test/foo.txt", 
+            "class": "File", 
+            "size": 0
+        }
+    ]
+}
+Final process status is success
+
+检查输出：
+$ ls -lth
+-rw-rw-r-- 1 wangjl wangjl   0 Sep 10 09:19 baz.txt
+-rw-rw-r-- 1 wangjl wangjl   0 Sep 10 09:19 foo.txt
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=11></a>11. Advanced Inputs</h2>
+<p>如何描述有些参数必须组合，或不能组合？描述输入的关系。</p>
+<p>使用 type: record 域把参数分组。同一个参数描述符内的多个 type: record 被认为互斥。</p>
+
+<pre class=code>
+$ cat record.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+inputs:
+  dependent_parameters:
+    type:
+      type: record
+      name: dependent_parameters
+      fields:
+        itemA:
+          type: string
+          inputBinding:
+            prefix: -A
+        itemB:
+          type: string
+          inputBinding:
+            prefix: -B
+  exclusive_parameters:
+    type:
+      - type: record
+        name: itemC
+        fields:
+          itemC:
+            type: string
+            inputBinding:
+              prefix: -C
+      - type: record
+        name: itemD
+        fields:
+          itemD:
+            type: string
+            inputBinding:
+              prefix: -D
+outputs:
+  example_out:
+    type: stdout
+stdout: output.txt
+baseCommand: echo
+
+
+$ cat record-job1.yml
+dependent_parameters:
+  itemA: one
+exclusive_parameters:
+  itemC: three
+
+
+$ cwl-runner record.cwl record-job1.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'record.cwl' to 'file:///home/wangjl/test/cwl_test/record.cwl'
+Workflow error, try again with --debug for more information:
+Invalid job input record:
+record-job1.yml:1:1: the `dependent_parameters` field is not valid because
+                       missing required field `itemB`
+报错了，没有提供参数 itemB
+
+
+$ cat record-job2.yml
+dependent_parameters:
+  itemA: one
+  itemB: two
+exclusive_parameters:
+  itemC: three
+  itemD: four
+
+$ cwl-runner record.cwl record-job2.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'record.cwl' to 'file:///home/wangjl/test/cwl_test/record.cwl'
+record-job2.yml:6:3: invalid field `itemD`, expected one of: 'itemC'
+[job record.cwl] /tmp/tmpi8apBq$ echo \
+    -A \
+    one \
+    -B \
+    two \
+    -C \
+    three > /tmp/tmpi8apBq/output.txt
+[job record.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$329fe3b598fed0dfd40f511522eaf386edb2d077", 
+        "basename": "output.txt", 
+        "location": "file:///home/wangjl/test/cwl_test/output.txt", 
+        "path": "/home/wangjl/test/cwl_test/output.txt", 
+        "class": "File", 
+        "size": 23
+    }
+}
+Final process status is success
+
+$ cat output.txt 
+-A one -B two -C three
+由于C和D互斥，所以只使用一个。
+
+
+
+
+$ cat record-job3.yml
+dependent_parameters:
+  itemA: one
+  itemB: two
+exclusive_parameters:
+  itemD: four
+
+$ cwl-runner record.cwl record-job3.yml
+/usr/bin/cwl-runner 1.0.20180302231433
+Resolved 'record.cwl' to 'file:///home/wangjl/test/cwl_test/record.cwl'
+[job record.cwl] /tmp/tmpC8WTZ4$ echo \
+    -A \
+    one \
+    -B \
+    two \
+    -D \
+    four > /tmp/tmpC8WTZ4/output.txt
+[job record.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$77f572b28e441240a5e30eb14f1d300bcc13a3b4", 
+        "basename": "output.txt", 
+        "location": "file:///home/wangjl/test/cwl_test/output.txt", 
+        "path": "/home/wangjl/test/cwl_test/output.txt", 
+        "class": "File", 
+        "size": 22
+    }
+}
+Final process status is success
+$ cat output.txt 
+-A one -B two -D four
+
+
+
+如果互斥的两个都不提供呢？
+$ cat record-job4.yml
+dependent_parameters:
+  itemA: one
+  itemB: two
+
+$ cwl-runner record.cwl record-job4.yml
+Workflow error, try again with --debug for more information:
+Invalid job input record:
+record.cwl:19:3: Missing required input parameter 'exclusive_parameters'
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=12></a>12. Environment Variables</h2>
+<p>如何为工具的执行设置环境变量？工具在一个限制的环境中运行，不继承父进程的大多数环境变量。可以通过 EnvVarRequirement 设置环境变量。</p>
+<pre class=code>
+$ cat env.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: env
+requirements:
+  EnvVarRequirement:
+    envDef:
+      HELLO: $(inputs.message)
+inputs:
+  message: string
+outputs:
+  example_out:
+    type: stdout
+stdout: output.txt
+
+$ cat echo-job.yml
+message: Hello world!
+
+$ cwl-runner env.cwl echo-job.yml
+[job env.cwl] /tmp/tmpTrhSfY$ env > /tmp/tmpTrhSfY/output.txt
+[job env.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$a00671d2ed5b00e0aa51e993dff77108b3fc42e0", 
+        "basename": "output.txt", 
+        "location": "file:///home/wangjl/test/cwl_test/output.txt", 
+        "path": "/home/wangjl/test/cwl_test/output.txt", 
+        "class": "File", 
+        "size": 1524
+    }
+}
+Final process status is success
+
+$ cat output.txt 
+PATH=/home/wangjl/soft/bowtie2-2.3.5.1-linux-x86_64:...:/home/wangjl/soft/homer/.//bin/
+HELLO=Hello world!  ##这地方新增一个环境变量
+TMPDIR=/tmp/tmpfo6Q9Q
+HOME=/tmp/tmpTrhSfY
+</pre>
+
+
+
+
+
+
+<h2 class=section><a name=13></a>13. JavaScript Expressions</h2>
+<p>cwl不提供内建的方法，如何动态创建值？可以在cwl描述中插入js表达式。</p>
+<p>添加 requirements: InlineJavascriptRequirement:{} 后，就支持js解析了。注意：只在必要的时候使用js。优先考虑内建文件属性: basename, nameroot, nameext 等。更多推荐实践: https://www.commonwl.org/user_guide/rec-practices/</p>
+<p>要点: 1. InlineJavascriptRequirement 指定后，就可以在cwl中包含js表达式了；2.js表达式只能用在特定的域；3.js表达式只应在cwl没有内建解决方案的情况下使用。</p>
+<pre class=code>
+$ cat expression.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: echo
+
+requirements:
+  InlineJavascriptRequirement: {}
+
+inputs: []
+outputs:
+  example_out:
+    type: stdout
+stdout: output.txt
+arguments:
+  - prefix: -A
+    valueFrom: $(1+1)
+  - prefix: -B
+    valueFrom: $("/foo/bar/baz".split('/').slice(-1)[0])
+  - prefix: -C
+    valueFrom: |
+      ${
+        var r = [];
+        for (var i = 10; i >= 1; i--) {
+          r.push(i);
+        }
+        return r;
+      }
+# As this tool does not require any inputs we can run it with an (almost) empty job file:
+
+$ cat empty.yml
+{}
+
+$ cwl-runner expression.cwl empty.yml
+[job expression.cwl] /tmp/tmpDAhtNa$ echo \
+    -A \
+    2 \
+    -B \
+    baz \
+    -C \
+    10 \
+    9 \
+    8 \
+    7 \
+    6 \
+    5 \
+    4 \
+    3 \
+    2 \
+    1 > /tmp/tmpDAhtNa/output.txt
+[job expression.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$a739a6ff72d660d32111265e508ed2fc91f01a7c", 
+        "basename": "output.txt", 
+        "location": "file:///home/wangjl/test/cwl_test/output.txt", 
+        "path": "/home/wangjl/test/cwl_test/output.txt", 
+        "class": "File", 
+        "size": 36
+    }
+}
+Final process status is success
+
+$ cat output.txt 
+-A 2 -B baz -C 10 9 8 7 6 5 4 3 2 1
+</pre>
+
+
+<p>Where are JavaScript expressions allowed?</p>
+<pre class=quote>
+像参数引用(https://www.commonwl.org/user_guide/06-params/index.html)一样，js表达式也只能用在一些特定的域。
+1. From CommandLineTool
+  arguments
+    valueFrom
+  stdin
+  stdout
+  stderr
+  From CommandInputParameter
+    format
+    secondaryFiles
+    From inputBinding
+      valueFrom
+  From CommandOutputParamater
+    format
+    secondaryFiles
+    From CommandOutputBinding
+      glob
+      outputEval
+
+2. From Workflow
+  From InputParameter and WorkflowOutputParameter
+    format
+    secondaryFiles
+  From steps
+    From WorkflowStepInput
+      valueFrom
+
+3. From ExpressionTool
+  expression
+  From InputParameter and ExpressionToolOutputParameter
+    format
+    secondaryFiles
+
+4. From ResourceRequirement
+  coresMin
+  coresMax
+  ramMin
+  ramMax
+  tmpdirMin
+  tmpdirMax
+  outdirMin
+  outdirMax
+
+5. From InitialWorkDirRequirement
+  listing
+  in Dirent
+    entry
+    entryname
+
+6. From EnvVarRequirement
+  From EnvironmentDef
+    envValue
+</pre>
+
+
+
+
+
+
+
+
+<h2 class=section><a name=14></a>14. Creating Files at Runtime</h2>
+<p>如何从输入参数创建必须的输入文件？如何运行脚本而不是一个简单命令？除了 inputBinding ，还能怎么传参？</p>
+<p>使用 InitialWorkDirRequirement 可以在运行期间创建文件(运行结束会被删除)。比如有些工具需要读取配置文件，却不接受命令行参数。或者需要一个包裹好的shell 脚本。</p>
+
+<pre class=code>
+$ cat createfile.cwl
+class: CommandLineTool
+cwlVersion: v1.0
+baseCommand: ["sh", "example.sh"]
+
+requirements:
+  InitialWorkDirRequirement:
+    listing:
+      - entryname: example.sh
+        entry: |-
+          PREFIX='Message is:'
+          MSG="\${PREFIX} $(inputs.message)"
+          echo \${MSG}
+inputs:
+  message: string
+outputs:
+  example_out:
+    type: stdout
+stdout: output.txt
+
+
+$ cat echo-job.yml
+message: Hello world! -v2
+
+
+表达式$(inputs.message)等在文件创建前cwl都解析了。
+注意： cwl 表达式独立于此后运行的shell变量。也就是说需要保留的$符号必须前面加上反斜线\。
+
+$ cwl-runner createfile.cwl echo-job.yml
+[job createfile.cwl] /tmp/tmpBTLnvr$ sh \
+    example.sh > /tmp/tmpBTLnvr/output.txt
+[job createfile.cwl] completed success
+{
+    "example_out": {
+        "checksum": "sha1$0ec41f68473a70f91a09240595318e9edbe3017d", 
+        "basename": "output.txt", 
+        "location": "file:///home/wangjl/test/cwl_test/output.txt", 
+        "path": "/home/wangjl/test/cwl_test/output.txt", 
+        "class": "File", 
+        "size": 29
+    }
+}
+Final process status is success
+
+$ cat output.txt 
+Message is: Hello world! -v2
+</pre>
+<p>解析语法: 上例中要运行的就是 sh example.sh，所以要动态构建文件 example.sh。</p>
+<p>InitialWorkDirRequirement 必须提供一个 listing。而 listing 是一个 array，按照yaml格式 每个元素第一行要加上 - 前缀。该数组只有一个元素 entryname: 要生成的文件名，要和之前baseCommand 指定的名字一致。</p>
+<p>最后的部分是 entry: |- 是 yaml 的引用语法，意味着后面是多行字符串(不加引用则需要写到一行)。yaml语法：https://www.commonwl.org/user_guide/yaml/#maps</p>
+
+
+
+
+
+
+<h2 class=section><a name=15></a>15. Staging Input Files //运行不顺利</h2>
+<p>如果工具要在输入文件夹之外输出文件，怎么办？</p>
+<p>InitialWorkDirRequirement 把输入文件挂载到输出文件夹(工作目录)中。本例使用js表达式提取输入文件的base name，也就是去掉前面的文件夹路径。</p>
+
+<pre class=code>
+$ cat linkfile.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+hints:
+  DockerRequirement:
+    dockerPull: openjdk:9.0.1-11-slim
+baseCommand: javac
+
+requirements:
+  InitialWorkDirRequirement:
+    listing:
+      - $(inputs.src)
+inputs:
+  src:
+    type: File
+    inputBinding:
+      position: 1
+      valueFrom: $(self.basename)
+
+outputs:
+  classfile:
+    type: File
+    outputBinding:
+      glob: "*.class"
+
+$ cat arguments-job.yml
+src:
+  class: File
+  path: Hello.java
+
+
+新版本cwl工具
+$ cwl-runner linkfile.cwl arguments-job.yml
+INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'linkfile.cwl' to 'file:///home/wangjl/test/cwl_test/linkfile.cwl'
+INFO [job linkfile.cwl] /tmp/qi7gv8jg$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/tmp/qi7gv8jg,target=/AgmkPB \
+    --mount=type=bind,source=/tmp/_mfqect7,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/AgmkPB/Hello.java,readonly \
+    --workdir=/AgmkPB \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/AgmkPB \
+    openjdk:9.0.1-11-slim \
+    javac \
+    Hello.java
+docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/qi7gv8jg.
+See 'docker run --help'.
+
+
+
+#--user=1001:1001 \ # 这句话导致不能root登录了，创建文件无权限
+$ docker run -it \
+    --mount=type=bind,source=/tmp/qi7gv8jg,target=/AgmkPB \
+    --mount=type=bind,source=/tmp/_mfqect7,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/AgmkPB/Hello.java,readonly \
+    --workdir=/AgmkPB \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/AgmkPB \
+    openjdk:9.0.1-11-slim bash
+docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/qi7gv8jg.
+See 'docker run --help'.
+
+$ ls /tmp/qi7gv8jg
+$ # 该文件明明是存在的！！ 这可能是 docker 的问题！ 使用 -v 参数，并删除 --user=1001:1001 \ 后正常了。
+
+$ docker run -it \
+    -v /tmp/qi7gv8jg:/AgmkPB \
+    -v /tmp/_mfqect7:/tmp \
+    -v /home/wangjl/test/cwl_test/Hello.java:/AgmkPB/Hello.java:ro \
+    --workdir=/AgmkPB \
+    --read-only=true \
+    --rm \
+    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/AgmkPB \
+    openjdk:9.0.1-11-slim bash
+root@b590f40db9c8:~# javac Hello.java
+root@b590f40db9c8:~# ls
+Hello.java
+root@b590f40db9c8:~# java Hello
+Hello world, from Java!
+</pre>
+
+<p>报告错误: https://github.com/common-workflow-language/common-workflow-language/issues/927</p>
+<pre class=code>
+根据作者的建议，命令前面添加 TMPDIR=$PWD 
+$ TMPDIR=$PWD cwl-runner linkfile.cwl arguments-job.yml
+INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'linkfile.cwl' to 'file:///home/wangjl/test/cwl_test/linkfile.cwl'
+INFO [job linkfile.cwl] /home/wangjl/test/cwl_test/jq1_e075$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/jq1_e075,target=/XarQfy \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/avlrf8jm,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/XarQfy/Hello.java,readonly \
+    --workdir=/XarQfy \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/home/wangjl/test/cwl_test/1ywy75um/20210911161347-951882.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/XarQfy \
+    openjdk:9.0.1-11-slim \
+    javac \
+    Hello.java
+INFO [job linkfile.cwl] Max memory used: 12MiB
+INFO [job linkfile.cwl] completed success
+{
+    "classfile": {
+        "location": "file:///home/wangjl/test/cwl_test/Hello.class",
+        "basename": "Hello.class",
+        "class": "File",
+        "checksum": "sha1$6f2a091492a911598cbc1f01a5c73993a00abb22",
+        "size": 427,
+        "path": "/home/wangjl/test/cwl_test/Hello.class"
+    }
+}
+INFO Final process status is success
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=16></a>16. File Formats</h2>
+<p>如何标记输入文件中的必须的文件格式？输出的文件格式呢？type: File 然后在 format: 指定格式，现有格式:  IANA <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">here</a> and for EDAM <a href="https://www.ebi.ac.uk/ols/ontologies/edam/terms?iri=http%3A%2F%2Fedamontology.org%2Fformat_1915">here</a></p>
+<p>下一节再解释 $namespaces and $schemas，现在先提前用着。对于相加的元素， cwltool 会做基本的格式推测，如果有明显错误会提醒。</p>
+
+<pre class=code>
+$ cat metadata_example.cwl
+#!/usr/bin/env cwl-runner
+cwlVersion: v1.0
+class: CommandLineTool
+
+label: An example tool demonstrating metadata.
+
+inputs:
+  aligned_sequences:
+    type: File
+    label: Aligned sequences in BAM format
+    format: edam:format_2572
+    inputBinding:
+      position: 1
+
+baseCommand: [ wc, -l ]
+
+stdout: output.txt
+
+outputs:
+  report:
+    type: stdout
+    format: edam:format_1964
+    label: A text file that contains a line count
+
+$namespaces:
+  edam: http://edamontology.org/
+$schemas:
+  - http://edamontology.org/EDAM_1.18.owl
+
+## 等价的命令行就是 wc -l /path/to/aligned_sequences.ext > output.txt
+
+
+
+
+样本参数文件
+$ cat sample.yml
+aligned_sequences:
+    class: File
+    format: http://edamontology.org/format_2572
+    path: file-formats.bam
+
+下载文件
+$ wget https://github.com/common-workflow-language/user_guide/raw/gh-pages/_includes/cwl/16-file-formats/file-formats.bam
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.109.133|:443... failed: Connection timed out.
+-rw-rw-r-- 1 wangjl wangjl  45M Sep 10 19:55 file-formats.bam
+$ samtools view file-formats.bam |wc -l
+[W::bam_hdr_read] EOF marker is absent. The input is probably truncated
+[E::bgzf_read] Read block operation failed with error -1 after 0 of 4 bytes
+[main_samview] truncated file.
+288227
+
+
+
+
+
+运行程序
+$ cwltool metadata_example.cwl sample.yml
+INFO /home/wangjl/.local/bin/cwltool 3.1.20210825140344
+INFO Resolved 'metadata_example.cwl' to 'file:///home/wangjl/test/cwl_test/metadata_example.cwl'
+INFO [job metadata_example.cwl] /tmp/bd3g9ild$ wc \
+    -l \
+    /tmp/qazmmskk/stg334f6bcf-b994-4032-8a18-70f85336d1fa/file-formats.bam > /tmp/bd3g9ild/output.txt
+INFO [job metadata_example.cwl] completed success
+{
+    "report": {
+        "location": "file:///home/wangjl/test/cwl_test/output.txt",
+        "basename": "output.txt",
+        "class": "File",
+        "checksum": "sha1$c2549632a2f5079926c146f3e0e2889a88fe88c0",
+        "size": 77,
+        "format": "http://edamontology.org/format_1964",
+        "path": "/home/wangjl/test/cwl_test/output.txt"
+    }
+}
+INFO Final process status is success
+
+检查输出
+$ cat output.txt 
+13698 /tmp/qazmmskk/stg334f6bcf-b994-4032-8a18-70f85336d1fa/file-formats.bam
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=17></a>17. Metadata and Authorship //运行失败</h2>
+<p>如何标出作者信息等 元信息，增加引用？</p>
+<p>这是非必须扩展。对于开发者，建议按照如下最少metadata原则构建工具和流程。如下例子包含如何引用。</p>
+
+<pre class=code>
+$ cat metadata_example2.cwl
+#!/usr/bin/env cwl-runner
+cwlVersion: v1.0
+class: CommandLineTool
+
+label: An example tool demonstrating metadata.
+doc: Note that this is an example and the metadata is not necessarily consistent.
+
+inputs:
+  aligned_sequences:
+    type: File
+    label: Aligned sequences in BAM format
+    format: edam:format_2572
+    inputBinding:
+      position: 1
+
+baseCommand: [ wc, -l ]
+
+stdout: output.txt
+
+outputs:
+  report:
+    type: stdout
+    format: edam:format_1964
+    label: A text file that contains a line count
+
+s:author:
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0002-6130-1021
+    s:email: mailto:dyuen@oicr.on.ca
+    s:name: Denis Yuen
+
+s:contributor:
+  - class: s:Person
+    s:identifier: http://orcid.org/0000-0002-7681-6415
+    s:email: mailto:briandoconnor@gmail.com
+    s:name: Brian O'Connor
+
+s:citation: https://dx.doi.org/10.6084/m9.figshare.3115156.v2
+s:codeRepository: https://github.com/common-workflow-language/common-workflow-language
+s:dateCreated: "2016-12-13"
+s:license: https://spdx.org/licenses/Apache-2.0 
+
+$namespaces:
+  s: https://schema.org/
+  edam: http://edamontology.org/
+
+$schemas:
+ - https://schema.org/version/latest/schemaorg-current-https.rdf
+ - http://edamontology.org/EDAM_1.18.owl
+
+
+# 以上等价于如下命令  wc -l /path/to/aligned_sequences.ext > output.txt
+
+运行程序
+$ cwl-runner metadata_example2.cwl sample.yml 
+//运行失败
+</pre>
+
+
+
+
+
+
+
+<h3>Extended Example 扩展后的例子</h3>
+
+<pre class=code>
+$ cat metadata_example3.cwl
+#!/usr/bin/env cwl-runner
+cwlVersion: v1.0
+class: CommandLineTool
+
+label: An example tool demonstrating metadata.
+doc: Note that this is an example and the metadata is not necessarily consistent.
+
+hints:
+  ResourceRequirement:
+    coresMin: 4
+
+inputs:
+  aligned_sequences:
+    type: File
+    label: Aligned sequences in BAM format
+    format: edam:format_2572
+    inputBinding:
+      position: 1
+
+baseCommand: [ wc, -l ]
+
+stdout: output.txt
+
+outputs:
+  report:
+    type: stdout
+    format: edam:format_1964
+    label: A text file that contains a line count
+
+s:author:
+  - class: s:Person
+    s:identifier: https://orcid.org/0000-0002-6130-1021
+    s:email: mailto:dyuen@oicr.on.ca
+    s:name: Denis Yuen
+
+s:contributor:
+  - class: s:Person
+    s:identifier: http://orcid.org/0000-0002-7681-6415
+    s:email: mailto:briandoconnor@gmail.com
+    s:name: Brian O'Connor
+
+s:citation: https://dx.doi.org/10.6084/m9.figshare.3115156.v2
+s:codeRepository: https://github.com/common-workflow-language/common-workflow-language
+s:dateCreated: "2016-12-13"
+s:license: https://spdx.org/licenses/Apache-2.0 
+
+s:keywords: edam:topic_0091 , edam:topic_0622
+s:programmingLanguage: C
+
+$namespaces:
+ s: https://schema.org/
+ edam: http://edamontology.org/
+
+$schemas:
+ - https://schema.org/version/latest/schemaorg-current-http.rdf
+ - http://edamontology.org/EDAM_1.18.owl
+
+
+运行命令
+$ cwl-runner metadata_example3.cwl sample.yml 
+// 运行失败 大概率是 墙 的原因。
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=18></a>18. Custom Types //运行失败</h2>
+<p>如何自定义类型？本例把 biom 表格转为 hd5 格式。</p>
+
+<pre class=code>
+$ cat custom-types.cwl
+#!/usr/bin/env cwl-runner 
+cwlVersion: v1.0
+class: CommandLineTool
+
+requirements:
+  InlineJavascriptRequirement: {}
+  ResourceRequirement:
+    coresMax: 1
+    ramMin: 100  # just a default, could be lowered
+  SchemaDefRequirement:
+    types:
+      - $import: biom-convert-table.yaml
+
+hints:
+  DockerRequirement:
+    dockerPull: 'quay.io/biocontainers/biom-format:2.1.6--py27_0'
+  SoftwareRequirement:
+    packages:
+      biom-format:
+        specs: [ "https://doi.org/10.1186/2047-217X-1-7" ]
+        version: [ "2.1.6" ]
+
+inputs:
+  biom:
+    type: File
+    format: edam:format_3746  # BIOM
+    inputBinding:
+      prefix: --input-fp
+  table_type:  #这是一系列允许的表格类型
+    type: biom-convert-table.yaml#table_type
+    inputBinding:
+      prefix: --table-type
+
+  header_key:
+    type: string?
+    doc: |
+      The observation metadata to include from the input BIOM table file when
+      creating a tsv table file. By default no observation metadata will be
+      included.
+    inputBinding:
+      prefix: --header-key
+
+baseCommand: [ biom, convert ]
+
+arguments:
+  - valueFrom: $(inputs.biom.nameroot).hdf5  
+    prefix: --output-fp
+  - --to-hdf5
+
+outputs:
+  result:
+    type: File
+    outputBinding: { glob: "$(inputs.biom.nameroot)*" }
+
+$namespaces:
+  edam: http://edamontology.org/
+  s: https://schema.org/
+
+$schemas:
+  - http://edamontology.org/EDAM_1.16.owl
+  - https://schema.org/version/latest/schemaorg-current-http.rdf
+
+s:license: https://spdx.org/licenses/Apache-2.0
+s:copyrightHolder: "EMBL - European Bioinformatics Institute"
+
+
+
+$ cat custom-types.yml
+biom:
+    class: File
+    format: http://edamontology.org/format_3746
+    path: rich_sparse_otu_table.biom
+table_type: OTU table
+
+
+
+下载文件 
+$ wget https://raw.githubusercontent.com/common-workflow-language/user_guide/gh-pages/_includes/cwl/19-custom-types/rich_sparse_otu_table.biom
+
+
+
+$ cat biom-convert-table.yaml
+type: enum
+name: table_type
+label: The type of the table to produce
+symbols:
+  - OTU table
+  - Pathway table
+  - Function table
+  - Ortholog table
+  - Gene table
+  - Metabolite table
+  - Taxon table
+  - Table
+
+// 运行失败
+</pre>
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=19></a>19. Specifying Software Requirements //运行失败</h2>
+<p>使用 SoftwareRequirement 声明软件的依赖。</p>
+
+
+<pre class=code>
+$ cat 01.cwl 
+cwlVersion: v1.0
+class: CommandLineTool
+
+label: "InterProScan: protein sequence classifier"
+
+doc: |
+      Version 5.21-60 can be downloaded here:
+      https://interproscan-docs.readthedocs.io/en/latest/HowToDownload.html
+
+      Documentation on how to run InterProScan 5 can be found here:
+      https://interproscan-docs.readthedocs.io/en/latest/HowToRun.html
+
+requirements:
+  ResourceRequirement:# 必须软件 InterProScan version 5.21-60.
+    ramMin: 10240
+    coresMin: 3
+  SchemaDefRequirement:
+    types:
+      - $import: InterProScan-apps.yml
+
+hints:
+  SoftwareRequirement: 
+    packages:
+      interproscan:
+        specs: [ "https://identifiers.org/rrid/RRID:SCR_005829" ]
+        version: [ "5.21-60" ]
+
+inputs:
+  proteinFile:
+    type: File
+    inputBinding:
+      prefix: --input
+  applications:
+    type: InterProScan-apps.yml#apps[]?
+    inputBinding:
+      itemSeparator: ','
+      prefix: --applications
+
+baseCommand: interproscan.sh
+
+arguments:
+ - valueFrom: $(inputs.proteinFile.nameroot).i5_annotations
+   prefix: --outfile
+ - valueFrom: TSV
+   prefix: --formats
+ - --disable-precalc
+ - --goterms
+ - --pathways
+ - valueFrom: $(runtime.tmpdir)
+   prefix: --tempdir
+
+
+outputs:
+  i5Annotations:
+    type: File
+    format: iana:text/tab-separated-values
+    outputBinding:
+      glob: $(inputs.proteinFile.nameroot).i5_annotations
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=20></a>20. Writing Workflows</h2>
+<p>本流程从tar文件中取出来压缩文件并编译。</p>
+
+<p>每一步都必须有自己的 cwl 描述。</p>
+<p>顶级的工作流IO的描述在 inputs 和 outputs中。</p>
+<p>具体的每一步在 steps 中。命令的顺序，是按照steps 中的上下连接。</p>
+
+
+
+<pre class=code>
+$ cat 1st-workflow.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: Workflow  # 这是一个流程
+
+inputs:
+  tarball: File
+  name_of_file_to_extract: string
+
+outputs:
+  compiled_class:
+    type: File
+    outputSource: compile/classfile
+
+steps:
+  untar:
+    run: tar-param.cwl
+    in:
+      tarfile: tarball
+      extractfile: name_of_file_to_extract
+    out: [extracted_file]
+
+  compile:
+    run: arguments.cwl
+    in:
+      src: untar/extracted_file
+    out: [classfile]
+
+
+输入文件
+$ cat 1st-workflow-job.yml
+tarball:
+  class: File
+  path: hello.tar
+name_of_file_to_extract: Hello.java
+
+
+
+压缩文件
+$ tar -cvf hello.tar Hello.java
+-rw-rw-r-- 1 wangjl wangjl  10K Sep 10 22:09 hello.tar
+
+运行流程
+$ cwl-runner 1st-workflow.cwl 1st-workflow-job.yml
+INFO /usr/bin/cwl-runner 3.1.20210825140344
+INFO Resolved '1st-workflow.cwl' to 'file:///home/wangjl/test/cwl_test/1st-workflow.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step untar  #第一步 开始
+INFO [step untar] start
+INFO [job untar] /tmp/v9t6cuyi$ tar \
+    --extract \
+    --file \
+    /tmp/c7yx22pj/stgeb6f82c2-3eff-4718-90bc-bec036747b07/hello.tar \
+    Hello.java
+INFO [job untar] completed success
+INFO [step untar] completed success
+INFO [workflow ] starting step compile  #第二步 开始
+INFO [step compile] start
+INFO [job compile] /tmp/i034w_up$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/tmp/i034w_up,target=/cPihUl \
+    --mount=type=bind,source=/tmp/yg3_rlid,target=/tmp \
+    --mount=type=bind,source=/tmp/v9t6cuyi/Hello.java,target=/var/lib/cwl/stg2ad810f9-d2cc-4d06-b192-2a46cad3aa56/Hello.java,readonly \
+    --workdir=/cPihUl \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/tmp/f6ew8xpx/20210910221641-236483.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/cPihUl \
+    openjdk:9.0.1-11-slim \
+    javac \
+    -d \
+    /cPihUl \
+    /var/lib/cwl/stg2ad810f9-d2cc-4d06-b192-2a46cad3aa56/Hello.java
+docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/i034w_up.
+See 'docker run --help'.
+// 运行失败，大概率是Docker 的某个原因。
+
+
+
+
+
+根据作者的建议，命令前面添加 TMPDIR=$PWD 
+$ TMPDIR=$PWD cwl-runner 1st-workflow.cwl 1st-workflow-job.yml
+INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO Resolved '1st-workflow.cwl' to 'file:///home/wangjl/test/cwl_test/1st-workflow.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step untar
+INFO [step untar] start
+INFO [job untar] /home/wangjl/test/cwl_test/ckyo_6ne$ tar \
+    --extract \
+    --file \
+    /home/wangjl/test/cwl_test/y_sxyxc3/stg8d21ddb0-25e9-4789-bd44-389e096728ca/hello.tar \
+    Hello.java
+INFO [job untar] completed success
+INFO [step untar] completed success
+INFO [workflow ] starting step compile
+INFO [step compile] start
+INFO [job compile] /home/wangjl/test/cwl_test/0ud2404c$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/0ud2404c,target=/bSkuqg \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/phc7ntw0,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/ckyo_6ne/Hello.java,target=/var/lib/cwl/stg0031d60f-e925-4e47-8b1f-eb459b1f8e04/Hello.java,readonly \
+    --workdir=/bSkuqg \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/home/wangjl/test/cwl_test/njg38xsg/20210911161824-144392.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/bSkuqg \
+    openjdk:9.0.1-11-slim \
+    javac \
+    -d \
+    /bSkuqg \
+    /var/lib/cwl/stg0031d60f-e925-4e47-8b1f-eb459b1f8e04/Hello.java
+INFO [job compile] Max memory used: 12MiB
+INFO [job compile] completed success
+INFO [step compile] completed success
+INFO [workflow ] completed success
+{
+    "compiled_class": {
+        "location": "file:///home/wangjl/test/cwl_test/Hello.class",
+        "basename": "Hello.class",
+        "class": "File",
+        "checksum": "sha1$6f2a091492a911598cbc1f01a5c73993a00abb22",
+        "size": 427,
+        "path": "/home/wangjl/test/cwl_test/Hello.class"
+    }
+}
+INFO Final process status is success
+</pre>
+
+
+
+自己写一个可以运行的流程，先避免使用Docker。
+<pre class=code>
+# 第一步是解压出来，第二步是求行数。
+
+
+第一步: 解压
+$ cat untar.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: [tar, --extract]
+inputs:
+  tarfile:
+    type: File
+    inputBinding:
+      prefix: --file
+  extractfile:
+    type: string
+    inputBinding:
+      position: 1
+outputs:
+  extracted_file:
+    type: File
+    outputBinding:
+      glob: $(inputs.extractfile)
+
+
+$ cat untar-job.yml
+tarfile:
+  class: File 
+  path: hello.tar
+extractfile: Hello.java
+
+$ cwl-runner untar.cwl untar-job.yml 
+INFO /usr/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'untar.cwl' to 'file:///home/wangjl/test/cwl_test/01/untar.cwl'
+INFO [job untar.cwl] /tmp/3wihcpb3$ tar \
+    --extract \
+    --file \
+    /tmp/kylyqeap/stgfd0762e0-0c2b-4013-b625-ef4338c57c9e/hello.tar \
+    Hello.java
+INFO [job untar.cwl] completed success
+{
+    "extracted_file": {
+        "location": "file:///home/wangjl/test/cwl_test/01/Hello.java",
+        "basename": "Hello.java",
+        "class": "File",
+        "checksum": "sha1$0428d5d333af9c0c61c7626a6962e549b5f97394",
+        "size": 125,
+        "path": "/home/wangjl/test/cwl_test/01/Hello.java"
+    }
+}
+INFO Final process status is success
+
+
+
+
+第二步: 计算行数
+$ cat count.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: [wc, -l]
+inputs:
+  textfile:
+    type: File
+    inputBinding:
+      position: 1
+
+stdout: output.txt
+outputs:
+  report:
+    type: stdout
+
+$ cat count-job.yml 
+textfile:
+  class: File 
+  path: Hello.java
+
+$ cwl-runner count.cwl count-job.yml 
+INFO /usr/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'count.cwl' to 'file:///home/wangjl/test/cwl_test/01/count.cwl'
+INFO [job count.cwl] /tmp/brzjqzum$ wc \
+    -l \
+    /tmp/9h7cil4b/stg6e9161fa-69ba-4dec-881f-1bef9773a2a3/Hello.java > /tmp/brzjqzum/output.txt
+INFO [job count.cwl] completed success
+{
+    "report": {
+        "location": "file:///home/wangjl/test/cwl_test/01/output.txt",
+        "basename": "output.txt",
+        "class": "File",
+        "checksum": "sha1$c922a0dd20c2d9239d01172741049df4295b4080",
+        "size": 67,
+        "path": "/home/wangjl/test/cwl_test/01/output.txt"
+    }
+}
+INFO Final process status is success
+
+
+
+
+
+把2个串起来
+$ cat 2nd-workflow.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: Workflow  # 这是一个流程
+
+inputs:  # 全文的输入
+  tarball2: File
+  ex_file2: string
+
+outputs:  # 全文的输出
+  report:
+    type: File
+    outputSource: stat/report #指定这是 stat 步骤中的输出
+
+steps:
+  untar:
+    run: untar.cwl
+    in:  #指定输入变量的对应关系
+      tarfile: tarball2
+      extractfile: ex_file2
+    out: [extracted_file] #这个输出要和 untar.cwl 中的outputs中一致
+
+  stat:
+    run: count.cwl
+    in: 
+      textfile: untar/extracted_file #第二步的输入是第一步的输出
+    out: [report] #这个输出要和 count.cwl 中的outputs中一致
+
+
+$ cat 2nd-workflow-job.yml
+tarball2:
+  class: File
+  path: hello.tar
+ex_file2: Hello.java
+
+$ cwl-runner 2nd-workflow.cwl 2nd-workflow-job.yml
+INFO /usr/bin/cwl-runner 3.1.20210825140344
+INFO Resolved '2nd-workflow.cwl' to 'file:///home/wangjl/test/cwl_test/01/2nd-workflow.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step untar  ##开始 第一步
+INFO [step untar] start
+INFO [job untar] /tmp/x9gabmla$ tar \
+    --extract \
+    --file \
+    /tmp/znqfkw8a/stgdd0747be-c853-4d04-b4a3-a86ce78202b1/hello.tar \
+    Hello.java
+INFO [job untar] completed success
+INFO [step untar] completed success
+INFO [workflow ] starting step stat ##开始 第二步
+INFO [step stat] start
+INFO [job stat] /tmp/8h7k35uh$ wc \
+    -l \
+    /tmp/44r4ovbr/stgc032b8d4-4694-45aa-ad02-c2f4b012744b/Hello.java > /tmp/8h7k35uh/output.txt
+INFO [job stat] completed success
+INFO [step stat] completed success
+INFO [workflow ] completed success #整个流程结束
+{
+    "report": {
+        "location": "file:///home/wangjl/test/cwl_test/01/output.txt",
+        "basename": "output.txt",
+        "class": "File",
+        "checksum": "sha1$f4a82567a5262fc25f389c376d05058a7e167b55",
+        "size": 67,
+        "path": "/home/wangjl/test/cwl_test/01/output.txt"
+    }
+}
+INFO Final process status is success
+
+检查结果，只输出一个最终文件，其他中间文件没保留。
+$ cat output.txt 
+5 /tmp/44r4ovbr/stgc032b8d4-4694-45aa-ad02-c2f4b012744b/Hello.java
+</pre>
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=21></a>21. Nested Workflows</h2>
+<p>怎么把多个 workflow 连接起来？</p>
+<p>cwl语言可以把单个命令串联起来做大的操作。我们也可以把cwl本身当做一个工具，把cwl当做其他cwl的一个步骤，只要流程引擎支持 SubworkflowFeatureRequirement。本例使用 1st-workflow.cwl 作为步骤的一部分。</p>
+<p>workflows 放到 steps 下，cwl脚本名作为 run 的值。</p>
+<p>使用 default 指定一个域的默认值，该值可以被 输入 的值覆盖。</p>
+<p>使用>忽略多行拆分的长命令中的换行。</p>
+
+
+
+<pre class=code>
+$ cat nestedworkflows.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: Workflow
+
+inputs: [] #总输入空？
+
+outputs: #总输出
+  classout:
+    type: File
+    outputSource: compile/compiled_class
+
+requirements: #可以嵌套 其他cwl流程
+  SubworkflowFeatureRequirement: {}
+
+steps: # 罗列步骤
+  compile: #第2步：解压并编译
+    run: 1st-workflow.cwl #使用流程作为一步的工具
+    in:
+      tarball: create-tar/tar_compressed_java_file
+      name_of_file_to_extract:
+        default: "Hello.java"
+    out: [compiled_class]
+
+  create-tar: #第1步：生成源文件，并压缩
+    in: []
+    out: [tar_compressed_java_file]
+    run:
+      class: CommandLineTool
+      requirements:
+        InitialWorkDirRequirement: #创建运行时文件
+          listing:
+            - entryname: Hello.java
+              entry: |
+                public class Hello {
+                  public static void main(String[] argv) {
+                      System.out.println("Hello from Java -v3");
+                  }
+                }
+      inputs: []
+      baseCommand: [tar, --create, --file=hello.tar, Hello.java]
+      outputs:
+        tar_compressed_java_file:
+          type: File
+          streamable: true
+          outputBinding:
+            glob: "hello.tar"
+
+如果是其他cwl脚本，则run就一行。如果是单行命令，且输入是文本，可以更简练：
+  run:
+    class: CommandLineTool
+    requirements:
+      ShellCommandRequirement: {}
+    arguments:
+      - shellQuote: false #注意：这里的false是为了防止 下文的命令被加上引号。
+        valueFrom: >  #这个和|有什么区别呢？
+          tar cf hello.tar Hello.java
+
+
+$ cwltool nestedworkflows.cwl 
+#还是docker报错 docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/bek7piq3.
+
+$ TMPDIR=$PWD cwltool nestedworkflows.cwl 
+INFO /home/wangjl/.local/bin/cwltool 3.1.20210825140344
+INFO Resolved 'nestedworkflows.cwl' to 'file:///home/wangjl/test/cwl_test/nestedworkflows.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step create-tar
+INFO [step create-tar] start
+INFO [job create-tar] /home/wangjl/test/cwl_test/bku7hys8$ tar \
+    --create \
+    --file=hello.tar \
+    Hello.java
+INFO [job create-tar] completed success
+INFO [step create-tar] completed success
+INFO [workflow ] starting step compile
+INFO [step compile] start
+INFO [workflow compile] start
+INFO [workflow compile] starting step untar
+INFO [step untar] start
+INFO [job untar] /home/wangjl/test/cwl_test/y2sbvr3z$ tar \
+    --extract \
+    --file \
+    /home/wangjl/test/cwl_test/s9yqynk1/stg35844453-cc0d-4b99-9973-0ce4d4988bb1/hello.tar \
+    Hello.java
+INFO [job untar] completed success
+INFO [step untar] completed success
+INFO [workflow compile] starting step compile_2
+INFO [step compile_2] start
+INFO [job compile] /home/wangjl/test/cwl_test/jup893uw$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/jup893uw,target=/nNpCnJ \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/7ofd3gou,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/y2sbvr3z/Hello.java,target=/var/lib/cwl/stgca08da2c-6944-4548-8552-cd9849536d09/Hello.java,readonly \
+    --workdir=/nNpCnJ \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/home/wangjl/test/cwl_test/mcobklzg/20210911164230-548358.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/nNpCnJ \
+    openjdk:9.0.1-11-slim \
+    javac \
+    -d \
+    /nNpCnJ \
+    /var/lib/cwl/stgca08da2c-6944-4548-8552-cd9849536d09/Hello.java
+INFO [job compile] Max memory used: 9MiB
+INFO [job compile] completed success
+INFO [step compile_2] completed success
+INFO [workflow compile] completed success
+INFO [step compile] completed success
+INFO [workflow ] completed success
+{
+    "classout": {
+        "location": "file:///home/wangjl/test/cwl_test/Hello.class",
+        "basename": "Hello.class",
+        "class": "File",
+        "checksum": "sha1$4666cc2224ca7ee7298c3181291457c6f4e1ab72",
+        "size": 423,
+        "path": "/home/wangjl/test/cwl_test/Hello.class"
+    }
+}
+INFO Final process status is success
+
+
+检查结果
+$ java Hello 
+Hello from Java -v3
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=22></a>22. Scattering Workflows</h2>
+<p>如何并行运行工具或流程？</p>
+<p>scatterfeatuerrequirement 设定你想运行输入list多少次。工作流把这些输入当做单输入。</p>
+<p>这样对多个输入跑相同流程时，就不用产生不同的yaml输入文件了。</p>
+<p>新手最常见的任务，是对不同的样本执行同样的分析。本例使用多个输入，但都运行 1st-tool.cwl</p>
+<p>tips: 要在每个需要并行的step 加上 scatter 域。scatter 域仅仅指step级别的输入，不是workflow级别的输入。每个step的 scatter 是独立的。</p>
+
+
+<pre class=code>
+$ cat scatter-workflow.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: Workflow
+
+requirements:
+  ScatterFeatureRequirement: {} #引入并行支持
+
+inputs:
+  message_array: string[]  #输入字符串数组
+
+steps:
+  echo: #步骤
+    run: 1st-tool.cwl
+    scatter: message  #标记 并行：输入是单个输入，只是工作流的输入的一个元素
+    in:
+      message: message_array
+    out: []
+
+outputs: []
+
+
+$ cat scatter-job.yml
+message_array: 
+  - Hello world!
+  - Hola mundo!
+  - Bonjour le monde!
+  - Hallo welt!
+
+回顾最早的脚本：就是打印出字符串
+$ cat 1st-tool.cwl 
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: echo
+inputs:
+  message:
+    type: string
+    inputBinding:
+      position: 1
+outputs: []
+
+
+运行脚本 
+$ cwl-runner scatter-workflow.cwl scatter-job.yml
+INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'scatter-workflow.cwl' to 'file:///home/wangjl/test/cwl_test/scatter-workflow.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step echo
+INFO [step echo] start
+INFO [job echo] /tmp/db1dk4n2$ echo \
+    'Hello world!'
+Hello world!
+INFO [job echo] completed success
+INFO [step echo] start
+INFO [job echo_2] /tmp/cwbotnz2$ echo \
+    'Hola mundo!'
+Hola mundo!
+INFO [job echo_2] completed success
+INFO [step echo] start
+INFO [job echo_3] /tmp/9r0r093_$ echo \
+    'Bonjour le monde!'
+Bonjour le monde!
+INFO [job echo_3] completed success
+INFO [step echo] start
+INFO [job echo_4] /tmp/rabx6e6g$ echo \
+    'Hallo welt!'
+Hallo welt!
+INFO [job echo_4] completed success
+INFO [step echo] completed success
+INFO [workflow ] completed success
+{}
+INFO Final process status is success
+</pre>
+
+
+<p>上例对 message_array 的每个元素调用了 echo。如果是流程中超过2个步骤并行呢？</p>
+<p>我们和上例一样执行 echo，但是把结果导向 stdout，而不是 outputs: []。</p>
+<pre class=code>
+$ cat 1st-tool-mod.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: echo
+inputs:
+  message:
+    type: string
+    inputBinding:
+      position: 1
+outputs:
+  echo_out:
+    type: stdout
+
+
+
+第二步，添加wc计数字符数
+$ cat wc-tool.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: wc
+arguments: ["-c"]
+inputs:
+  input_file:
+    type: File
+    inputBinding:
+      position: 1
+outputs: []
+
+
+
+
+记住：scatter 域要在每一步出现！
+
+$ cat scatter-two-steps.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: Workflow
+
+requirements:
+ ScatterFeatureRequirement: {}
+
+inputs:
+  message_array: string[] 
+
+steps:
+  echo: #第一步
+    run: 1st-tool-mod.cwl
+    scatter: message
+    in:
+      message: message_array
+    out: [echo_out]
+  wc: #第二步
+    run: wc-tool.cwl
+    scatter: input_file
+    in:
+      input_file: echo/echo_out
+    out: []
+
+outputs: []
+
+
+
+运行流程
+$ cwl-runner scatter-two-steps.cwl scatter-job.yml
+INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'scatter-two-steps.cwl' to 'file:///home/wangjl/test/cwl_test/scatter-two-steps.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step echo
+INFO [step echo] start
+INFO [job echo] /tmp/fubxm4v0$ echo \
+    'Hello world!' > /tmp/fubxm4v0/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo] completed success
+INFO [step echo] start
+INFO [job echo_2] /tmp/ia5wl0mf$ echo \
+    'Hola mundo!' > /tmp/ia5wl0mf/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo_2] completed success
+INFO [step echo] start
+INFO [job echo_3] /tmp/vuhtx5wu$ echo \
+    'Bonjour le monde!' > /tmp/vuhtx5wu/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo_3] completed success
+INFO [step echo] start
+INFO [job echo_4] /tmp/l7189ohn$ echo \
+    'Hallo welt!' > /tmp/l7189ohn/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo_4] completed success
+INFO [step echo] completed success
+INFO [workflow ] starting step wc
+INFO [step wc] start
+INFO [job wc] /tmp/cxkfjhqn$ wc \
+    -c \
+    /tmp/ttrq4km3/stgd2cb7c5c-58d1-46de-8b79-ccb2e8e89d95/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+13 /tmp/ttrq4km3/stgd2cb7c5c-58d1-46de-8b79-ccb2e8e89d95/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc] completed success
+INFO [step wc] start
+INFO [job wc_2] /tmp/9bhz6k1h$ wc \
+    -c \
+    /tmp/0j7ukk63/stg44445479-1ca5-479a-bd29-f8a36b3bf8b6/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+12 /tmp/0j7ukk63/stg44445479-1ca5-479a-bd29-f8a36b3bf8b6/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc_2] completed success
+INFO [step wc] start
+INFO [job wc_3] /tmp/el77sgaj$ wc \
+    -c \
+    /tmp/a6mzs58s/stg94e8eed4-c74c-4f15-b832-913643e89158/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+18 /tmp/a6mzs58s/stg94e8eed4-c74c-4f15-b832-913643e89158/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc_3] completed success
+INFO [step wc] start
+INFO [job wc_4] /tmp/b5d96x8g$ wc \
+    -c \
+    /tmp/vcim_k7j/stg5c547cf3-f509-4d5a-ad58-129f29f289c2/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+12 /tmp/vcim_k7j/stg5c547cf3-f509-4d5a-ad58-129f29f289c2/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc_4] completed success
+INFO [step wc] completed success
+INFO [workflow ] completed success
+{}
+INFO Final process status is success
+
+
+检查 
+$ cat scatter-job.yml | sed '1d'| awk -F" - " '{print $2}'|  while read id; do echo "$id" | wc -c; done
+13
+12
+18
+12
+</pre>
+
+<p>缺点：实际上，上例第二步的运行并不依赖与第一步完全结束，所以没必要等第一步都结束再运行第二步。</p>
+<p>如何样本之间独立呢？记得第21章我们可以把多个步骤做成一个步骤，然后对这一个步骤并行呢。</p>
+
+
+<pre class=code>
+$ cat scatter-nested-workflow.cwl
+#!/usr/bin/env cwl-runner
+
+cwlVersion: v1.0
+class: Workflow
+
+requirements:
+ ScatterFeatureRequirement: {}
+ SubworkflowFeatureRequirement: {}
+
+inputs:
+  message_array: string[] 
+
+steps:
+  subworkflow:
+    run: 
+      class: Workflow
+      inputs: 
+        message: string
+      outputs: []
+      steps:
+        echo: #第一步
+          run: 1st-tool-mod.cwl
+          in:
+            message: message
+          out: [echo_out]
+        wc: #第二步
+          run: wc-tool.cwl
+          in:
+            input_file: echo/echo_out
+          out: []
+    scatter: message
+    in: 
+      message: message_array
+    out: []
+outputs: []
+
+运行脚本 
+$ cwl-runner scatter-nested-workflow.cwl scatter-job.yml
+INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO Resolved 'scatter-nested-workflow.cwl' to 'file:///home/wangjl/test/cwl_test/scatter-nested-workflow.cwl'
+INFO [workflow ] start
+INFO [workflow ] starting step subworkflow
+INFO [step subworkflow] start
+INFO [workflow subworkflow] start
+INFO [workflow subworkflow] starting step echo
+INFO [step echo] start
+INFO [job echo] /tmp/op1makt4$ echo \
+    'Hello world!' > /tmp/op1makt4/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo] completed success
+INFO [step echo] completed success
+INFO [workflow subworkflow] starting step wc
+INFO [step wc] start
+INFO [job wc] /tmp/hj_sdv7i$ wc \
+    -c \
+    /tmp/2b_w_ahm/stg52f0d9e9-e1b7-449b-b40a-63ee336bdba5/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+13 /tmp/2b_w_ahm/stg52f0d9e9-e1b7-449b-b40a-63ee336bdba5/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc] completed success
+INFO [step wc] completed success
+INFO [workflow subworkflow] completed success
+INFO [step subworkflow] start
+INFO [workflow subworkflow_2] start
+INFO [workflow subworkflow_2] starting step echo_2
+INFO [step echo_2] start
+INFO [job echo_2] /tmp/bo4vi77e$ echo \
+    'Hola mundo!' > /tmp/bo4vi77e/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo_2] completed success
+INFO [step echo_2] completed success
+INFO [workflow subworkflow_2] starting step wc_2
+INFO [step wc_2] start
+INFO [job wc_2] /tmp/glqh4_sn$ wc \
+    -c \
+    /tmp/gmaixz4h/stgc67c1d38-d65b-4e67-8e74-c9ff5c944b54/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+12 /tmp/gmaixz4h/stgc67c1d38-d65b-4e67-8e74-c9ff5c944b54/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc_2] completed success
+INFO [step wc_2] completed success
+INFO [workflow subworkflow_2] completed success
+INFO [step subworkflow] start
+INFO [workflow subworkflow_3] start
+INFO [workflow subworkflow_3] starting step echo_3
+INFO [step echo_3] start
+INFO [job echo_3] /tmp/dzddzxif$ echo \
+    'Bonjour le monde!' > /tmp/dzddzxif/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo_3] completed success
+INFO [step echo_3] completed success
+INFO [workflow subworkflow_3] starting step wc_3
+INFO [step wc_3] start
+INFO [job wc_3] /tmp/ltrye2a0$ wc \
+    -c \
+    /tmp/v5ihkmuy/stg43268241-e731-401c-b230-568acf1310df/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+18 /tmp/v5ihkmuy/stg43268241-e731-401c-b230-568acf1310df/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc_3] completed success
+INFO [step wc_3] completed success
+INFO [workflow subworkflow_3] completed success
+INFO [step subworkflow] start
+INFO [workflow subworkflow_4] start
+INFO [workflow subworkflow_4] starting step echo_4
+INFO [step echo_4] start
+INFO [job echo_4] /tmp/xamv8tiq$ echo \
+    'Hallo welt!' > /tmp/xamv8tiq/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job echo_4] completed success
+INFO [step echo_4] completed success
+INFO [workflow subworkflow_4] starting step wc_4
+INFO [step wc_4] start
+INFO [job wc_4] /tmp/eymd2uxb$ wc \
+    -c \
+    /tmp/z6_m6ti3/stge5f9cf7b-cee1-4563-a755-ba1ce002b418/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+12 /tmp/z6_m6ti3/stge5f9cf7b-cee1-4563-a755-ba1ce002b418/a16a6bd1d4b2cb97573ec80be0a59772521293b4
+INFO [job wc_4] completed success
+INFO [step wc_4] completed success
+INFO [workflow subworkflow_4] completed success
+INFO [step subworkflow] completed success
+INFO [workflow ] completed success
+{}
+INFO Final process status is success
+</pre>
+
+
+
+
+
+
+
+
+<h2 class=section><a name=23></a>23. Conditional workflows //无法运行</h2>
+<p>如何在工作流中添加条件判断？</p>
+<p>本例中有一个步骤依赖于输入。这让依赖于起始或上一步的结果决定是否跳过某些步骤称为可能。</p>
+<p>xx</p>
+
+<pre class=code>
+$ cat conditional-workflow.cwl
+class: Workflow
+cwlVersion: v1.2 #版本升级了，只能兼容v1.2或更高版本
+inputs:
+  val: int
+
+steps:
+
+  step1: #第一步 
+    in:
+      in1: val
+      a_new_var: val
+    run: foo.cwl
+    when: $(inputs.in1 < 1) #只有在输入小于1时执行 foo.cwl 
+    out: [out1]
+
+  step2: #第二步
+    in:
+      in1: val
+      a_new_var: val
+    run: foo.cwl
+    when: $(inputs.a_new_var > 2) #只在输入大于2时执行 foo.cwl
+    out: [out1]
+
+outputs:
+  out1:
+    type: string
+    outputSource:
+      - step1/out1
+      - step2/out1
+    pickValue: first_non_null
+
+requirements:
+  InlineJavascriptRequirement: {}
+  MultipleInputFeatureRequirement: {}
+
+
+
+原文没提供，不知道怎么写
+$ cat foo.cwl 
+#!/usr/bin/env cwl-runner
+
+class: CommandLineTool
+cwlVersion: v1.0
+
+baseCommand: echo
+inputs:
+  in1:
+    type: int
+    inputBinding:
+      position: 1
+  a_new_var:
+    type: int
+    inputBinding:
+      position: 2
+outputs:
+  out1:
+    type: stdout
+
+$ cwltool foo.cwl --in1 1 --a_new_var 3
+/usr/lib/python3/dist-packages/cwltool/docker.py:423: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if res_req is not None and ("ramMin" in res_req or "ramMax" is res_req):
+INFO /home/wangjl/.local/bin/cwltool 2.0.20200224214940
+INFO Resolved 'foo.cwl' to 'file:///home/wangjl/test/cwl_test/foo.cwl'
+INFO [job foo.cwl] /tmp/nzpvrdk5$ echo \
+    1 \
+    3 > /tmp/nzpvrdk5/ddb6cdca8d5bbe72eb7a275e5bc582e97701c7e1
+INFO [job foo.cwl] completed success
+{
+    "out1": {
+        "location": "file:///home/wangjl/test/cwl_test/ddb6cdca8d5bbe72eb7a275e5bc582e97701c7e1",
+        "basename": "ddb6cdca8d5bbe72eb7a275e5bc582e97701c7e1",
+        "class": "File",
+        "checksum": "sha1$8e580831b8c3e40d0af8d438c773f994bcd894fd",
+        "size": 4,
+        "path": "/home/wangjl/test/cwl_test/ddb6cdca8d5bbe72eb7a275e5bc582e97701c7e1"
+    }
+}
+INFO Final process status is success
+
+
+
+$ cp conditional-workflow.cwl cond-wf-003.1.cwl 
+
+$ cwltool cond-wf-003.1.cwl --val 0
+/usr/lib/python3/dist-packages/cwltool/docker.py:423: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  if res_req is not None and ("ramMin" in res_req or "ramMax" is res_req):
+INFO /home/wangjl/.local/bin/cwltool 2.0.20200224214940
+INFO Resolved 'cond-wf-003.1.cwl' to 'file:///home/wangjl/test/cwl_test/cond-wf-003.1.cwl'
+ERROR Tool definition failed validation:
+The CWL reference runner no longer supports pre CWL v1.0 documents. Supported versions are: 
+v1.0
+v1.1
+v1.1.0-dev1 (with --enable-dev flag only)
+v1.2.0-dev1 (with --enable-dev flag only)
+
+
+$ cwltool cond-wf-003.1.cwl --val 3
+$ cwltool cond-wf-003.1.cwl --val 2 #error
+</pre>
+
+
+<p>版本1.2还没发布，不能用，反正无法运行。</p>
+
+
+
+
+
+<!--
+https://www.jianshu.com/p/dfb3a0953214  5  
+https://www.jianshu.com/p/8561972f2edc  4
+https://www.jianshu.com/p/0afdf96540d7  3
+https://www.jianshu.com/p/33967e758933  2
+https://www.jianshu.com/p/2d935a0a41a7  1
+
+
+-->
+
+
+
+
+
+</div>
+
+<div class=footer>==End== 2021.9.9</div>
+
+
+
+
+<div id="gotoTop" title="Goto top" style="visibility: visible;">↑</div>
+<script>
+window.addEventListener('load',function(e){
+	var gotoTop=document.getElementById('gotoTop');
+	gotoTop.onclick = function(){
+		var timer = null;
+		cancelAnimationFrame(timer);
+		timer = requestAnimationFrame(function fn(){
+			var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+			if(oTop > 0){
+				//scrollBy(0,-50);
+				scrollBy(0, -Math.max(oTop/20, 50) );
+				timer = requestAnimationFrame(fn);
+			}else{
+				cancelAnimationFrame(timer);
+			}
+		});
+	};
+},false);
+
+window.addEventListener('scroll',function(e){
+	var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+	if(oTop>=600){
+		gotoTop.style.visibility='visible'
+	}else{
+		gotoTop.style.visibility='hidden'
+	}
+},false);
+</script>
+</body>
