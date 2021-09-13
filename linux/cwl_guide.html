@@ -23,8 +23,8 @@ pre.code{
 	max-height:600px;
 	overflow-y: scroll;
 }
-ul a{color:#E95420; text-decoration:none;}
-ul a:hover{color:#BA3222; text-decoration:underline;}
+a{color:#E95420; text-decoration:none;}
+a:hover{color:#BA3222; text-decoration:underline;}
 p{text-indent:2em;}
 .header,
 .footer{padding:10px; background:#BA3222; color:#eee; margin:0; text-align: center;}
@@ -81,11 +81,12 @@ Local Dir:
 	/home/wangjl/data/test/testCWL
 	/home/wangjl/test/cwl_test
 
-如果临时文件/tmp 下总是报错，作者建议使用修改后的语句:
-https://github.com/common-workflow-language/common-workflow-language/issues/927
+更换临时文件/tmp 为当前目录:
 $ TMPDIR=$PWD cwltool arguments.cwl --src Hello.java
 
 $ sudo systemctl restart docker #重启docker也不是万能的
+如果重启docker还不能解决问题，可能是docker安装方式不对：snap 安装的只能在$HOME 下使用，而 apt-get 安装的不受限制。
+https://github.com/common-workflow-language/common-workflow-language/issues/927
 </pre>
 
 
@@ -98,14 +99,14 @@ $ sudo systemctl restart docker #重启docker也不是万能的
 	<li><a href="#5">5. Capturing Standard Output</a></li>
 	<li><a href="#6">6. Parameter References</a></li>
 	<li><a href="#7">7. Running Tools Inside Docker</a></li>
-	<li><a href="#8">8. Additional Arguments and Parameters //运行不顺利</a></li>
+	<li><a href="#8">8. Additional Arguments and Parameters //*</a></li>
 	<li><a href="#9">9. Array Inputs</a></li>
 	<li><a href="#10">10. Array Outputs</a></li>
 	<li><a href="#11">11. Advanced Inputs</a></li>
 	<li><a href="#12">12. Environment Variables</a></li>
 	<li><a href="#13">13. JavaScript Expressions</a></li>
 	<li><a href="#14">14. Creating Files at Runtime</a></li>
-	<li><a href="#15">15. Staging Input Files //运行不顺利</a></li>
+	<li><a href="#15">15. Staging Input Files //*</a></li>
 	<li><a href="#16">16. File Formats</a></li>
 	<li><a href="#17">17. Metadata and Authorship //运行失败</a></li>
 	<li><a href="#18">18. Custom Types //运行失败</a></li>
@@ -115,12 +116,15 @@ $ sudo systemctl restart docker #重启docker也不是万能的
 	<li><a href="#21">21. Nested Workflows</a></li>
 	<li><a href="#22">22. Scattering Workflows</a></li>
 	<li><a href="#23">23. Conditional workflows //无法运行</a></li>
+
+  
+  <li><a href="#100">疑难杂症 / trouble shooting</a></li>
 </ul>
 
 
 
 <h2 class=section><a name=1></a>1. Install</h2>
-<p>这两个名字(cwltool, cwl-runner)有什么区别？cwl-runner is the generic name for any CWL implementation. cwltool is the reference implementation. Others are listed at https://www.commonwl.org/#Implementations.</p>
+<p>这两个名字(cwltool, cwl-runner)有什么区别？cwl-runner is the generic name for any CWL implementation. cwltool is the reference implementation. <a target="_blank" href="https://www.commonwl.org/#Implementations">>>其他实现</a>.</p>
 <p>I'm guessing you installed cwlref-runner which installs cwltool under the cwl-runner name.</p>
 
 
@@ -744,7 +748,7 @@ Hello World, from docker
 
 
 
-<h2 class=section><a name=8></a>8. Additional Arguments and Parameters //运行不顺利</h2>
+<h2 class=section><a name=8></a>8. Additional Arguments and Parameters //*</h2>
 <p>如何指定不需要输入也不依赖于输入的参数(比如CPU核心数)？如何引用运行时参数？</p>
 <p>本例使用Java从源文件编译出class文件。默认状态javac会把class文件输出到源文件所在文件夹，但是cwl的输入文件是只读的，所以需要指定另外的输出路径。</p>
 
@@ -811,7 +815,7 @@ $ docker run -v /home/wangjl/test/cwl_test:/home/wangjl/ openjdk:9.0.1-11-slim b
 
 
 
-
+如果反复试验无法拉取镜像，
 拉取国内镜像替代
 $ docker pull hub.c.163.com/library/openjdk
 重命名
@@ -836,69 +840,43 @@ $ docker run -v /home/wangjl/test/cwl_test:/home/wangjl/ dawneve/openjdk java -v
 
 运行程序 
 $ cwl-runner arguments.cwl arguments-job.yml
-报错：/var/lib/cwl/stg1c0b948a-9fa3-4638-a880-5a13ee27324a/Hello.java:1: 
-error: error while writing Hello: /var/spool/cwl/Hello.class (Permission denied)
-报错：
-/var/lib/cwl/stgfb95dc9c-cefb-4061-9b7d-e36e1828e102/Hello.java:1: 
-error: error while writing Hello: /var/spool/cwl/Hello.class
-public class Hello { 
-       ^
-1 error
-
-
-
-$ cwltool arguments.cwl arguments-job.yml
-报错： 
-docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/iu6dz91d.
-
-https://www.coder.work/article/7044398
-
-
-
-
-
-cwl的作者建议: TMPDIR=$PWD cwltool arguments.cwl --src Hello.java
-我是用的: 就是把 /tmp 作临时目录，换成当前目录做临时目录。
-$ cwltool --tmpdir-prefix=$PWD/ arguments.cwl --src Hello.java #这个似乎更符合命令行工具的使用习惯。
-
-$ TMPDIR=$PWD cwltool arguments.cwl arguments-job.yml
-INFO /home/wangjl/.local/bin/cwltool 3.1.20210825140344
-INFO Resolved 'arguments.cwl' to 'file:///home/wangjl/test/cwl_test/arguments.cwl'
-INFO [job arguments.cwl] /home/wangjl/test/cwl_test/ki_j2ajd$ docker \
+INFO /home/wangjl/.local/bin/cwl-runner 2.0.20200224214940
+INFO Resolved 'arguments.cwl' to 'file:///data/wangjl/test/testCWL/arguments.cwl'
+INFO [job arguments.cwl] /tmp/e9ecc9_i$ docker \
     run \
     -i \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/ki_j2ajd,target=/jSRUIq \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/wq21fiv3,target=/tmp \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/var/lib/cwl/stgf45b5122-4676-4659-8af6-02862ce21df9/Hello.java,readonly \
-    --workdir=/jSRUIq \
+    --mount=type=bind,source=/tmp/e9ecc9_i,target=/RWzMpq \
+    --mount=type=bind,source=/tmp/o8iw1gdm,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/var/lib/cwl/stgdc4c49be-ea06-4981-9e9f-08b924938ff4/Hello.java,readonly \
+    --workdir=/RWzMpq \
     --read-only=true \
     --user=1001:1001 \
     --rm \
-    --cidfile=/home/wangjl/test/cwl_test/1imr1hve/20210911160940-668311.cid \
     --env=TMPDIR=/tmp \
-    --env=HOME=/jSRUIq \
+    --env=HOME=/RWzMpq \
+    --cidfile=/tmp/wtz3qqzz/20210913165405-409026.cid \
     openjdk:9.0.1-11-slim \
     javac \
     -d \
-    /jSRUIq \
-    /var/lib/cwl/stgf45b5122-4676-4659-8af6-02862ce21df9/Hello.java
-INFO [job arguments.cwl] Max memory used: 28MiB
+    /RWzMpq \
+    /var/lib/cwl/stgdc4c49be-ea06-4981-9e9f-08b924938ff4/Hello.java
+INFO [job arguments.cwl] Max memory used: 0MiB
 INFO [job arguments.cwl] completed success
 {
     "classfile": {
-        "location": "file:///home/wangjl/test/cwl_test/Hello.class",
+        "location": "file:///data/wangjl/test/testCWL/Hello.class",
         "basename": "Hello.class",
         "class": "File",
         "checksum": "sha1$6f2a091492a911598cbc1f01a5c73993a00abb22",
         "size": 427,
-        "path": "/home/wangjl/test/cwl_test/Hello.class"
+        "path": "/data/wangjl/test/testCWL/Hello.class"
     }
 }
 INFO Final process status is success
 </pre>
 
-<p>==>> 这个报错我无法解决，没有得到预期结果。</p>
-<p>其他运行时变量 $(runtime.tmpdir), $(runtime.ram), $(runtime.cores), $(runtime.outdirSize), and $(runtime.tmpdirSize)， 更多介绍：https://www.commonwl.org/v1.0/CommandLineTool.html#Runtime_environment</p>
+<p>此处docker报错，后查明<a target="_blank" href="https://github.com/common-workflow-language/cwltool/issues/1517">原因</a>：用snap版的docker只能在$HOME下使用docker，挂载其他目录会报错。</p>
+<p>其他运行时变量 $(runtime.tmpdir), $(runtime.ram), $(runtime.cores), $(runtime.outdirSize), and $(runtime.tmpdirSize)， <a target="_blank" href="https://www.commonwl.org/v1.0/CommandLineTool.html#Runtime_environment">>>更多介绍</a>。</p>
 
 
 
@@ -1506,14 +1484,14 @@ Message is: Hello world! -v2
 </pre>
 <p>解析语法: 上例中要运行的就是 sh example.sh，所以要动态构建文件 example.sh。</p>
 <p>InitialWorkDirRequirement 必须提供一个 listing。而 listing 是一个 array，按照yaml格式 每个元素第一行要加上 - 前缀。该数组只有一个元素 entryname: 要生成的文件名，要和之前baseCommand 指定的名字一致。</p>
-<p>最后的部分是 entry: |- 是 yaml 的引用语法，意味着后面是多行字符串(不加引用则需要写到一行)。yaml语法：https://www.commonwl.org/user_guide/yaml/#maps</p>
+<p>最后的部分是 entry: |- 是 yaml 的引用语法，意味着后面是多行字符串(不加引用则需要写到一行)。<a target="_blank" href="https://www.commonwl.org/user_guide/yaml/#maps">>>yaml语法</a></p>
 
 
 
 
 
 
-<h2 class=section><a name=15></a>15. Staging Input Files //运行不顺利</h2>
+<h2 class=section><a name=15></a>15. Staging Input Files //*</h2>
 <p>如果工具要在输入文件夹之外输出文件，怎么办？</p>
 <p>InitialWorkDirRequirement 把输入文件挂载到输出文件夹(工作目录)中。本例使用js表达式提取输入文件的base name，也就是去掉前面的文件夹路径。</p>
 
@@ -1553,89 +1531,25 @@ src:
 
 新版本cwl工具
 $ cwl-runner linkfile.cwl arguments-job.yml
-INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
+INFO /home/wangjl/.local/bin/cwl-runner 2.0.20200224214940
 INFO Resolved 'linkfile.cwl' to 'file:///home/wangjl/test/cwl_test/linkfile.cwl'
-INFO [job linkfile.cwl] /tmp/qi7gv8jg$ docker \
+INFO [job linkfile.cwl] /tmp/wtawcupq$ docker \
     run \
     -i \
-    --mount=type=bind,source=/tmp/qi7gv8jg,target=/AgmkPB \
-    --mount=type=bind,source=/tmp/_mfqect7,target=/tmp \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/AgmkPB/Hello.java,readonly \
-    --workdir=/AgmkPB \
+    --mount=type=bind,source=/tmp/wtawcupq,target=/JKaiyz \
+    --mount=type=bind,source=/tmp/vy14efwz,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/JKaiyz/Hello.java,readonly \
+    --workdir=/JKaiyz \
     --read-only=true \
     --user=1001:1001 \
     --rm \
-    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
     --env=TMPDIR=/tmp \
-    --env=HOME=/AgmkPB \
+    --env=HOME=/JKaiyz \
+    --cidfile=/tmp/kr8x374i/20210913170837-038313.cid \
     openjdk:9.0.1-11-slim \
     javac \
     Hello.java
-docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/qi7gv8jg.
-See 'docker run --help'.
-
-
-
-#--user=1001:1001 \ # 这句话导致不能root登录了，创建文件无权限
-$ docker run -it \
-    --mount=type=bind,source=/tmp/qi7gv8jg,target=/AgmkPB \
-    --mount=type=bind,source=/tmp/_mfqect7,target=/tmp \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/AgmkPB/Hello.java,readonly \
-    --workdir=/AgmkPB \
-    --read-only=true \
-    --user=1001:1001 \
-    --rm \
-    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
-    --env=TMPDIR=/tmp \
-    --env=HOME=/AgmkPB \
-    openjdk:9.0.1-11-slim bash
-docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /tmp/qi7gv8jg.
-See 'docker run --help'.
-
-$ ls /tmp/qi7gv8jg
-$ # 该文件明明是存在的！！ 这可能是 docker 的问题！ 使用 -v 参数，并删除 --user=1001:1001 \ 后正常了。
-
-$ docker run -it \
-    -v /tmp/qi7gv8jg:/AgmkPB \
-    -v /tmp/_mfqect7:/tmp \
-    -v /home/wangjl/test/cwl_test/Hello.java:/AgmkPB/Hello.java:ro \
-    --workdir=/AgmkPB \
-    --read-only=true \
-    --rm \
-    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
-    --env=TMPDIR=/tmp \
-    --env=HOME=/AgmkPB \
-    openjdk:9.0.1-11-slim bash
-root@b590f40db9c8:~# javac Hello.java
-root@b590f40db9c8:~# ls
-Hello.java
-root@b590f40db9c8:~# java Hello
-Hello world, from Java!
-</pre>
-
-<p>报告错误: https://github.com/common-workflow-language/common-workflow-language/issues/927</p>
-<pre class=code>
-根据作者的建议，命令前面添加 TMPDIR=$PWD 
-$ TMPDIR=$PWD cwl-runner linkfile.cwl arguments-job.yml
-INFO /home/wangjl/.local/bin/cwl-runner 3.1.20210825140344
-INFO Resolved 'linkfile.cwl' to 'file:///home/wangjl/test/cwl_test/linkfile.cwl'
-INFO [job linkfile.cwl] /home/wangjl/test/cwl_test/jq1_e075$ docker \
-    run \
-    -i \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/jq1_e075,target=/XarQfy \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/avlrf8jm,target=/tmp \
-    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/XarQfy/Hello.java,readonly \
-    --workdir=/XarQfy \
-    --read-only=true \
-    --user=1001:1001 \
-    --rm \
-    --cidfile=/home/wangjl/test/cwl_test/1ywy75um/20210911161347-951882.cid \
-    --env=TMPDIR=/tmp \
-    --env=HOME=/XarQfy \
-    openjdk:9.0.1-11-slim \
-    javac \
-    Hello.java
-INFO [job linkfile.cwl] Max memory used: 12MiB
+INFO [job linkfile.cwl] Max memory used: 0MiB
 INFO [job linkfile.cwl] completed success
 {
     "classfile": {
@@ -1648,7 +1562,30 @@ INFO [job linkfile.cwl] completed success
     }
 }
 INFO Final process status is success
+$ java Hello 
+Hello world, from Java!
 </pre>
+
+
+<p>使用-v挂载文件和目录</p>
+<pre class=quote>
+$ docker run -it --rm \
+    -v /tmp/qi7gv8jg:/AgmkPB \
+    -v /tmp/_mfqect7:/tmp \
+    -v /home/wangjl/test/cwl_test/Hello.java:/AgmkPB/Hello.java:ro \
+    --workdir=/AgmkPB \
+    --read-only=true \
+    --cidfile=/tmp/lgio1cr4/20210910184532-748371.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/AgmkPB \
+    openjdk:9.0.1-11-slim bash
+root@b590f40db9c8:~# javac Hello.java
+root@b590f40db9c8:~# ls
+Hello.java
+root@b590f40db9c8:~# java Hello
+Hello world, from Java!
+</pre>
+
 
 
 
@@ -3038,6 +2975,92 @@ https://www.jianshu.com/p/2d935a0a41a7  1
 
 
 -->
+
+
+<h2 class=section><a name=100></a>疑难杂症 / trouble shooting</h2>
+<p>1.如何挂载大文件到docker内?</p>
+<p>使用 InitialWorkDirRequirement 并将输入文件添加到要在工作目录中暂存的文件列表。</p>
+<pre class=quote>
+# https://www.coder.work/article/7044398
+
+cwlVersion: v1.0
+class: CommandLineTool
+baseCommand: cat
+
+hints:
+  DockerRequirement:
+    dockerPull: alpine
+
+inputs:
+  in1:
+    type: File
+    inputBinding:
+      position: 1
+      valueFrom: $(self.basename)
+
+requirements:
+  InitialWorkDirRequirement:
+    listing:
+      - $(inputs.in1)
+
+outputs:
+  out1: stdout
+
+使用 CWL 引用运行程序 ( cwltool )，可见输入文件直接挂载在工作目录中(但安全地处于只读模式)。
+CWL 1.0 的行为是挂载文件而不是复制它们。
+</pre>
+
+
+
+
+<p>2. 如何修改临时文件夹目录</p>
+<p>TMPDIR=$PWD cwltool arguments.cwl --src Hello.java</p>
+<pre class=code>
+cwl的作者建议: TMPDIR=$PWD cwltool arguments.cwl --src Hello.java
+我是用的: 就是把 /tmp 作临时目录，换成当前目录做临时目录。
+$ cwltool --tmpdir-prefix=$PWD/ arguments.cwl --src Hello.java #这个似乎更符合命令行工具的使用习惯。
+
+$ TMPDIR=$PWD cwltool arguments.cwl arguments-job.yml
+INFO /home/wangjl/.local/bin/cwltool 3.1.20210825140344
+INFO Resolved 'arguments.cwl' to 'file:///home/wangjl/test/cwl_test/arguments.cwl'
+INFO [job arguments.cwl] /home/wangjl/test/cwl_test/ki_j2ajd$ docker \
+    run \
+    -i \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/ki_j2ajd,target=/jSRUIq \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/wq21fiv3,target=/tmp \
+    --mount=type=bind,source=/home/wangjl/test/cwl_test/Hello.java,target=/var/lib/cwl/stgf45b5122-4676-4659-8af6-02862ce21df9/Hello.java,readonly \
+    --workdir=/jSRUIq \
+    --read-only=true \
+    --user=1001:1001 \
+    --rm \
+    --cidfile=/home/wangjl/test/cwl_test/1imr1hve/20210911160940-668311.cid \
+    --env=TMPDIR=/tmp \
+    --env=HOME=/jSRUIq \
+    openjdk:9.0.1-11-slim \
+    javac \
+    -d \
+    /jSRUIq \
+    /var/lib/cwl/stgf45b5122-4676-4659-8af6-02862ce21df9/Hello.java
+INFO [job arguments.cwl] Max memory used: 28MiB
+INFO [job arguments.cwl] completed success
+{
+    "classfile": {
+        "location": "file:///home/wangjl/test/cwl_test/Hello.class",
+        "basename": "Hello.class",
+        "class": "File",
+        "checksum": "sha1$6f2a091492a911598cbc1f01a5c73993a00abb22",
+        "size": 427,
+        "path": "/home/wangjl/test/cwl_test/Hello.class"
+    }
+}
+INFO Final process status is success
+</pre>
+
+
+
+
+
+
 
 
 
