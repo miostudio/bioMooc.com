@@ -3075,6 +3075,9 @@ INFO Final process status is success
 
 <div id="gotoTop" title="Goto top" style="visibility: visible;">↑</div>
 <script>
+window.requestAnimationFrame = window.requestAnimationFrame||function (fn) {return setTimeout(fn,1000/60)}
+window.cancelAnimationFrame = window.cancelAnimationFrame ||clearTimeout;
+
 window.addEventListener('load',function(e){
 	var gotoTop=document.getElementById('gotoTop');
 	gotoTop.onclick = function(){

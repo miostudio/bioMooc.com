@@ -219,6 +219,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.0-9 linux/ 添加cwl教程 [202.9.11]
 	page0.3.1-0 linux/ cwl教程 update [202.9.13]
 	page0.3.1-1 linux/ docker 教程 [202.9.15]
+	page0.3.1-2 linux/ singularity 教程 [202.9.16]
 
 ##############
 # commit
