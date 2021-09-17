@@ -1,0 +1,822 @@
+<head>
+<meta charset=UTF-8>
+<title>Conda 教程 - 
+v0.1 
+</title>
+
+<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+<style>
+html, body{margin:0; padding:0;}
+html{background:#eee;}
+.wrap{width:900px; margin:10px auto; 
+	border:1px solid #ddd;
+	background:#fff;
+	border-radius:10px;
+	padding:10px;
+}
+h2{border-top:1px solid #aaa;margin-top:50px;}
+pre.code{
+	background:#2D0922;color:#fff; 
+	padding:5px 5px; 
+	border-radius:5px; 
+	border-left:4px solid #000;
+	max-height:600px;
+	overflow-y: scroll;
+}
+a{color:#E95420; text-decoration:none;}
+a:hover{color:#BA3222; text-decoration:underline;}
+p{text-indent:2em;}
+.header,
+.footer{padding:10px; background:#BA3222; color:#eee; margin:0; text-align: center;}
+.header{background:#fff; color:#000;}
+
+pre.quote{
+	max-height:200px; 
+	overflow-y: scroll;
+	border: 1px solid #d4d4d4;
+	padding:5px;
+	background:#f6f4f0; color:#444;
+	border-radius:5px; max-width:90%;
+}
+
+
+#gotoTop {
+    visibility: hidden;
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    background: #fff;
+    color: #999;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.hl{color: red}
+</style>
+</head>
+
+
+
+
+<body>
+<div class=header><h1>Conda Guide</h1></div>
+
+<div class=wrap>
+
+<p>virtualenv, pyenv, Conda 等环境、包管理器的使用教程。本文系统为干净的 ubuntu 20.04。</p>
+<pre class=quote>
+<b>Conda 参考资料</b>
+<b>https://docs.conda.io/en/latest/</b>
+</pre>
+
+
+
+<ul>
+	<li><a href="#1">1. Conda 简介与最佳实践</a></li>
+	<li><a href="#2">2. 安装 conda</a></li>
+	<li><a href="#3">3. 用conda切换python环境</a></li>
+	<li><a href="#4">4. 使用pip的国内镜像</a></li>
+	<li><a href="#5">5. 使用 conda 查询和下载包 (channels 管理)</a></li>
+	<li><a href="#6">6. conda 环境管理功能</a></li>
+	<li><a href="#100">疑难杂症 / 参考资料</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+<h2 class=section><a name=1></a>1. Conda 简介与最佳实践</h2>
+
+<p>Conda 能下载任何语言(最初是python)的包及其依赖。能灵活切换不同版本的python，隔离环境。能保存环境到配置文件，换个主机重建该环境。Conda 结合了pip与虚拟环境 virtualenv 等技术。默认设置，能安很多 <a target="_blank" href="https://repo.anaconda.com/">anaconda</a> 的包。</p>
+
+<p>Anaconda 是一个用于科学计算的 Python 发行版，支持主流操作系统, 包含了众多流行的科学计算、数据分析的 Py 包。</p>
+
+
+<h3>最佳实践</h3>
+<p>Conda的缺点：conda很臃肿，会占用很多硬盘(3.4G)。使用conda会出错，带来新的问题。conda和pip混用可能会产生冲突（conda包可能滞后，导致和pip等源头版本不同步）。Anaconda 是一家商业公司，要注意合规性。优先不选用美国技术，避免美国长臂管辖的风险。<a target="_blank" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> 是Anaconda的子集，仅包含基本的Python运行环境与conda。</p>
+<p><b class=hl>系统自身的python最好不要动，免得影响其稳定性。最理想的是用conda创建py2/py3等环境，然后用conda下的pip安装py包，配置好国内的源，速度杠杠的。</b>用conda安装包经常遇到莫名其妙的报错，且环境的复杂性越来越高。</p>
+<p>版本管理和环境隔离最主流的pyenv和virturalenv。pyenv是个多版本管理工具，virtualenv可以创建不同的虚拟环境。可以用pyenv安装需要的版本的python，再在virtualenv中指定python版本。</p>
+<p>python包本身包含了 .py, .so 及混合三大类，都支持import后直接使用。使用pip安装遇到crash，要根据提示使用apt,yum安装依赖。如果懒省事，硬盘够多，只需要 conda install 就够了，这也是其核心卖点。conda 当然是可替代的。</p>
+
+<pre class=quote>
+用户踩过的坑：
+- 我忘记了 scipy 是 conda 装的，用 pip 升级了一下 scipy，整个世界都崩溃了。
+- 但是如果涉及到深度学习以外的python环境，比如cpu模拟器 gem5，以及verilog验证框架cocotb等，我还是强烈建议使用pyenv，用anaconda踩了无数的坑。
+</pre>
+
+
+
+<h3>常用命令</h3>
+<pre class=code>
+$ conda clean -a #清理缓存
+
+查看环境（当前环境用*表示）conda info -envs 或conda env list
+激活环境 conda activate env_name
+停用环境 conda deactivate env_name
+删除环境 conda remove -n env_name --all
+
+例
+$ conda create -n py27 python=2.7
+$ conda activate py27
+$ pip install torch==0.4
+执行完脚本退出
+$ conda deactivate 
+</pre>
+
+
+
+
+
+<h2 class=section><a name=2></a>2. 安装 conda </h2>
+<pre class=code>
+# https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html
+# 完整版 https://docs.anaconda.com/anaconda/install/
+	https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
+# 精简版 https://docs.conda.io/projects/continuumio-conda/en/latest/user-guide/install/macos.html
+	https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/
+
+1. 下载:
+$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.05-Linux-x86_64.sh
+或多线程下载: axel -n 30 https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.05-Linux-x86_64.sh 
+
+2. 安装 
+(1) 先备份一下配置文件 
+$ cp ~/.bashrc ~/.bashrc-backup
+
+ubuntu20.04 自带python版本
+$ which python3
+/usr/bin/python3
+$ python3 -V
+Python 3.8.10
+
+
+(2) 创建安装目录。最好在另外的盘上，避免根目录过于臃肿
+$ mkdir -p /home/wangjl/data/software/
+lrwxrwxrwx 1 wangjl wangjl 12 Sep 17 10:22 /home/wangjl/data -> /data/wangjl
+
+(3) 开始安装
+$ bash Anaconda3-2021.05-Linux-x86_64.sh
+Welcome to Anaconda3 2021.05
+
+In order to continue the installation process, please review the license
+agreement.
+Please, press ENTER to continue
+>>> 回车看协议
+摘录几句：
+	All rights reserved under the 3-clause BSD License
+Do you accept the license terms? [yes|no] # 接受条款
+[no] >>> yes
+
+Anaconda3 will now be installed into this location:
+/home/wangjl/anaconda3
+
+  - Press ENTER to confirm the location
+  - Press CTRL-C to abort the installation
+  - Or specify a different location below
+
+[/home/wangjl/anaconda3] >>>/home/wangjl/data/software/anaconda3 #制定一个路径下某个不存在的文件夹
+PREFIX=/home/wangjl/data/software/anaconda3
+Unpacking payload ...
+... 几分钟安装时间 12:07->12:14
+
+installation finished.
+Do you wish the installer to initialize Anaconda3
+by running conda init? [yes|no]
+[no] >>> yes 是否要初始化？
+
+modified      /home/wangjl/.bashrc
+==> For changes to take effect, close and re-open your current shell.
+
+If you'd prefer that conda's base environment not be activated on startup, 
+   set the auto_activate_base parameter to false: 
+conda config --set auto_activate_base false  #这一句话要不要执行呢？
+Thank you for installing Anaconda3!
+结束。
+</pre>
+
+
+<p>检查版本信息</p>
+<pre class=code>
+(4) 检查版本号和位置
+退出当前shell，重新登录linux。
+
+路径已经被修改了，最前面加上了 conda。
+$ echo $PATH
+/home/wangjl/data/software/anaconda3/bin:/home/wangjl/data/software/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+发现命令行前面多了个(base)字样。
+(base) wangjl@wangjl-VB:~$ conda --version
+conda 4.10.1
+$ which conda
+/home/wangjl/data/software/anaconda3/bin/conda
+
+$ pip freeze| grep conda
+conda==4.10.1
+$ pip list | grep conda #说明 conda 也是一个python包？
+conda                              4.10.1
+$ pip freeze | wc -l
+252
+
+
+检查py和pip版本号和位置
+/data$ python -V
+Python 3.8.8
+$ which python
+/home/wangjl/data/software/anaconda3/bin/python
+
+$ pip -V
+pip 21.0.1 from /home/wangjl/data/software/anaconda3/lib/python3.8/site-packages/pip (python 3.8)
+$ which pip
+/home/wangjl/data/software/anaconda3/bin/pip
+
+检查包安装的位置
+$ ls /home/wangjl/data/software/anaconda3/bin | grep jupyter
+jupyter
+$ pip list | grep jupyter
+jupyter                            1.0.0
+此外还能查到 conda, flask 等包。
+
+如果想用本机其他版本的py怎么办？
+$ whereis python
+python: /usr/bin/python3.8 /usr/lib/python3.9 /usr/lib/python3.8 /usr/lib/python2.7 /etc/python3.8 /usr/local/lib/python3.8 /usr/include/python3.8 /data/wangjl/software/anaconda3/bin/python3.8-config /data/wangjl/software/anaconda3/bin/python3.8 /data/wangjl/software/anaconda3/bin/python
+试试哪个能用。
+</pre>
+
+
+
+
+
+<p>检查安装的大小和内容，修改的配置文件。</p>
+<pre class=code>
+(5) 安装包占的大小
+$ du -sh software/anaconda3/
+3.5G	software/anaconda3/
+
+据说安装 miniconda 就会少很多包。只占用400M硬盘。
+
+$ ls software/anaconda3/ #26个文件夹
+bin              condabin    doc   etc      info  libexec      licensing  
+mkspecs      pkgs     qml        sbin   shell  translations  x86_64-conda_cos6-linux-gnu
+compiler_compat  conda-meta  envs  include  lib   LICENSE.txt  man        
+phrasebooks  plugins  resources  share  ssl    var
+
+最大的子文件夹是 lib
+$ du -s software/anaconda3/* | sort -k1nr
+2477884	software/anaconda3/lib
+857744	software/anaconda3/pkgs
+156784	software/anaconda3/bin
+75328	software/anaconda3/include
+6844	software/anaconda3/conda-meta
+3264	software/anaconda3/mkspecs
+
+$ ls software/anaconda3/lib/ | wc #该文件夹下有1039个包，大多是so文件
+   1039    1039   19550
+
+$ conda list | wc
+    347    1044   20799
+$ conda list | head
+# packages in environment at /home/wangjl/data/software/anaconda3:
+#
+# Name                    Version                   Build  Channel
+_ipyw_jlab_nb_ext_conf    0.1.0                    py38_0  
+_libgcc_mutex             0.1                        main  
+alabaster                 0.7.12             pyhd3eb1b0_0  
+anaconda                  2021.05                  py38_0
+...
+conda                     4.10.1           py38h06a4308_1 
+jupyter                   1.0.0                    py38_7 
+
+
+
+
+(6) 检查修改的配置文件
+$ vim ~/.bashrc-backup  #117行
+$ vim ~/.bashrc #133行
+
+其中118行之后是
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/wangjl/data/software/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/wangjl/data/software/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/wangjl/data/software/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/wangjl/data/software/anaconda3/bin:$PATH"
+    fi  
+fi
+unset __conda_setup
+#  conda initialize 
+
+
+(7) 尝试启动jupyter
+$ jupyter notebook --no-browser --ip=192.168.2.242 --port=8889
+浏览器访问：http://192.168.2.242:8889/?token=aa99e15c704bfc695fe6880e2e57d253176eae378146efcc
+可以访问并执行python脚本。
+
+
+(8) 去掉前面的(base)
+$ conda config --set auto_activate_base false
+再次登录linux，前面的(base) 消失了。但是jupyter也不能访问了。
+</pre>
+
+
+<p>[推荐] 我是这样配置 conda 的:</p>
+<pre class=code>
+优点是cmd前缀没了，看着正常了；缺点是deactive掉base后需要重新su登录一次。
+
+在.bashrc文件末尾加一行
+$ vim ~/.bashrc
+export PATH=/home/wangjl/data/software/anaconda3/bin:$PATH
+
+$ source ~/.bashrc
+$ which python3
+/home/wangjl/data/software/anaconda3/bin/python3
+$ which pip3
+/home/wangjl/data/software/anaconda3/bin/pip3
+
+jupyter又可以用了。
+之后使用 pip3 安装包。
+
+
+$ pip3 search flask
+WARNING: Keyring is skipped due to an exception: Failed to unlock the collection!
+ERROR: XMLRPC request failed [code: -32500]
+RuntimeError: PyPI's XMLRPC API is currently disabled due to unmanageable load 
+and will be deprecated in the near future. See https://status.python.org/ for more information.
+pip 搜索由于受到攻击，2021年中宣布永久停止搜索，不知道以后会不会恢复。
+</pre>
+
+
+
+
+
+
+
+
+<h2 class=section><a name=3></a>3. 用conda切换python环境</h2>
+<p>命令参考：
+<a target="_blank" href="https://docs.conda.io/projects/conda/en/latest/_downloads/843d9e0198f2a193a3484886fa28163c/conda-cheatsheet.pdf">conda-cheatsheet.pdf</a>，
+<a target="_blank" href="https://docs.conda.io/projects/conda/en/latest/commands.html">conda 全部命令</a>。
+</p>
+<p>参数中 --name and -n are the same, and --envs and -e are the same.</p>
+
+<pre class=code>
+1. #查看虚拟环境
+$ conda info --envs # 这2个输出一样
+$ conda env list 
+# conda environments:
+#
+base                  *  /home/wangjl/data/software/anaconda3
+
+
+2. 创建虚拟环境
+$ conda create -n py3.6test python=3.6 #开始安装依赖包
+
+其他例子：
+$ conda create --name snakes39 python=3.9 #参数全称是 --name
+$ conda create -n myenv sqlite #创建一个环境，并安装sqlite包
+
+conda create -n py36 python=3.6 anaconda  #Python 3.6 的 Anaconda 环境
+conda create -n py27 python=2.7 anaconda  #Python 2.7 的 Anaconda 环境
+
+
+3. 激活环境
+$ source activate py3.6test
+
+在该环境下操作
+(py3.6test) wangjl@wangjl-VB:~/data$ python -V
+Python 3.6.13 :: Anaconda, Inc.
+$ pip -V
+pip 21.0.1 from /home/wangjl/data/software/anaconda3/envs/py3.6test/lib/python3.6/site-packages/pip (python 3.6)
+$ pip install snakemake
+$ snakemake --version
+6.8.0
+
+4. 退出该环境
+$ conda deactivate
+
+如果退出2次，则base也退出了。再次登录则自己设定的生效，base的python又回来了。
+
+
+5. 要删除一个已有的环境
+$ conda env list 
+# conda environments:
+#
+base                  *  /home/wangjl/data/software/anaconda3
+py3.6test                /home/wangjl/data/software/anaconda3/envs/py3.6test
+
+$ conda remove --name py3.6test --all
+再查就一个base了。
+</pre>
+
+
+
+实例2: 安装一个过时的 numpy 环境
+<pre class=code>
+$ pip3 list | grep numpy
+numpy                              1.20.1
+
+$ source activate base
+$ conda create -n numpy16 numpy=1.16 #同意安装包
+$ source activate numpy16
+$ echo $PATH
+/home/wangjl/data/software/anaconda3/envs/numpy16/bin:/home/wangjl/data/software/anaconda3/condabin:/home/wangjl/data/software/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+原来 numpy16/bin 被放到了PATH的最前面。
+
+$ conda deactivate
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=4></a>4. 使用pip的国内镜像</h2>
+
+<pre class=quote>
+1. 如果网速太慢，可以使用国内的镜像 
+$ pip install snakemake -i https://pypi.douban.com/simple/ 
+
+$ pip config set global.index-url https://pypi.douban.com/simple
+
+https://pypi.tuna.tsinghua.edu.cn/simple 清华
+https://pypi.douban.com/simple/ 豆瓣
+https://mirrors.aliyun.com/pypi/simple/ 阿里
+
+
+
+2. 查看某已安装包的信息：版本、位置、依赖等
+
+$ pip3 show jupyter
+Name: jupyter
+Version: 1.0.0
+Summary: Jupyter metapackage. Install all the Jupyter components in one go.
+Home-page: http://jupyter.org
+Author: Jupyter Development Team
+Author-email: jupyter@googlegroups.org
+License: BSD
+Location: /data/wangjl/software/anaconda3/lib/python3.8/site-packages
+Requires: ipykernel, qtconsole, ipywidgets, jupyter-console, nbconvert, notebook
+Required-by:
+</pre>
+
+
+
+
+
+
+<h2 class=section><a name=5></a>5. 使用 conda 查询和下载包 (channels 管理)</h2>
+<p>pip只管理python包，非python包可以使用 conda 安装。</p>
+<p>优先使用原包的官方推荐安装方式。遇到报错实在解决不了再考虑 conda 。</p>
+
+<pre class=code>
+1. 安装质控软件 fastqc 
+$ conda search fastqc
+PackagesNotFoundError: The following packages are not available from current channels:
+当前渠道搜不到，可以换渠道
+
+
+2. 换国内渠道
+末尾添加 渠道名字
+## https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
+$ vim ~/.condarc 
+channels:
+  - defaults
+show_channel_urls: true
+default_channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2
+custom_channels:
+  conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  msys2: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  bioconda: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  menpo: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  pytorch: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  simpleitk: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+
+即可添加 Anaconda Python 免费仓库。
+$ conda clean -i #清除索引缓存，保证用的是镜像站提供的索引。
+运行 conda create -n myenv numpy 测试一下吧。
+
+$ conda search fastqc #再试还是找不到
+
+
+
+3. 试试 添加 bioconda 渠道  
+添加源
+$ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda
+$ conda config --set show_channel_urls yes # 生成 ~/.condarc 文件
+$ conda config --show
+
+$ conda clean -i #清除索引缓存
+
+查看修改的部分
+$ vim ~/.condarc #发现在 channels 部分添加了一行
+channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda #添加的行，感觉多余，和后面的重复。
+  - defaults
+...
+
+再次搜索，可以了
+$ conda search fastqc
+Loading channels: done
+# Name                       Version           Build  Channel             
+fastqc                        0.10.1               0  bioconda            
+fastqc                        0.10.1               1  bioconda
+...
+fastqc                        0.11.9      hdfd78af_1  bioconda 
+
+
+
+4. 安装 
+(1)为了不污染当前环境，我们新建一个环境。
+不用的时候可以整体删除掉该环境。
+
+$ conda create --name test_env
+environment location: /home/wangjl/data/software/anaconda3/envs/test_env
+
+$ conda activate test_env
+
+$ conda search fastqc
+Loading channels: done
+# Name                       Version           Build  Channel             
+fastqc                        0.10.1               0  bioconda 
+...
+fastqc                        0.11.9      hdfd78af_1  bioconda
+
+安装最新版的
+$ conda install fastqc=0.11.9
+## Package Plan ##
+  environment location: /home/wangjl/data/software/anaconda3/envs/test_env
+  added / updated specs:
+    - fastqc=0.11.9
+The following packages will be downloaded:
+    package                    |            build
+    ----------- ---------------|-----------------
+    fastqc-0.11.9              |       hdfd78af_1         9.7 MB  bioconda
+    font-ttf-dejavu-sans-mono-2.37|       hd3eb1b0_0         335 KB  defaults
+    fontconfig-2.13.1          |       h6c09931_0         250 KB  defaults
+    freetype-2.10.4            |       h5ab3b9f_0         596 KB  defaults
+    icu-58.2                   |       he6710b0_3        10.5 MB  defaults
+    libpng-1.6.37              |       hbc83047_0         278 KB  defaults
+    libuuid-1.0.3              |       h1bed415_2          15 KB  defaults
+    libxml2-2.9.12             |       h03d6c58_0         1.2 MB  defaults
+    openjdk-8.0.152            |       h7b6447c_3        57.4 MB  defaults
+    perl-5.26.2                |       h14c3975_0        10.5 MB  defaults
+    ------------ -------------- ----------------- ---------------
+                                           Total:        90.7 MB
+加上依赖总共需要90M硬盘空间。
+
+查看其安装位置：
+$ ls -lth /home/wangjl/data/software/anaconda3/envs/test_env/bin  | grep fastqc
+lrwxrwxrwx 1 wangjl wangjl   27 Sep 17 16:06 fastqc -> ../opt/fastqc-0.11.9/fastqc
+$ du -sh /home/wangjl/data/software/anaconda3/envs/test_env/opt/fastqc-0.11.9/
+12M	/home/wangjl/data/software/anaconda3/envs/test_env/opt/fastqc-0.11.9/
+
+
+(2) 搜索另一个生信软件
+$ conda search bwa
+Loading channels: done
+# Name                       Version           Build  Channel             
+bwa                            0.5.9               0  bioconda
+...
+bwa                           0.7.17      pl5.22.0_2  bioconda
+
+
+(3)安装多个包
+conda install fastqc multiqc
+
+
+
+
+5. conda 包管理
+(1)更新特定包
+conda update fastqc
+
+更新Python
+conda update python
+
+更新conda本身及Anaconda元数据包
+conda update conda
+conda update anaconda
+
+防止包更新
+conda update fastqc --no-pin
+在环境的conda-meta目录中，添加一个名为pinned的文件，其中包含您不想更新的软件包列表。
+
+
+(2) 包删除
+删除当前环境中的包
+conda remove pkg_name
+
+删除特定环境中的包
+conda remove -n env_name pkg_name
+
+删除多个包
+conda remove pkg_name1 pkg_name2
+
+确认可以删除的包
+conda list
+
+
+(3) 包列表
+当前环境所有包
+conda list
+
+特定环境所有包
+conda list -n env_name
+</pre>
+
+
+
+
+
+<h2 class=section><a name=6></a>6. conda 环境管理功能</h2>
+
+<pre class=code>
+1. 创建环境
+创建特定名字的环境
+conda create -n env_name
+
+使用特定版本的Python创建环境
+conda create -n env_name python=3.7
+
+使用特定包创建环境
+conda create -n env_name pandas
+
+用 environment.yml 配置文件创建环境
+$ conda env create -f environment.yml
+
+$ cat environment.yml
+name: stats2
+channels:
+  - javascript
+dependencies:
+  - python=3.8   # or 2.7
+  - bokeh=0.9.2
+  - numpy=1.9.*
+  - nodejs=0.10.*
+  - flask
+  - pip:
+  - Flask-Testing
+
+
+
+2. 导出环境文件environment
+导出environment.yml环境文件
+
+(1) 先进入需要导出的环境
+$ conda activate env_name
+
+(2) 导出：当前环境，输出为yaml配置文件
+$ conda env export > environment2.yml
+
+导入：使用该环境文件，创建一个新环境
+$ conda env create  --name env_name3 -f environment2.yml
+
+$ cat  environment2.yml
+name: test_env
+channels:
+  - bioconda
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - _openmp_mutex=4.5=1_gnu
+  - fastqc=0.11.9=hdfd78af_1
+  - font-ttf-dejavu-sans-mono=2.37=hd3eb1b0_0
+  - fontconfig=2.13.1=h6c09931_0
+  - freetype=2.10.4=h5ab3b9f_0
+  - icu=58.2=he6710b0_3
+  - libgcc-ng=9.3.0=h5101ec6_17
+  - libgomp=9.3.0=h5101ec6_17
+  - libpng=1.6.37=hbc83047_0
+  - libstdcxx-ng=9.3.0=hd4cf53a_17
+  - libuuid=1.0.3=h1bed415_2
+  - libxml2=2.9.12=h03d6c58_0
+  - openjdk=8.0.152=h7b6447c_3
+  - perl=5.26.2=h14c3975_0
+  - xz=5.2.5=h7b6447c_0
+  - zlib=1.2.11=h7b6447c_3
+prefix: /home/wangjl/data/software/anaconda3/envs/test_env
+
+
+
+3. 构建相同的环境
+(1) 构建相同的conda环境（不同机器间的环境复制）
+激活需要导出配置文件的环境
+conda list --explicit > files.txt
+
+在同系统的不同机器执行
+conda create --name env_name -f files.txt
+
+(2) 克隆环境（同一台机器的环境复制
+conda create --name clone_env_name --clone env_name
+
+
+
+4. 渠道管理
+添加新渠道到顶部，最高优先级
+conda config --add channels new_channel
+或者conda config --prepend channels new_channel
+
+添加新渠道到底部，最低优先级
+conda config --append channels new_channel
+</pre>
+
+
+
+
+
+
+
+<h2 class=section><a name=100></a>疑难杂症 / 参考资料</h2>
+
+<pre class=code>
+1. 如何升级pip包？
+$ python -m pip install --user --upgrade pip==19.1.1
+
+2. 如果win10的pip升级失败，补鞥用了怎么办？
+强制重装pip
+> curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+> python3 get-pip.py 
+> pip -V
+</pre>
+
+
+
+<pre class=quote>
+conda 官方命令大全 https://docs.conda.io/projects/conda/en/latest/commands.html
+Conda 安装使用图文详解（2021版） https://blog.csdn.net/u011262253/article/details/88828229
+
+pyenv: https://www.jianshu.com/p/3e93311fe6cb
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+<div class=footer>==End== 2021.9.17</div>
+
+
+
+
+<div id="gotoTop" title="Goto top" style="visibility: visible;">↑</div>
+<script>
+window.requestAnimationFrame = window.requestAnimationFrame||function (fn) {return setTimeout(fn,1000/60)}
+window.cancelAnimationFrame = window.cancelAnimationFrame ||clearTimeout;
+
+window.addEventListener('load',function(e){
+	var gotoTop=document.getElementById('gotoTop');
+	gotoTop.onclick = function(){
+		var timer = null;
+		cancelAnimationFrame(timer);
+		timer = requestAnimationFrame(function fn(){
+			var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+			if(oTop > 0){
+				//scrollBy(0,-50);
+				scrollBy(0, -Math.max(oTop/20, 50) );
+				timer = requestAnimationFrame(fn);
+			}else{
+				cancelAnimationFrame(timer);
+			}
+		});
+	};
+},false);
+
+window.addEventListener('scroll',function(e){
+	var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+	if(oTop>=600){
+		gotoTop.style.visibility='visible'
+	}else{
+		gotoTop.style.visibility='hidden'
+	}
+},false);
+</script>
+<script src="/static/js/tongji.js" ></script>
+</body>

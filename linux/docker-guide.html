@@ -1,7 +1,8 @@
 <head>
 <meta charset=UTF-8>
 <title>Docker 教程 - 
-v0.1
+v0.1 docker
+v0.2 add singularity
 </title>
 
 <link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
@@ -59,7 +60,7 @@ pre.quote{
 
 
 <body>
-<div class=header><h1>Docker tutorial</h1></div>
+<div class=header><h1>Docker, singularity Guide</h1></div>
 
 <div class=wrap>
 
@@ -81,11 +82,11 @@ https://www.ibm.com/cloud/learn/docker
 
 
 <ul>
-	<li><a href="#1">1. Docker 概念与安装</a></li>
+	<li><a href="#1">1. Docker 概念</a></li>
 	<li><a href="#2">2. Docker 安装</a></li>
 	<li><a href="#3">3. Docker 运行常用操作</a>
 		<ul>
-			<li><a href="#3.1">3.1. 获取和查看镜像</a></li>
+			<li><a href="#3.1">3.1. 获取和查看镜像(搜索镜像名、标签名)</a></li>
 			<li><a href="#3.2">3.2. 运行一个容器:nginx/java/mysql</a></li>
 			<li><a href="#3.3">3.3. 查看、暂停和启动容器</a></li>
 			<li><a href="#3.4">3.4. 镜像的转移和运输</a></li>
@@ -105,11 +106,8 @@ https://www.ibm.com/cloud/learn/docker
 	<li><a href="#5">5. Singularity 简介</a>
 		<ul>
 			<li><a href="#5.1">5.1 安装 singularity</a></li>
-			<li><a href="#5.2">实例1: 使用 samtools 的镜像查看bam文件、并转为sam文件</a></li>
-			<li><a href="#5.3">实例2: 一个很小的镜像 ubuntu:20.04</a></li>
-			<li><a href="#5.4">实例3: 运行一个试试 mysql 镜像 | ok，不支持端口映射</a></li>
-			<li><a href="#5.5">实例4：运行一个 java 镜像</a></li>
-			<li><a href="#5.6">实例5：从定义文件构建 nginx 镜像</a></li>
+			<li><a href="#5.2">5.2 singularity 实例: 使用 samtools/ ubuntu/ mysql /java 的sig镜像</a></li>
+			<li><a href="#5.3">5.3 从定义文件构建 nginx 的sif镜像</a></li>
 		</ul>
 	</li>
 	<li><a href="#6">6. Kubernetes (K8s)</a></li>
@@ -158,7 +156,7 @@ Docker有五个命名空间：进程、网络、挂载、宿主和共享内存�
 
 
 
-<h2 class=section><a name=2></a>2. Install</h2>
+<h2 class=section><a name=2></a>2. Docker 安装</h2>
 <p>本文使用Ubuntu 20.04 作为宿主机。使用最新的 docker 版本。</p>
 
 <pre class=quote>
@@ -537,7 +535,7 @@ $ systemctl stop firewalld   关闭防火墙
 <h2 class=section><a name=3></a>3. Docker 运行常用操作</h2>
 
 
-<h3><a name=3.1></a>3.1. 获取和查看镜像</h3>
+<h3><a name=3.1></a>3.1. 获取和查看镜像(搜索镜像名、标签名)</h3>
 <pre class=code>
 (1)配置国内镜像加速
 $ sudo vim /etc/docker/daemon.json 
@@ -567,6 +565,51 @@ $ docker search monocle
 $ docker search rstudio
 NAME              DESCRIPTION              STARS     OFFICIAL   AUTOMATED
 rocker/rstudio    RStudio Server image     372                  [OK]
+
+
+2)如何获取tag编号呢？
+https://www.jianshu.com/p/f974ec9e7937
+$ curl -L -s 'https://registry.hub.docker.com/v2/repositories/library/hello-world/tags?page_size=1024' | jq '.results[]["name"]' | sed 's/\"//g' | sort -u
+
+改成不另装软件的可行方法: 使用v2 API:
+$ cat getTags.sh
+#!/bin/bash
+repo_url=https://registry.hub.docker.com/v2/repositories/
+image_name=$1
+url=${repo_url}/${image_name}/tags?page_size=1024
+echo $url;
+curl -L -s $url; 
+$ bash getTags.sh biocontainers/vcftools
+注意：基础镜像要写前缀 bash getTags.sh library/ubuntu
+输出结果复制
+==> 打开chrome浏览器，按f12打开控制台console，
+&gt; t1= 粘贴刚才的输出。等号右侧最外层是{}，不用加引号。
+&gt; for(i=0; i&lt;t1.count; i++){ console.log(t1.results[i].name) }
+v0.1.16-1-deb_cv1
+v0.1.14_cv2
+v0.1.15_cv2
+v0.1.14_cv1
+v0.1.15_cv1
+0.1.14
+0.1.15
+
+然后就可以下载最新稳定版
+$ docker pull biocontainers/vcftools:0.1.15
+
+$ docker run --rm -it biocontainers/vcftools:0.1.15 bash
+biodocker@dc1fb0dfabaf:/data$ vcftools --version
+VCFtools (0.1.15)
+
+
+其实有更简单的v1 API，这个输出信息比较少，结果可以直接肉眼看。
+$ curl -L -s https://registry.hub.docker.com/v1/repositories/biocontainers/vcftools/tags
+[{"layer": "", "name": "0.1.14"}, {"layer": "", "name": "0.1.15"}, {"layer": "", "name": "v0.1.14_cv1"}, {"layer": "", "name": "v0.1.14_cv2"}, {"layer": "", "name": "v0.1.15_cv1"}, {"layer": "", "name": "v0.1.15_cv2"}, {"layer": "", "name": "v0.1.16-1-deb_cv1"}]
+==> chrome F12 console:
+t2=[...]
+for(var i=0; i&lt;t2.length; i++){console.log(t2[i].name)}
+结果同上。
+
+
 
 
 (4) 重命名一个容器
@@ -1515,7 +1558,9 @@ $ singularity --help
 
 
 
-<h3><a name=5.2></a>实例1: 使用 samtools 的镜像查看bam文件、并转为sam文件</h3>
+<h3><a name=5.2></a>5.2 singularity 实例: 使用 samtools/ ubuntu/ mysql /java 的sig镜像</h3>
+
+<h3><a name=5.2-1></a>实例1: 使用 samtools 的镜像查看bam文件、并转为sam文件</h3>
 <pre class=quote>
 生信常用的镜像
 https://singularityhub.github.io/singularity-hpc/
@@ -1610,7 +1655,7 @@ total 24M
 
 
 
-<h3><a name=5.3></a>实例2: 一个很小的镜像 ubuntu:20.04</h3>
+<h3><a name=5.2-2></a>实例2: 一个很小的镜像 ubuntu:20.04</h3>
 <pre class=code>
 $ docker pull ubuntu:20.04
 
@@ -1790,7 +1835,7 @@ INFO:    Cleaning up image...
 
 
 
-<h3><a name=5.4></a>实例3: 运行一个试试 mysql 镜像 | ok，不支持端口映射</h3>
+<h3><a name=5.2-3></a>实例3: 运行一个试试 mysql 镜像 | ok，不支持端口映射</h3>
 <pre class=code>
 https://uh.edu/rcdc/resources/software/Singularity.php
 
@@ -1903,7 +1948,7 @@ INFO:    Stopping mysql instance of /home/wangjl/data/dbFile/mysql_latest.sif (P
 
 
 
-<h3><a name=5.5></a>实例4：运行一个 java 镜像</h3>
+<h3><a name=5.2-4></a>实例4：运行一个 java 镜像</h3>
 <pre class=code>
 1. 如前教程，安装docker 
 $ docker pull openjdk:9.0.1-11-slim
@@ -1978,7 +2023,9 @@ Hello world, from Java!
 
 
 
-<h3><a name=5.6></a>实例5：从定义文件构建 nginx 镜像</h3>
+
+<h3><a name=5.3></a>5.3 从定义文件构建 nginx 的sif镜像</h3>
+
 <pre class=code>
 1.定义文件
 $ cat nginx.def
