@@ -75,7 +75,12 @@ pre.quote{
 
 <ul>
 	<li><a href="#1">1. Conda 简介与最佳实践</a></li>
-	<li><a href="#2">2. 安装 conda</a></li>
+	<li><a href="#2">2. 安装 conda</a>
+		<ul>
+			<li><a href="#2_1">2.1. Anaconda</a></li>
+			<li><a href="#2_2">2.2. Miniconda</a></li>
+		</ul>
+	</li>
 	<li><a href="#3">3. 用conda切换python环境</a></li>
 	<li><a href="#4">4. 使用pip的国内镜像</a></li>
 	<li><a href="#5">5. 使用 conda 查询和下载包 (channels 管理)</a></li>
@@ -135,13 +140,20 @@ $ conda deactivate
 
 
 <h2 class=section><a name=2></a>2. 安装 conda </h2>
-<pre class=code>
+
+<pre class=quote>
 # https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html
 # 完整版 https://docs.anaconda.com/anaconda/install/
 	https://mirror.tuna.tsinghua.edu.cn/help/anaconda/
 # 精简版 https://docs.conda.io/projects/continuumio-conda/en/latest/user-guide/install/macos.html
 	https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/
+</pre>
 
+
+
+<h3 class=section><a name=2_1></a>2.1. Anaconda </h3>
+
+<pre class=code>
 1. 下载:
 $ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.05-Linux-x86_64.sh
 或多线程下载: axel -n 30 https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.05-Linux-x86_64.sh 
@@ -354,6 +366,151 @@ RuntimeError: PyPI's XMLRPC API is currently disabled due to unmanageable load
 and will be deprecated in the near future. See https://status.python.org/ for more information.
 pip 搜索由于受到攻击，2021年中宣布永久停止搜索，不知道以后会不会恢复。
 </pre>
+
+
+
+<h3 class=section><a name=2_2></a>2.2. Miniconda </h3>
+
+<pre class=code>
+1. 下载 
+$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh
+64M
+
+2. 安装 
+(1) 先备份一下配置文件 
+$ cp ~/.bashrc ~/.bashrc-backup
+
+ubuntu20.04 自带python版本
+$ which python3
+/usr/bin/python3
+$ python3 -V
+Python 3.8.10
+
+(2) 创建安装目录。最好在另外的盘上，避免根目录过于臃肿
+$ mkdir -p /home/wang/data/software/
+lrwxrwxrwx 1 wang wang 11 Sep 24 14:42 /home/wang/data -> /data/wang/
+
+(3) 开始安装
+$ bash Miniconda3-py39_4.10.3-Linux-x86_64.sh
+Welcome to Miniconda3 py39_4.10.3
+
+> Enter, q, yes 接受协议。
+> /home/wang/data/software/miniconda3 #指定一个路径下某个不存在的文件夹
+Do you wish the installer to initialize Miniconda3
+by running conda init? [yes|no]
+[no] >>> yes
+
+==> For changes to take effect, close and re-open your current shell.
+If you'd prefer that conda's base environment not be activated on startup, 
+   set the auto_activate_base parameter to false: 
+
+conda config --set auto_activate_base false
+Thank you for installing Miniconda3!
+安装结束。
+
+
+
+
+
+(4) 检查版本号和位置
+退出当前shell，重新登录linux。
+发现命令行前面多了个(base)字样。
+
+$ su wang
+Password: 
+(base) wang@wangVM:~/data/download$ 
+
+路径已经被修改了，最前面加上了 conda。
+$ echo $PATH
+/home/wang/data/software/miniconda3/bin:/home/wang/data/software/miniconda3/condabin:...
+
+$ conda --version
+conda 4.10.3
+$ which conda
+/home/wang/data/software/miniconda3/bin/conda
+
+$ python -V
+Python 3.9.5
+$ which python
+/home/wang/data/software/miniconda3/bin/python
+
+$ pip -V
+pip 21.1.3 from /home/wang/data/software/miniconda3/lib/python3.9/site-packages/pip (python 3.9)
+$ which pip
+/home/wang/data/software/miniconda3/bin/pip
+
+
+(5) 安装包占的大小
+$ du -sh ~/data/software/miniconda3/
+311M	/home/wang/data/software/miniconda3/
+
+$ ls software/miniconda3/ #14个文件夹
+bin  compiler_compat  condabin  conda-meta  envs  etc  include  lib  LICENSE.txt  pkgs  share  shell  ssl  x86_64-conda_cos6-linux-gnu  x86_64-conda-linux-gnu
+
+最大的子文件夹是 lib
+$ du -s software/miniconda3/* | sort -k1nr
+162252	software/miniconda3/lib
+126928	software/miniconda3/pkgs
+20812	software/miniconda3/bin
+5756	software/miniconda3/include
+1068	software/miniconda3/share
+
+$ ls software/miniconda3/lib/ | wc #该文件夹下有129个包，大多是so文件
+
+$ conda list | wc
+     41     126    2419
+$ conda list 
+sqlite                    3.36.0               hc218d9a_0 
+yaml                      0.2.5                h7b6447c_0
+
+
+(6) 检查修改的配置文件
+$ vim ~/.bashrc-backup  #117行
+$ vim ~/.bashrc #133行
+
+其中118行之后是
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/wang/data/software/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/wang/data/software/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/wang/data/software/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/wang/data/software/miniconda3/bin:$PATH"
+    fi  
+fi
+unset __conda_setup
+#  conda initialize 
+
+
+(7) 尝试启动jupyter
+没有，需要安装。
+$ pip install jupyter
+$ jupyter notebook --no-browser --ip=192.168.2.156 --port=8889
+
+
+(8) 去掉前面的(base)
+$ conda config --set auto_activate_base false
+再次登录linux，前面的(base) 消失了。但是jupyter也不能访问了。
+
+为了保证还是使用新python，在.bashrc文件末尾加一行
+$ vim ~/.bashrc
+export PATH=/home/wang/data/software/miniconda3/bin:$PATH
+
+$ su wang 
+
+$ which pip
+/home/wang/data/software/miniconda3/bin/pip
+命令前没有base了，也可启动 jupyter。
+</pre>
+
+
+
+
+
+
 
 
 
