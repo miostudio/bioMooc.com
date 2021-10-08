@@ -224,6 +224,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.1-4 linux/ docker: Rstudio + Seurat; miniconda [202.9.28]
 	page0.3.1-5 linux/ fasterq-dump 下载 [202.10.4]
 	page0.3.1-6 linux/ add user [202.10.8]
+	page0.3.1-7 首页修正链接; R 色盲色 [202.10.8]
 ##############
 # commit
 ########>> push miostudio
