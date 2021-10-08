@@ -223,6 +223,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.1-3 linux/ conda 教程 [202.9.17]
 	page0.3.1-4 linux/ docker: Rstudio + Seurat; miniconda [202.9.28]
 	page0.3.1-5 linux/ fasterq-dump 下载 [202.10.4]
+	page0.3.1-6 linux/ add user [202.10.8]
 ##############
 # commit
 ########>> push miostudio
