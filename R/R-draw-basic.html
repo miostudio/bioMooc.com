@@ -25,6 +25,9 @@
   <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
   <meta name="apple-mobile-web-app-title" content="生物慕课网">
 
+<style>
+.red{color:red;}
+</style>
 </head>
 
 
@@ -122,6 +125,7 @@ $(function(){
 			<li><a href="#41">par()参数mfrow控制布局</a>
 			<li><a href="#42">layout()函数更精细排版：matrix, widths和heights</a>
 			<li><a href="#43">fig参数精细布局，自由嵌入图形： par(fig=c(), new=T)</a>	
+			<li><a href="#44">图形叠加： par(new=T), add=T</a>	
 		</ul>
 	</li>
 </ul>
@@ -139,7 +143,7 @@ $(function(){
 	<div style="white-space: pre-wrap;">#输出pdf格式
 setwd("F://Temp//") #设定工作目录
 
-pdf("pic1.pdf", width=4, height=4) # 设定文件名
+pdf("pic1.pdf", width=4, height=4, useDingbats=F) # 设定文件名
 
 attach(mtcars)
 plot(wt,mpg)
@@ -161,6 +165,8 @@ png("type.png",width=600*3,height=3*600,res=72*3) #否则字体大小会变得�
 
 
 <h3>R语言的高质量图形渲染库Cairo</h3>
+<p>Cairo 库在win10下画图，导入AI乱码！
+<span class=red>优先使用 pdf(useDingbats=F)，图放到AI不变形，不乱码。<span></p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">#输出高清pdf
 library(Cairo)
@@ -1324,7 +1330,7 @@ par(opar)</div>
 
 
 <br><a name="44"></a>
-<h3 class="tutheader">图形叠加： par(new=T) </h3>
+<h3 class="tutheader">图形叠加： par(new=T), add=T </h3>
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">#画 hist+density 叠加图
@@ -1366,6 +1372,37 @@ legend('topright', col=c('red','blue'), bty="n",
        legend=c("real", "theoretical"))</div>
 </div>
 
+
+
+<br>
+<p><b>对于hist/curve等图，还可以使用 add=T 参数进行叠加。</b></p>
+<img src="images/draw-basic/hist_add.png" /><br>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 模拟数据
+set.seed(202010)
+a1=rnorm(1000,180,10)
+a2=rnorm(1000,165,7)
+
+# freq = F 频率, freq=T 频数(默认)
+hist(a1, n=20) #y [0, 200]
+hist(a1, n=20, freq=T) #y [0,200]
+hist(a1, n=20, freq=F) #y [0, 0.04]
+
+# 频率才表示曲线下面积为1
+hist(a1, n=20, freq=F, 
+     col="#FF000088", xlim=c(130, 220), ylim=c(0, 0.07),
+     mgp=c(2,1,0),
+     xlab="Height", main="Histogram")
+#add=T 叠加到上一个hist图上
+hist(a2, n=20, freq=F, 
+     col="#0000FF88", add=T)
+#图例
+legend("topleft", legend = c("boy", "girl"), fill=c("#FF000088", "#0000FF88"), bty="n")
+
+# 叠加曲线
+curve( dnorm(x, 180, 10), col = "red", lty = 2, lwd = 2, add = TRUE)
+curve( dnorm(x, 165, 7), col = "blue", lty = 2, lwd = 2, add = TRUE)</div>
+</div>
 
 
 
