@@ -226,6 +226,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.1-6 linux/ add user [202.10.8]
 	page0.3.1-7 首页修正链接; R 色盲色 [202.10.8]
 	page0.3.1-8 R/ hist add=T 叠加图形 [202.10.10]
+	page0.3.1-9 install docker on CentOS [202.10.12]
 ##############
 # commit
 ########>> push miostudio

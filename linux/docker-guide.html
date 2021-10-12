@@ -4,6 +4,7 @@
 v0.1 docker
 v0.2 add singularity
 v0.3 docker: Rstudio + Seurat
+v0.4 add install docker on CentOS
 </title>
 
 <link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
@@ -522,6 +523,123 @@ See 'docker run --help'.
 
 这里报错了！不能挂载 $HOME 以外的目录。
 </pre>
+
+
+
+
+
+
+
+<h3>2.3 尝试在 centOS7 安装 docker (推荐)</h3>
+
+<pre class=code>
+1.查询老版本docker
+
+$ rpm -qa|grep -i docker
+
+如果有，删掉：
+# rpm -e docker-1.13.1-75.git8633870.el7.centos.x86_64
+# rpm -e docker-client-1.13.1-75.git8633870.el7.centos.x86_64
+# rpm -e docker-common-1.13.1-75.git8633870.el7.centos.x86_64
+
+
+2.安装docker（跳过）
+$ sudo yum install -y docker
+
+$ docker --version
+Docker version 1.13.1, build 7d71120/1.13.1
+很古老的版本! 不支持 mount
+
+
+3.重新安装，按照官方文档 https://docs.docker.com/engine/install/centos/
+$ sudo yum install -y yum-utils
+$ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+$ sudo yum install docker-ce docker-ce-cli containerd.io
+根据提示，按两次y。
+
+$ docker --version
+Docker version 20.10.9, build c2ea9bc
+这是最新版，可以用了。
+
+
+
+
+4. 修改镜像地址，
+$ sudo vim /etc/docker/daemon.json
+{
+  "registry-mirrors": ["https://uulfe4bd.mirror.aliyuncs.com"]
+}
+
+启动服务
+$ sudo systemctl start docker
+
+
+
+5. 解决权限
+$ sudo groupadd docker #添加docker用户组
+$ sudo gpasswd -a $USER docker #将登陆用户加入到docker用户组中
+Adding user wangjl to group docker
+
+$ newgrp docker #更新用户组
+$ groups #或者 id 命令 查看当前用户所在的组
+docker adm cdrom sudo dip plugdev lpadmin lxd sambashare wangjl
+
+修改执行组为 docker 
+$ sudo chown root:docker /var/run/docker.sock
+srw-rw---- 1 root docker 0 Oct 11 22:48 /var/run/docker.sock
+
+
+6. nginx镜像使用实例
+拉取镜像
+$ docker pull nginx
+
+查看版本号
+$ docker run --rm -it nginx nginx -v
+nginx version: nginx/1.21.3
+
+查看配置文件
+## docker run --rm -it nginx cat /etc/nginx/nginx.conf
+$ docker run --rm -it nginx cat /etc/nginx/conf.d/default.conf
+
+模仿 default.conf 文件写一个配置文件
+$ cat nginx.config 
+server {
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+    #access_log  /var/log/nginx/host.access.log  main;
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+		
+        # list files
+        autoindex on; 
+        autoindex_exact_size on; 
+        autoindex_localtime on; 
+    }
+}
+
+启动容器：做文件挂载、端口映射。
+$ docker run --rm -d -p 8080:80 \
+--mount type=bind,source=/home/wangjl/,target=/usr/share/nginx/html/ \
+--mount type=bind,source=$PWD/nginx.config,target=/etc/nginx/conf.d/default.conf \
+nginx
+
+检查状态
+$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS                                   NAMES
+81d91430ec78   87a94228f133   "/docker-entrypoint.…"   50 seconds ago   Up 49 seconds   0.0.0.0:8080->80/tcp, :::8080->80/tcp   reverent_buck
+
+打开浏览器，http://IP:8080
+能看到文件列表。
+</pre>
+
+
+
+
+
 
 <p>如果无法访问，可能是防火墙。</p>
 <pre class=quote>
