@@ -119,7 +119,7 @@ $(function(){
 		<ul>
 			<li><a href="#3_2">tapply() 实现excel透视表功能</a>
 			<li><a href="#31">gl() 产生因子/函数table（求因子出现的频数）//todo</a>
-			<li><a href="#32">by(dataframe, INDICES, FUN, ..., simplify=TRUE)//todo</a>
+			<li><a href="#32">by(dataframe, INDICES, FUN, ..., simplify=TRUE)</a>
 		</ul>
 	</li>
 	<li><a href="#4">rapply, 递归版本的lapply，只处理list类型数据//todo</a></li>
@@ -784,7 +784,154 @@ tapply(mtcars$mpg, list(mtcars$gear, mtcars$cyl), mean)
 
 <br><a name="32"></a>
 <h3 class="tutheader">by(dataframe, INDICES, FUN, ..., simplify=TRUE)</h3>
+<p>by 可以当成dataframe上的 tapply 。 indices 应当和dataframe每列的长度相同。</p>
+<p>返回值是 by 类型的object。若simplify=FALSE，本质上是个list。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 例1: 数据框按奇偶行分组并统计
+a=data.frame(
+  'x1'=c(1,2,3,4),
+  'x2'=c(10,20,30,40)
+)
+a
+#  x1 x2
+#1  1 10
+#2  2 20
+#3  3 30
+#4  4 40
 
+ind=a$x1 %% 2; ind #[1] 1 0 1 0 按奇偶行分组
+tapply(a$x2,ind,sum)
+#0  1 
+#60 40 
+
+> by(a,ind,sum)
+> by(a,ind,sum,simplify=T) #没看到T和F的差别
+ind: 0
+[1] 66
+------------------------------------------------------------------------ 
+ind: 1
+[1] 44
+
+
+# 按行求和
+> by(a,ind,rowSums)
+> by(a,ind,function(x){ apply(x, 1, sum) }, simplify = T)
+ind: 0
+ 2  4 
+22 44 
+------------------------------------------------------------------------ 
+ind: 1
+ 1  3 
+11 33 
+
+
+# 按列求和
+> by(a,ind,colSums)
+> by(a,ind,function(x){ apply(x, 2, sum) }, simplify = T)
+ind: 0
+x1 x2 
+ 6 60 
+------------------------------------------------------------------------ 
+ind: 1
+x1 x2 
+ 4 40
+
+> by(a,ind,colMeans) #ind行分类，colMeans按列求平均
+> by(a,ind,function(x){ apply(x, 2, mean) }, simplify = T)
+
+> by(a,ind,rowMeans) #ind行分类，rowMeans按行row求平均
+> by(a,ind,function(x){ apply(x, 1, mean) }, simplify = T)</div>
+</div>
+<br>
+
+
+<p>by() 可以代替 aggregate() 做分组统计，而且支持多个返回值。</p>
+<p>例2:分组统计可使用 aggregate() 或 sapply()组合。</p>
+<p>如果 by=list(iris$Species) 中没有添加 Species= ，则第一列列名是 Group.1。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#例2: 鸢尾花按亚类分组，统计组内各指标的均值
+> aggregate(iris[,1:4], by=list( Species2 = iris$Species ), FUN=mean)
+输出: 
+    Species2 Sepal.Length Sepal.Width Petal.Length Petal.Width
+1     setosa        5.006       3.428        1.462       0.246
+2 versicolor        5.936       2.770        4.260       1.326
+3  virginica        6.588       2.974        5.552       2.026
+
+# 更紧凑的结果: 带 rownames 
+> sapply(split(iris[,1:4], iris$Species), function(x){
+  apply(x, 2, mean)
+})
+输出:
+             setosa versicolor virginica
+Sepal.Length  5.006      5.936     6.588
+Sepal.Width   3.428      2.770     2.974
+Petal.Length  1.462      4.260     5.552
+Petal.Width   0.246      1.326     2.026</div>
+</div>
+<br>
+
+
+
+<p>aggregate 只能调用但返回值函数，无法一次返回若干统计量。</p>
+<p>例3: 想多个返回值，使用 by() 函数: by(data, INDICES, FUN)。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 例3: 鸢尾花按亚类分组，统计组内各指标的中位数、均值、方差、变异系数、峰度等。
+by(iris[,1:4], iris$Species, function(x2){
+  sapply(x2, function(x){
+  n=length(x)
+  m=mean(x)
+  s=sd(x)
+  cv=s/m
+  return( c(n=n, mean=m, sd=s, cv=cv))    
+  })
+})
+
+封装成函数
+# 函数化
+mystat=function(x2){
+  sapply(x2, function(x){
+    n=length(x)
+    md=median(x)
+    m=mean(x)
+    s=sd(x)
+    cv=s/m
+    skew=sum( (x-m)^3/s^3) /n
+    kurt=sum( (x-m)^4/s^4) /n -3
+    return( c(n=n, median=md, mean=m, stdev=s, cv=cv, skew=skew, kurtosis=kurt))    
+  })
+}
+by(iris[,1:4], iris$Species, mystat)
+输出: 
+iris$Species: setosa
+         Sepal.Length Sepal.Width Petal.Length Petal.Width
+n         50.00000000 50.00000000   50.0000000  50.0000000
+median     5.00000000  3.40000000    1.5000000   0.2000000
+mean       5.00600000  3.42800000    1.4620000   0.2460000
+stdev      0.35248969  0.37906437    0.1736640   0.1053856
+cv         0.07041344  0.11057887    0.1187852   0.4283967
+skew       0.11297784  0.03872946    0.1000954   1.1796328
+kurtosis  -0.45087239  0.59595073    0.6539303   1.2587179
+------------------------------------------------------------------------ 
+iris$Species: versicolor
+         Sepal.Length Sepal.Width Petal.Length Petal.Width
+n         50.00000000  50.0000000   50.0000000 50.00000000
+median     5.90000000   2.8000000    4.3500000  1.30000000
+mean       5.93600000   2.7700000    4.2600000  1.32600000
+stdev      0.51617115   0.3137983    0.4699110  0.19775268
+cv         0.08695606   0.1132846    0.1103077  0.14913475
+skew       0.09913926  -0.3413644   -0.5706024 -0.02933377
+kurtosis  -0.69391378  -0.5493203   -0.1902555 -0.58731442
+------------------------------------------------------------------------ 
+iris$Species: virginica
+         Sepal.Length Sepal.Width Petal.Length Petal.Width
+n         50.00000000  50.0000000  50.00000000  50.0000000
+median     6.50000000   3.0000000   5.55000000   2.0000000
+mean       6.58800000   2.9740000   5.55200000   2.0260000
+stdev      0.63587959   0.3224966   0.55189470   0.2746501
+cv         0.09652089   0.1084387   0.09940466   0.1355627
+skew       0.11102862   0.3442849   0.51691747  -0.1218119
+kurtosis  -0.20325972   0.3803832  -0.36511606  -0.7539586</div>
+</div>
 
 
 

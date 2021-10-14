@@ -117,7 +117,7 @@ $(function(){
 			<li><a href="#32">坐标轴 axis()</a>
 			<li><a href="#33">参考线 abline()</a>
 			<li><a href="#34">图例 legend()</a>
-			<li><a href="#35">文本标注 text(),mtext(),plotmath</a>		
+			<li><a href="#35">文本标注 text(),mtext(),plotmath: 标注公式、R^2、p值</a>		
 		</ul>
 	</li>
 	<li><a href="#4">组合多个图形</a>
@@ -1105,6 +1105,8 @@ hist(h, xlab = expression(h),
 <p>(2)bquote() 函数画公式(支持变量替换)。 除了.()子表达式的内容被它们的值替换外，其它表达式都被引用。</p>
 <p>(3) substitute() 函数画公式(支持变量替换): 格式上类python: substitute( paste(nn, x^2), list(nn=labNames[1], x=100))</p>
 <p>(4) parse(text=str1)/str2lang(str1)/str2expression(str1) 把字符串转换为公式：先拼接字符串（该步比较复杂），再用这几个函数任意一个转为公式，支持变量替换。</p>
+
+<p>外链: <a target="_blank" href="https://mp.weixin.qq.com/s/DJkwXEN8uKKbEeFaNWz-yw">R 语言 | 如何用【非科学计数法】在图中标记P值？(R /ggplot2)</a></p>
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># fig1: 标注线性拟合曲线的R^2

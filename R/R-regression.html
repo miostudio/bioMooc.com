@@ -1,0 +1,416 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
+<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+<style>
+.red{color:red}
+.orange{color:orange}
+.blue{color:blue}
+.lime{color:lime}
+</style>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+
+h2.tutheader{margin-top:30px!important;}
+h3, h4{ border-left:3px solid #E5502A; padding-left:3px; margin-top:20px!important;}
+</style>
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+		
+		
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R统计 </span> 回归分析</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 有效的回归分析是一个交互的、整体的、多步骤的过程。[R in action, 2nd Edition, chapter 8,13]</p>
+
+<ul>
+	<li><a href="#1">简单线性回归</a></li>
+	<li><a href="#2">多项式回归</a></li>
+	<li><a href="#3">多元线性回归</a>
+		<ul>
+			<li><a href="#3_1">xx</a>
+			<li><a href="#3_2">xxx</a>
+		</ul>
+	</li>
+	<li><a href="#4">广义线性回归 glm</a></li>
+	<li><a href="#100">参考资料</a></li>
+
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+<a name="1"></a>
+<h2 class="tutheader">简单线性回归</h2>
+
+<a name="0_1"></a>
+<h3 class="tutheader">线性回归标注</h3>
+
+<pre>
+核心语句:
+plot(mpg~wt, data=mtcars) #画散点图
+fit=lm(mpg ~ wt, data=mtcars) #线性回归拟合
+abline(fit) #画回归曲线
+</pre>
+
+<img src="images/stat_reg/reg_01.png" /> 
+<img src="images/stat_reg/reg_02.png" /><br>
+
+<p>图1 标注决定系数R^2和p值。图2 标注相关系数r和回归公式。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#线性回归 model=lm(y ~ x, data=test)
+model=lm(mpg ~ wt, data=mtcars)
+model
+modsum=summary(model)
+modsum
+
+r2 = modsum$adj.r.squared; r2 #R^2=0.7445939
+my.p = modsum$coefficients[2,4]; my.p #1.293959e-10
+library(car)
+
+# 相关检验 correlation
+corTest=cor.test(mtcars$mpg, mtcars$wt)
+corTest$p.value #1.293959e-10 就是前面lm中对斜率的p值
+r=round( corTest$estimate, 3) ;r # r=-0.8676594 相关系数
+
+
+
+###############
+# 图1
+# set up an example plot
+png(filename="01.png", width=75*2.5, height=75*2.5, res=75)
+# pdf(file="01.pdf", width=2.5, height=2.5)
+# pdf 单位是 2.5 inch,
+# png 单位是 dot(default pixels == dot 像素点), 
+#   按照分辨率 75 dpi(dot per inch)，
+#   2.5inch pdf对应的png 长度应该是 75 dot/inch * 2.5inch=187.5dot
+# png 保存的图比pdf再截图文件大小要小，是前者的 35%。
+
+par(mar=c(2.3, 2.3, 0, 0)+0.1) # (b,l,t,r) 完全没白边，没顶部标题
+plot(mpg~wt, data=mtcars, pch=19, cex=0.5, mgp=c(1.5,0.5,0))
+abline(model, lty=2, lwd=2)
+
+# 作为图例
+# https://lukemiller.org/index.php/2012/10/adding-p-values-and-r-squared-values-to-a-plot-using-expression/
+rp = vector('expression',2)
+rp[1] = substitute(expression(italic(R)^2 == MYVALUE), 
+                   list(MYVALUE = format(r2,dig=3)))[2]
+rp[2] = substitute(expression(italic(p) == MYOTHERVALUE), 
+                   list(MYOTHERVALUE = format(my.p, digits = 2)))[2]
+legend(3.2, 35, legend = rp, bty = 'n', cex=0.8)
+
+#添加相关系数 r
+text(x = 2.3, y = 12, labels = bquote("r = "~.(r)), cex=1)
+dev.off()
+
+
+
+###############
+# 图2
+# panel.first / panel.last：作图前(后) 要完成的工作\\
+# panel.first=grid()：作图之前先添加网格线
+
+plot.new()
+# method1: 2步法，不好
+plot(mpg~wt, data=mtcars,
+     pch=19,
+     #panel.first=grid() #无效
+     panel.first=abline(h=seq(10,45,5),v=seq(1,5,1),lty=3, lwd=1.5, col="gray")
+)
+grid(col="red") #网格画到图上了，不好
+
+
+
+png(filename = "02.png", width=75*2.5, height=75*2.5, res=75)
+#method2: 一步法，网格在图下。推荐用法
+par(mar=c(2.3, 2.3, 0, 0)+0.1)
+plot(data.frame(wt=mtcars$wt, mpg=mtcars$mpg),
+     pch=19, cex=0.5,
+     #panel.first=grid() #有效
+     panel.first=abline(h=seq(10,45,5),v=seq(1,5,1),lty=3, lwd=1.5, col="grey")
+)
+
+# standard line of best fit - black line
+abline(model, lty=2, lwd=2)
+
+# force through [0,0] - blue line
+#abline(lm(y ~ x + 0, data=test), col="blue", lty=2)
+abline(lm(mpg ~ wt + 0, data=mtcars), col="blue", lty=2) #过原点
+
+# 如果要求过其他点呢？(2,15)
+points(4,20, col="red", pch=19, lwd=4)
+nmod=lm( I(mpg-20) ~ I(wt-4) +0, data=mtcars) #+0(网页上看到的)和-1(书上写的)效果相同。
+abline( predict(nmod, newdata = list(wt=0))+20, coef(nmod), col='red', lty=3)
+
+# 添加文字、公式
+# Adding p values and R squared values to a plot using expression()
+a=round(as.numeric(model$coefficients[1]),2);a
+b=round(as.numeric(model$coefficients[2]),2);b
+if(b &lt; 0){ #负斜率，手动加-号
+  text(4, 31, labels=bquote( hat(y)~"="~.(a)~"-"~.(-b)~"x" ), cex=0.8)
+}else{ #正斜率要+号
+  text(4, 31, labels=bquote( hat(y)~"="~.(a)~"+"~.(b)~"x" ), cex=0.8)
+}
+
+# 添加r:右上角
+mylabel = bquote(italic(r) == .(format(r, digits = 3)))
+text(x = 4, y = 33.5, labels = mylabel, cex=0.8)
+dev.off()</div>
+</div>
+
+
+
+<a name="0_2"></a>
+<h3 class="tutheader">更多模型处理函数</h3>
+<pre>
+summary(model) #展示拟合模型的详情
+coefficients(model) #模型参数：截距项和斜率
+confint(model) #提供模型参数的置信区间
+
+fitted(model) #列出拟合模型的预测值
+hist(mtcars$mpg-fitted(model), n=20)
+hist(residuals(model), n=20)
+
+anova(model) #生成一个拟合模型的方差分析表，或者比较2个或更多拟合模型的方差分析表
+vcov(model) #列出模型参数的协方差矩阵
+AIC(model) #输出赤池信息统计量
+predict(model, data.frame(wt=c(2.62, 3.46, 3.0) )) #给出新数据集，使用模型预测
+
+par(mfrow=c(2,2)) #四格图
+plot(model) #生成评价拟合模型的诊断图
+
+fit=lm(weight~height, data=women)
+par(mfrow=c(2,2))
+plot(fit)
+
+fit2=lm(weight~height+I(height^2), data=women)
+par(mfrow=c(2,2))
+plot(fit2)
+
+hist( residuals(fit), n=20) #n和breaks一样
+</pre>
+
+
+
+
+
+
+
+
+
+
+<a name="2"></a>
+<h2 class="tutheader">多项式回归</h2>
+
+<a name="0_1"></a>
+<h3 class="tutheader">xx</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="3"></a>
+<h2 class="tutheader">多元线性回归</h2>
+
+<a name="0_1"></a>
+<h3 class="tutheader">xx</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="4"></a>
+<h2 class="tutheader">广义线性回归</h2>
+
+<a name="0_1"></a>
+<h3 class="tutheader">xx</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="100"></a>
+<h2 class="tutheader">参考资料</h2>
+<pre>
+http://www.science.smith.edu/~jcrouser/SDS293/labs/lab2-r.html
+https://lukemiller.org/index.php/2012/10/adding-p-values-and-r-squared-values-to-a-plot-using-expression/
+</pre>
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
