@@ -886,9 +886,13 @@ barplot(rep(1,n),col=cm.colors(n), border=NA,axes=F, main="cm.colors")</div>
 	<div style="white-space: pre-wrap;">library(RColorBrewer)
 display.brewer.all() #显示全部颜色集合
 
+
 ## 选一个颜色集合，比如Dark2, Set2
+display.brewer.pal(n = 8, name = 'RdBu')
+
 csn='Dark2'
 myColors=brewer.pal(8,csn) #该主题有n种颜色
+
 
 par( mfrow=c(3,1), mar=c(0,1,1,0)) #bottom, left, top, right
 barplot(rep(1,8),col= myColors, main=csn, axes=F,border=F)
