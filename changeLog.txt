@@ -229,6 +229,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.1-9 install docker on CentOS [202.10.12]
 	page0.3.2-0 R/ 回归; apply [202.10.14]
 	page0.3.2-1 linux/ virtualenv pyenv [202.10.18]
+	page0.3.2-2 linux/ docker image for jupyter, Seurat4.0 [202.10.25]
 ##############
 # commit
 ########>> push miostudio

@@ -1,0 +1,441 @@
+<html>
+<head> <meta charset="utf8">
+<link rel="stylesheet" href="/static/css/md_simple.css" />
+<script src="/static/js/marked.js"></script>
+<script>
+// https://www.cnblogs.com/djtao/p/6224399.html
+// 本页面使用 markdown 书写，依赖于 marked.js 和 md_simple.css
+var $=function(obj){return document.getElementById(obj);}
+window.onload=function(){
+	$('content').innerHTML= marked( $("raw").innerText );
+}
+</script>
+<title>Docker image and Dockerfile for Rstudio</title>
+</head>
+
+
+<body><div id="content"></div>
+<pre id="raw">
+# 构建镜像: Rstudio + R4.1.0 + Seurat 4.0.5
+
+> Create on 2021/10/25 by [dawneve](https://github.com/dawneve)
+
+
+
+
+
+
+---
+镜像信息: 
+- 构建的镜像是 R4.1.0 + Rstudio server + Seurat 4.0.5; 默认用户 rstudio，带sudo权限。
+- 想直接使用镜像的，请看第3: `$ docker pull dawneve/seurat:4.0.5r1`
+
+
+
+---
+有3个方案:
+- 全新镜像，安装 R, Rstudio, Seurat;
+- Rstudio 基础镜像，安装 Seurat；
+- Seurat 基础镜像，安装Rstudio；
+
+方案1太繁琐了，另外两个方案各有优劣。本文选择第三个，因为它只需要安装Rstudio即可使用。
+
+
+
+---
+前提准备:
+```
+# 要先安装好最新版的 docker。
+$ docker --version
+Docker version 20.10.9, build c2ea9bc
+
+# 本文示例宿主机是 CentOS 7.9。使用普通用户，在 docker 组。
+```
+
+
+
+
+
+
+
+## 1. 拉取基础镜像、安装文件
+
+
+(1) 空镜像(可选)
+
+$ docker pull ubuntu:20.04
+
+
+(2) Rstudio 基础镜像(可选)
+
+[Rstudio 专栏](https://environments.rstudio.com/docker) 提到 **Rocker Project**:
+
+The Rocker project is a community driven effort to create a series of self-contained images for R development. These images can often be used as “virtual machines”. The image labels define their contents, e.g. the rocker/tidyverse image includes R and the tidyverse packages. The tag specifies the specific version of R used in the image. These images are all based off of the Debian OS.
+
+[The Rocker Project](https://www.rocker-project.org/): Docker Containers for the R Environment.
+```
+https://hub.docker.com/r/rocker/rstudio
+
+最新版是 4.1.1
+$ docker pull rocker/rstudio:4.1.1
+```
+
+
+
+(3) Seurat 基础镜像 
+
+Seurat 官网 install 目录下最后几行(2021/10/1): 
+
+We provide docker images for Seurat via dockerhub.
+
+To use as a base image in a new Dockerfile:
+
+`FROM satijalab/seurat:latest`
+
+```
+https://hub.docker.com/r/satijalab/seurat
+
+最新版是 4.0.5
+$ docker pull satijalab/seurat:4.0.5
+
+如果一直拉取失败，只能让 其他人/国外朋友 拉取后打包发过来，再导入。
+打包为tar命令
+$ docker save -o seurat_4.0.5.tar satijalab/seurat:4.0.5
+由tar包导入的命令
+$ docker load &lt; seurat_4.0.5.tar
+```
+
+
+
+(4) 检查下载的镜像
+```
+$ docker images
+REPOSITORY         TAG             IMAGE ID       CREATED         SIZE
+ubuntu             20.04           ba6acccedd29   7 days ago      72.8MB
+rocker/rstudio     4.1.1           089c6b053857   3 days ago      1.89GB
+satijalab/seurat   4.0.5           3bf89a0bbbfb   3 days ago      3.67GB
+```
+本文使用最后一个，其他2个作为学习/测试用。
+
+查看构建镜像所用过的命令
+```
+我们发现，镜像 satijalab/seurat:4.0.5 也是基于 rocker 项目的。
+$ docker history satijalab/seurat:4.0.5
+
+输出到文件查看，比较直观
+$ docker history --no-trunc satijalab/seurat:4.0.5 > ~/tmp.txt
+$ less -S ~/tmp.txt
+```
+
+
+
+
+
+
+
+
+## 2. 开始构建镜像
+以下操作都是在 ~/dockerBuild/4.1.0/ 下进行。
+
+(1) ubuntu 版的 [Rstudio](https://www.rstudio.com/products/rstudio/download-server/debian-ubuntu/) 安装方法
+```
+sudo apt-get install gdebi-core
+wget https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2021.09.0-351-amd64.deb
+sudo gdebi rstudio-server-2021.09.0-351-amd64.deb
+```
+
+先下载该deb文件：
+```
+$ wget https://download2.rstudio.org/server/bionic/amd64/rstudio-server-2021.09.0-351-amd64.deb
+```
+
+(2) 学习 镜像中安装 Rstudio 的脚本
+```
+https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/rstudio_4.1.1.Dockerfile
+
+FROM rocker/r-ver:4.1.1
+
+LABEL org.opencontainers.image.licenses="GPL-2.0-or-later" \
+      org.opencontainers.image.source="https://github.com/rocker-org/rocker-versioned2" \
+      org.opencontainers.image.vendor="Rocker Project" \
+      org.opencontainers.image.authors="Carl Boettiger <cboettig@ropensci.org>"
+
+ENV S6_VERSION=v2.1.0.2
+ENV RSTUDIO_VERSION=2021.09.0+351
+ENV DEFAULT_USER=rstudio
+ENV PATH=/usr/lib/rstudio-server/bin:$PATH
+
+RUN /rocker_scripts/install_rstudio.sh
+RUN /rocker_scripts/install_pandoc.sh
+
+EXPOSE 8787
+
+CMD ["/init"]
+```
+
+
+继续看 [/scripts/install_rstudio.sh](https://github.com/rocker-org/rocker-versioned2/blob/master/scripts/install_rstudio.sh) 关键语句:
+```
+dpkg -i rstudio-server-*-amd64.deb
+rm rstudio-server-*-amd64.deb
+```
+
+
+(3) 写 Dockerfile
+
+$ cat Dockerfile
+```
+FROM satijalab/seurat:4.0.5
+ENV DEFAULT_USER=rstudio
+ENV PASSWORD=123456
+ENV UID=1001
+ENV GID=1001
+
+ADD rstudio-server-2021.09.0-351-amd64.deb /home/
+COPY scripts/* /rocker_scripts/
+RUN /rocker_scripts/install_Rstudio2.sh
+
+EXPOSE 8787
+ENTRYPOINT ["/rocker_scripts/docker-entrypoint.sh"]
+CMD ["bash"]
+```
+
+用到的脚本文件:
+
+$ cat scripts/install_Rstudio2.sh
+```
+#!/bin/bash
+set -e
+
+## 安装Rstudio
+apt-get update && apt-get install -y gdebi-core \
+	psmisc sudo libclang-dev libpq5
+Rstudio_version="2021.09.0-351"
+cd /home && gdebi -n rstudio-server-${Rstudio_version}-amd64.deb && rm rstudio-server-${Rstudio_version}-amd64.deb
+#cd /home && dpkg -i rstudio-server-${Rstudio_version}-amd64.deb && rm rstudio-server-${Rstudio_version}-amd64.deb
+
+## 清理缓存
+apt-get clean
+
+rm -rf /var/lib/apt/lists/*
+rm -rf /var/cache/*
+```
+
+$ cat scripts/docker-entrypoint.sh
+```
+#!/bin/bash
+set -e
+
+## 新增用户 rstudio，密码随机生成。为了保证文件权限一致，传递一下uid和gid
+DEFAULT_USER=${DEFAULT_USER:-rstudio}
+groupadd -g $GID user
+useradd -s /bin/bash -d /home/${DEFAULT_USER} -m ${DEFAULT_USER} -u $UID -g $GID
+
+## 设置密码
+if [ "$PASSWORD" == "123456" ]
+then
+  PASSWORD=`date|md5sum |head -c 10`
+fi
+echo "${DEFAULT_USER}:${PASSWORD}" | chpasswd
+
+## 添加sudo权限
+echo ${DEFAULT_USER}" ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+## 输出用户名和初始密码
+echo -e "user: ${DEFAULT_USER}\npassword: "${PASSWORD} "\n" \
+	"\033[31m WARNING! \033[m Please change your password as soon as possible! The default passwd is public!";
+
+# 添加软链接
+chown $uid:$gid /data/
+ln -s /data/ /home/${DEFAULT_USER}/data
+
+## 启动服务
+service rstudio-server start
+
+exec "$@"
+```
+
+
+
+(4) 开始构建 
+```
+当前目录下文件结构:
+$ tree .
+.
+|-- Dockerfile
+|-- rstudio-server-2021.09.0-351-amd64.deb
+`-- scripts
+    |-- docker-entrypoint.sh
+    `-- install_Rstudio2.sh
+
+脚本要有可执行权限
+$ chmod a+x scripts/docker-entrypoint.sh
+$ chmod a+x scripts/install_Rstudio2.sh
+```
+
+构建
+```
+$ docker build -t seurat:4.0.5r1 ./
+会有很多输出，除了出错信息，其他忽略。
+时长取决于网速，2-5min。
+
+$ docker images
+REPOSITORY         TAG             IMAGE ID       CREATED          SIZE
+seurat             4.0.5r1         8dc106e85b8e   12 seconds ago   4.58GB
+```
+
+上传到 docker hub
+```
+加上用户名前缀:
+$ docker tag 8dc1 dawneve/seurat:4.0.5r1
+$ docker images
+REPOSITORY         TAG             IMAGE ID       CREATED          SIZE
+seurat             4.0.5r1         8dc106e85b8e   42 minutes ago   4.58GB
+dawneve/seurat     4.0.5r1         8dc106e85b8e   42 minutes ago   4.58GB
+
+登录
+$ docker login -u dawneve
+Password: 
+WARNING! Your password will be stored unencrypted in /home/wangjl/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+Login Succeeded
+
+上传: 总是失败，不确定能否上传。
+$ docker push dawneve/seurat:4.0.5r1
+
+查看
+https://hub.docker.com/u/dawneve
+```
+
+
+
+
+
+
+
+
+
+## 3. 使用镜像
+
+优化启动方式: 文件映射，关联用户 uid，guid
+
+(1)在该用户的目录中新建文件夹，用于和 docker 容器共享文件，并持久化。
+```
+$ mkdir -p /home/${user}/data/dockerHome
+```
+
+
+(2)设置信息
+- 指定端口号，推荐[6千, 6万]之间的整数，一个主机上一个端口号只能被一个进程使用，被占用了就换一个。 
+- 获取用户信息:username, uid 和 gid
+
+```
+$ port=10002 && user=${USER} && uid=`id ${user} -u` && gid=`id ${user} -g`
+```
+
+
+(3)启动容器，并在容器内新建用户 rstudio
+```
+$ docker run --name=Rs4 --rm -it -d -p ${port}:8787 \
+--mount type=bind,source=/home/${user}/data/dockerHome/,target=/data/ \
+-e UID=$uid -e GID=$gid \
+seurat:4.0.5r1
+```
+
+- 可设定密码(-e PASSWORD=xxx)，默认密码是随机生成10位字符串。
+- 可设定用户名(-e DEFAULT_USER=xxx)，默认 rstudio.
+	* 默认用户有sudo权限，可以在Rstudio的shell标签下执行sudo命令。
+
+
+查看容器是否启动成功
+```
+$ docker ps
+CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+0fa4f3d02cd2   seurat:4.0.5r1   "/rocker_scripts/doc…"   4 minutes ago   Up 4 minutes   0.0.0.0:10002->8787/tcp, :::10002->8787/tcp   Rs4
+```
+
+(4) 网页登录
+查看用户和密码
+```
+$ docker logs Rs4
+user: rstudio
+password: 21be20f8f9 
+  WARNING!  Please change your password as soon as possible! The default passwd is public!
+
+查主机 ip: `$ ipconfig`
+
+打开浏览器: http://IP:10002
+```
+
+安全警告：
+- 宿主机文件夹 /home/${user}/data/dockerHome/ 是和容器内 /home/rstudio/data/ 绑定的(内容完全一致)。
+	* 所以只要把数据放到主机的 ~/data/dockerHome/ 中，在Rstudio中的 ~/data/ 即可看到。
+- 反复读这句：容器内仅 /home/rstudio/data/ 数据会保留，其他数据都会随着容器的停止(关机/停电/异常/被杀掉...)而被【销毁】。
+	* 销毁就是删除！重要输出只保存到Rstudio的 ~/data/ 下。
+- 初始密码全服务器的人都可以看到，可能有些间谍软件也能看到，请及时修改！
+	* 在 Rstudio 的 Terminal 修改密码 $ passwd 
+
+
+
+
+
+
+
+
+
+
+## 4. 经验教训
+
+
+- 整个流程探索最费时间的就是固定步骤 apt update && apt install ...，可以使用多步构建。
+- 反复重复构建的原因，是添加用户总是不对。这里花的时间太多，得不偿失。
+	* 完美是成功的敌人。能用即可，全局最节省时间是最优解。
+	* 下次构建其他镜像，只提供 `docker exec -it xx bash` 下的添加用户方法。
+</pre>
+
+
+
+<!--
+测试时，多步构建，节省时间
+正常后，再全流程执行。
+$ cat dockerfile1 
+FROM satijalab/seurat:4.0.5
+RUN apt-get update && apt-get install -y gdebi-core \
+    psmisc sudo libclang-dev libpq5
+
+$ docker build -t satijalab/seurat:4.0.5i -f dockerfile1 ./
+
+
+报错：
+useradd: warning: the home directory /home/rstudio already exists.
+useradd: Not copying any file from skel directory into it.
+
+
+
+$ cat ep1.sh
+#!/bin/sh
+set -e
+
+service rstudio-server start
+exec "$@"
+
+
+$ docker run --name=Rs4 --rm -it -d -p ${port}:8787 \
+--mount type=bind,source=/home/${user}/data/dockerHome/,target=/home/${user}/data/ \
+--mount type=bind,source=/home/wangjl/test/,target=/home/ \
+-e DEFAULT_USER=${user} -e UID=$uid -e GID=$gid \
+--entrypoint "/home/ep1.sh" \
+seurat:4.0.5r1 bash
+
+$ docker exec -it Rs4 bash
+root@a4c11ff1245c:/# 
+-->
+
+<div id=footer>
+	<p>==End==</p>
+	<p>2021.10.25</p>
+</div>
+
+</body>
+</html>
