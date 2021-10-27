@@ -1295,20 +1295,31 @@ $ docker logs 5911b
 
 <h3><a name=3.4></a>3.4. 镜像的转移和运输</h3>
 <pre class=code>
-(1) 打包镜像为tar包：
+(1) 通过 tar 包导出、导入
+
+打包镜像为tar包：
 Usage:	docker save [OPTIONS] IMAGE [IMAGE...]
 Save one or more images to a tar archive (streamed to STDOUT by default)
 
 $ docker save -o ubuntu_14.04.tar ubuntu:14.04
 $ docker save -o jdk_9.0.1.tar openjdk:9.0.1-11-slim
 
-
-(2) 从tar包载入镜像：
+使用 scp 命令跨主机传输
 $ scp wangjl@y.biomooc.com:/home/wangjl/data/test/testCWL/jdk_9.0.1.tar .
 
+新主机从tar包载入镜像：
 $ docker load < jdk_9.0.1.tar 
 ## 或者使用
 $ cat jdk_9.0.1.tar| docker import - test/java:v9.0  #从tar包导入镜像，支持重命名镜像
+
+
+(2) 还可以gz压缩
+宿主机
+$ docker save myRstudioIMG | gzip -c > myRstudioIMG.tar.gz
+
+myRstudioIMG.tar.gz 传输到新机器上，再在新机器上导入gz包
+$ gunzip -c myRstudioIMG.tar.gz | docker load
+
 
 
 (3) 推送镜像到仓库 docker hub 

@@ -21,6 +21,9 @@
   <![endif]-->
   <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
   <meta name="apple-mobile-web-app-title" content="生物慕课网">
+<style>
+p{ text-indent:2em;}
+</style>
 </head>
 
 
@@ -58,8 +61,7 @@ $(function(){
 </script>
 
 
-	
-	
+
 
 <!--  内容  -->
 <div class="container main">
@@ -92,7 +94,7 @@ $(function(){
 <p>Docker 是最火的云计算基础设置，它把软件连带其运行的环境一起打包，为快速构建生信运行环境提供了可能。</p>
 <p>本教程，我们将汇编常见的 docker 基础镜像，并尝试构建一些好用的镜像。</p>
 <p>Docker其实很容易学，相信你们能很快学会。</p>
-<p><a target="_blank" href="docker-guide.html">现在开始学习 Docker ！</a></p>
+<p><a target="_blank" href="docker-guide.html">现在开始学习 Docker ！</a> 全面学习 Docker 的常用操作，配套案例。</p>
 
 </div>
 
@@ -102,20 +104,38 @@ $(function(){
 <h2>生信 docker 基础镜像</h2>
 <p>本文仅测试于 Ubuntu/CentOS Linux 环境。</p>
 
-<p><a href="/Python3/Python3-numpy.html">jupyter/datascience-notebook</a>: Python 数据分析 基础镜像</p>
-<p><a target="_blank" href="https://hub.docker.com/r/rocker/rstudio">rocker-project</a>: R 和 Rstudio基础镜像。https://www.rocker-project.org/</p>
-<p><a target="_blank" href="https://hub.docker.com/r/satijalab/seurat">Seurat</a>: Seurat 各个版本的基础镜像，不带 Rstudio。</p>
-
+<ul>
+	<li><a href="/Python3/Python3-numpy.html">jupyter/datascience-notebook</a>: Python 数据分析 基础镜像</li>
+	<li><a target="_blank" href="https://hub.docker.com/r/rocker/rstudio">rocker-project</a>: R 和 Rstudio基础镜像。https://www.rocker-project.org/</li>
+	<li><a target="_blank" href="https://hub.docker.com/r/satijalab/seurat">Seurat</a>: Seurat 各个版本的基础镜像，不带 Rstudio。</li>
+</ul>
 
 
 
 <h2>构建 Docker镜像</h2>
-<ul>
-	<li><a target="_blank" href="docker_image_seurat4.0.html">Rstudio + Seurat Image</a>: R4.1.0 with Seurat 4.0.5</li>
-	<li><a target="_blank" href="docker_image_monocle3.html">Rstudio + Monocle3 Image</a>: R4.1.0 with Monocle3 //todo</li>
-</ul>
+<ol>
+	<li><a target="_blank" href="docker_image_seurat4.0.html">Rstudio + Seurat Image</a>: R 4.1.0 with Seurat 4.0.5</li>
+	<li><a target="_blank" href="docker_image_monocle3.html">Rstudio + Monocle3 Image</a>: R 4.1.0 + Seurat 4.0.5 + Monocle3 1.0.0</li>
+</ol>
 
-<p>xx</p>
+<p>构建1时优化了用户权限，花了很多不必要的时间；之后构建只保证能用，不保证好用，怎么快速构建怎么来。构建1的收获是：使用 Dockerfile 构建确实方便。</p>
+<p>构建2时，安装 Seurat4 花了很多时间，因为网络等原因反复重复。比较好的路线是使用 Seurat 基础镜像并安装一个Rstudio(参考构建1)，然后在此基础上安装包库，并使用 docker commit 提交镜像。而构建2比较好的实践是：目录挂载、容器启动后再手动新建用户，并做磁盘软链接。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>参考资料</h3>
+<pre>
+Docker部署Rstudio Server【四】：订制自己的个性化镜像 https://www.jianshu.com/p/5ea31859aba5
+</pre>
 
 
 

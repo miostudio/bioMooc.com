@@ -18,7 +18,7 @@ window.onload=function(){
 <pre id="raw">
 # 构建镜像: Rstudio + R4.1.0 + Seurat 4.0.5
 
-> Create on 2021/10/25 by [dawneve](https://github.com/dawneve)
+> Create on 2021/10/25 by [Dawneve](https://github.com/dawneve)
 
 
 
@@ -306,6 +306,14 @@ $ docker push dawneve/seurat:4.0.5r1
 
 查看
 https://hub.docker.com/u/dawneve
+
+
+镜像打包压缩
+$ docker save dawneve/seurat:4.0.5r1 | gzip -c > seurat_4.0.5r1.tar.gz
+-rw-r--r--  1 wangjl docker 1.5G Oct 26 17:31 seurat_4.0.5r1.tar.gz
+
+新机器导入gz包
+$ gunzip -c seurat_4.0.5r1.tar.gz | docker load
 ```
 
 
@@ -430,6 +438,52 @@ seurat:4.0.5r1 bash
 
 $ docker exec -it Rs4 bash
 root@a4c11ff1245c:/# 
+
+
+
+
+
+
+一个 Dockerfile 参考
+#   Docker image for the latest build of Seurat
+FROM ubuntu:20.04
+
+LABEL org.label-schema-version="latest" \
+    org.label-schema.name="Seurat" \
+    org.label-schema.name="Satija Lab" \
+    org.label-schema.license="GPLv3" \
+    org.label-schema.build-date=''
+
+#   Set up the system for Seurat
+#   Don't ask for user input
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN=true
+#   Configure tzdata (ish)
+#RUN echo 'tzdata tzdata/Areas select US' | debconf-set-selections
+#RUN echo 'tzdata tzdata/Zones/US select New York' | debconf-set-selections
+#   Add CRAN PPA
+# RUN apt-get update
+# RUN apt-get install -y ca-certificates gnupg2
+# RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/" | tee --append /etc/apt/sources.list
+# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+
+#   Install R
+RUN apt-get update
+RUN apt-get install -y r-base-dev
+## 选择亚洲，上海。
+
+算了，不能用！版本太老。
+root@2c96b1931b4f:/# R --version
+R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
+
+
+#   Install system Seurat dependencies
+RUN apt-get install -y libhdf5-dev libcurl4-openssl-dev libssl-dev
+
+#   Install Seurat
+RUN R --slave --no-restore --no-save -e "install.packages('Seurat', repos='https://cloud.r-project.org')"
+
+CMD [ "/bin/bash" ]
 -->
 
 <div id=footer>

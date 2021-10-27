@@ -1,0 +1,457 @@
+<html>
+<head> <meta charset="utf8">
+<link rel="stylesheet" href="/static/css/md_simple.css" />
+<script src="/static/js/marked.js"></script>
+<script>
+// https://www.cnblogs.com/djtao/p/6224399.html
+// 本页面使用 markdown 书写，依赖于 marked.js 和 md_simple.css
+var $=function(obj){return document.getElementById(obj);}
+window.onload=function(){
+	$('content').innerHTML= marked( $("raw").innerText );
+}
+</script>
+<title>Docker image and Dockerfile for Rstudio</title>
+</head>
+
+
+<body><div id="content"></div>
+<pre id="raw">
+# 构建镜像: Rstudio + R 4.1.0 + Seurat 4.0.5 + Monocle3 1.0.0
+
+> Create on 2021/10/27 by [Dawneve](https://github.com/dawneve)
+
+
+
+---
+有3个方案:
+- 全新镜像，安装 R, Rstudio, Seurat, Monocle3;
+- Rstudio 基础镜像，安装 Seurat, Monocle3；
+- Seurat 基础镜像，安装Rstudio, Monocle3；
+
+方案1太繁琐了，另外两个方案各有优劣。现在尝试2，因为之前尝试过3。
+
+
+
+---
+前提准备:
+```
+# 要先安装好最新版的 docker。
+$ docker --version
+Docker version 20.10.9, build c2ea9bc
+
+# 本文示例宿主机是 Ubuntu 20.04。使用普通用户，在 docker 组。
+```
+
+
+
+
+
+
+
+## 1. 拉取基础镜像
+
+
+(1) 空镜像(可选)
+
+$ docker pull ubuntu:20.04
+
+
+(2) Rstudio 基础镜像
+
+[Rstudio 专栏](https://environments.rstudio.com/docker) 提到 **Rocker Project**:
+
+The Rocker project is a community driven effort to create a series of self-contained images for R development. These images can often be used as “virtual machines”. The image labels define their contents, e.g. the rocker/tidyverse image includes R and the tidyverse packages. The tag specifies the specific version of R used in the image. These images are all based off of the Debian OS.
+
+[The Rocker Project](https://www.rocker-project.org/): Docker Containers for the R Environment.
+```
+https://hub.docker.com/r/rocker/rstudio
+
+最新版是 4.1.1，目前还不稳定。拉取上一个版本
+$ docker pull rocker/rstudio:4.1.0
+```
+
+
+如果一直拉取失败，只能让 其他人/国外朋友 拉取后打包发过来，再导入。
+```
+打包为tar命令
+$ docker save -o xx.tar xx/aa:1.0
+由tar包导入的命令
+$ docker load &lt; xx.tar
+
+或者打包压缩为 tar.gz
+$ docker save myRstudioIMG:1.0 | gzip -c > myRstudioIMG.tar.gz
+新机器导入gz包
+$ gunzip -c myRstudioIMG.tar.gz | docker load
+```
+
+
+
+(3) 检查下载的镜像
+```
+$ docker images
+REPOSITORY         TAG             IMAGE ID       CREATED         SIZE
+ubuntu             20.04           ba6acccedd29   7 days ago      72.8MB
+rocker/rstudio     4.1.0           f5f7fee0cfa8   2 months ago   1.93GB
+```
+本文使用后一个，第一个作为学习/测试用。
+
+查看构建镜像所用过的命令
+```
+$ docker history rocker/rstudio:4.1.0
+
+输出到文件查看，比较直观
+$ docker history --no-trunc rocker/rstudio:4.1.0 > ~/tmp.txt
+$ less -S ~/tmp.txt
+```
+
+
+
+
+
+
+
+
+## 2. 开始构建镜像
+
+这次构建是在基础镜像基础上使用 shell 和 R 命令直接安装软件/包，最后清理缓存， docker commit 保存为镜像。
+
+(1) 主要包的安装方法
+
+rocker/rstudio 基础镜像的启动方法
+```
+https://hub.docker.com/r/rocker/rstudio
+
+选择不同版本的R (Use different versions of R)
+docker run -d -p 8787:8787 -e PASSWORD=yourpasswordhere rocker/rstudio:devel
+docker run -d -p 8787:8787 -e PASSWORD=yourpasswordhere rocker/rstudio:3.2.0
+```
+
+Seurat4 的安装
+```
+https://github.com/satijalab/seurat
+//satijalab.org/seurat/articles/install.html
+
+Install from CRAN
+Seurat is available on CRAN for all platforms. To install, run:
+
+# Enter commands in R (or R studio, if installed)
+install.packages('Seurat')
+library(Seurat)
+```
+
+monocle3 的安装
+```
+Monocle 2 and Monocle 3 alpha are deprecated
+Please use our new package, Monocle 3!
+https://cole-trapnell-lab.github.io/monocle3/
+https://cole-trapnell-lab.github.io/monocle3/docs/introduction/
+
+安装
+https://cole-trapnell-lab.github.io/monocle3/docs/installation/
+```
+
+
+
+
+
+
+
+
+
+(2) 启动 Rstudio 基础镜像 (R 4.1.0)
+
+在主机命令行，启动初始容器
+```
+$ docker run --name=Rs41 -d -p 7000:8787 -e PASSWORD=yourpasswordhere rocker/rstudio:4.1.0
+使用web窗口登录: http://ipV4:7000
+user: rstudio
+pass: 自己设置的，以上命令中默认是 yourpasswordhere
+
+## R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
+```
+
+进入容器内部，给用户 rstudio 添加 sudo 权限
+```
+$ docker exec -ti Rs41 bash
+# echo "rstudio  ALL=(ALL:ALL) ALL" >>/etc/sudoers
+```
+
+
+
+
+
+
+
+
+
+(3) 安装 Seurat4 
+
+该流程(Rstudio 镜像上安装 Seurat)因网速折腾很久，推荐使用 [Seurat 镜像上安装 Rstudio 的方案](docker_image_seurat4.0.html)!
+
+在 shell Terminal 终端安装二进制包库
+```
+# apt-get update
+# apt install -y libglpk-dev libxml2 libxt-dev
+
+# apt-get install -y libhdf5-dev  libcurl4-openssl-dev  libssl-dev  libpng-dev  libboost-all-dev \
+	libxml2-dev  openjdk-8-jdk  python3-dev  python3-pip  wget  git  libfftw3-dev  libgsl-dev
+# apt install -y libeigen3-dev
+
+
+
+
+==> 对于2G内存的云主机，会因为内存限制而R包编译失败: RcppEigen, RSpectra
+报错: g++: fatal error: Killed signal terminated program cc1plus
+解决方法: 换内存更大的主机，或使用预编译过的二进制安装，或直接使用别人构建好的镜像。
+
+#如果内存超过10G，可以跳过这一步，走R中的编译安装。
+# apt install -y r-cran-rcppeigen 
+然后才能正常安装R包Seurat。
+# R
+> install.packages("RcppEigen")
+* installing *binary* package ‘RcppEigen’ ...
+* DONE (RcppEigen)
+```
+
+
+
+
+切换到R Console
+```
+# R
+
+使用国内镜像，否则极慢!
+> options(repos=structure(c(CRAN="https://mirrors.tuna.tsinghua.edu.cn/CRAN/")))
+> getOption('repos')
+
+> install.packages('Seurat') #看文献吧，需要 40-100min
+
+尝试载入包
+> library(Seurat) #版本号: 4.0.5
+Attaching SeuratObject
+>
+```
+
+
+宿主机新shell中，记录这时的容器为一个镜像。
+```
+$ docker commit -m "Rstudio: R4, Seurat 4.0.5" Rs41 seurat:4.0.5rs
+
+$ docker images
+REPOSITORY                   TAG             IMAGE ID       CREATED          SIZE
+seurat                       4.0.5rs         45326ead2f6d   52 seconds ago   3.75GB
+```
+
+
+
+
+
+
+
+
+
+
+(4) 继续安装 Monocle3
+
+```
+> if (!requireNamespace("BiocManager", quietly = TRUE))
+	install.packages("BiocManager")
+## BiocManager::install(version = "3.10") #这是个R3.6时代的命令
+
+> BiocManager::install(c('BiocGenerics', 'DelayedArray', 'DelayedMatrixStats',
+                       'limma', 'S4Vectors', 'SingleCellExperiment',
+                       'SummarizedExperiment', 'batchelor', 'Matrix.utils'))
+
+> install.packages("devtools")
+> devtools::install_github('cole-trapnell-lab/leidenbase')
+
+$ sudo apt install -y libudunits2-dev
+$ sudo apt install -y libgdal-dev
+##$ sudo apt install libproj-dev
+
+> devtools::install_github('cole-trapnell-lab/monocle3')
+> library(monocle3) #版本号 1.0.0
+>
+```
+
+
+
+
+对该镜像瘦身
+```
+# apt-get clean
+# rm -rf /var/lib/apt/lists/*
+# rm -rf /var/cache/*
+# rm -rf /tmp/*
+
+# rm -rf /home/rstudio/.local/*
+# rm -rf /home/rstudio/.config/*
+
+删除不需要的包
+# apt remove vim
+
+宿主机新shell中，记录这时的容器为一个镜像。
+$ docker commit -m "Rstudio: R4, Seurat 4.0.5, monocle3 1.0.0" Rs41 monocle3:1.0.0rs
+
+$ docker images
+REPOSITORY                   TAG             IMAGE ID       CREATED             SIZE
+monocle3                     1.0.0rs         6a0ce20370fb   24 seconds ago      4.31GB
+seurat                       4.0.5rs         45326ead2f6d   About an hour ago   3.75GB
+```
+注: rs 后缀表示该镜像内带有 rstudio 。
+
+
+镜像打包压缩，方便转发: 
+```
+$ cd /home/wangjl/data/web/docs/DockerImages
+$ docker save monocle3:1.0.0rs | gzip -c > monocle3_1.0.0rs.tar.gz
+$ ls -lth
+total 1.3G
+-rw-rw-r-- 1 wangjl wangjl 1.3G Oct 27 17:05 monocle3_1.0.0rs.tar.gz
+
+传输到另一台主机
+$ scp monocle3_1.0.0rs.tar.gz wangjl@110.40.254.15:/home/wangjl/soft/
+
+新机器导入gz包
+$ gunzip -c monocle3_1.0.0rs.tar.gz | docker load
+```
+
+
+
+
+## 3. 使用镜像
+
+(1). 一般启动
+```
+$ mkdir -p /home/wangjl/data/dockerHome/
+$ chmod 777 /home/wangjl/data/dockerHome/
+
+$ docker run --rm -it -d -p 9000:8787 \
+--mount type=bind,source=/home/wangjl/data/dockerHome/,target=/home/rstudio/data/ \
+--name monocle3 \
+-e PASSWORD=yourpasswordhere monocle3:1.0.0rs
+
+登录
+http://IP:9000
+用户名: rstudio
+密码: yourpasswordhere
+
+> library("ggplot2") #3.3.5
+> library("Seurat") #4.0.5
+Attaching SeuratObject
+> library("monocle3") #1.0.0
+> write.table(iris,"~/data/iris.txt")
+
+回到宿主机，查看发现 /home/wangjl/data/dockerHome/iris.txt 用户名很可能不是自己，是 id=1000 的用户。
+因为 宿主机 和 docker 共用一套内核，也就是 uid/gid 是通用的，权限是和 uid/gid 绑定的。而用户名、组名是否相同无所谓。
+```
+
+
+
+
+(2). 优化的启动方式: 容器内新建和宿主机  uid:gid 一致的用户
+
+如果自己不是宿主系统第一个用户(uid=1000)，建议容器内新建和宿主机 uid/gid 一致的新用户，以便容器的文件权限和主机一致。
+
+这次不需要宿主机目录的777权限了。
+```
+$ docker run --rm -it -d -p 9000:8787 \
+--mount type=bind,source=/home/wangjl/data/dockerHome/,target=/data/ \
+--name monocle3 \
+-e PASSWORD=yourpasswordhere monocle3:1.0.0rs
+
+查询宿主机用户的 uid:gid
+$ echo `id -u` #1001
+$ echo `id -g` #1001
+
+进入容器内部
+$ docker exec -it monocle3 bash
+# DEFAULT_USER="user002" && uid=1001 && gid=1001
+
+# groupadd -g $gid user
+# useradd -s /bin/bash -d /home/${DEFAULT_USER} -m ${DEFAULT_USER} -u $uid -g $gid
+# echo "${DEFAULT_USER}:123456" | chpasswd
+
+# ln -s /data/ /home/${DEFAULT_USER}/data
+# exit
+
+再次登录网页版
+登录
+http://IP:9000
+用户名: user002
+密码: 123456
+```
+
+新建文件，到宿主机 ls -l 查看，发现权限一致了。
+
+
+
+
+
+
+## 4. refer / troubleshooting
+
+```
+1. Install OmicSoft Studio on Windows and Mac
+	http://www.arrayserver.com/wiki/index.php?title=Getting_Started
+2. rstudio sever 报错处理方法集锦
+	https://zhuanlan.zhihu.com/p/368208957
+无法登陆！
+https://community.rstudio.com/t/rstudio-server-error-occurred-during-transmission/84258/3
+mv ~/.local/share/rstudio ~/.local/share/rstudio.old
+service  rstudio-server restart
+
+# su rstudio 
+$ sudo rm -rf ~/.config/rstudio/
+$ sudo rm -rf ~/.local/share/rstudio/sessions/
+$ sudo service rstudio-server restart
+
+3. 总是下载失败的包，可以先手动下载，再安装：
+> install.packages('igraph')
+also installing the dependencies ‘gtable’, ‘isoband’, ‘bslib’, ‘ggplot2’, \
+	‘ggrepel’, ‘igraph’, ‘lmtest’, ‘reticulate’, ‘sctransform’, ‘shiny’
+$ wget https://packagemanager.rstudio.com/cran/__linux__/focal/2021-08-09/src/contrib/igraph_1.2.6.tar.gz
+$ pwd
+/home/rstudio
+> install.packages("/home/rstudio/igraph_1.2.6.tar.gz", repos=NULL, type="source") #编译几分钟 
+```
+</pre>
+
+
+
+
+<!--
+不行了就一个一个安装。
+> install.packages('Seurat')
+Installing package into ‘/usr/local/lib/R/site-library’
+(as ‘lib’ is unspecified)also installing the dependencies ‘sys’, ‘bitops’, ‘stringi’, ‘fs’, ‘askpass’, ‘yaml’, ‘tidyselect’, ‘cpp11’, ‘generics’, ‘gtools’, ‘caTools’, ‘colorspace’, ‘stringr’,’, ‘utf8’, ‘BH’, ‘sitmo’, ‘gtable’, ‘digest’, ‘globals’, ‘listenv’, ‘parallelly’, ‘glue’, ‘isoband’, ‘withr’, ‘plyr’, ‘curl’, ‘mime’, ‘openssl’, ‘R6’, ‘magrits’, ‘viridisLite’, ‘base64enc’, ‘htmlwidgets’, ‘tidyr’, ‘dplyr’, ‘vctrs’, ‘lazyeval’, ‘crosstalk’, ‘purrr’, ‘data.table’, ‘promises’, ‘rappdirs’, ‘gplots’, ‘farvermunsell’, ‘reshape2’, ‘gridExtra’, ‘RcppArmadillo’, ‘httpuv’, ‘xtable’, ‘sourcetools’, ‘later’, ‘crayon’, ‘fastmap’, ‘commonmark’, ‘bslib’, ‘cachem’, ‘ellipsis’, ‘sls’, ‘spatstat.sparse’, ‘abind’, ‘tensor’, ‘goftest’, ‘deldir’, ‘polyclip’, ‘fansi’, ‘pillar’, ‘FNN’, ‘RSpectra’, ‘dqrng’, ‘cowplot’, ‘fitdistrplus’, ‘future’, ‘fpel’, ‘ggridges’, ‘httr’, ‘ica’, ‘igraph’, ‘irlba’, ‘jsonlite’, ‘leiden’, ‘lmtest’, ‘matrixStats’, ‘miniUI’, ‘patchwork’, ‘pbapply’, ‘plotly’, ‘png’, ‘RANN’, ‘Rculate’, ‘rlang’, ‘ROCR’, ‘Rtsne’, ‘scales’, ‘scattermore’, ‘sctransform’, ‘SeuratObject’, ‘shiny’, ‘spatstat.core’, ‘spatstat.geom’, ‘tibble’, ‘uwot’, ‘RcppProgress’
+
+sys_3.4.tar.gz
+bitops_1.0-7.tar.gz
+reticulate_1.20.tar.gz
+
+igraph_1.2.6.tar.gz
+
+###
+RSpectra_0.16-0.tar.gz
+
+
+
+如何修改 Rstudio 的R版本：
+/etc/rstudio/rserver.conf
+https://www.jianshu.com/p/e181a131531a
+
+
+对我博客的引用
+https://www.jianshu.com/p/96c26bb9fc91
+
+-->
+
+
+<div id=footer>
+	<p>==End==</p>
+	<p>2021.10.26</p>
+</div>
+
+</body>
+</html>
