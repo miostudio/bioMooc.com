@@ -19,7 +19,7 @@ window.onload=function(){
 # 构建镜像: Rstudio + R 4.1.0 + Seurat 4.0.5 + Monocle3 1.0.0
 
 > Create on 2021/10/27 by [Dawneve](https://github.com/dawneve)
-
+| [Biomooc](//www.biomooc.com) / [Docker](/linux/docker-tutorial.html)
 
 
 ---
@@ -389,7 +389,16 @@ http://IP:9000
 
 
 
-## 4. refer / troubleshooting
+## 4. 经验教训
+
+- 浪费时间最多的是安装R包，和R包依赖的apt-get包。复杂部分最好用现成的，然后把缺少的一小部分安装上。
+- 有些 C/C++ 的编译需要大内存(至少2G是不够的)，所以可以在大服务器构建镜像，然后在中小服务器使用镜像。
+
+
+
+
+
+## refer / troubleshooting
 
 ```
 1. Install OmicSoft Studio on Windows and Mac
@@ -454,4 +463,5 @@ https://www.jianshu.com/p/96c26bb9fc91
 </div>
 
 </body>
+<script src="/static/js/tongji.js" ></script>
 </html>

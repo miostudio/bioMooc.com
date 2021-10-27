@@ -231,6 +231,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.2-1 linux/ virtualenv pyenv [202.10.18]
 	page0.3.2-2 linux/ docker image for jupyter, Seurat4.0 [202.10.25]
 	page0.3.2-3 linux/ docker image for monocle3; md css update [202.10.27]
+	page0.3.2-4 linux/ docker image 加上百度统计代码; favicon.ico 复制到根目录一份 [202.10.27]
 ##############
 # commit
 ########>> push miostudio
@@ -242,7 +243,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 
 
 ##
-
+百度统计: <script src="/static/js/tongji.js" ></script>
 
 
 

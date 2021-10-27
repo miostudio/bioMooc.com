@@ -25,8 +25,8 @@ html, body, div, p, pre{margin:0; padding:0;}
 	max-width:1000px;
 }
 #footer{
-	background:black; 
-	color:#aaa; 
+	background:#BA3222; 
+	color:#fff; 
 	padding:20px; 
 	min-height:50px; 
 	margin-top:50px; 
@@ -47,7 +47,7 @@ a:hover{color:#007bff;background-color: #f2f8ff;}
 pre#raw{display:none;}
 
 pre {
-    padding: 16px;
+    padding: 10px;
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
