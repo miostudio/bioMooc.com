@@ -92,9 +92,11 @@ $(function(){
 <hr>
 <div class="tutintro"> 
 <p>一图胜万言，作图很重要。</p>
-<p>本教程，我们将汇编常见的编程式绘图语法，常用的包、库和示例。R语言常用的是<a target="_blank" href="R/R-draw-basic.html">R原生绘图函数</a> 和 <a target="_blank" href="R/R-draw-adv-ggplot2.html">ggplot2包</a> 绘图，后者还有一个做交互式图的版本 <a target="_blank" href="https://ggvis.rstudio.com/">ggvis包</a>(基于 <a target="_blank" href="https://vega.github.io/vega/">Vega</a>)。</p>
-<p>可视化其实很容易学，相信你们能很快学会。</p>
-<p>点击左侧菜单，开始学习吧。</p>
+<p>一个图的绘制过程，包括前期数据整理(Python/Perl)，中期绘图(R及R包)，后期拼合及细节修饰(Illustrator/Photoshop)。涉及图形、颜色、字号、大小等主观层面的抉择。</p>
+
+<br>
+<p>可视化其实很容易学，相信你们能很快学会。点击左侧菜单，开始学习吧。</p>
+
 
 </div>
 
@@ -102,13 +104,23 @@ $(function(){
 <hr>
 
 <h2>绘图的基本原则</h2>
-<p>图要清晰易懂，颜色协调、且对比度高，字体为6-12号字，最好是适量形式，方便无损缩放。</p>
+<p>图要清晰易懂，颜色协调、且对比度高，字体为6-12号字，最初最好保存为矢量格式(pdf/SVG)，方便无损缩放。</p>
 
 
 <h2>绘图的基础知识</h2>
-<p>网页绘图主要是 <a target="_blank" href="https://jslecture.biomooc.com/canvas_SVG/index.html">SVG</a> 和 <a target="_blank" href="https://jslecture.biomooc.com/canvas_SVG/indexSVG.html">canvas</a>。</p>
+<p>R绘图主要是矢量图pdf和位图png/jpg等。最近兴起的网页绘图主要是基于 html/html5 的元素 <a target="_blank" href="https://jslecture.biomooc.com/canvas_SVG/index.html">SVG</a> 和 <a target="_blank" href="https://jslecture.biomooc.com/canvas_SVG/indexSVG.html">canvas</a>。</p>
+
+<p>其中R原生绘图十分强大，值得花时间好好学习打磨。同等重要的是 ggplot2 包。这两个武器经常优势互补，是科研绘图的主力。</p>
 
 
+<p>本教程，我们将汇编常见的编程式绘图语法，常用的包、库和示例。R语言常用的是<a target="_blank" href="R/R-draw-basic.html">R原生绘图函数</a> 和 <a target="_blank" href="R/R-draw-adv-ggplot2.html">ggplot2包</a> 绘图，后者还有一个做交互式图的版本 <a target="_blank" href="https://ggvis.rstudio.com/">ggvis包</a>(基于 <a target="_blank" href="https://vega.github.io/vega/">Vega</a>)。</p>
+
+
+
+<ul><b>在线书:</b>
+	<li><a target="_blank" href="https://r-graphics.org/">R Graphics Cookbook, 2nd edition(2021版)</a></li>
+	<li><a target="_blank" href="https://www.rstudio.com/wp-content/uploads/2016/10/how-big-is-your-graph.pdf">how-big-is-your-graph.pdf</a>: Rstudio总结的介绍R原生绘图图纸大小、边界细节的浓缩文档。</li>
+</ul>
 
 
 

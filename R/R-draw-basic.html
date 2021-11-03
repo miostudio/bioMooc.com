@@ -312,13 +312,70 @@ R 渐变色请参考本站 <a href="R-color.html">R 渐变色</a>。
 <p>函数rgb()可基于红—绿—蓝三色值生成颜色，而hsv()则基于色相—饱和度—亮度值来生成颜色。</p>
 
 <br>
-<p><b>显示所有颜色</b></p>
+<p><b>颜色函数</b>: 颜色格式互转、颜色生成</p>
+<img src="images/draw-basic/colors657.png" /><br>
+
 <div class="code notranslate">
-	<div>
-		colors() #657种颜色："white" "aliceblue" "antiquewhite" ...<br>
-	</div>
+	<div style="white-space: pre-wrap;"># 显示所有颜色
+colors() #"white" "aliceblue" "antiquewhite" ...
+length(colors()) # 657 个颜色
+length(colors(distinct = T)) # 502 种独特颜色
+
+
+# 示例：找6个颜色画散点图
+colors=c("firebrick1", "deepskyblue3", "goldenrod1", 
+         "mediumpurple1", "orange3", "palegreen4")
+png("02.png", width=72*3, height=72*3, res=72)
+par(mar=c(3,3,1,1))
+plot(mpg ~ wt, data=mtcars, pch=20, cex=2, col=colors, mgp=c(2,1,0))
+legend("topright", pch=20, col=colors, legend=colors,
+       cex=0.8, #字体大小
+       pt.cex=1.2, #点的大小
+       bty="n") #不要边框
+dev.off()</div>
 </div>
-<p>很好很强大的 <a href="https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf" rel="nofollow" target="_blank">R颜色列表.pdf</a></p>
+
+<p>很好很强大的 
+	<a href="https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf" rel="nofollow" target="_blank">R颜色列表.pdf</a>。
+
+	<a target="_blank" href="/color/colorsInR.html">All colors In R.html</a>, produced by script 
+	<a target="_blank" href="scripts/getAllColors.txt">getAllColors</a>
+</p>
+
+
+<br>
+<p>颜色格式互转、生成颜色:</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 颜色名 to rgb: col2rgb(col, alpha = FALSE)
+> colors()[2]
+[1] "aliceblue"
+
+> col2rgb("aliceblue")
+      [,1]
+red    240
+green  248
+blue   255
+
+# rgb to hsv: rgb2hsv(r, g = NULL, b = NULL, maxColorValue = 255)
+> rgb2hsv(240,248,255)
+        [,1]
+h 0.57777778
+s 0.05882353
+v 1.00000000
+
+
+# 使用 rgb() 生成颜色
+rgb(240,248,255, maxColorValue =255) # "#F0F8FF"
+
+# 使用 hsv() 生成颜色
+hsv(0.57, 0.05, 1) # "#F2FAFF"</div>
+</div>
+
+
+
+
+
+
 
 <br>
 <p><b>R自带配色方案</b></p>
@@ -940,7 +997,10 @@ abline(v=seq(0,10,2), lty=2, col="grey",lwd=0.5) #n条灰色虚竖线，宽度�
 	
 	
 	
-	<tr><td>… </td>   <td>其他选项。如果图例标示的是颜色不同的线条，需要指定col=加上颜色值组成的向量。如果图例标示的是符号不同的点，则需指定pch=加上符号的代码组成的向量。如果图例标示的是不同的线条宽度或线条类型，请使用lwd=或lty=加上宽度值或类型值组成的向量。要为图例创建颜色填充的盒形（常见于条形图、箱线图或饼图），需要使用参数fill=加上颜色值组成的向量</td></tr>
+	<tr><td>… </td>   <td>其他选项。如果图例标示的是颜色不同的线条，需要指定col=加上颜色值组成的向量。
+	<br>如果图例标示的是符号不同的点，则需指定pch=加上符号的代码组成的向量。
+	<br>如果图例标示的是不同的线条宽度或线条类型，请使用lwd=或lty=加上宽度值或类型值组成的向量。
+	<br>要为图例创建颜色填充的盒形（常见于条形图、箱线图或饼图），需要使用参数fill=加上颜色值组成的向量</td></tr>
 	</tbody>
 </table>
 <p>其他图例参数，bty指定盒子样式，bg指定背景色，cex指定大小，text.col指定文本颜色。
@@ -1006,6 +1066,107 @@ legend(x=0.6,y=1.7,legend = c("KO","Ctrl"),
        fill = c( rgb(255,192,203,max=255),rgb(165,75,42,max=255) ) )</div>
 </div>
 <img src="images/draw-basic/para-legend-2.png"><br><br>
+
+
+
+<h3 class="tutheader">一幅图解决R语言绘制图例的各种问题</h3>
+
+<p>legend(x, y = NULL, legend, fill = NULL,col =, bty = "o",xjust = 0, yjust = 1, x.intersp = 1, y.intersp =1, adj = c(0, 0.5), text.width = NULL,xpd=TRUE)</p>
+
+<h4>Legend 定位</h4>
+<p>1. 如果图例绘在制图区外，必须提前保留绘制legend的空间。如par（mai=c（2,0.5,0.5,0.5）），图例绘制在下方，所以留2，其余3个方向为0.5。</p>
+<p>2. 图例绘在制图区外，必须设置参数xpd=TRUE，否则命令正确也不会出图，因为默认xpd=F。</p>
+<p>3. 图例位置由x，y决定。legend 默认坐标为左上角的坐标（因为设定xjust=0，yjust=1），因此可以通过xjust，yjust来调节。xjust=1，yjust=0，即为右下角坐标。</p>
+
+<h4>Legend布局</h4>
+<p>1. 如果图例数量太多，则设置多列（ncol=），如ncol=4，分为4列。</p>
+<p>2. 如果图例不加边框，则设置bty=“n”，“o”为加边框。</p>
+<p>3. 图标和文字的位置，可以通过x.intersp, y.intersp, adj,text.width等来调控。</p>
+<p>x(y).intersp指图标和文字之间的绝对距离，adj指图标和文字的相对距离，text.width指图标和文字整体的宽度。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">set.seed(20211029)
+b=matrix(sample(1:16), 4,4);b
+row.names(b)=c("red","green","cyan","purple")
+colnames(b)=c("eg1", "eg2", "eg3", "eg4")
+b
+#       eg1 eg2 eg3 eg4
+#red     15  12  13   9
+#green    4  16   3  11
+#cyan     1   2   7  14
+#purple   6  10   5   8
+
+pdf("xx.pdf", width=4.5, height=3.3)
+par(mai=c(2, 0.5, 0.5, 0.5), mgp = c(3,1,0)/1.5) #1 
+#mai控制边界(b,l,t,r)inch, mgp坐标轴与文字的距离
+
+barplot(b, beside=T, col=rainbow(4)) #2
+box(col="green")
+xy=par("usr"); xy #3
+# [1]  0.24 20.76 -0.16 16.00
+
+# 以下语句末尾#后的编号对应图中右边红色编号
+legend(x=xy[2]-xinch(0.2), y=xy[3]-yinch(0.8), legend=rownames(b), 
+       fill=rainbow(4), #col=rainbow(4), 没有线，则不用设置线的颜色
+       xjust=1, yjust=0, 
+       xpd=T, ncol=4, bty="n" ) #4 xpd=T允许在box外绘图
+
+legend(x=xy[2]-xinch(0.2), y=xy[3]-yinch(1), legend=rownames(b), 
+       fill=rainbow(4),
+       xjust=1, yjust=0, xpd=T, ncol=4, bty="n", 
+       adj=0.5 ) #5 adj 控制文字的与方块(固定)的距离，-远离，+靠近。
+
+legend(x=xy[2]-xinch(0.2), y=xy[3]-yinch(1.2), legend=rownames(b), 
+       fill=rainbow(4),
+       xjust=1, yjust=0, xpd=T, ncol=4, bty="n", 
+       x.intersp=0 ) #6 图片和文字的距离，图标和文字都移动，xjust=1表示图例右侧固定
+# 0表示文字紧贴着图标；负数表示文字重叠到图标；正数表示文字和图标有距离。
+
+legend(x=xy[2]-xinch(0.2), y=xy[3]-yinch(1.4), legend=rownames(b), 
+       fill=rainbow(4),
+       xjust=1, yjust=0, xpd=T, ncol=4, bty="n", 
+       text.width=1) #7 图标和文字整体的宽度，非负。可以理解为水平宽度
+
+legend(x=xy[2]-xinch(0.2), y=xy[3]-yinch(1.6), legend=rownames(b), 
+       fill=rainbow(4),
+       xjust=1, yjust=0, xpd=T, ncol=4, bty="n", 
+       x.intersp=0.2, text.width=1.5) #8 联合使用更好：图文距离时0；图标之间距离1.5
+
+legend(x=xy[1]+xinch(0.2), y=xy[3]-yinch(1.4), legend=rownames(b), 
+       fill=rainbow(4),
+       xjust=0, yjust=1, xpd=T, ncol=2, bty="n", 
+       x.intersp=0.2, y.intersp=0.8,  text.width=1.5) #9 分2列，设置垂直间距
+
+#
+text(xy[2], c(xy[3]-yinch(0.8), xy[3]-yinch(1), xy[3]-yinch(1.2),
+              xy[3]-yinch(1.4), xy[3]-yinch(1.6), xy[3]-yinch(1.8)), 
+     labels = c(4,5,6,7,8,9), xpd=T, pos=3, col="red")
+points(xy[1],xy[3], col="red", pch=20, cex=1, xpd=T)
+points(xy[2],xy[4], col="red", pch=20, cex=1, xpd=T)
+text(xy[1],xy[3], labels = c("xy[1], xy[3]"), xpd=T, pos=1, col="red", cex=0.7)
+text(xy[2],xy[4], labels = c("xy[2], xy[4]"), xpd=T, pos=3, col="red", cex=0.7)
+
+dev.off()</div>
+</div>
+<img src="images/draw-basic/para-legend-3.png"><br><br>
+<pre>
+# 命令1:设置绘图参数mai=c(下，左，上，右) 的边界空间。
+# 命令2:绘制柱状图。
+# 命令3:选取绘图区域左下角和右上角的坐标。
+# 命令4:正常绘图，设置xpd=T。xinch()、yinch()，分别表示沿x轴，y轴移动的距离，按绝对距离计算，或按坐标轴的数量级计算。fill=T，即显示图标（默认为矩形填充色）。fill=F的话可以设置pch，选择图标类型。
+# 命令5:设置adj=0.6，adj越接近于0，图标与文字的相对距离越远。
+# 此参数作用于文字，图标不动。
+# 命令6:设置x.intersp=0.6，越接近于0，图标与文字的绝对距离越近。以一侧为标准，图标文字均移动。
+# 命令7:设置text.width=1.4，表示图标和文字整体的宽度。当文字太长时可以调节此参数。
+# 命令8:text.width与x.intersp结合使用，效果最好。
+# 命令9:设置ncol=2，分为两列。
+</pre>
+
+
+
+
+
+
 
 
 

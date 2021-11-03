@@ -1,0 +1,66 @@
+# output all colors() in R, into an HTML file.
+# 2021/11/3
+
+#####################
+# using R
+length(colors()) #657=25col*26.28row
+head(colors()) #"white"         "aliceblue"     "antiquewhite"
+
+df2=NULL;
+for(i in 1:length(colors())){
+  color_name=colors()[i] #get each color
+  col2=col2rgb(color_name); #color name to rgb
+  col3=rgb( t(col2), maxColorValue = 255 ) #rgb to hexa "#9ACD32"
+  
+  df2=rbind(df2, data.frame(
+    name=color_name,
+    rgb=paste0("rgb(", col2[1,1],",", col2[2,1],",", col2[3,1],")"),
+    hexa=col3
+  ))
+}
+
+dim(df2) #657   3
+head(df2)
+#           name              rgb    hexa
+#1         white rgb(255,255,255) #FFFFFF
+#2     aliceblue rgb(240,248,255) #F0F8FF
+
+write.table(df2, "colorsInR.txt", quote = F)
+
+
+
+
+
+
+
+
+
+
+#####################
+## using Python3
+fr=open("colorsInR.txt")
+fw=open("colorsInR.html", "w")
+import re
+
+fw.write("""<style>
+*{padding:0; margin:0;}
+.box{width:120px; float: left; font-size:10px; }</style>
+<h1>colors() in R</h1>
+""")
+fw.write("<div>\n");
+
+i=0
+for lineR in fr.readlines():
+  line=lineR.strip();
+  i+=1
+  if i==1:
+    continue;
+  arr=re.split("\s", line)
+  newLine="<div class=box title='"+arr[2]+"' style='background:"+arr[3]+"'>"+arr[1]+"</div>"
+  fw.write(newLine+'\n')
+
+print("end")
+fw.write("</div>")
+
+fr.close()
+fw.close()

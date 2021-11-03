@@ -1109,7 +1109,7 @@ dev.off()</div>
 <br>
 
 
-<p>图略: 可以设置多行多列</p>
+<p>图略: 使用 gridExtra 包设置多行多列</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">library(gridExtra)
 grid.arrange(p1,p2,nrow=1)
@@ -1118,6 +1118,22 @@ grid.arrange(plots[[1]]...plots[[10]],ncol=1,nrow=10)</div>
 </div>
 
 
+
+<p>图略: 使用 patchwork 包拼接 ggplot2 图形</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(patchwork) #拼接图形
+library(ggplot2)
+
+g1=ggplot(mtcars, aes(mpg, cyl) )+geom_point()+theme_minimal(); g1
+g2=ggplot(mtcars, aes(mpg, disp) )+geom_point()+theme_classic(); g2
+
+g1 | g2 # 左右
+g1/g2 #上下
+
+(g1 + g1 + g2) / (g1 + g2 + g2) #2行3列。
+
+g1 / (g1 + g2 + g2) #2行3列；第1行就1个图，第2行3个图;</div>
+</div>
 
 
 

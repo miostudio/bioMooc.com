@@ -140,6 +140,13 @@ $(function(){
 <a name="0_1"></a>
 <h3 class="tutheader">线性回归标注</h3>
 
+
+<p><b>什么是R2 ？</b>在回归模型中，因变量（y）总的方差（信息）可以被称作总平方和（Total sum of squares，TSS），它由两部分组成：<br>
+1. 模型可以解释的那部分信息（Model sum of squares, MSS; <br>
+2. 模型解释不了的那部分信息，也称为error（Residual sum of squares, RSS。<br>
+R2 指的是模型可以解释的那部分信息所占的百分比，即MSS/TSS。如果R2越大，那该模型能解释的部分也就越多，模型当然就越佳。</p>
+
+
 <pre>
 核心语句:
 plot(mpg~wt, data=mtcars) #画散点图
@@ -148,9 +155,15 @@ abline(fit) #画回归曲线
 </pre>
 
 <img src="images/stat_reg/reg_01.png" /> 
-<img src="images/stat_reg/reg_02.png" /><br>
+<img src="images/stat_reg/reg_02.png" />
+<img src="images/stat_reg/reg_03.png" />
+<br>
 
-<p>图1 标注决定系数R^2和p值。图2 标注相关系数r和回归公式。</p>
+<p>
+	图1 标注决定系数R^2和p值。
+	图2 标注相关系数r和回归公式。
+	图3 使用ggplot2画回归曲线并标注决定系数。
+</p>
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">#线性回归 model=lm(y ~ x, data=test)
@@ -250,6 +263,26 @@ if(b &lt; 0){ #负斜率，手动加-号
 # 添加r:右上角
 mylabel = bquote(italic(r) == .(format(r, digits = 3)))
 text(x = 4, y = 33.5, labels = mylabel, cex=0.8)
+dev.off()
+
+
+
+
+
+###############
+# 图3 使用ggplot2 绘制回归曲线
+library(ggplot2)
+fit=lm(mpg ~ wt, data=mtcars) #线性回归拟合
+
+png("01.png", width=72*2.5, height=72*2.5, res=72)
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(shape = 1, fill = "white", color = "palegreen4") +
+  geom_smooth(method = "lm", formula =y~x, se = F, color = "palegreen4") +
+  #theme_minimal() +  theme_bw()+
+  theme_classic()+
+  annotate("text", x = 4, y = 30, 
+           label = paste0("R-squared: ", round(summary(fit)$adj.r.squared,3)*100,"%") ) +
+  labs()
 dev.off()</div>
 </div>
 
