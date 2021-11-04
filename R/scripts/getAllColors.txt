@@ -37,7 +37,7 @@ write.table(df2, "colorsInR.txt", quote = F)
 
 
 #####################
-## using Python3
+## using Python3 (v1)
 fr=open("colorsInR.txt")
 fw=open("colorsInR.html", "w")
 import re
@@ -64,3 +64,93 @@ fw.write("</div>")
 
 fr.close()
 fw.close()
+
+
+
+
+
+
+
+
+
+#####################
+## using Python3 (v2)
+import os
+
+os.chdir("/data/wangjl/apa/APA_GO_plot")
+os.getcwd()
+
+def isDark(rgb):
+    import re
+    rs=re.split("[^0-9]+", rgb)
+    return int(rs[1])*0.3 + int(rs[2])*0.59 + int(rs[3])*0.11 < 150
+
+#isDark(arr[2])
+isDark('rgb(154,205,50)')
+
+fr=open("colorsInR.txt")
+fw=open("colorsInR.html", "w")
+import re
+
+fw.write("""<style>
+*{padding:0; margin:0;} .main{margin:10px auto;clear:both; width:1200px;}
+.clear {clear: both;} .white{color:white}
+.box{width:100px; /*line-height: 10px;*/ float: left; font-size:12px;}
+.small{ /*-webkit-transform:scale(0.7); display:block; margin-left: -15px;*/ }
+</style>
+""")
+fw.write("<div class=main>\n");
+fw.write("<h1>657 colors() in R: ordered by columns</h1>\n")
+
+i=0
+j=0 #real line number, no head line
+
+
+# store Div by columns
+db={} 
+#657/10 col=65.7 row: 9*66 + 63
+#657/12 col=54.75 row: 11*55 + 52
+import math
+total=657
+nCol=12 # setting column number
+
+nRow=math.ceil(total/nCol); #55
+nLastRow = total - nRow * (nCol-1)
+nLastRow #52
+
+key=0
+for lineR in fr.readlines():
+    line=lineR.strip();
+    i+=1
+    if i==1:
+        continue;
+    j+=1
+    if key not in db:
+        db[key]=[]
+    
+    arr=re.split("\s", line)
+    fontColor="" #default font color: black
+    # when bg is dark, use font color: white
+    if isDark(arr[2]):
+        fontColor=" white"
+    
+    newLine="<div class='box"+fontColor+"' title='"+arr[2]+"' style='background:"+arr[3]+"'><span class=small>"+arr[1]+"</span></div>"
+    db[key].append(newLine)
+        
+    if j%nRow==0:
+        key+=1
+
+# write Div to html file
+for i in range(0,nRow):
+    for c in range(0,nCol):
+        if len(db[c])>i:
+            fw.write(db[c][i] + "\n")
+    fw.write("<div class=clear></div>\n")
+
+fw.write("</div>")
+fr.close()
+fw.close()
+print("end")
+
+
+

@@ -234,6 +234,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.2-4 linux/ docker image 加上百度统计代码; favicon.ico 复制到根目录一份 [202.10.27]
 	page0.3.2-5 补充网站地图; 更新 /visual/ 子栏目首页 [202.10.28]
 	page0.3.2-6 R/ patchwork 包拼接 ggplot2 图形; 图例; 颜色互转; R 回归; [202.11.3]
+	page0.3.2-7 colors() 更新; [202.11.4]
 ##############
 # commit
 ########>> push miostudio
