@@ -235,6 +235,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.2-5 补充网站地图; 更新 /visual/ 子栏目首页 [202.10.28]
 	page0.3.2-6 R/ patchwork 包拼接 ggplot2 图形; 图例; 颜色互转; R 回归; [202.11.3]
 	page0.3.2-7 colors() 更新; [202.11.4]
+	page0.3.2-8 更新颜色页面; [202.11.6]
 ##############
 # commit
 ########>> push miostudio

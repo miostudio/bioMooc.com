@@ -116,7 +116,30 @@ $(function(){
 
 <a name='1'></a>
 <h2 class="tutheader">Python中的色彩</h2>
-<p>把python和seaborn中支持的颜色都画出来，左边颜色块，右边颜色名字和16进制</p>
+<p>把python和seaborn中支持的颜色都画出来。其中，matplotlib 包中的颜色定义在 <a target="_blank" href="https://github.com/matplotlib/matplotlib/blob/main/lib/matplotlib/_color_data.py">matplotlib/lib/matplotlib/_color_data.py</a> 中。</p>
+
+<p>(1) 左边颜色名，右边16进制颜色</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">import matplotlib
+i=0
+for name, hex in matplotlib.colors.cnames.items():
+    i+=1
+    print(i, name, hex)
+
+输出:
+1 aliceblue #F0F8FF
+2 antiquewhite #FAEBD7
+3 aqua #00FFFF
+...
+146 whitesmoke #F5F5F5
+147 yellow #FFFF00
+148 yellowgreen #9ACD32</div>
+</div>
+
+
+
+
+<p>(2) 左边颜色块，右边颜色名字和16进制</p>
 <p>结果: 
 	<a target="_blank" href="/color/matplotlibColors.html">matplotlib中的色彩</a>，
 	<a target="_blank" href="/color/seabornColors.html">seaborn中的色彩</a>
@@ -192,6 +215,41 @@ import matplotlib
 colorDict2HTML(matplotlib.colors.cnames, 'web/docs/pic/matplotlibColors.html', 'matplotlib colors')
 # 148 ( 25 rows, 6 columns)</div>
 </div>
+
+
+
+
+<h3 class="tutheader">获取调色板并显示</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+import seaborn as sns
+# 显示sns的一个调色板板
+sns.palplot(sns.color_palette("muted"))
+sns.color_palette("xx") #主动报错，会显示全部调色板名字
+
+
+# 显示plt的色板
+import matplotlib.pyplot as plt
+plt.cm.Pastel1
+plt.cm.spring
+help(plt.cm) #查看全部调色板名字
+
+# 获取plt调色板的rgb值
+colors = iter([plt.cm.Pastel1(i) for i in range(9)])
+for i in colors:
+    print(i) #(1.0, 1.0, 0.8, 1.0) 前面都是0-1之间的，最后一个alpha默认是1
+
+# 获取plt调色板的rgb值，并可视化颜色
+colors2 = [plt.cm.Pastel1(i) for i in range(9)]
+sns.palplot(colors2)</div>
+</div>
+<p>最后一个图 sns.palplot 的输出:</p>
+<div class="output_subarea output_png" dir="auto"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAggAAABICAYAAACTOw0mAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjQuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/MnkTPAAAACXBIWXMAAAsTAAALEwEAmpwYAAACWElEQVR4nO3asWqTURzG4fPVpq0OFaSGdjFOXV10zgW6OHslzt0EbyCbcXCygxZBKnpchbcVIz2c5Pg86xfC+99+4ctUay0AAL/b6z0AANg+AgEACAIBAAgCAQAIAgEACAIBAAj7m3z45OFxXcznrbZ092X2oPeEpmYH170nNHXv+rD3hGYO9656T2jr6Kj3gqa+f/vRe0JTs+l+7wlN/ZyN+1t6vV6Xy8vL6aZnGwXCYj4vb1+9vJtVW+jN2YveE5o6e/Kh94SmHr1f9J7QzNPji94TmprOz3tPaOrj6nPvCU2d7j3rPaGpr6cHvSc0s1wub302bhYBAP9MIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABBIAAAQSAAAEEgAABhqrX+/Yen6aqUsmo3p7uTUsqn3iMaGfm2Uty369y3u0a+rZTx71vUWh/f9GB/wy9a1Vqf38GgrTRN07tR7xv5tlLct+vct7tGvq2U8e/7E68YAIAgEACAsGkgvG6yYnuMfN/It5Xivl3nvt018m2ljH/frTb6kyIA8H/wigEACAIBAAgCAQAIAgEACAIBAAi/AKp7WmTiqxwIAAAAAElFTkSuQmCC
+"></div>
+
+
+
 
 
 
