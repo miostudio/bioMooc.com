@@ -133,6 +133,7 @@ $(function(){
 			<li><a href="#2_1">内置渐变色</a>
 			<li><a href="#2_2">预置配色与自定义渐变色</a>
 			<li><a href="#2_3">伪时间热图的渐变色设置原理</a>
+			<li><a href="#2_4">连续型变量和渐变色的映射: cut()函数</a>
 		</ul>
 	</li>
 	<li><a href="#3">ggplot2中的色彩函数</a></li>
@@ -836,6 +837,43 @@ show_col(hue_pal()(9), borders = NA) #效果见下图
 <img src="images/color/show_col.png" /><br>
 
 
+<br>
+<p>还可以使用 barplot() 及 image() 来预览颜色。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 1.使用 barplot() 预览颜色
+palette() # R4.0 默认调色盘相对 R3.6 下调了饱和度，看着更舒服。
+#"black"   "#DF536B" "#61D04F" "#2297E6" "#28E2E5" "#CD0BBC" "#F5C710" "gray62" 
+cols=palette()
+
+par(mar=c(0,0,4,0))
+posX=barplot(rep(1,8), col=cols, yaxt="n", border = NA)
+
+text(posX, 1.05, labels=cols, 
+     srt=60, adj=0,
+     col="black", xpd=T)
+
+# 2.使用 image() 预览颜色
+# 按照Set1的配色的前8种
+par( mar=c(1,0,4,1))
+
+library(RColorBrewer)
+mypalette_1=brewer.pal(8,"Set1")
+mypalette_1
+# "#E41A1C" "#377EB8" "#4DAF4A" "#984EA3" "#FF7F00" "#FFFF33" "#A65628" "#F781BF"
+image(1:8,1,as.matrix(1:8),col=mypalette_1,
+      xlab="Set1", ylab="", mgp=c(0.1,0.5,0),
+      xaxt="n",yaxt="n",bty="n")
+par("usr")
+text(1:8, par("usr")[4]*1.03, labels=mypalette_1, 
+     srt=60, adj=0,
+     xpd=T,
+     col="black", xpd=T)</div>
+</div>
+<img src="images/color/color_a0.png" /><br>
+<br>
+
+
+
 
 <a name='2_1'></a>
 <h3 class="tutheader">1. R 内置渐变色</h3>
@@ -1002,6 +1040,57 @@ text(posX, -0.05, labels=hmcols,
      srt=40) #倾斜30度)</div>
 </div>
 <br>
+
+
+
+
+<a name='2_4'></a>
+<h3 class="tutheader">连续型变量和渐变色的映射: cut()函数</h3>
+<p>连续型变量怎么和渐变色一一对应呢？</p> 
+<p>本例使用cut函数，实现了Y轴数字到渐变色的映射。</p> 
+<p></p>
+<img src="images/color/color_a4.png" /><br>
+
+
+<div class="code notranslate maxHeight">
+	<div style="white-space: pre-wrap;"># cut函数: 把数值型转为因子型
+#cut(x, breaks): Convert Numeric to Factor
+
+# 1. 生成数据
+set.seed(20211119)
+dat_1=rnorm(100, 0, 1)
+
+# 测试 cut 函数
+total_bins=10 #定义渐变色的阶梯数，也是数据划分的组数
+dat_2=cut(dat_1, breaks=total_bins) #可以传入整数，表示分成几份；或者传入截断点数组
+#table(dat_2) #total_bins=5时的结果
+# (-1.87,-0.935] (-0.935,-0.0025]   (-0.0025,0.93]      (0.93,1.86]       (1.86,2.8] 
+#       18               26               37               15                4 
+
+# 2. 定义渐变色: 或 c('green4',"green1", "white",'maroon1', "maroon3")
+colors2=colorRampPalette( 
+  colors = c('green4', "white", "maroon3"), 
+  interpolate ="spline") ( length(table(dat_2)) )
+# 预览颜色(optional)
+barplot(rep(1, length(colors2)), col=colors2, yaxt="n", space=0, border = NA)
+
+# 3. 连续型变量dat和颜色colors2的映射
+plotcol = colors2[ dat_2 ]; plotcol[1:5]
+
+# 4. 画图
+plot(dat_1, pch=20, mgp=c(2,0.5,0),
+     col=plotcol, cex=0.5,
+     bty="l", ylab="XX value")</div>
+</div>
+
+
+
+
+
+
+
+
+
 <br>
 
 

@@ -222,8 +222,7 @@ colorDict2HTML(matplotlib.colors.cnames, 'web/docs/pic/matplotlibColors.html', '
 <h3 class="tutheader">获取调色板并显示</h3>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">
-import seaborn as sns
+	<div style="white-space: pre-wrap;">import seaborn as sns
 # 显示sns的一个调色板板
 sns.palplot(sns.color_palette("muted"))
 sns.color_palette("xx") #主动报错，会显示全部调色板名字
@@ -250,11 +249,13 @@ sns.palplot(colors2)</div>
 
 
 
+<br>
+<br>
+<pre># 配对颜色
+import matplotlib.pyplot as plt
+plt.cm.Paired</pre>
 
-
-
-
-
+<img alt="Paired colormap" title="Paired" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAFXRFWHRUaXRsZQBQYWlyZWQgY29sb3JtYXDkshWaAAAAG3RFWHREZXNjcmlwdGlvbgBQYWlyZWQgY29sb3JtYXCtJQ1+AAAAMHRFWHRBdXRob3IATWF0cGxvdGxpYiB2My40LjMsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmcJXfPTAAAAMnRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHYzLjQuMywgaHR0cHM6Ly9tYXRwbG90bGliLm9yZyf7bPQAAAGQSURBVHic7daxLYVhGIbh3xnDGkbRWUBlAB1RKuRE9CKhUJoAUUgkEo0FNGbQsMJX+fLnvq4JnubNe+/cvX/9LitxfP8xe8Kwy8PP2ROGnD7dzJ4w7PXnaPaEId8nZ7MnDNu93Z89YdjmcTt7wpC3vXXc/rIsy/X5y+wJQ66eV/OmloeDi9kThm1mDwAA/p8AAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABAkAAAgSAAAQJAAAIAgAQAAQQIAAIIEAAAECQAACBIAABD0B4ccF7Gd6zM6AAAAAElFTkSuQmCC">
 
 
 
