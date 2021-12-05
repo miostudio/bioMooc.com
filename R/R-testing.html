@@ -116,6 +116,7 @@ $(function(){
 		<ul>
 			<li><a href="#1_1">t检验</a>
 			<li><a href="#1_2">二项检验//todo</a>
+			<li><a href="#1_3">方差分析(1-way, 2-way, multi-way)</a>
 		</ul>
 	</li>
 
@@ -255,6 +256,85 @@ mean of x
 
 
 
+
+
+<a name="1_3"></a>
+<h3 class="tutheader">方差分析(1-way, 2-way, multi-way)</h3>
+<p>使用R进行多因素多水平的方差分析，考虑交叉效应。</p>
+<p>参考:
+	<a target="_blank" href="https://www.murraylax.org/rtutorials/multiway-anova.pdf">pdf1</a>，
+	<a target="_blank" href="https://sites.ualberta.ca/~lkgray/uploads/7/3/6/2/7362679/slides_-_multi-way_anovaa.pdf">pdf2</a>，
+	<a target="_blank" href="https://sites.ualberta.ca/~lkgray/uploads/7/3/6/2/7362679/12c_-_multi-way_anova.pdf">pdf3</a>，
+</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 有5个因素，每个因素4个水平，因素之间有相互作用
+# 造数据
+set.seed(202112)
+data2=data.frame(
+  value=c(rnorm(100, 70, 15),  rnorm(100, 80, 15), 
+	rnorm(100, 90, 15), rnorm(100, 100, 15)),
+  A=rep(c(1,2,3,4), each=100), #A should be sig.
+  B=rep(c(1,2,3,4), time=100),
+  C=rep(c(4,1,2,3, 5), time=80),
+  D=rep(c(3,4,1,2, 5,6,7,8,9,100), time=40),
+  E=rep(c(2,3,4,1, 5,6,7,8), time=50)
+)
+
+# improve sig of B
+# 10 sig
+for(i in 1:400){
+  data2[i, "value"]=data2[i, "value"] + (i %%4)*2
+}
+
+# to factors 一定要把水平转为因子
+data2$A=as.factor(data2$A)
+data2$B=as.factor(data2$B)
+data2$C=as.factor(data2$C)
+data2$D=as.factor(data2$D)
+data2$E=as.factor(data2$E)
+str(data2)
+dim(data2)
+head(data2)
+
+# anova 交叉效应
+aov2=aov(value~A*B*C*D*E, data2) #very slow(>1 min)
+summary(aov2)
+
+# method2
+result=anova(lm(value ~ A*B*C*D*E, data=data2)) #very slow(>1min)
+result
+
+输出:
+Analysis of Variance Table
+
+Response: value
+           Df Sum Sq Mean Sq F value  Pr(>F)    
+A           3  45445 15148.3 72.5612 < 2e-16 ***
+B           3   2130   710.2  3.4017 0.01844 *  
+C           4    662   165.5  0.7928 0.53085    
+D           4    679   169.7  0.8127 0.51808    
+E           4   1557   389.2  1.8643 0.11739    
+A:B         9   1799   199.9  0.9573 0.47619    
+A:C        12   2185   182.1  0.8722 0.57602    
+B:C         8   1337   167.1  0.8004 0.60276    
+A:D        12   2468   205.6  0.9850 0.46380    
+A:E        12   4005   333.7  1.5986 0.09259 .  
+C:E        16   4218   263.6  1.2629 0.22207    
+A:B:C      24   6261   260.9  1.2496 0.20081    
+A:C:E      48  14631   304.8  1.4601 0.03521 *  
+Residuals 240  50104   208.8                    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+多重比较
+> TukeyHSD(aov(value~A, data2))
+> TukeyHSD(aov(value~A*C*E, data2)) #includes all the interactions
+
+> TukeyHSD(aov2) #many outputs
+</div>
+</div>
 
 
 

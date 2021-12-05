@@ -105,7 +105,7 @@ $(function(){
 
 
 <h2 class="tutheader">目录</h2>
-<p><b>要点</b>: Python中的色彩。</p>
+<p><b>要点</b>: Python中的3D图形。</p>
 
 <ul>
 	<li><a href="#1">matplotlib/seaborn中的色彩</a></li>
@@ -117,6 +117,7 @@ $(function(){
 <a name='1'></a>
 <h2 class="tutheader">3D 图形示例</h2>
 <p>在win10上，使用Eclpise画的，可以鼠标拖动旋转图形。</p>
+<p>在win10 cmd 的 python交互模式中测试通过。</p>
 
 
 <h3>1. 马鞍图</h3>
@@ -195,6 +196,39 @@ plt.show()</div>
 
 
 
+
+
+
+
+<h3>3. 带经纬度的圆球</h3>
+<img src="images/3D/03_sphere.png">
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+
+from mpl_toolkits.mplot3d import Axes3D
+
+fig=plt.figure()
+ax=Axes3D(fig)
+# for higher version
+#ax=Axes3D(fig, auto_add_to_figure=False)
+#fig.add_axes(ax)
+
+u, v=np.mgrid[0:2*np.pi:50j, 0:np.pi:10j]
+x=np.cos(u)*np.sin(v)
+y=np.sin(u)*np.sin(v)
+z=np.cos(v)
+
+# 表面
+surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
+# 线
+ax.plot_wireframe(x, y, z, color='r', linewidth=0.1)
+#ax.legend()
+plt.show()</div>
+</div>
 
 
 

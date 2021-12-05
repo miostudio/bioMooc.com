@@ -147,6 +147,7 @@ p{text-indent:2em;}
 	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488352&idx=2&sn=c08863668cbde5d66fd5d3e592f3aac9">6伪时间分析</a>: Monocle假设轨迹是树状结构，一端是“根”，另一端是“叶”。Monocle2使用DDTree降维图，Monocle3使用UMAP降维图。</li>
 	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488367&idx=1&sn=52b69246c2b352abc0343ccc95d76229">7差异基因富集分析</a>: seurat聚类分析得到的按cluster分类，singleR分析得到的按细胞类型分类，monocle分析得到的按拟时状态（state）分类。不同的细胞类型之间，有哪些表达差异基因呢，这些差异基因有特别的意义吗？</li>
 	<li><a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI1Njk4ODE0MQ==&mid=2247488367&idx=2&sn=18a60dab3cde76139872026febd7d9a0">8可视化工具总结</a>: RidgePlot山脊图 /VInPlot小提琴图 /FeaturePlot特征图 /DotPlot点图 /DoHeatmap热图 /FeatureScatter散点图 /DimPlot降维图</li>
+	<li>公众号专题：<a target="_blank" href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzAxMDkxODM1Ng==&action=getalbum&album_id=1698018533277761536">单细胞进阶</a> </li>
 	<!--
 	<li><a target="_blank" href="xx">xx</a>xx</li>
 	<li><a target="_blank" href="xx">xx</a>xx</li>
@@ -224,9 +225,74 @@ p{text-indent:2em;}
 <p>注意：对数转换对数据是有益的：减少了第一主成分的方差，并且已经分离了一些生物效应。而且使表达值的分布更正常。</p>
 
 
-<h3>2. tSNE</h3>
+<h3>2. tSNE（tSNE已死，请用 UMAP）</h3>
 <p>tSNE（t-Distributed Stochastic Neighbor Embedding）将维数降低与最近邻网络上的随机游走相结合，将高维数据（例如14214维表达矩阵）映射到二维空间，同时保持细胞间的局部距离。与PCA相比，tSNE是一种随机算法，在统一数据集上运行多次该方法会得到不同的图。由于tSNE的非线性和随机性，导致很难解释。为了确保再现性（reproducibility）,我们可以固定随机数产生器的种子，以保证总是得到相同的图。</p>
 <p>此外，tSNE需要提供一个perplexity值，该值反应了用于构建最近邻网络的邻居数量。该值越高表明产生了一个密集网络，将细胞聚集在一起；该值越低表明网路更加稀疏，允许细胞群彼此分离。在scater包中，perplexity的默认值是：cells总数除以5。</p>
+
+
+
+<h3>3. UMAP</h3>
+<p>2018年McInnes提出了算法，UMAP（Uniform Manifold Approximation and Projection for Dimension Reduction，一致的流形逼近和投影以进行降维）。 一致的流形近似和投影（UMAP）是一种降维技术，类似于t-SNE，可用于可视化，但也可用于一般的非线性降维。</p>
+<p>UMAP应该说是目前最好的降维算法了，能最大程度的保留原始数据的特征同时大幅度的降低特征维数。处理单细胞数据时，UMAP是显著优于tSNE的。样本量大时 tSNE/FltSNE 很慢且太消耗内存。tSNE没有保留全局结构，也就是组内的相似，但是组间的距离远并不反映相似程度的小。另外，tSNE只能嵌入到2维或3维中。</p>
+<pre>
+论文：McInnes, L, Healy, J, UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction, ArXiv e-prints 1802.03426, 2018
+https://pypi.org/project/umap-learn/
+</pre>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> #手写数字聚类，每个数字 64 维。
+from sklearn.datasets import load_digits
+import matplotlib.pyplot as plt
+
+digits = load_digits()
+fig, ax_array = plt.subplots(20, 20)
+axes = ax_array.flatten()
+for i, ax in enumerate(axes):
+    ax.imshow(digits.images[i], cmap='gray_r')
+plt.setp(axes, xticks=[], yticks=[], frame_on=False)
+plt.tight_layout(h_pad=0.5, w_pad=0.01)
+plt.show() # 显示手写数字图像
+
+
+# 使用umap降至2维并绘制散点图
+import umap
+import numpy as np
+
+reducer = umap.UMAP(random_state=42)
+embedding = reducer.fit_transform(digits.data)
+print(embedding.shape)
+# 可视化
+plt.scatter(embedding[:, 0], embedding[:, 1], c=digits.target, cmap='Spectral', s=5)
+plt.gca().set_aspect('equal', 'datalim')
+plt.colorbar(boundaries=np.arange(11)-0.5).set_ticks(np.arange(10))
+plt.title('UMAP projection of the Digits dataset')
+plt.show() 
+
+
+# 更多参数
+embedding = umap.UMAP(n_neighbors=5,
+                      min_dist=0.3,
+                      metric='correlation', random_state=8).fit_transform(digits.data)
+# 可视化
+plt.scatter(embedding[:, 0], embedding[:, 1], c=digits.target, cmap='Spectral', s=5)
+plt.gca().set_aspect('equal', 'datalim')
+plt.colorbar(boundaries=np.arange(11)-0.5).set_ticks(np.arange(10))
+plt.title('UMAP projection of the Digits dataset')
+plt.show() 
+
+
+附录: install UMAP on Ubuntu 20.04
+$ sudo pip3 install -U llvmlite -i https://pypi.douban.com/simple/
+$ sudo pip3 install -U numba -i https://pypi.douban.com/simple/
+
+$ pip3 uninstall llvmlite
+$ pip3 install -U --ignore-installed numba
+
+$ pip install umap-learn
+ref: https://zhuanlan.zhihu.com/p/109584077</div>
+</div>
+
+
 
 
 

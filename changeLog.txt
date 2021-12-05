@@ -238,6 +238,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.2-8 更新颜色页面; [2021.11.6]
 	page0.3.2-9 添加百度统计; 预览R颜色; [2021.11.19]
 	page0.3.3-0 fix 本日志的年份 [2021.11.19]
+	page0.3.3-1 R方差分析；格式化、挂载硬盘 [2021.12.5]
 ##############
 # commit
 ########>> push miostudio
