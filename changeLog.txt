@@ -239,6 +239,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.2-9 添加百度统计; 预览R颜色; [2021.11.19]
 	page0.3.3-0 fix 本日志的年份 [2021.11.19]
 	page0.3.3-1 R方差分析；格式化、挂载硬盘 [2021.12.5]
+	page0.3.3-2 R/ ggplot2 主题示例 [2021.12.10]
 ##############
 # commit
 ########>> push miostudio
@@ -253,7 +254,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 百度统计: <script src="/static/js/tongji.js" ></script>
 
 
-
+ImageDir:
+G:\xampp\htdocs\bioMooc.com\R\images\
 
 
 

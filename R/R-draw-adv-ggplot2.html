@@ -70,6 +70,9 @@ h4{
     border-left: 3px solid red;
     padding-left: 2px;
 }
+p{text-indent:2em;}
+
+.red{color:red}
 </style>
 	
 	
@@ -953,7 +956,85 @@ plotc <- plot1+plot2+ plot_layout(guides = 'collect') #公用图例
 
 <p>theme是解决图是否美观的一个工具，其与scale最大的区别在于不受数据左右。</p>
 <p>先把scale做好，就是一张<b>合格</b>的图；再处理theme，则是一张<b>出色</b>的图。</p>
-<p>R控制台输入?theme即可以看到theme函数的大量参数，可以实现更改图形外观的大多数要求，有四种主要类型：</p>
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 先画主体图形，然后慢慢修饰的例子。
+library(ggplot2)
+g1=ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width))+ #输入数据 x,y
+  geom_point(aes(color = Species))+ #散点图 设置颜色
+  geom_smooth(aes(color = Species, fill = Species))+ #平滑曲线
+  facet_wrap(~Species, ncol = 3, nrow = 1, scales="free_x")+ #分面，一行，x坐标范围自由
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))+ #设置颜色
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) +  #设置填充颜色
+  labs(x="Length of Sepal", y="Width of Sepal", title="Iris feature") #设置坐标轴文字
+#fig1 默认主题，风格有爱，但不适合学术
+g1
+
+#fig2 使用预定义主题，顶部分面标题有黑边框
+g1+theme_classic(base_size = 14) #统一调大字号
+
+#fig3 分面标题无边框
+g1+theme_classic(base_size = 14)+
+  theme(
+    strip.background = element_rect(fill = "white", colour = "grey", size = rel(0))
+)
+
+
+#fig4 开始炫技，尽可能多的修改主题，怎么丑怎么来
+g1+ theme_classic(base_size = 14)+
+  theme(
+    #绘图区是最大的，里面包含若干个分面
+    plot.background = element_rect( color="red", linetype = 2, size=rel(2) ), #绘图区的边框红色虚线
+    plot.title=element_text (hjust=0.5, face="bold.italic"), #绘图区的标题居中，粗体斜体
+
+    # 坐标轴加粗
+    axis.ticks = element_line(size=rel(2)), #刻度线加粗
+    axis.line = element_line(size=rel(2)), #轴线加粗
+    axis.text = element_text(face="bold"), #字体加粗
+
+	# 分面的标题
+    strip.background = element_rect(fill = "white", colour = "grey", size = rel(1.5)), #分面的背景框 灰色
+    strip.text = element_text(colour="black", face="bold", size = rel(1.5)), #分面的文字 大字号
+    panel.background = element_rect(fill = "#FFFF0030", colour = "green"), #面板背景填充黄色，绿边框    
+    
+    #图例
+    #legend.box = "vertical", # vertical / horizontal 为什么不竖直显示呢？
+    legend.position = "bottom", #放在底部
+    legend.title = element_text(color="blue", face="italic"), #图例标题蓝色 斜体
+    legend.margin=margin(t = -10, r = 0, b = 0, l = 0, unit = "pt"), #整个图例的周围边距
+    #legend.key.size = unit(1, "cm"), #增加图例中小图的大小，但不影响间距
+    
+    legend.spacing.x = unit(5, 'pt'), #一个颜色块和对应文字的距离
+    #legend.box.spacing=unit(50, 'pt'), #2个图例之间的距离
+    legend.text = element_text( margin = margin(r = 20, t=5), #每个小盒子的外间距
+                                size=rel(0.8), color="purple" ),  #图例字号是原来*0.8，紫色
+    
+    legend.key = element_rect(size = 10,color = '#FF00FF22' ), #图例小图背景 淡紫色
+    legend.key.width = unit(0.5, "cm"), # 控制图例每个小图的大小
+    legend.key.height = unit(1, "cm"), #单位可以是pt, cm, line
+  )+
+  #guides(color=guide_legend(ncol=1)) #注意：这里要和aes中的 color / fill 一致
+  guides(
+    fill="none", #remove some guides
+    color = guide_legend(title="NewTitle2", ncol = 2, byrow = TRUE, size="None"),
+  ) #图例分2列显示
+</div>
+</div>
+<p>上述代码生成的图如下: 第一排图1和3，第二排图4。图2略。</p>
+<image src="images/draw-adv-ggplot2/theme1.png">
+<image src="images/draw-adv-ggplot2/theme2.png">
+
+
+
+
+
+<blockquote><b class=red>小技巧</b>: theme() 参数繁多，其实只需要了解，不用刻意去记！
+<br>(1) 查看帮助: R控制台输入 ?theme 回车即可以看到theme函数的大量参数；
+<br>(2) 还可以查看该函数的定义: 在Rstudio的R脚本中输入 theme，然后ctrl+单击该函数名。</blockquote>
+
+<p>设置 theme() 可以实现更改图形外观的大多数要求。这些参数有几大类(等号左侧): line 所有线条, rect 所有方框, text 所有文字, title 所有标题(plot, axes, legends，继承自 text), aspect.ratio 面板比例, axis系列(坐标轴), legend系列(图例), panel系列(画图面板)，plot系列(画图区，可以包含多个分面)，strip系列(分面标题)。有四种主要的定义方式(等号右侧)：</p>
 
 <table class="reference" style="width:100%"><tbody>
 	<tr><th>类 型</th>   <th>解释</th></tr>
@@ -1237,7 +1318,14 @@ print(p1,vp=vp)</div>
 <a name="7"></a>
 <h2>保存图片</h2>
 <pre>
-ggsave("diamonds.pdf", p, width=4, height=4) #units = c("in", "cm", "mm"), 默认是英寸，dpi = 300
+# 推荐保存时加上选项 useDingbats=F，图后期放到AI中打开时不变形、不乱码。
+ggsave("diamonds.pdf", p, width=4, height=4, useDingbats=F) 
+#units = c("in", "cm", "mm"), 默认是英寸 in，dpi = 300
+
+# 或更通用的保存方式:
+pdf("pic1.pdf", width=4, height=4, useDingbats=F)
+print(ggplotObj)
+dev.off()
 </pre>
 
 
