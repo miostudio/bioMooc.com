@@ -24,6 +24,9 @@
   <![endif]-->
   <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
   <meta name="apple-mobile-web-app-title" content="生物慕课网">
+<style>
+p{text-indent:2em;}
+</style>
 
 </head>
 
@@ -114,12 +117,21 @@ $(function(){
 <h3>在线书籍</h3>
 <p><a target="_blank" href="https://bookdown.org/">bookdown.org/</a> 在线R电子书集合</p>
 <p><a target="_blank" href="https://r-graphics.org/recipe-colors-area-value">R Graphics Cookbook, 2nd edition</a> 各种画图方案</p>
-
-
 <br>
-<p><b>R原生绘图命令要点：</b></p>
-<p>1.高水平画图命令:画图像主体，包括plot,boxplot,hist等</p>
-<p>2.低水平画图命令:画辅助成分，包括title,axis,title等</p>
+
+
+
+
+
+<h3>R原生绘图命令要点</h3>
+
+<p> 基础绘图包在R语言被安装后即存在，可直接使用，永不升级。基础绘图包不算Low，很多CNS文章仍在使用。”钻石恒久远、经典永留存“，所谓颜值不在于绘图包是否高级，主要在于线条的粗细、精心的排版、文字与图形之间的比例、以及有点儿"品位"的颜色搭配。</p>
+
+<p>1. 基础绘图包中的<b>高级绘图函数</b>(也翻译做 高水平画图命令)，绘制图像主体，包括：plot()泛型函数(generic method)、boxplot()盒型图、barplot()条形图、hist()直方图或金字塔图、pie()饼图、dotchart()克利夫兰点图和coplot()条件图等(后两个有些冷门)。</p>
+<p>这里有一个实践过程中容易混淆的地方：大部分par()函数的参数(即：函数中的参数，不是低级绘图函数)不仅可以自己使用，也可以直接在上述其它高级绘图函数中使用，效果等同于在par()中使用（par是什么？是绘图设置函数）。一些参数只能在par()中使用,高级绘图函数无法实现其功能，如: ask; fig; fin; lheight; mai; mar; mfcol; mfrow; mfg; new; oma; omd; omi; pin; plt; ps; pty; usr; xlog; ylog等（注意：这些是函数内部的参数，不是函数）。</p>
+
+<p>2. 基础绘图包中的<b>低级绘图函数</b>(也译为 低水平画图命令)，无法(凭空)绘图，即只有在高级绘图函数绘制出来的图形中有效，主要起添加修饰辅助作用，如：text()加文本, legned()加图例, axis()绘制坐标轴, points()加散点, titles()加标题, arrows()加箭头, box()绘制图形边框, abline()加直线, clip()修剪图形, locator()识别图中的点的坐标, layout()切分画布, lines()加线条, segments()加线段, rug()加小地毯, polygon()构建多边形, mtext()在图形四周添加文字, grid()添加背景网格线。</p>
+
 <p>3.此外还包括图形的交互与参数，图形设备，动态图形等</p>
 
 

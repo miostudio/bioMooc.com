@@ -240,6 +240,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.3-0 fix 本日志的年份 [2021.11.19]
 	page0.3.3-1 R方差分析；格式化、挂载硬盘 [2021.12.5]
 	page0.3.3-2 R/ ggplot2 主题示例 [2021.12.10]
+	page0.3.3-3 R/ 完善apply; ggplot2修改图例; 原生boxplot画法; [2021.12.23]
 ##############
 # commit
 ########>> push miostudio

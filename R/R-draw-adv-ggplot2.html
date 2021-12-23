@@ -137,6 +137,7 @@ p{text-indent:2em;}
 					<li><a href="#6_2_1">饼图的图例</a></li>
 					<li><a href="#6_2_2">图例点放大</a></li>
 					<li><a href="#6_2_3">共用一个图例</a></li>
+					<li><a href="#6_2_4">修改图例的文字和颜色</a></li>
 				</ul>
 			</li>
 			
@@ -558,7 +559,7 @@ dev.off();</div>
 <h2 class="tutheader">修改ggplot2图形的外观</h2>
 
 <a name="6_1"></a>
-<h3 class="tutheader">坐标轴</h3>
+<h3 class="tutheader">坐标轴//todo</h3>
 
 <a name="6_1_1"></a>
 <h3 class="tutheader">hjust和vjust</h3>
@@ -941,10 +942,69 @@ g1</div>
 <pre>
 plotc <- plot1+plot2+ plot_layout(guides = 'collect') #公用图例
 </pre>
+<br><br>
 
 
 
 
+
+
+
+<a name="6_2_4"></a>
+<h3 class="tutheader">修改图例的文字和颜色</h3>
+<p>可以在主题中修改图例的文字标签和颜色。</p>
+<p>本例: 直观展示概率，每种概率对应一个10*10的方块，高亮显示选中的方块。</p>
+<img src="images/draw-adv-ggplot2/legend_text_color.png">
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#step1: 模拟数据
+#dg = expand.grid(x = 1:10, y = 1:10)
+library(ggplot2)
+library(dplyr)
+set.seed(101)
+dg = expand.grid(ratio = c(0.01, 0.1, 0.4), x = 1:10, y = 1:10)
+dg2 = dg %>%
+  group_by(ratio) %>%
+  mutate(value = {
+    n = n()
+    i = round(n * ratio[1])
+    sample(c(rep("S", i), rep("F", n-i)))
+  }) %>%
+  ungroup() %>%
+  mutate(label = paste0(round(100*ratio), "% chance") )
+#set.seed(84524)
+head(dg2)
+#  ratio     x     y value label     
+#1  0.01     1     1 F     1% chance 
+#2  0.1      1     1 F     10% chance
+
+
+#step2: 画图
+ggplot(data = dg2, mapping = aes(
+  x = x, y = y, fill = value)) +
+  geom_tile(color = "white", size = 1) + #热图
+  coord_fixed(expand = FALSE, clip = "off") + #x坐标轴比例固定，不能伸缩
+  scale_x_continuous(name = NULL, breaks = NULL) + #去掉x轴
+  scale_y_continuous(name = NULL, breaks = NULL) + #去掉y轴
+  scale_fill_manual( #给图例重新染色、命名
+    name = NULL, #图例标题
+    breaks = c("S", "F"), #原始图例标签
+    labels = c("success   ", "failure"), #新图例标签
+    values = c( #指定图例颜色
+      "S" = "steelblue4",
+      "F" = "steelblue1"
+    ),
+    guide = guide_legend(override.aes = list(size = 0))
+  ) +
+  facet_wrap(~label) + #按label列分面
+  theme(
+    legend.position = "bottom", #图例放到底部
+    legend.direction = "horizontal",
+    legend.justification = "right", #图例靠右
+    plot.margin = margin(0, 0, 3.5, 0) # crop plot a little more tightly
+  )</div>
+</div>
+<br><br>
 
 
 

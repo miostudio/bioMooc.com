@@ -122,6 +122,7 @@ $(function(){
 	<li><a href="#8">热图 image(x, y, z)</a></li>
 	<li><a href="#9">其他图形：segments(),arrows(),rect(),polygon()</a></li>
 	<li><a href="#10">绘制函数 curve(expr, from, to)</a></li>
+	<li><a href="#11">按列画矩阵点图 matplot(x, y)</a></li>
 </ul>
 
 
@@ -389,6 +390,19 @@ box() #添加盒型
 
 
 
+<p>还可以设置斜线阴影填充，density 控制阴影的密度，angle 设置斜线的角度。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">hist(faithful$waiting,
+     col="dodgerblue3",
+     mgp=c(2,0.5,0), #设置xlab与x的距离
+     density=15,
+     angle=60)</div>
+</div>
+<img src="images/draw-basic2/hist2.png"><br><br>
+
+
+
+
 
 
 
@@ -538,6 +552,100 @@ boxplot(mpg~am.f*cyl.f, data=mtcars,
 <p>figX.不同变速箱类型和汽缸数量车型的箱线图<br>
 再一次清晰地显示出油耗随着缸数的下降而减少。对于四缸和六缸车型，标准变速箱
 （standard）的油耗更高。但是对于八缸车型，油耗似乎没有差别。也可以从箱线图的宽度看出，四缸标准变速箱的车型和八缸自动变速箱的车型在数据集中最常见。</p><br>
+
+
+<br>
+<p>第二种画法，分别画每个x轴分类变量，subset取数据子集，使用 add=T 拼合图层，使用 at 控制每个box的x坐标，boxwex 控制每个box的宽度。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> #2种维C的不同剂量对鸽子牙齿长度的影响，R 内置数据。
+head(ToothGrowth)
+table(ToothGrowth$supp)
+
+# x轴分类方式1
+boxplot(len~dose,#绘制变量len与dose的盒型图（前者为连续型变量，后者是分类变量）
+        data=ToothGrowth,#使用R语言内置数据集ToothGrowth
+        subset=supp=="VC",#采集ToothGrowth中supp为VC的数据，即此处只绘制VC数据
+        
+        boxwex=0.3, #每个box的宽度
+        at=1:3-0.2,#at参数定义了图中盒子横坐标位置为0.8，1.8，2.8
+        
+        col="yellow",
+        xaxt="n", #不显示x轴
+        
+        xlim=c(0.5,3.5),ylim=c(0,35),
+		
+        #mgp=c(1.5, 0.5, 0), #没作用 //todo ??
+        ann=F, #不要xlab, ylab, main
+        #main="Tooth Growth", #xlab="Vitamin C dose(mg/day)", ylab="Tooth length",
+        yaxt="n", #不显示y轴
+        
+        yaxs="i") #设置y轴极值即边界(y轴的0紧邻x轴，不留空白，对比 plot(c(1,2))
+
+# x轴分类方式2
+boxplot(len~dose,
+        data=ToothGrowth,
+        subset=supp=="OJ",
+        
+        add=TRUE, #叠加到上一个图中
+        boxwex=0.3,
+        at=1:3+0.2,
+
+        xaxt="n", #不显示x轴
+        yaxt="n", #不显示y轴
+        
+        col="orange")
+# 添加x轴
+axis(side=1, at=1:3, labels = c('dose=0.5','dose=1.0','dose=2.0'), 
+     lwd.ticks=3, #x轴刻度加粗
+     col.ticks = "red", #刻度线颜色
+     tcl=0.3, #刻度线长度，是一个比例，相对于字体大小。负值朝下，正值向上
+     mgp=c(1.5, 0.1, 0),
+     lwd=2)
+mtext(text = "Vitamin C dose(mg/day)", side = 1, line = 1) #添加 xlab
+
+# 添加y轴
+axis(side=2, at=seq(0,35, 5), labels = seq(0,35, 5), 
+     tcl=-0.3, 
+     mgp=c(1.5, 0.5, 0),
+     lwd=2)
+mtext(text = "Tooth length", side = 2, line = 1.5) #添加ylab
+
+# 图例
+legend(2.5, 7, c("Ascorbic acid", "Orange juice"),
+       fill = c("yellow", "orange"), bty="n")
+# 边框加粗
+box(lwd=2)
+# 添加标题
+title(main="Tooth Growth", line=0.6)
+title(sub="boxplot examples", col.sub="grey", line=1.8)
+
+
+
+###########
+# 第一种画法
+ToothGrowth$supp.f=factor(ToothGrowth$supp,levels=c("VC", "OJ"),labels=c("VC","OJ"))
+
+boxplot(len~supp.f*dose, data=ToothGrowth, col=c("yellow", "orange"),
+        xaxt="n")
+axis(side=1, at= c(1.5, 3.5, 5.5), labels = c('dose=0.5','dose=1.0','dose=2.0'), 
+     lwd.ticks=3, #x轴刻度加粗
+     col.ticks = "red", #刻度线颜色
+     tcl=0.3, #刻度线长度，是一个比例，相对于字体大小。负值朝下，正值向上
+     mgp=c(1.5, 0.1, 0),
+     lwd=2)
+legend(4.5, 8, c("Ascorbic acid", "Orange juice"),
+       fill = c("yellow", "orange"), bty="n")
+
+
+# boxplot(len~dose, data=ToothGrowth[which(ToothGrowth$supp=="VC"),], col="yellow")
+# boxplot(len~dose, data=ToothGrowth[which(ToothGrowth$supp!="VC"),], col="orange") </div>
+</div>
+<img src="images/draw-basic2/boxplot-2factors2.png"><br>
+<br>
+
+
+
+
 
 
 
@@ -857,6 +965,40 @@ legend("topright", lwd=2, bty="n",
 </div>
 
 
+
+
+
+
+
+
+
+
+<a name="11"></a>
+<h2 class="tutheader">按列画矩阵点图 matplot(x, y)</h2>
+
+<img src="images/draw-basic2/matplot.png"><br><br>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"> #Plot Columns of Matrices
+#图1
+matplot(iris[1:50,1:4])
+# matplot(1:50, iris[1:50,1:4], type="l", lty=c(5,2,3,4), col=2:5)
+
+# 图2
+x = seq(-4, 4, length.out = 101)
+y = cbind(sin(x), cos(x))
+# 按列，Plot Columns of Matrices
+matplot(x, y, type = "l", xaxt = "n", #不画x轴
+        main = expression(paste(plain(sin) * phi, "  and  ",
+                                plain(cos) * phi)),
+        ylab = expression("sin" * phi, "cos" * phi), # only 1st is taken
+        xlab = expression(paste("Phase Angle ", phi)),
+        col.main = "blue")
+
+axis(1, at = c(-pi, -pi/2, 0, pi/2, pi),
+     labels = expression(-pi, -pi/2, 0, pi/2, pi))
+abline(v = pi/2 * c(-1,1), lty = 2, lwd = 1, col = "gray70")</div>
+</div>
 
 
 

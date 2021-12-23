@@ -6,8 +6,8 @@
 	<title>R 教程 | 生物慕课网</title>
 
 <link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
-<meta name="keywords" content="R 绘图教程,R低水平绘图命令">
-<meta name="description" content="R 绘图教程,R低水平绘图命令。">
+<meta name="keywords" content="R apply 家族函数">
+<meta name="description" content="R,apply,lapply,sapply">
 		
 	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
 	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
@@ -101,25 +101,29 @@ $(function(){
 	<li><a href="#0">apply家族函数概述</a></li>
 	<li><a href="#1">apply(X, MARGIN, FUN, ...)</a>
 		<ul>
-			<li><a href="#12">自定义函数</a>
-			<li><a href="#13">apply中使用if</a>
+			<li><a href="#12">自定义函数</a></li>
+			<li><a href="#13">apply中使用if</a></li>
 		</ul>
 	</li>
 	
 	<li><a href="#2">lapply, 对list使用fn，并返回list (sapply返回矩阵)</a>
 		<ul>
-			<li><a href="#22">按照条件f拆分x: split(x, f, drop = FALSE, ...)</a>
+			<li><a href="#22">按照条件f拆分x: split(x, f, drop = FALSE, ...)</a></li>
 			<li><a href="#23">sapply函数返回矩阵(simple apply)</a>
-			<li><a href="#23_2">|-- 使用sapply(data, fn)分面</a>
-			<li><a href="#24">vapply, 类似sapply，FUN.VALUE参数可控制返回值的行名</a>
-			<li><a href="#25">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据</a>
+				<ul>
+					<li><a href="#23_1">求鸢尾花每个亚类中4个指标的平均值</a>: 强大的 do.call() + lapply()</li>
+					<li><a href="#23_2">使用sapply(data, fn)分面</a></li>
+				</ul>
+			</li>
+			<li><a href="#24">vapply, 类似sapply，FUN.VALUE参数可控制返回值的行名</a></li>
+			<li><a href="#25">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据</a></li>
 		</ul>
 	</li>
 	<li><a href="#3">tapply: table(), by()</a>
 		<ul>
-			<li><a href="#3_2">tapply() 实现excel透视表功能</a>
-			<li><a href="#31">gl() 产生因子/函数table（求因子出现的频数）//todo</a>
-			<li><a href="#32">by(dataframe, INDICES, FUN, ..., simplify=TRUE)</a>
+			<li><a href="#3_2">tapply() 实现excel透视表功能</a></li>
+			<li><a href="#31">gl() 产生因子/函数table（求因子出现的频数）//todo</a></li>
+			<li><a href="#32">by(dataframe, INDICES, FUN, ..., simplify=TRUE)</a></li>
 		</ul>
 	</li>
 	<li><a href="#4">rapply, 递归版本的lapply，只处理list类型数据//todo</a></li>
@@ -470,7 +474,6 @@ simplify=F：返回值的类型是list，此时与lapply完全相同。
 simplify=T（默认值）：返回值的类型由计算结果定，如果函数返回值长度为1，则sapply将list简化为vector；
 如果返回的列表中每个元素的长度都大于1且长度相同，那么sapply将其简化为一个矩阵。</p>
 
-
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># 例1: 对数据框分组，求分组后每组的列平均值
 ## 对数据框的分组
@@ -486,7 +489,7 @@ sapply(airByMonth, dim) #看每个分组的行列数
 #[1,] 31 30 31 31 30 #行数
 #[2,]  6  6  6  6  6 #列数
 
-# 按月，求列的平均值 (apply家族函数逇嵌套)
+# 按月，求列的平均值 (apply家族函数的嵌套)
 lapply(airByMonth, 
   function(x){ #传入的参数是lapply输出的，是list中的每个元素，就是每个月份的数据框
     #apply(x,2,mean) #对这个数据框按列求平均数
@@ -523,11 +526,81 @@ sapply(airByMonth, function(x){colMeans(x)}) #不加na.rm=T则结果中有NA
 # Month    5.00000   6.00000   7.000000  8.000000   9.0000
 # Day     16.00000  15.50000  16.000000 16.000000  15.5000</div>
 </div>
+<br>
+
+
+<br><a name="23_1"></a>
+<h4>求鸢尾花每个亚类中4个指标的平均值: 强大的 do.call() + lapply()</h4>
+<p>方法1: 使用 sapply+apply 实现：</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">sapply( split(iris[, 1:4], iris$Species), function(x){
+  apply(x, 2, mean)
+} )
+输出:
+#              setosa versicolor virginica
+# Sepal.Length  5.006      5.936     6.588
+# Sepal.Width   3.428      2.770     2.974
+# Petal.Length  1.462      4.260     5.552
+# Petal.Width   0.246      1.326     2.026</div>
+</div>
+<br>
+
+<p>方法2: 使用 do.call + lapply 实现：do.call() 需要一个list作为输入，而lapply()正好返回一个list。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">do.call(rbind, lapply(
+  split(iris[,1:4], iris[,5]),
+  function(x){
+    colMeans(x)
+  }
+))
+输出:
+#            Sepal.Length Sepal.Width Petal.Length Petal.Width
+# setosa            5.006       3.428        1.462       0.246
+# versicolor        5.936       2.770        4.260       1.326
+# virginica         6.588       2.974        5.552       2.026
+
+方法3: 使用 apply + tapply 实现，输出同2
+apply(iris[,1:4], 2, function(x){
+  tapply(x, iris$Species, mean)
+})
+
+方法4: 使用 do.call + by 实现，输出同2
+do.call(rbind, by(iris[,1:4], iris$Species, FUN = colMeans))
+
+方法5: 使用 aggregate，结果同2，但是多了第一列
+aggregate(iris[,1:4], by=list(iris$Species), function(x){
+  mean(x)
+})</div>
+</div>
+<br>
+
+
+
+
+<h4>切片矢量</h4>
+<p>我们可以使用lapply（）或sapply（）互换来切片数据框。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 筛选高于平均值的值
+below_ave = function(x) {  
+  ave = mean(x) 
+  return(x[x > ave])
+}
+dt=iris[, 1:4]
+dt_s = sapply(dt, below_ave)
+dt_l = lapply(dt, below_ave)
+identical(dt_s, dt_l)
+# [1] TRUE</div>
+</div>
+<br>
+
+
+
+
 
 
 
 <br><a name="23_2"></a>
-<h3>使用sapply(data, fn)分面</h3>
+<h4>使用sapply(data, fn)分面</h4>
 <img src="images/apply/01_sapply_facet.png" />
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># 例: 3行1列, hist+density
@@ -550,14 +623,14 @@ mtext(side = 2, outer = T, line = 2, "Freq", cex = 0.8) #y标签</div>
 
 <br><a name="24"></a>
 <h3 class="tutheader">vapply, 类似sapply，FUN.VALUE参数可控制返回值的行名</h3>
-<p>vapply类似于sapply，提供了FUN.VALUE参数，用来控制返回值的行名，这样可以让程序更健壮。</p>
+<p>vapply类似于sapply，提供了FUN.VALUE参数，用来检查返回值的类型，这样可以让程序更健壮。同时还可以重命名返回值的行名。</p>
 <p>sapply是lapply的友好版本，但可预测性不好。如果是大规模的数据处理，后续的类型判断工作会很麻烦而且很费时。vapply增加的FUN.VALUE参数可以直接对返回值类型进行检查，这样的好处是不仅运算速度快，而且程序运算更安全（因为结果可控）。</p>
 <pre>
 函数定义：vapply(X, FUN, FUN.VALUE, ..., USE.NAMES = TRUE)
 参数列表：
 X:数组、矩阵、数据框
 FUN: 自定义的调用函数
-FUN.VALUE: 定义返回值的行名row.names
+FUN.VALUE: 定义返回值的行名 row.names = 数据类型，等号左边可以省略，右侧的则必须有。
 …: 更多参数，可选
 USE.NAMES: 如果X为字符串，TRUE设置字符串为数据名，FALSE不设置
 </pre>
@@ -582,21 +655,30 @@ sapply(df,cumsum) #竖着累加
 # [3,] 64.8  16  428
 # [4,] 86.2  22  686
 
-vapply(df,cumsum, #添加列名，必须是这种带等号的，左边是列名，右边是类型
-# 左边的列名可以省略，但是右边的类型名字必须有。
-       FUN.VALUE=c('a'=0,'b'=0,'c'=0,'d'=0))
+vapply(df,cumsum, 
+	# 添加列名，必须是这种带等号的，左边是列名，右边是类型
+	# 左边的列名可以省略，但是右边的类型名字必须有。
+    FUN.VALUE=c('a'=0,'b'=0,'c'=0,'d'=0))
 #    mpg cyl disp
 # a 21.0   6  160
 # b 42.0  12  320
 # c 64.8  16  428
 # d 86.2  22  686
 
+#或者只指定返回值类型 
+vapply(df,cumsum, rep(0,4))
+#       mpg cyl disp
+# [1,] 21.0   6  160
+# [2,] 42.0  12  320
+# [3,] 64.8  16  428
+# [4,] 86.2  22  686
 
 
 
-例2: vapply比sapply安全?! 我感觉：对行的数据类型进行控制，好像不直观，不如对列的数据类型进行约束。
+
+例2: vapply比sapply安全?! 是因为 vapply 强制对返回值做简单的类型校验。
 #按月份分组
-airByMonth=split(airquality, airquality$Month) #airByMonth是一个list，每个元素是一个df
+airByMonth=split(airquality, airquality$Month)  #airByMonth是一个list，每个月份是一个df
 sapply(airByMonth, function(x){colMeans(x, na.rm=T)})
 #                 5         6          7          8         9
 # Ozone    23.61538  29.44444  59.115385  59.961538  31.44828
@@ -609,19 +691,34 @@ sapply(airByMonth, function(x){colMeans(x, na.rm=T)})
 
 ## 注意: FUN函数获得的结果和 FUN.VALUE 设置的不一致（长度和类型）都会出错
 # 可以根据vapply函数的这一功能，使用FUN.VALUE参数对数据进行批量检测。
+
+# 报错：第二个函数返回值【类型】不符合第三个参数的设定
 vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
        FUN.VALUE = seq(1,6) )
 #报错: values must be type 'integer',
 #but FUN(X[[1]]) result is type 'double'
+# 但是改为 rep(1,6) 就不报错了，所以说 vapply 只进行了有限的返回值校验。
 
+
+> vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
+        FUN.VALUE = seq(0.1,6) ) #整型1改为 0.1就不报错了
+
+# 报错：返回值长度不对
+> vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
++        FUN.VALUE = seq(0.1,2) )
+Error in vapply(airByMonth, function(x) { : values must be length 2,
+ but FUN(X[[1]]) result is length 6
+
+
+# 长度对，类型只要有一个double就不报错了
 vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
        FUN.VALUE = c(1,2,3,4,5,6.01) )
-#把列名换为a,b,c...
+
+# 额外的好处: 指定返回值行名为a,b,c...
 vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
        FUN.VALUE = c('a'=1, 'b'=1, 'c'=1, 'd'=1, 'e'=1, 'f'=1) )
-#
-#
-# 把列名精简为前3个字母
+
+# 把返回值的行名精简为前3个字母
 rn=substr(colnames(airquality),1,3); rn
 fv=seq(0.9,6);fv
 names(fv)=rn;fv
@@ -638,7 +735,18 @@ vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
 # Mon   5.00000   6.00000   7.000000   8.000000   9.00000
 # Day  16.00000  15.50000  16.000000  16.000000  15.50000</div>
 </div>
+<br>
 
+
+<p>如果想让返回值是某个类型，vapply 更安全，是因为它比 sapply多了一步返回值校验。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">a=vapply(NULL, is.factor, FUN.VALUE=logical(1));a #logical(0)
+b=sapply(NULL, is.factor);b #list()
+
+is.logical(a) #TRUE
+is.logical(b) #FALSE
+# https://stackoverflow.com/questions/12339650/why-is-vapply-safer-than-sapply</div>
+</div>
 
 
 
@@ -649,6 +757,11 @@ vapply(airByMonth, function(x){colMeans(x, na.rm=T)},
 
 <br><a name="25"></a>
 <h3 class="tutheader">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据</h3>
+
+<pre>
+mapply(FUN, …) #m stands for multi-variant apply.
+</pre>
+
 <p>由于mapply是可以接收多个参数的，所以我们在做数据操作的时候，就不需要把数据先合并为data.frame了，
 直接一次操作就能计算出结果了。</p>
 
@@ -660,7 +773,50 @@ mapply(sum, list(a=1,b=2,c=3), list(a=10,b=20,d=30))
 
 #例2
 mapply(function(x,y) x^y, c(-1:-5), c(1:5))
-#[1]    -1     4   -27   256 -3125</div>
+#[1]    -1     4   -27   256 -3125
+
+# 例3: 求每一列的均值，数据框也是列向量
+mapply(sum, iris[,1:4])
+#Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+#       876.5        458.6        563.7        179.9
+# 结果和 colSums(iris[,1:4]) 相同。
+
+# 例4：mapply对每一个位置做运算，及时列名不一致。返回时使用第一个参数的名字
+mapply(
+  function(u,v){
+    (u+v)*2
+  },
+  c(A=20,B=1,C=40),
+  c(J=430,K=50,L=10)
+)
+#  A   B   C 
+# 900 102 100 
+
+
+# 如果某个向量短，则会循环使用其中的元素
+mapply(
+  function(u,v){
+    (u+v)*2
+  },
+  c(A=20,B=1,C=40),
+  c(J=430,K=50)
+)
+#  A   B   C 
+#900 102 940 
+并警告 Warning message:
+In mapply(function(u, v) { :
+  longer argument not a multiple of length of shorter
+
+
+
+# 例10：输出重复次数的数字，越小重复越多
+mapply(rep,1:4,4:1)
+do.call(c, mapply(rep,1:4,4:1))
+#[1] 1 1 1 1 2 2 2 3 3 4
+
+
+
+</div>
 </div>
 
 
@@ -678,7 +834,7 @@ mapply(function(x,y) x^y, c(-1:-5), c(1:5))
 
 <br><a name="3"></a>
 <h2 class="tutheader">tapply: table(), by() </h2>
-<p>tapply用于分组的循环计算，通过INDEX参数可以把数据集X进行分组，相当于group by的操作。</p>
+<p>tapply 用于分组的循环计算，通过INDEX参数可以把数据集X进行分组，相当于group by的操作。只能接收一维 vector 输入。</p>
 
 <pre>
 函数定义：tapply(X, INDEX, FUN = NULL, ..., simplify = TRUE)
@@ -694,7 +850,7 @@ simplify : 是否数组化，当值array时，输出结果按数组进行分组
 	<div style="white-space: pre-wrap;">#tapply(a,b,c)
 # a是一个一维数据，如 1,2,3,4,5,6
 # b是和a等长度的一维数据，如   a，a，b，c，b，c
-# c是执行函数，如求和-sum，结果是a的求和值为 1+2 = 3, b的求和值为 3+5=8，c的求和值为4+6=10
+# c是执行函数，如求和 sum，结果是a的求和值为 1+2 = 3, b的求和值为 3+5=8，c的求和值为4+6=10
 
 # 例1: 对不同位置求和
 tapply(c(1,2,3,4,5,6), c('a','a','b','c','b','c'), sum)
@@ -760,6 +916,13 @@ tapply(mtcars$mpg, list(mtcars$gear, mtcars$cyl), mean)
 #       4     6     8
 #3 21.500 19.75 15.05
 #4 26.925 19.75    NA
+#5 28.200 19.70 15.40
+
+# 怎么去掉结果中的 NA ？去掉原数据中的NA，或者没这个交叉数据数据的设置默认值.
+tapply(mtcars$mpg, list(mtcars$gear, mtcars$cyl), mean, na.rm=TRUE, default = -1)
+#       4     6     8
+#3 21.500 19.75 15.05
+#4 26.925 19.75    -1
 #5 28.200 19.70 15.40</div>
 </div>
 <br>

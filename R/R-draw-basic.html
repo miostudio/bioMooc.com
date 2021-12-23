@@ -640,7 +640,7 @@ par(oldPar) #恢复设定</div>
 
 
 <h3 class="tutheader">两类边界：mar和oma </h3>
-<p><a target="_blank" href="https://www.r-graph-gallery.com/74-margin-and-oma-cheatsheet/">R plot中包含两类边界:margin和oma</a>[<a target="_blank" href="http://research.stowers.org/mcm/efg/R/Graphics/Basics/mar-oma/index.htm">Origin here</a>]，可以在画图前通过par()函数的参数分别设置。mar=设置margin，oma=设置outer margin area。参数都是4参数向量c(bottom, left, top, right)。比如 par(mar=c(4,0,0,0))表示仅底部留下4行空白，其他地方不留白。</p>
+<p><a target="_blank" href="https://www.r-graph-gallery.com/74-margin-and-oma-cheatsheet/">R plot中包含两类边界:margin和oma</a> / <a target="_blank" href="https://www.jianshu.com/p/5fbaf17d9aee">also here</a>，可以在画图前通过par()函数的参数分别设置。mar=设置margin，oma=设置outer margin area。参数都是4参数向量c(bottom, left, top, right)。比如 par(mar=c(4,0,0,0))表示仅底部留下4行空白，其他地方不留白。</p>
 <p>也可以使用omi=和mai=来设定，不过单位是inches，不再是lines。</p>
 
 <div class="code notranslate">
@@ -1360,9 +1360,10 @@ text(x=1,y=300, label= str2expression(str1), adj = 0, col='blue') </div>
 
 
 <h3 class="tutheader">par()参数的自动恢复on.exit()</h3>
+<p class=red>oldPar=par(no.readonly=T) #返回一个当前图形参数列表，可用于恢复设定: par(oldPar)</p>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">
+	<div style="white-space: pre-wrap;">#函数内还可以
 draw=function(){
   opar = par(mar = c(4,3,3,1), mgp=c(2,1,0))
   on.exit(par(opar)) #离开函数时自动恢复原来的par()设置
