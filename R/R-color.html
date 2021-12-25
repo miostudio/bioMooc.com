@@ -388,7 +388,7 @@ for(var i=0;i<colors.length;i++){
 
 
 <h4>Color Palette 1: 生活中的色彩</h4>
-<canvas id="canvas_colorBar1" width="600" height="550" style="border:1px dashed #ccc;"></canvas>
+<canvas id="canvas_colorBar1" width="600" height="600" style="border:1px dashed #ccc;"></canvas>
 
 
 
@@ -405,7 +405,7 @@ for(var i=0;i<colors.length;i++){
 
 
 <h4>Color Palette 4: HSL色彩模型</h4>
-<canvas id="canvas_colorBar4" width="600" height="600" style="border:1px dashed #ccc;"></canvas>
+<canvas id="canvas_colorBar4" width="600" height="510" style="border:1px dashed #ccc;"></canvas>
 
 
 
@@ -531,6 +531,8 @@ for(var i=0;i<colors.length;i++){
 		'#FFFFDA','#F59038', '#F9671A'
 	], 360, '蝴蝶', 30, deltaH=2)
 
+
+
 	//100. 大自然
 	showColors(ctx1,[
 		'#F98866', '#FF420E', '#80BD9E','#89DA59', '#FFFFFF', //花朵Fresh & Bright
@@ -557,7 +559,7 @@ for(var i=0;i<colors.length;i++){
 		'#A5C9BB', '#EAB364', '#B3473E', '#ADBC77', '#FFFFFF', // 61. Muted & Antique
 			
 		'#000000',
-		], 390, '大自然 4 色组合', 30,deltaH=2)
+		], 410, '大自然 4 色组合', 30,deltaH=2)
 		
 	
 	
@@ -640,7 +642,9 @@ for(var i=0;i<colors.length;i++){
 		'#F1675D', '#A05F94', '#03B9AC', '#EBEBEB', '#474747', '#00558B','#0197DB', '#43AF2A', '#D82924','white',
 		'#CE056D', '#E5BC50', '#009EB1',
 		], 369, 'elsevierdigitaledition.com', 20, deltaH=2)
-	
+
+	//11. 单细胞珍藏颜色 40 个
+	showColors(ctx2,["#DC143C","#0000FF","#20B2AA","#FFA500","#9370DB","#98FB98","#F08080","#1E90FF","#7CFC00","#FFFF00","#808000","#FF00FF","#FA8072","#7B68EE","#9400D3","#800080","#A0522D","#D2B48C","#D2691E","#87CEEB","#40E0D0","#5F9EA0","#FF1493","#0000CD","#008B8B","#FFE4B5","#8A2BE2","#228B22","#E9967A","#4682B4","#32CD32","#F0E68C","#FFFFE0","#EE82EE","#FF6347","#6A5ACD","#9932CC","#8B008B","#8B4513","#DEB887"], 395, '单细胞珍藏40色', 13)	
 	
 	
 	//100. CNS 色彩
@@ -661,7 +665,7 @@ for(var i=0;i<colors.length;i++){
 		'#971B1E', '#0055A6', '#8DD8F8', '#8EC63F', '#006F3B', '#C0252D',  		'#CDCCCC', '#807F7F', '#B8E3F9','#1E62AC', '#A888BF','#583694', 'white',
 		
 		'black'
-	], 420, 'nature 杂志色彩组合', 25,deltaH=2)
+	], 440, 'nature 杂志色彩组合', 25,deltaH=2)
 	
 
 
@@ -748,7 +752,11 @@ Red/Dark Red/ */
 		'#AA7A53', '#F0E6CE', '#FFFBF0', '#FEFEF2', '#F3E6CF', 
 		'#AFBBBF', '#666666', 
 	], 425, '咖啡色博客主题', 40, deltaH=2, 20)
-
+	//14 邮件中的圆圈边框，中间是同色年份
+	showColors(ctx3,[
+		'#5CC0C0', '#6D6192', '#F6ACC3', '#5695B8', 
+		'#D06160', '#54895F', '#EDB267', '#A853CB', 
+	], 450, '邮件圆圈', 40, deltaH=2, 20)
 
 
 
@@ -803,6 +811,7 @@ Red/Dark Red/ */
 	showColors(ctx5,[ '#5BC4BA', '#E82364' ],0, 'barplot(2 colors)', width=100);
 	showColors(ctx5,[ '#8B72AE', '#74AD43', '#CA495B', '#D3D3D3'  ],25, 'dotplot(highlight 3 colors)|PNAS', width=100); //https://www.pnas.org/content/115/28/E6437
 	showColors(ctx5,[ '#D59F1C', '#84B5E4' ],50, 'violin(2 colors)', width=100);
+	showColors(ctx5,[ '#497AA2', '#AE3137' ],75, 'barplot, R: steelblue, darkred', width=100);
 
 
 </script>
