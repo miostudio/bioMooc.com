@@ -1311,6 +1311,10 @@ $ scp wangjl@y.biomooc.com:/home/wangjl/data/test/testCWL/jdk_9.0.1.tar .
 $ docker load < jdk_9.0.1.tar 
 ## 或者使用
 $ cat jdk_9.0.1.tar| docker import - test/java:v9.0  #从tar包导入镜像，支持重命名镜像
+## 其他形式 
+  docker import "jdk_9.0.1.tar" test/java:v9.0
+  docker import jdk_9.0.1.tar test/java:v9.0 #推荐
+
 
 
 (2) 还可以gz压缩

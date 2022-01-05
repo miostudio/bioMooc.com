@@ -138,6 +138,7 @@ p{text-indent:2em;}
 					<li><a href="#6_2_2">图例点放大</a></li>
 					<li><a href="#6_2_3">共用一个图例</a></li>
 					<li><a href="#6_2_4">修改图例的文字和颜色</a></li>
+					<li><a href="#6_2_5">修改图例方位、位置、高度</a></li>
 				</ul>
 			</li>
 			
@@ -1005,6 +1006,44 @@ ggplot(data = dg2, mapping = aes(
   )</div>
 </div>
 <br><br>
+
+
+
+
+
+
+
+
+<a name="6_2_5"></a>
+<h3 class="tutheader">修改图例方位、位置、宽高</h3>
+<p>方位，就是 legend.position，四个方位。位置，在左侧时，整体上移或下移。宽高，就是图例本身的宽高。</p>
+<img src="images/draw-adv-ggplot2/legend_margin.png">
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 修改图例的位置：整体向上移动一点
+ggplot(mtcars, aes(wt, mpg, color=gear) )+
+  geom_point(size=1)+
+  scale_color_gradientn(name="Gear", colors=brewer.pal(9, "YlOrRd"))+ #自定义颜色
+  theme_classic(base_size = 12)+
+  theme(
+    legend.position = c("left"), #方位: 上下左右共4个
+    legend.text=element_text(size=8), #刻度字号
+    legend.title=element_text(size=8), #标题字号
+    legend.key.width = unit(4, "mm"), #control legend width and height
+    legend.key.height = unit(4, "mm"),
+    legend.margin=margin(t = 0, r = 0, b = 50, l = 0, unit = "pt"), #move legend up a litter
+  )</div>
+</div>
+<br><br>
+
+
+
+
+
+
+
+
+
 
 
 
