@@ -316,10 +316,18 @@ R 渐变色请参考本站 <a href="R-color.html">R 渐变色</a>。
 <img src="images/draw-basic/colors657.png" /><br>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;"># 显示所有颜色
+	<div style="white-space: pre-wrap;"># 获取所有颜色的名字
 colors() #"white" "aliceblue" "antiquewhite" ...
 length(colors()) # 657 个颜色
 length(colors(distinct = T)) # 502 种独特颜色
+
+#显示所有颜色
+scales::show_col( colors(distinct = T), labels = F) # labels=F 就是不显示颜色16名字
+#图略
+
+# 查看R定义的颜色及颜色函数们
+demo("colors")
+
 
 
 # 示例：找6个颜色画散点图
