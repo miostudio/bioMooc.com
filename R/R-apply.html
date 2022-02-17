@@ -95,7 +95,7 @@ $(function(){
 
 
 <h2 class="tutheader">目录</h2>
-<p><b>要点</b>: 要想快速，就要尽量避免在R中使用for循环，用向量化的思维处理数据框。[R In Action,2nd: mainly in Chapter5.3]</p>
+<p><b>要点</b>: 要想追求速度，就要尽量避免在R中使用for循环，而是用向量化的思维处理数据框。[R In Action,2nd: mainly in Chapter5.3]</p>
 
 <ul>
 	<li><a href="#0">apply家族函数概述</a></li>
@@ -106,7 +106,7 @@ $(function(){
 		</ul>
 	</li>
 	
-	<li><a href="#2">lapply, 对list使用fn，并返回list (sapply返回矩阵)</a>
+	<li><a href="#2">循环迭代 lapply, 对list使用fn，并返回list (sapply返回矩阵)</a>
 		<ul>
 			<li><a href="#22">按照条件f拆分x: split(x, f, drop = FALSE, ...)</a></li>
 			<li><a href="#23">sapply函数返回矩阵(simple apply)</a>
@@ -115,7 +115,7 @@ $(function(){
 					<li><a href="#23_2">使用sapply(data, fn)分面</a></li>
 				</ul>
 			</li>
-			<li><a href="#24">vapply, 类似sapply，FUN.VALUE参数可控制返回值的行名</a></li>
+			<li><a href="#24">vapply, 类似sapply，FUN.VALUE参数可检查返回值的类型</a></li>
 			<li><a href="#25">mapply, 是sapply的多变量版本，第一个参数是函数，后面能接收多个输入数据</a></li>
 		</ul>
 	</li>
@@ -126,7 +126,7 @@ $(function(){
 			<li><a href="#32">by(dataframe, INDICES, FUN, ..., simplify=TRUE)</a></li>
 		</ul>
 	</li>
-	<li><a href="#4">rapply, 递归版本的lapply，只处理list类型数据//todo</a></li>
+	<li><a href="#4">rapply, 递归版本的lapply，只处理list类型数据</a></li>
 	<li><a href="#5">eapply, 对环境内的所有变量批量(开发R包用)//todo</a></li>
 	
 </ul>
@@ -144,6 +144,22 @@ $(function(){
 <p>apply族函数是高效能计算的运算向量化(Vectorization)实现方法之一。常用的向量操作就是apply的家族函数：apply, sapply, tapply, mapply, lapply, rapply, vapply, eapply等。</p>
 
 
+<pre>
+apply 家族函数特别注意三点: 功能，输入，输出。
+
+分组计算
+	tapply: 参数 vector, 返回 vector 
+	apply: 参数 list, data.frame, array, 返回 vector, matrix
+循环迭代
+	lapply:
+		简化版 sapply: 
+			可检查返回值类型 vapply: 参数 list, data.frame, 返回 vector, matrix
+		递归版 rapply: 参数 list，返回 list
+多参数计算
+	mapply: 参数为 个数不限的vector，返回 vector, matrix 
+遍历环境空间
+	eapply: 参数 environment, 返回 list
+</pre>
 
 
 
@@ -622,7 +638,7 @@ mtext(side = 2, outer = T, line = 2, "Freq", cex = 0.8) #y标签</div>
 
 
 <br><a name="24"></a>
-<h3 class="tutheader">vapply, 类似sapply，FUN.VALUE参数可控制返回值的行名</h3>
+<h3 class="tutheader">vapply, 类似sapply，FUN.VALUE参数可检查返回值的类型</h3>
 <p>vapply类似于sapply，提供了FUN.VALUE参数，用来检查返回值的类型，这样可以让程序更健壮。同时还可以重命名返回值的行名。</p>
 <p>sapply是lapply的友好版本，但可预测性不好。如果是大规模的数据处理，后续的类型判断工作会很麻烦而且很费时。vapply增加的FUN.VALUE参数可以直接对返回值类型进行检查，这样的好处是不仅运算速度快，而且程序运算更安全（因为结果可控）。</p>
 <pre>
@@ -747,6 +763,30 @@ is.logical(a) #TRUE
 is.logical(b) #FALSE
 # https://stackoverflow.com/questions/12339650/why-is-vapply-safer-than-sapply</div>
 </div>
+<br>
+<br>
+
+
+
+<p>另一个检查返回值的例子，输入一个字符串，输出一个字符串。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">例3：对16进制的颜色倒转#后的6位
+hexadecimal=c("#FF0000", "#FFFF00")
+vapply(
+  X = toupper(x = hexadecimal), #先变大写字母
+  
+  FUN = function(hex) {
+    hex=substring(hex,2)
+    hex=rev(strsplit(hex, split="")[[1]] )
+    hex=paste(hex, collapse = "")
+    return( paste0("#", hex) ) 
+  },
+  FUN.VALUE = character(length = 1L), #返回值是字符串，长度为1
+  USE.NAMES =FALSE #不使用名字
+)
+# [1] "#0000FF" "#00FFFF"</div>
+</div>
+
 
 
 
@@ -1118,8 +1158,43 @@ kurtosis  -0.20325972   0.3803832  -0.36511606  -0.7539586</div>
 <br><a name="4"></a>
 <h2 class="tutheader">rapply, 递归版本的lapply，只处理list类型数据</h2>
 
+<p>rapply是一个递归版本的lapply，它只处理list类型数据，对list的每个元素进行递归遍历，如果list包括子元素则继续遍历。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">#rapply(object, f, classes = "ANY", deflt = NULL,
+#       how = c("unlist", "replace", "list"), ...)
+#Arguments 参数列表
+# classes : 匹配类型, ANY为所有类型
+# deflt: 非匹配类型的默认值
+# how: 3种操作方式，
+#   当为replace时，则用调用f后的结果替换原list中原来的元素；
+#   当为list时，新建一个list，类型匹配调用f函数，不匹配赋值为deflt；
+#   当为unlist时，会执行一次unlist(recursive = TRUE)的操作
+
+X1 = list(
+  list(
+    a = pi, 
+    b = list(c = 2)
+  ), 
+  d = "a test")
+X1
+str(X1)
+
+rapply(X1, function(x) x, how = "replace")
+
+rapply(X1, sqrt, classes = "numeric", how = "replace")
 
 
+rapply(X1, nchar, classes = "character",
+       deflt = as.integer(NA), how = "list")
+
+rapply(X1, nchar, classes = "character",
+       deflt = as.integer(NA), how = "unlist")
+
+rapply(X1, log, classes = "numeric", how = "replace", base = 10)
+
+rapply(X1, log, classes = "numeric", how = "list", base = 10)</div>
+</div>
 
 
 

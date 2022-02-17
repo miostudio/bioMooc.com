@@ -53,8 +53,7 @@ $(function(){
 	$.get('/part/menu-right.html',function(data,status){
 		$('.main .row').first().append(data);//右侧菜单-全局通用
 		//没有事件，还需要绑定事件
-		
-		
+
 	});
 	
 	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
@@ -143,7 +142,12 @@ p{text-indent:2em;}
 			</li>
 			
 			<li><a href="#6_3">标度(scale) todo</a></li>
-			<li><a href="#6_4">主题(theme) </a></li>
+			<li><a href="#6_4">主题 (theme) 精雕细琢</a>
+				<ul>
+					<li><a href="#6_4_1">可修改的位置</a></li>
+					<li><a href="#6_4_2">自带主题及扩展包</a></li>
+				</ul>
+			</li>
 			<li><a href="#6_5">多重图，一页多图</a>
 				<ul>
 					<li><a href="#6_5_2">母子图，图片嵌套</a></li>
@@ -171,10 +175,23 @@ p{text-indent:2em;}
 <p><a target="_blank" href="https://ggplot2.tidyverse.org/reference/">官网 reference</a> 应该是你入门后参考最多的网站。其次是应该打印出来贴墙上的小抄 <a target="_blank" href=" https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">ggplot2-cheatsheet.pdf</a>。</p>
 
 
-<p>知名图书： <a target="_blank" href="http://www.cookbook-r.com/Graphs/">《R cookbook》</a>, <a target="_blank" href="https://r4ds.had.co.nz/data-visualisation.html">《R for Data Science》</a>,  <a target="_blank" href="https://ggplot2-book.org/">《ggplot2: Elegant Graphics for Data Analysis》</a>,  </p>
+<ul><b>知名图书</b>：
+	<li><a target="_blank" href="https://ggplot2-book.org/">《ggplot2: Elegant Graphics for Data Analysis》</a>[ggplot2的作者亲自写的书，<a target="_blank" href="https://ggplot2-book.org/annotations.html">在线版</a>] </li>
+	<li><a target="_blank" href="http://www.cookbook-r.com/Graphs/">《R cookbook》</a> </li>
+	<li><a target="_blank" href="https://r4ds.had.co.nz/data-visualisation.html">《R for Data Science》</a> </li>
+
+</ul>
+
 <p>甚至有人写了 <a target="_blank" href="http://ggplot.yhathq.com/">python版的ggplot包</a>。 </p>
 <br>
-<p><b><a target="_blank" href="https://tool.biomooc.com/R_scripts/">专题：ggplot2画paper中常见的图</a></b></p>
+
+
+<ul><b>短篇</b>:
+	<li><b><a target="_blank" href="https://tool.biomooc.com/R_scripts/">专题：ggplot2画paper中常见的图</a></b></li>
+	<li><a target="_blank" href="http://www.sthda.com/english/wiki/ggplot2-essentials">ggplot2-essentials</a> 博客，知识点对照表。</li>
+	<li><a target="_blank" href="http://www.sthda.com/english/wiki/be-awesome-in-ggplot2-a-practical-guide-to-be-highly-effective-r-software-and-data-visualization">ggplot2-guide</a> 常见图实例。</li>
+</ul>
+
 <hr>
 
 
@@ -1016,7 +1033,11 @@ ggplot(data = dg2, mapping = aes(
 
 <a name="6_2_5"></a>
 <h3 class="tutheader">修改图例方位、位置、宽高</h3>
-<p>方位，就是 legend.position，四个方位。位置，在左侧时，整体上移或下移。宽高，就是图例本身的宽高。</p>
+<p>方位，就是 legend.position，四个方位。legend.position = "top" #放到上面。</p>
+<p>位置，在顶部时，靠左还是靠右。legend.justification = "left", #左对齐。四个边界的大小: legend.margin=margin(t = 0, r = 0, b = 10, l = 10, unit = "pt"), #move legend up a litter</p>
+<p>宽高，就是图例本身的宽高。legend.key.width = unit(15, "mm"), legend.key.height = unit(2, "mm")</p>
+<p>有时候，对于 geom_line(size=1) 线条的图例，还要增大图例的线宽: guides(color = guide_legend(override.aes = list(size = 13)));</p>
+
 <img src="images/draw-adv-ggplot2/legend_margin.png">
 
 <div class="code notranslate">
@@ -1029,9 +1050,11 @@ ggplot(mtcars, aes(wt, mpg, color=gear) )+
     legend.position = c("left"), #方位: 上下左右共4个
     legend.text=element_text(size=8), #刻度字号
     legend.title=element_text(size=8), #标题字号
+	
     legend.key.width = unit(4, "mm"), #control legend width and height
     legend.key.height = unit(4, "mm"),
-    legend.margin=margin(t = 0, r = 0, b = 50, l = 0, unit = "pt"), #move legend up a litter
+    
+	legend.margin=margin(t = 0, r = 0, b = 50, l = 0, unit = "pt"), #move legend up a litter
   )</div>
 </div>
 <br><br>
@@ -1051,7 +1074,7 @@ ggplot(mtcars, aes(wt, mpg, color=gear) )+
 
 
 <a name="6_4"></a>
-<h3 class="tutheader">主题 精雕细琢</h3>
+<h3 class="tutheader">主题 (theme) 精雕细琢</h3>
 
 <p>theme是解决图是否美观的一个工具，其与scale最大的区别在于不受数据左右。</p>
 <p>先把scale做好，就是一张<b>合格</b>的图；再处理theme，则是一张<b>出色</b>的图。</p>
@@ -1184,6 +1207,47 @@ p + theme(panel.grid.major = element_blank(), #主网格线
 
 
 <a name="6_4_1"></a>
+<h3 class="tutheader">可修改的位置</h3>
+<p>举一个设置背景颜色的例子。</p>
+<image src="images/draw-adv-ggplot2/theme_element_rect.png">
+<p>最大的绘图区是plot，然后又分成几个分面 画板 panel，panel的标题叫 strip。</p>
+<p>图例整体叫 legend.background，里面的每个图文对中的小图叫 legend.key。</p>
+
+<image src="images/draw-adv-ggplot2/theme_position.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(ggplot2)
+df1=diamonds
+df1$isDear=df1$price>5000
+ggplot(df1, aes(carat, price, color=color, shape=isDear))+
+  geom_point(size=1)+
+  facet_wrap(.~cut)+
+  theme_bw()+
+  theme(
+    plot.background = element_rect(fill="lightyellow"), #整个大背景
+    plot.title = element_text(color="red", hjust=0.5), #标题水平居中
+
+    panel.background = element_rect(fill="orange"), #分面条带背景
+    panel.border = element_rect(color="red", size=2, linetype=4), #分面的面板
+
+    strip.background = element_rect(fill="pink", color="blue", size=2, linetype=3), #分面的标题
+
+    legend.box.background = element_rect(fill="purple", color="purple", size=2), #整个图例边框
+    legend.background = element_rect(fill="cyan"), #每个具体图例的背景，比如 color, shape
+    legend.key = element_rect(fill="yellow", color="red", linetype=2), #每个图例的每个小图
+  )+
+  labs(title="xx title")</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<a name="6_4_2"></a>
 <h3 class="tutheader">自带主题及扩展包</h3>
 <p>theme_grey()为默认主题，theme_bw()为白色背景主题，theme_classic()为经典主题。</p>
 <pre>
@@ -1488,6 +1552,10 @@ p+geom_text(data=data.frame(), aes(x=5, y=4.2, label="setosa"), color='black' )
 
 <a name="100"></a>
 <h2>深入学习 ggplot2 </h2>
+
+<p>彩蛋：<a target="_blank" href="https://tool.biomooc.com/R_scripts/index_pkgs.html">使用 grid 在低层修改 ggplot2 对象</a>，做出 ggplot2 不可能的效果，如圆角矩形图例，分面标题删三边仅下划线等。</p>
+
+
 <p>微信: <a target="_blank" href="https://mp.weixin.qq.com/s?__biz=MzI5MTcwNjA4NQ==&mid=2247486262&idx=1&sn=d38221a4063d866b1f10f4c9ebab5f88">ggplot2高效实用指南 (可视化脚本、工具、套路、配色)</a></p>
 
 <p>R语言实战 <a target="_blank" href="https://livebook.manning.com/book/r-in-action-second-edition/chapter-19/">Chapter 19. Advanced graphics with ggplot2</a></p>
