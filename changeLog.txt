@@ -248,10 +248,14 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.3-8 更新年份 2022; [2022.2.17]
 	page0.3.3-9 Python/ 脚本化 [2022.2.18]
 	page0.3.4-0 js 本地化 [2022.2.18]
+		因为js无法导入，页面变形了。
 		<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
 		to
 		<script src="/static/js/jquery.min.js"></script>
-
+	page0.3.4-1 css 本地化 [2022.2.18]
+		<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+		to
+		<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
 ##############
 # commit
 ########>> push miostudio
