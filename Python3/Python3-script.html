@@ -1,0 +1,653 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Python 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="Python 脚本化">
+<meta name="description" content="Python 脚本化最佳实践">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+<!--
+	<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />	  
+-->
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+
+
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+p{text-indent:2em;}
+</style>
+
+
+
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">Python script </span>脚本化</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 脚本化是一种对用户友好的封装，不仅能提高程序的健壮性，还能很容易的集成到分析流程中。</p>
+
+<ul>
+	<li><a href="#1">Python 脚本简介</a></li>
+	
+	<li><a href="#2">Python 脚本化相关技术</a>
+		<ul>
+			<li><a href="#2_1">使用 sys.argv 接收参数</a></li>
+			<li><a href="#2_2">使用 argparse 模块 接收参数</a></li>
+			<li><a href="#2_3">使用 click 第三方模块 接收参数</a></li>
+			<li><a href="#2_3_b">参数校验与主动报错</a></li>
+			
+			<li><a href="#2_4">使用 "__main__" 程序入口</a></li>
+			<li><a href="#2_5">打印时间戳进度条</a></li>
+			<li><a href="#2_6">超大文件秒读</a></li>
+			<li><a href="#2_7">pysam 模块读写 bam 文件</a></li>
+		</ul>
+	</li>
+	
+	
+	<li><a href="#100"> 参考资料</a></li>
+
+</ul>
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">Python 脚本简介</h2>
+
+<p>脚本化，就是把程序写成有输入和输出的独立程序文件。就像shell的 ls 命令, 比对软件 STAR 一样，用户只需要调用脚本名字、给出参数，程序就能判断参数是否合法，并返回结果。把程序像黑盒一样封装起来，方便用户使用，还能轻易整合到 snakemake 等流程中。</p>
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">Python 脚本化相关技术</h2>
+<p>接收参数可以使用内置模块 sys.argv 或 argparse，以及第三方模块 click。</p>
+<hr />
+<p>sys.argv 的写法太死板，只有1-2个参数可以使用，多了就太麻烦了。</p>
+<p>我最喜欢的是 argparse 模块，这个模块是内置模块，但是功能完全够用，非常方便。</p>
+<p>功能最全面的的是click，数据格式检查、转换都自动化完成了。</p>
+
+
+
+
+
+<a name='2_1'></a>
+<h3 class="tutheader">使用 sys.argv 接收参数</h3>
+<p>脚本内部把参数列表保存在数组 sys.argv 中，下标0是该脚本文件名本身，下标1是第一个参数，以此类推。</p>
+<p>获取的参数是字符串形式，要做算术运算需要主动转为数字形式，比如 int(str2)。</p>
+<p>一般还需要验证参数，比如个数、类型是否正确，输出文件是否已经存在等。</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 实例(Ubuntu 20.04 + Python 3.7.0)
+#例1: 接收参数，并对第一个参数加100后输出
+$ cat t1.py 
+import sys
+arr=sys.argv;
+print("Para length=", len(arr),"; arr=", arr)
+print("paras:", arr[0], arr[1], arr[2])
+
+n1=int(arr[1]) + 100 #刚获取的参数是字符串，要转为需要的格式
+print("n1=", n1)</div>
+</div>
+
+<p>运行该脚本，并传入参数:</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ python3 t1.py 2 arg2 arg3
+Para length= 4 ; arr= ['t1.py', '2', 'arg2', 'arg3']
+paras: t1.py 2 arg2
+n1= 102
+
+# 如果传入参数个数不够，还可能报错。
+$ python3 t1.py 5
+Para length= 2 ; arr= ['t1.py', '5']
+Traceback (most recent call last):
+  File "t1.py", line 5, in &lt;module&gt;
+    print("paras:", arr[0], arr[1], arr[2])
+IndexError: list index out of range</div>
+</div>
+
+
+<p>小结：sys.argv 形式传入参数的方式比较简单，但是也很死板，因为传入的参数是一个有序的列表，所以在命令行中必须按照脚本规定的顺序去输入参数，这种方法比较适合脚本中需要的参数个数很少且参数固定的脚本。</p>
+
+
+
+
+
+
+<a name='2_2'></a>
+<h3 class="tutheader">使用 argparse 模块 接收参数</h3>
+<p>argparse 模块是 Python 内置的一个用于命令项选项与参数解析的模块，argparse 模块可以让人轻松编写用户友好的命令行接口。通过在程序中定义好我们需要的参数，然后 argparse 将会从 sys.argv 解析出这些参数。argparse 模块还会自动生成帮助和使用手册，并在用户给程序传入无效参数时报出错误信息。</p>
+
+<p>帮助文档：
+	<a target="_blank" href="https://docs.python.org/3/library/argparse.html">argparse — Parser for command-line options, arguments and sub-commands</a>, 
+	<a target="_blank" href="https://docs.python.org/3/howto/argparse.html">argparse Tutorial</a>
+</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ cat t2.py
+import argparse
+
+# step1 创建 参数解析器 实例。description 中描述该脚本做什么以及怎么做
+parser = argparse.ArgumentParser(description='Test for argparse')
+
+# step2 添加参数及其属性。前2个是参数前缀的两种形式，help是帮助，type是类型，default是默认值
+parser.add_argument('name', help='positional arguments, required')
+parser.add_argument('title', help='positional arguments, optional', default="")
+
+parser.add_argument('--year', '-y', help='year 属性，非必要参数，但是有默认值', type=int, default=2022)
+parser.add_argument('-b', '--body', help='body 属性，必要参数', required=True) #前2个参数的位置随意，必须参数
+
+# step3 解析参数。
+args = parser.parse_args()
+print(args)
+print("name=", args.name)
+if ""!=args.title:
+    print("title=", args.title)
+print("year=", args.year)
+print("body=", args.body)</div>
+</div>
+
+
+<p>没有-/--前缀的是必须参数，必须指定，有默认值也不行。有-/--的是可选参数，可以给默认值，可以使用required=True指定是必选参数。</p>
+<p>尝试调用该脚本:</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ python3 t2.py name="White Ice" title="CEO" --year 2099 -b "body of this msg"
+Namespace(body='body of this msg', name='name=White Ice', title='title=CEO', year=2099)
+name= name=White Ice
+title= title=CEO
+year= 2099
+body= body of this msg
+
+# 
+$ python3 t2.py name="White Ice" "CEO" -b 'msg'
+Namespace(body='msg', name='name=White Ice', title='CEO', year=2022)
+name= name=White Ice
+title= CEO
+year= 2022
+body= msg
+
+# 如果啥都不知道，没输入参数呢？
+$ python3 t2.py 
+usage: t2.py [-h] [--year YEAR] -b BODY name title
+t2.py: error: the following arguments are required: name, title, -b/--body
+# 主动提示调用方式，可选参数使用[]，后面是必须参数。
+
+# 还有-h自动生成的帮助文档：
+$ python3 t2.py -h
+usage: t2.py [-h] [--year YEAR] -b BODY name title
+
+Test for argparse
+
+positional arguments:
+  name                  positional arguments, required
+  title                 positional arguments, optional
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --year YEAR, -y YEAR  year 属性，非必要参数，但是有默认值
+  -b BODY, --body BODY  body 属性，必要参数</div>
+</div>
+
+
+
+<h4>add_argument() 方法定义如何解析命令行参数: </h4>
+<pre>
+ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])
+
+每个参数解释如下:
+name or flags - 选项字符串的名字或者列表，例如 foo 或者 -f, --foo。
+action - 命令行遇到参数时的动作，默认值是 store。
+store_const，表示赋值为const；
+append，将遇到的值存储成列表，也就是如果参数重复则会保存多个值;
+append_const，将参数规范中定义的一个值保存到一个列表；
+count，存储遇到的次数；此外，也可以继承 argparse.Action 自定义参数解析；
+nargs - 应该读取的命令行参数个数，可以是具体的数字，或者是?号，当不指定值时对于 Positional argument 使用 default，对于 Optional argument 使用 const；或者是 * 号，表示 0 或多个参数；或者是 + 号表示 1 或多个参数。
+const - action 和 nargs 所需要的常量值。
+default - 不指定参数时的默认值。
+type - 命令行参数应该被转换成的类型。
+choices - 参数可允许的值的一个容器。
+required - 可选参数是否可以省略 (仅针对可选参数)。
+help - 参数的帮助信息，当指定为 argparse.SUPPRESS 时表示不显示该参数的帮助信息.
+metavar - 在 usage 说明中的参数名称，对于必选参数默认就是参数名称，对于可选参数默认是全大写的参数名称.
+dest - 解析后的参数名称，默认情况下，对于可选参数选取最长的名称，中划线转换为下划线.
+</pre>
+
+<p>更多的参数介绍和使用可以查看官方文档：Python 官方文档：argparse (https://docs.python.org/zh-cn/3/library/argparse.html?highlight=argparse#module-argparse)</p>
+
+<p>小结：其实我非常喜欢这个内置的命令行参数模块，因为它不仅方便使用，更重要的是它就是内置的，不需要单独安装依赖。</p>
+
+
+
+
+
+
+<a name='2_3'></a>
+<h3 class="tutheader">使用 click 第三方模块 接收参数</h3>
+
+<p><a target="_blank" href="https://click.palletsprojects.com/en/8.0.x/">Click</a> 是 Flask 的团队 pallets 开发的优秀开源项目，它为命令行工具的开发封装了大量方法，使开发者只需要专注于功能实现。基于optparse 而不是 argparse。这是一个第三方库，专门为了命令行而生的非常有名的 Python 命令行模块。</p>
+
+<p>主要功能: 任意嵌入命令，自动生成帮助页，支持运行时子命令的lazy loading。</p>
+<p></p>
+
+<pre>
+查版本号 
+$ pip3 list | grep -i click 
+## click 8.0.3
+
+如果没有就手动安装 
+$ pip3 install click -i https://pypi.douban.com/simple/
+</pre>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ cat t3.py 
+import click
+
+@click.command()
+@click.option("--count", default=1, help="Number of greetings.")
+@click.option('--name', prompt='Your name', help='The person to greet.')
+def hello(count, name):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for x in range(count):
+        click.echo(f"hello {name}!")
+
+if __name__ == '__main__':
+    hello()
+
+
+调用1：
+$ python3 t3.py 
+Your name: John
+hello John!
+
+
+调用2：
+$ python3 t3.py --count 3
+Your name: John
+hello John!
+hello John!
+hello John!
+
+
+调用3: 
+$ python3 t3.py --help
+Usage: t3.py [OPTIONS]
+
+  Simple program that greets NAME for a total of COUNT times.
+
+Options:
+  --count INTEGER  Number of greetings.
+  --name TEXT      The person to greet.
+  --help           Show this message and exit.</div>
+</div>
+
+
+<p>可以看到 click 是使用装饰器的方式给函数添加命令行属性，比较特殊的是最后调用函数的时候是没有带上参数的，因为参数会自动通过命令行的形式传入。其他设置参数的属性跟前面的 argparse 的方式非常相似，具体的参数可以参考文档和其他的教程用法</p>
+
+<p>小结：click 库也是一个非常人性化的命令行参数模块，它其实非常强大，强大到把所有的命令行参数可能涉及的情况都考虑到了，需要自己去探索。</p>
+
+
+
+<p>略作修改后测试，发现:
+	<br>1)函数调用 hello() 下一条语句不能执行到。
+	<br>2) hello()上一条可以执行，但是拿不到传入的参数。也就是说参数只在装饰器修饰的函数范围内有效，要想在其他地方有效，就要在该函数内调用其他函数，并传参。
+	<br>3)函数内的 click.echo 也可以替换为我们熟悉的 print("hello %s!" % name)。
+	<br>4)也可以设置 type=int 来强制转换参数类型。
+</p>
+
+
+
+
+
+
+
+
+
+
+<a name='2_3_b'></a>
+<h3 class="tutheader">参数校验与主动报错</h3>
+<p>先检查参数个数，再检查参数类型，还要检查输出文件是否存在，如果存在是否覆盖？</p>
+<p>主动报错，就是在参数不合法时，主动抛出错误，终止程序的运行，并指出错误或给出合理化建议。</p>
+
+<pre>
+import os
+
+x="tmp.py" # this file name
+#x="tmp123456789.py" #not exist
+
+if os.path.exists(x):
+  print("file exist")
+else:
+  raise Exception("File not exist.")
+
+print("==Exception demo end==")
+</pre>
+
+<p>另一种主动报错方法是使用断言，这个比较简短，短脚本用用没啥大问题，但-O编译时可能会漏掉这些断言语句。</p>
+<pre>
+x = 23
+assert x > 0, "x is not zero or negative"
+assert x%2 == 0, "x is not an even number"
+</pre>
+
+
+
+
+
+
+
+<a name='2_4'></a>
+<h3 class="tutheader">使用 "__main__" 程序入口</h3>
+<p>好处是使明确函数的入口，使程序更结构化。</p>
+
+<pre>
+def fn1():
+  print("fn1")
+
+def fn2():
+  print("fn2")
+
+
+if __name__ == "__main__":
+  fn1()
+  fn2()
+</pre>
+
+
+
+
+
+
+
+<a name='2_5'></a>
+<h3 class="tutheader">打印时间戳进度条</h3>
+
+<p>运行时间长的脚本需要进度条，来缓解用户的焦虑，告诉用户我还在运行，运行到哪了。一般有直接写时分秒的，还有写运行时间的。</p>
+
+
+<h4>显示时分秒的</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">def time_now():
+  import time
+  return time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())
+
+if __name__ == "__main__":
+  print( "[%s] Start Analysis ..." % time_now() )
+  print( "["+time_now()+"]", "processing line 1000" )
+
+# 输出: 
+[2022/02/18 16:36:57] Start Analysis ...
+[2022/02/18 16:36:57] processing line 1000
+
+
+# style2
+time.strftime("%Y%m%d-%H%M%S", time.localtime()) 
+##'20220218-162528'
+
+# style3
+import datetime
+now_time = datetime.datetime.now()
+print(now_time) #2022-02-18 16:25:55.565440</div>
+</div>
+
+
+<h4>显示运行时间的</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">import time
+start=time.time();
+
+#do sth;
+time.sleep(1.45)
+
+timeString=time.strftime("%Y%m%d-%H%M%S", time.localtime());
+print('耗时',round(time.time()-start,2),'s; ', timeString, sep='')
+# 耗时1.45s; 20220218-162228</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<a name='2_6'></a>
+<h3 class="tutheader">超大文件秒读</h3>
+
+<h4>fr.readlines() 读取大文件很慢(不推荐)</h4>
+<pre>
+# 要把整个文件读入内存，启动特别慢，不适用超大文件
+fr=open("test.txt", 'r', encoding="utf-8") #后2个参数可以省略
+
+for line in fr.readlines():
+    print('line is:', line)
+fr.close()
+</pre>
+
+
+
+<h4>【推荐!】对超大文件秒读</h4>
+<pre>
+fr=open("test.fq", 'r', encoding="utf-8") #后2个参数可以省略
+while True:
+    line=fr.readline()
+    if not line:
+        break
+    print('read line is:', line)
+fr.close()
+
+
+或者for:
+fqFile="c12ROW27.keep.fq"
+fr=open(fqFile,'r',encoding="utf-8")
+i=0
+for line in fr:
+    i+=1
+    if i>10:
+        break
+    print('[%d]' % i, line.strip())
+fr.close()
+</pre>
+
+
+
+<h4>如果是 gz 压缩后的文本文件，可以不解压用gzip包直接读取</h4>
+<pre>
+import gzip
+fname="ref_R2_extracted_nonPolyA_Reads.fq.gz"
+fr=gzip.open(fname,'rb')
+
+i=0
+while True:
+    i+=1
+    if i>10:
+        break
+    line=fr.readline()
+    if not line:
+        break
+    line2=line.decode() #转2进制为常规字符串
+    print(i,line2.strip())
+    
+fr.close()
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='2_7'></a>
+<h3 class="tutheader">pysam 模块读写 bam 文件</h3>
+
+<p>https://pysam.readthedocs.io/en/latest/index.html</p>
+<p>Pysam is a python module for reading, manipulating and writing genomic data sets.</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">//todo NGS/bioinfo_tools
+# 对 STAR 的输出文件bam进行过滤，获取 uniq mapping 的reads，并按照正负链分成2个bam文件。
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='100'></a>
+<h2 class="tutheader">参考资料</h2>
+<pre>
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

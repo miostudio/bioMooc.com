@@ -246,6 +246,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.3-6 R/ 添加颜色; [2022.01.11]
 	page0.3.3-7 R/ ggplot theme 位置; [2022.2.17]
 	page0.3.3-8 更新年份 2022; [2022.2.17]
+	page0.3.3-9 Python/ 脚本化 [2022.2.18]
 ##############
 # commit
 ########>> push miostudio
