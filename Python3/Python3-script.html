@@ -389,6 +389,8 @@ Options:
 <p>先检查参数个数，再检查参数类型，还要检查输出文件是否存在，如果存在是否覆盖？</p>
 <p>主动报错，就是在参数不合法时，主动抛出错误，终止程序的运行，并指出错误或给出合理化建议。</p>
 
+
+<h4>如果文件不存在，则报错：</h4>
 <pre>
 import os
 
@@ -403,7 +405,22 @@ else:
 print("==Exception demo end==")
 </pre>
 
-<p>另一种主动报错方法是使用断言，这个比较简短，短脚本用用没啥大问题，但-O编译时可能会漏掉这些断言语句。</p>
+
+<h4>如果不是文件，则报错：</h4>
+<pre>
+import os
+#inputFile = "tmp.py"
+inputFile = "tmp123456.py" #os.environ.get('PYTHONSTARTUP')
+if inputFile and os.path.isfile(inputFile):
+  pass;
+else:
+  raise Exception( "input file not exist or not a file: %s" % inputFile )
+</pre>
+
+
+
+
+<p>另一种主动报错方法是使用断言 assert，这个比较简短，短脚本用用没啥大问题，但-O编译时可能会跳过断言语句。</p>
 <pre>
 x = 23
 assert x > 0, "x is not zero or negative"
@@ -418,7 +435,8 @@ assert x%2 == 0, "x is not an even number"
 
 <a name='2_4'></a>
 <h3 class="tutheader">使用 "__main__" 程序入口</h3>
-<p>好处是使明确函数的入口，使程序更结构化。</p>
+<p>所有代码都放到函数中，然后在入口依次调用这些函数。
+有明确的函数入口，会使程序更结构化，更清晰易读。</p>
 
 <pre>
 def fn1():
@@ -442,7 +460,7 @@ if __name__ == "__main__":
 <a name='2_5'></a>
 <h3 class="tutheader">打印时间戳进度条</h3>
 
-<p>运行时间长的脚本需要进度条，来缓解用户的焦虑，告诉用户我还在运行，运行到哪了。一般有直接写时分秒的，还有写运行时间的。</p>
+<p>运行时间长的脚本需要进度条，以缓解用户的焦虑，告诉用户程序运行到哪了，方便用户估计还要等多久。一般有伴随着进度条直接写时分秒的，还有写运行时间的。</p>
 
 
 <h4>显示时分秒的</h4>
@@ -451,27 +469,46 @@ if __name__ == "__main__":
   import time
   return time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())
 
+def task():
+  i=0
+  while True:
+    i=i+1
+    if i%1e6 ==0:
+      print( "[%s]" % time_now(), "Processing line ", i )
+
+    if i>1e7:
+      break;
+
 if __name__ == "__main__":
   print( "[%s] Start Analysis ..." % time_now() )
-  print( "["+time_now()+"]", "processing line 1000" )
+  print( "["+time_now()+"]", "processing line 0" )
+  task()
 
-# 输出: 
-[2022/02/18 16:36:57] Start Analysis ...
-[2022/02/18 16:36:57] processing line 1000
+输出:
+[2022/02/19 09:57:08] Start Analysis ...
+[2022/02/19 09:57:08] processing line 0
+[2022/02/19 09:57:08] Processing line  1000000
+[2022/02/19 09:57:08] Processing line  2000000
+...</div>
+</div>
+<br />
 
 
+<p>其他时间显示形式：</p>
+<pre>
 # style2
-time.strftime("%Y%m%d-%H%M%S", time.localtime()) 
-##'20220218-162528'
+time.strftime("%Y%m%d-%H%M%S", time.localtime())  ##'20220218-162528'
 
 # style3
 import datetime
-now_time = datetime.datetime.now()
-print(now_time) #2022-02-18 16:25:55.565440</div>
-</div>
+now_time = datetime.datetime.now() ## 2022-02-18 16:25:55.565440
+</pre>
 
 
-<h4>显示运行时间的</h4>
+
+
+
+<h4>显示运行时间</h4>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">import time
 start=time.time();
@@ -483,7 +520,8 @@ timeString=time.strftime("%Y%m%d-%H%M%S", time.localtime());
 print('耗时',round(time.time()-start,2),'s; ', timeString, sep='')
 # 耗时1.45s; 20220218-162228</div>
 </div>
-
+<br>
+<br>
 
 
 
@@ -570,7 +608,119 @@ fr.close()
 
 <p>https://pysam.readthedocs.io/en/latest/index.html</p>
 <p>Pysam is a python module for reading, manipulating and writing genomic data sets.</p>
+<p>一般在交互模式(或jupyter)探索，在脚本模式下批量执行。</p>
 
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">>>> import pysam
+>>> bamFile="/home/wangjl/data/chenxi/batch0/trim/ref_R2_extracted_trimmed_CutA_Aligned.sortedByCoord.out.bam"
+>>> samfile = pysam.AlignmentFile(bamFile, "rb")
+>>> for line in samfile:
+...     print(line)
+...     break
+... 
+A00679:526:HYVNJDSXY:4:2270:29658:29465_TAATCGGG_ATGGGGGCGA	0	0	3132264	255	20M7S	-1	-1	20	TATATAAATAGTTTAATTTTTGACAAT	array('B', [37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37])	[('NH', 1), ('HI', 1), ('AS', 19), ('nM', 0)]
+
+
+# 获取一行元素，这是一个AlignedSegment对象，有属性和方法
+>>> help(line)
+
+>>> line
+&lt;pysam.libcalignedsegment.AlignedSegment object at 0x7f7d322d27c8&gt;
+
+# 获取其属性
+>>> line.flag #正负链，0:"+", 16:"-"
+0
+
+>>> line.cigarstring
+'20M7S'
+
+>>> line.seq #
+'TATATAAATAGTTTAATTTTTGACAAT'
+
+# 获取其 forward 序列，负链就是 seq，正链是其反向互序列。
+>>> line.get_forward_sequence()
+'TATATAAATAGTTTAATTTTTGACAAT'
+
+# 使用其方法，把这一行转为字典，就可以很方便获取改行的任意部分了。
+>>> line.to_dict()
+{'name': 'A00679:526:HYVNJDSXY:4:2270:29658:29465_TAATCGGG_ATGGGGGCGA', 'flag': '0', 'ref_name': 'chr1', 'ref_pos': '3132265', 'map_quality': '255', 'cigar': '20M7S', 'next_ref_name': '*', 'next_ref_pos': '0', 'length': '0', 'seq': 'TATATAAATAGTTTAATTTTTGACAAT', 'qual': 'FFFFFFFFFFFFFFFFFFFFFFFFFFF', 'tags': ['NH:i:1', 'HI:i:1', 'AS:i:19', 'nM:i:0']}
+
+>>> line.to_dict()["cigar"]
+'20M7S'
+
+>>> line.cigar
+[(0, 20), (4, 7)]
+
+## 对比 cigar 属性和 cigar字符串的关系，[]内的数组是(type, num)形式。
+# 第一个type的对应关系是
+# 0 M
+# 1 I
+# 2 D
+# 3 N
+# 4 S
+
+## print("\t>>", i, line.to_dict()["cigar"], line.cigar)
+	>> 0 34M1D103M [(0, 34), (2, 1), (0, 103)]
+	>> 4 94M [(0, 94)]
+	>> 23 2S129M [(4, 2), (0, 129)]
+	>> 38 29M45059N18M [(0, 29), (3, 45059), (0, 18)]
+	>> 56 27M5I109M [(0, 27), (1, 5), (0, 109)]
+
+
+
+
+# 获取末尾的tags
+>>> line.get_tags()
+[('NH', 1), ('HI', 1), ('AS', 19), ('nM', 0)]
+>>> line.get_tag("NH")
+1
+>>> line.has_tag("NH")
+True
+>>> line.has_tag("CB")
+False
+
+
+
+# 所有的属性和方法
+>>> dir(line)
+['__class__', '__copy__', '__deepcopy__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__ne__', '__new__', '__pyx_vtable__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setstate__', '__sizeof__', '__str__', '__subclasshook__', 'aend', 'alen', 'aligned_pairs', 'bin', 'blocks', 'cigar', 'cigarstring', 'cigartuples', 'compare', 'flag', 'from_dict', 'fromstring', 'get_aligned_pairs', 'get_blocks', 'get_cigar_stats', 'get_forward_qualities', 'get_forward_sequence', 'get_overlap', 'get_reference_positions', 'get_reference_sequence', 'get_tag', 'get_tags', 'has_tag', 'header', 'infer_query_length', 'infer_read_length', 'inferred_length', 'is_duplicate', 'is_paired', 'is_proper_pair', 'is_qcfail', 'is_read1', 'is_read2', 'is_reverse', 'is_secondary', 'is_supplementary', 'is_unmapped', 'isize', 'mapping_quality', 'mapq', 'mate_is_reverse', 'mate_is_unmapped', 'mpos', 'mrnm', 'next_reference_id', 'next_reference_name', 'next_reference_start', 'opt', 'overlap', 'pnext', 'pos', 'positions', 'qend', 'qlen', 'qname', 'qqual', 'qstart', 'qual', 'query', 'query_alignment_end', 'query_alignment_length', 'query_alignment_qualities', 'query_alignment_sequence', 'query_alignment_start', 'query_length', 'query_name', 'query_qualities', 'query_sequence', 'reference_end', 'reference_id', 'reference_length', 'reference_name', 'reference_start', 'rlen', 'rname', 'rnext', 'seq', 'setTag', 'set_tag', 'set_tags', 'tags', 'template_length', 'tid', 'tlen', 'to_dict', 'to_string', 'tostring']
+
+
+>>> line.
+line.aend                       line.is_proper_pair             line.query
+line.alen                       line.is_qcfail                  line.query_alignment_end
+line.aligned_pairs              line.is_read1                   line.query_alignment_length
+line.bin                        line.is_read2                   line.query_alignment_qualities
+line.blocks                     line.is_reverse                 line.query_alignment_sequence
+line.cigar                      line.is_secondary               line.query_alignment_start
+line.cigarstring                line.is_supplementary           line.query_length
+line.cigartuples                line.is_unmapped                line.query_name
+line.compare(                   line.isize                      line.query_qualities
+line.flag                       line.mapping_quality            line.query_sequence
+line.from_dict(                 line.mapq                       line.reference_end
+line.fromstring(                line.mate_is_reverse            line.reference_id
+line.get_aligned_pairs(         line.mate_is_unmapped           line.reference_length
+line.get_blocks(                line.mpos                       line.reference_name
+line.get_cigar_stats(           line.mrnm                       line.reference_start
+line.get_forward_qualities(     line.next_reference_id          line.rlen
+line.get_forward_sequence(      line.next_reference_name        line.rname
+line.get_overlap(               line.next_reference_start       line.rnext
+line.get_reference_positions(   line.opt(                       line.seq
+line.get_reference_sequence(    line.overlap(                   line.setTag(
+line.get_tag(                   line.pnext                      line.set_tag(
+line.get_tags(                  line.pos                        line.set_tags(
+line.has_tag(                   line.positions                  line.tags
+line.header                     line.qend                       line.template_length
+line.infer_query_length(        line.qlen                       line.tid
+line.infer_read_length(         line.qname                      line.tlen
+line.inferred_length            line.qqual                      line.to_dict(
+line.is_duplicate               line.qstart                     line.to_string(
+line.is_paired                  line.qual                       line.tostring( </div>
+</div>
+
+
+<p>xx</p>
 
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">//todo NGS/bioinfo_tools
