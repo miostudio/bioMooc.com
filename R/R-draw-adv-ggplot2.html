@@ -1310,6 +1310,64 @@ p+theme_01()+
   scale_color_hue("gear_DIY")+
   labs(title="mpg ~ disp")</div>
 </div>
+<br>
+
+
+
+
+
+<p>Seurat4 R包中定义的几个主题，就是返回一个 theme(): NoAxes(), RotatedAxis()</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">NoAxes = function(..., keep.text = FALSE, keep.ticks = FALSE) {
+  blank = element_blank()
+  # 没有坐标轴
+  no.axes.theme = theme(
+    # Remove the axis elements
+    axis.line.x = blank, #x轴线 不要
+    axis.line.y = blank,
+    # Validate the theme
+    validate = TRUE, #//这个干什么的?
+    ...
+  )
+  
+  # 不要文字
+  if (!keep.text) {
+    no.axes.theme = no.axes.theme + theme( #theme()函数可加
+      axis.text.x = blank, #刻度文字
+      axis.text.y = blank,
+      axis.title.x = blank, #坐标轴标签
+      axis.title.y = blank,
+      validate = TRUE,
+      ...
+    )
+  }
+  
+  # 不要刻度线
+  if (!keep.ticks){
+    no.axes.theme = no.axes.theme + theme(
+      axis.ticks.x = blank, #刻度线
+      axis.ticks.y = blank,
+      validate = TRUE,
+      ...
+    )
+  }
+  return(no.axes.theme)
+}
+# 测试
+FeaturePlot(pbmc, features = c("CD8A", "CD8B")) & NoAxes()
+
+
+# 旋转 x坐标轴文字的刻度
+RotatedAxis = function (...) {
+    rotated.theme = theme(axis.text.x = element_text(angle = 45, 
+        hjust = 1), validate = TRUE, ...)
+    return(rotated.theme)
+}
+# 测试
+DotPlot(pbmc, features = c("CD8A", "CD8B", "CD3D", "CD79A", "NKG7")) + RotatedAxis() </div>
+</div>
+<br>
+
 <br><br>
 
 
