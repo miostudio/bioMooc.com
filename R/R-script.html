@@ -1,0 +1,667 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 脚本化">
+<meta name="description" content="R 脚本化最佳实践">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+
+
+
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+p{text-indent:2em;}
+</style>
+
+
+
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R script </span>脚本化</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: 脚本化是一种对用户友好的封装，不仅能提高程序的健壮性，还能很容易的集成到分析流程中。</p>
+
+<ul>
+	<li><a href="#1">R 脚本简介 Rscript</a></li>
+
+
+	<li><a href="#2">R 脚本化相关技术</a>
+		<ul>
+			<li><a href="#2_1">接收参数</a></li>
+			<li><a href="#2_2">参数校验与主动报错</a></li>
+			<li><a href="#2_3">打印时间戳进度条、记录总时间</a></li>
+			<li><a href="#2_4">如果没有文件夹，则创建文件夹</a></li>
+			<li><a href="#2_5">system() 在R中调用系统命令</a></li>
+		</ul>
+	</li>
+
+
+	<li><a href="#3">Rmarkdown 自动化报告</a>
+		<ul>
+			<li><a href="#3_1">入门与渲染</a></li>
+			<li><a href="#3_2">接收参数</a></li>
+		</ul>
+	</li>
+	
+	
+	<li><a href="#100"> 参考资料</a></li>
+
+</ul>
+
+
+
+
+
+
+<a name='1'></a>
+<h2 class="tutheader">R 脚本简介 Rscript</h2>
+
+<p>脚本化，就是把程序写成有输入和输出的独立程序文件。就像shell的 ls 命令, 比对软件 STAR 一样，用户只需要调用脚本名字、给出参数，程序就能判断参数是否合法，并返回结果。把程序像黑盒一样封装起来，方便用户使用，还能轻易整合到 snakemake 等流程中。</p>
+
+
+
+
+
+<a name='2'></a>
+<h2 class="tutheader">R 脚本化相关技术</h2>
+<p>脚本内部把参数列表保存在数组 myArgs=commandArgs(TRUE) 中，下标0是该脚本文件名本身，下标1是第一个参数，以此类推。</p>
+<p>获取的参数是字符串形式，要做算术运算需要主动转为数字形式，比如 as.numeric(str2)。</p>
+<p>一般还需要验证参数，比如个数、类型是否正确，输出文件是否已经存在等。</p>
+<hr />
+
+
+
+
+<a name='2_1'></a>
+<h3 class="tutheader">接收参数</h3>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 实例(Ubuntu 20.04 + R 4.1.1)
+#例1: 接收参数，并对第2个参数加100后输出
+$ cat t1.R 
+#获取命令行参数
+myArgs = commandArgs(TRUE)
+
+#myArgs是所有参数的向量
+print(myArgs) 
+print(class(myArgs))
+message("length:", length(myArgs), ", first:", myArgs[1] )
+
+n1=as.numeric(myArgs[2])
+print( n1+100 )</div>
+</div>
+
+<p>运行该脚本，并传入参数:</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ Rscript t1.R hello 50
+[1] "hello" "50"   
+[1] "character"
+length:2, first:hello
+[1] 150
+
+
+# 如果传入参数个数不够，不报错，但是会计算异常，比如第二个转为数字返回NA。
+$ Rscript t1.R hello
+[1] "hello"
+[1] "character"
+length:1, first:hello
+[1] NA</div>
+</div>
+
+
+<p>小结: 通过 Rscript 执行R脚本。R脚本内通过 arr = commandArgs(TRUE) 接收参数，接收到的是一个数组，第一个参数的下标是1；类型为字符串，可以按需要强转。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='2_2'></a>
+<h3 class="tutheader">参数校验与主动报错</h3>
+<p>先检查参数个数，再检查参数类型，还要检查输出文件是否存在，如果存在是否覆盖？</p>
+<p>主动报错，就是在参数不合法时，主动抛出错误，终止程序的运行，并指出错误或给出合理化建议。</p>
+
+
+<h4>如果参数个数不对，则报错：</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ cat t2.R 
+myArgs = commandArgs(TRUE)
+
+if(length(myArgs) &lt; 2){
+  stop("You must provide at least 2 parameters!")
+}
+
+print(myArgs) 
+message("length:", length(myArgs), ", first:", myArgs[1] )
+
+
+$ Rscript t2.R hello #一个参数报错
+Error: You must provide at least 2 parameters!
+Execution halted
+
+$ Rscript t2.R hello world #两个参数正常执行
+[1] "hello" "world"
+length:2, first:hello</div>
+</div>
+
+
+
+
+<h4>如果输入文件不存在，则报错</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 获取数据文件的行列数
+$ cat t3.R
+myArgs = commandArgs(TRUE)
+
+input=myArgs[1]
+
+if(!file.exists(input)){
+  stop("Input file not exists:", input)
+}
+
+dat=read.table(input)
+message(input, ":", nrow(dat), " x ", ncol(dat))
+
+
+
+# 测试 
+# 写入一个文件
+$ R -e "write.table(iris, 'iris.txt')" 
+
+$ Rscript t3.R "iris.txt" #有文件时，返回行列数
+iris.txt:150 x 5
+
+$ Rscript t3.R "iris2.txt" #没有文件时，主动报错
+Error: Input file not exists:iris2.txt
+Execution halted</div>
+</div>
+
+
+
+
+
+
+<h4>脚本参数的校验，和函数参数的校验类似。</h4>
+<pre># stopifnot(): If any of the expressions (in ... or exprs) are not all TRUE, stop is called, producing an error message indicating the first expression which was not (all) true.
+
+$ cat t4.R 
+myArgs = commandArgs(TRUE)
+stopifnot(length(myArgs)>=2)
+message( paste(myArgs, collapse=", ") )
+
+
+# 测试1: 参数个数至少2个
+$ Rscript t4.R 1 23 4 5
+1, 23, 4, 5
+
+# 测试2: 参数个数不够2个则报错
+$ Rscript t4.R 1
+Error: length(myArgs) >= 2 is not TRUE
+Execution halted</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='2_3'></a>
+<h3 class="tutheader">打印时间戳进度条</h3>
+
+<p>运行时间长的脚本需要进度条，以缓解用户的焦虑，告诉用户程序运行到哪了，方便用户估计还要等多久。一般有伴随着进度条直接写时分秒的，还有写已经运行时间的。</p>
+
+
+<h4>显示时分秒的</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">for(i in 1:10){
+  Sys.sleep(runif(1)*0.5+0.5)
+  message("[",Sys.time(), "]", i)
+}
+
+输出:
+[2022-04-20 11:31:36]1
+[2022-04-20 11:31:37]2
+[2022-04-20 11:31:38]3
+...</div>
+</div>
+
+
+
+
+<h4>其他时间相关函数：</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 查询时区
+> Sys.time() #现在的时间 [1] "2022-12-04 07:49:19 UTC"
+> Sys.timezone() #查看当前时区 [1] "Etc/UTC"
+
+# 支持的时区
+> OlsonNames() #所有R支持的时区
+> grep("Shanghai", OlsonNames(), value=T)
+#[1] "Asia/Shanghai"
+
+# 设置时区后，服务器R时间就和本地一致了
+> Sys.setenv(TZ = "Asia/Shanghai")
+> Sys.timezone() # 查看时区 "Asia/Shanghai"
+
+> Sys.time() #现在的时间和windows右下角一致了
+# [1] "2022-12-04 15:59:50 CST"</div>
+</div>
+
+
+
+
+<h4>显示运行时间</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">start=as.numeric(Sys.time())
+for(i in 1:100){
+  if(i%%10==0){
+    print(paste(i, '; Elapse', round(as.numeric(Sys.time())-start,2), 'seconds'))
+  }
+  
+  # time consuming task
+  Sys.sleep(0.05) #休眠0.05s
+}
+输出:
+[1] "10 ; Elapse 0.48 seconds"
+[1] "20 ; Elapse 1 seconds"
+[1] "30 ; Elapse 1.5 seconds"
+[1] "40 ; Elapse 2.02 seconds"
+... </div>
+</div>
+
+
+
+
+<h4>记录总时间</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">start_time=Sys.time()
+Sys.sleep(5)
+a1=Sys.time()-start_time
+round(as.numeric(a1),2) #5.1s
+
+> message("Time:",round(as.numeric( Sys.time()-start_time ),2), "seconds")
+Time:21.93seconds</div>
+</div>
+
+
+
+
+
+
+<a name='2_4'></a>
+<h3 class="tutheader">如果没有文件夹，则创建文件夹</h3>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># create dir
+# data/
+# pdf/
+if(!dir.exists( paste0(outputRoot,"data/") )){
+  dir.create( paste0(outputRoot,"data/") )
+}
+if(!dir.exists( paste0(outputRoot,"pdf/") )){
+  dir.create( paste0(outputRoot,"pdf/") )
+}</div>
+</div>
+
+
+
+
+
+
+<a name='2_5'></a>
+<h3 class="tutheader">system() 在R中调用系统命令</h3>
+
+<pre>
+invokes the OS command specified by command.
+Usage
+system(command, intern = FALSE,
+       ignore.stdout = FALSE, ignore.stderr = FALSE,
+       wait = TRUE, input = NULL, show.output.on.console = TRUE,
+       minimized = FALSE, invisible = TRUE)
+默认等待该系统命令结束 wait=T，才执行下一行。
+</pre>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># R脚本
+$ vim test.R
+Args = commandArgs(T)
+
+shell_cmd = paste0("grep -n CHR ", Args[1])
+grep_out = system(shell_cmd, intern = TRUE) #调用shell的grep命令，需要返回值
+# cat(grep_out)
+print(grep_out)
+
+文档内容
+$ cat aa.txt 
+this
+is CHR
+a
+CHR2 book
+
+调用结果
+$ Rscript test.R aa.txt
+# 2:is CHR 4:CHR2 book  ## R中使用cat的输出
+[1] "2:is CHR"     "4:CHR2 book "</div>
+</div>
+
+
+
+<h4>把系统命令 awk 封装到R函数中</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># https://github.com/ElkonLab/scAPA/blob/master/scAPA/R/First_threesteps.R
+#'  The function reads the output file generated by Homer findPeaks. It
+#'  Renders it into a bed file, sort it, and then merge peaks that are
+#'  less than 100 (nt) apart using bedtools merge.
+#' @return Writes a bed file 'merge.peakfile.bed' with the merged peaks.
+merge_peaks = function(bedtools.path, path, peaks.file){
+	# home_dir = getwd()
+	# on.exit(setwd(home_dir))
+	# setwd(path)
+	
+	#R中执行 awk 
+	readHomerfile.command = paste0('awk \'BEGIN{OFS = "\t"}{if(NR>34) ',
+								  'print $2, $3, $4, "',
+								',.",".",$5}\' ', peaks.file,
+								' > ./notsorted_notmerged_peak.bed')
+	system(command = readHomerfile.command, wait = T)  
+	
+	# R中调用 bedtools sort 
+	# Sort the bed using bedtools Sort (required for bedtools merge)
+	bedtools.sort.command = paste0(bedtools.path, "bedtools sort -i ./notsorted",
+									 "_notmerged_peak.bed > ./notmerged_peak.bed")
+	system(command = bedtools.sort.command, wait = T)
+	system(command = "rm ./notsorted_notmerged_peak.bed", wait = T) # 删掉临时文件 rm
+	
+	
+	# Merge using bedtools merge
+	bedtools.merge.command = paste0(bedtools.path,
+									 "mergeBed -d 100 -s -c 6 -o distinct -i ",
+									 "./notmerged_peak.bed > ./merge.peakfile")
+	system(command = bedtools.merge.command, wait = T)
+	
+	#Turning the output into a bed file
+	render.tobed.command = paste0('awk \'BEGIN{OFS = "\t"}{print $1, $2, $3, ',
+								   '".",".",$4}\' ./merge.peakfile > .',
+								   '/merge.peakfile.bed')
+	system(command = render.tobed.command, wait = T)
+	system(command = "rm ./merge.peakfile", wait = T)
+	system(command = "rm ./notmerged_peak.bed", wait = T)
+}</div>
+</div>
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<a name='3'></a>
+<h2 class="tutheader">Rmarkdown 自动化报告</h2>
+
+<p>帮助文件: 
+	<a target="_blank" href="https://rmarkdown.rstudio.com/lesson-5.html">官方入门教程</a>
+	(<a target="_blank" href="https://rmarkdown.rstudio.com/lesson-15.html">rmarkdown-cheatsheet</a>), 
+	<a target="_blank" href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">cheatsheet.pdf</a>, 
+</p>
+
+<p>权威指南: <a target="_blank" href="https://bookdown.org/yihui/rmarkdown/">R Markdown: The Definitive Guide</a> </p>
+<br>
+
+
+<p>Rmd 可以把R代码(甚至bash/Python等)嵌入 markdown 中，通过渲染步骤，动态生成 html /pdf /ppt 等文档(甚至 notebook/slide/dashboard/website等)。方便分析、共享、重复。</p>
+<p>Rmarkdown 延伸出了 <a target="_blank" href="https://bookdown.org/yihui/bookdown/">bookdown</a> 这个写书的R包。 </p>
+
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 常见问题
+(1) Rmd中设置不执行的R语句
+
+仅仅是注释，不执行的R语句
+
+```{r eval=FALSE}
+install.packages("bookdown")
+# or the development version
+# devtools::install_github("rstudio/bookdown")
+
+# how to render this file?
+# rmarkdown::render('input.Rmd', params = list(state = state))
+```
+
+
+
+
+(2) 传递参数
+# 基本用法
+# R 中启动渲染
+for (state in state.name) {
+  rmarkdown::render('input.Rmd', params = list(state = state))
+}
+
+
+# Rmd中
+---
+title: "A report for `r params$state`"
+output: html_document
+params:
+  state: Nebraska
+  year: 2019
+  midwest: true
+---
+
+注意: 每个参数的:后面必须有一个空格，否则报错。
+
+
+The area of `r params$state` is
+`r state.area[state.name == params$state]`
+square miles.
+
+优先级上，在 render() 函数中设置的优先级更高，会覆盖 Rmd中yaml的params中的设置。
+
+
+
+
+(3) 修改工作目录
+knitr::opts_knit$set(root.dir = "/data/jinwf/chengm/rawdata/neutrophils/scRNA/")
+
+
+
+
+(4) 开始渲染
+> rmarkdown::render(
+  "./202202newTag/script/b03_flow_Seurat2scVelo.Rmd",
+  params = list(
+    seurat_path = "./202202newTag/solo/APC1.Seurat.Rds",
+    outputRoot = "/data/jinwf/chengm/rawdata/neutrophils/scRNA/202202newTag/solo/APC1/",
+    sampleName="APC1",
+    keyword=""
+    ),
+    output_dir="./202202newTag/solo/APC1/", output_file="01.html")</div>
+</div>
+
+
+
+
+
+<a name='3_1'></a>
+<h3 class="tutheader">Rmd基本流程</h3>
+
+//todo
+
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name='100'></a>
+<h2 class="tutheader">参考资料</h2>
+<pre>
+Rmarkdown 也支持其他语言 https://bookdown.org/yihui/rmarkdown/language-engines.html#python
+
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
