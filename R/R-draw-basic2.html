@@ -180,7 +180,15 @@ plot(Arthritis$Improved, main="Horizontal bar plot",
         ylab="Improvement",xlab="Frequency")
 #绘图结果同上图。</div>
 </div>
+
+
+
+<h4>阴影填充条形图</h4>
+<pre>barplot(c(1,2,3), density = 5, col="black", angle = -30, space=0.8)</pre>
+<img src="images/draw-basic2/shadow_fill.png"><br>
 <br>
+<hr>
+
 
 
 
@@ -928,7 +936,82 @@ polygon(1:9, c(2,1,2,1,NA,2,1,2,1),
         col=c("blue","orange"),
         density = c(10, 20), angle = c(-45, 45))
 </pre>
-<img src="images/draw-basic2/polygon.png"><br><br>
+<img src="images/draw-basic2/polygon.png">
+
+
+
+
+
+<h4>填充随机曲线围成的面积</h4>
+<img src="images/draw-basic2/polygon_fill.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">set.seed(2021)
+n = 100
+xx = c(0:n, n:0)
+yy = c(c(0, cumsum(stats::rnorm(n))), rev(c(0, cumsum(stats::rnorm(n)))))
+plot (xx, yy, type = "n", xlab = "Time", ylab = "Distance")
+polygon(xx, yy, 
+        col = "grey", density = 10,
+        border = "red")
+title("Distance Between Brownian Motions") </div>
+</div>
+
+
+
+
+
+<h4>填充概率曲线下的面积</h4>
+<img src="images/draw-basic2/polygon_fill-adv.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">set.seed(1)
+draws = rnorm(1e7)
+dens = density(draws)
+
+alpha=0.05
+# x pos
+q1     = qnorm(1-alpha/2)
+q2    = qnorm(1)
+
+# x neg
+qn3   = qnorm(0)
+qn4   = qnorm(alpha/2)
+
+x1 = min(which(dens$x >= q1))
+x2 = max(which(dens$x <  q2))
+
+x3 = min(which(dens$x >= qn3))
+x4 = max(which(dens$x <  qn4))
+
+# plot
+plot(dens, main="N(0, 1)", xlab="", ylab="", axes=F, lwd=2)
+xy=par("usr")
+#axis(side=1, at=c(-10,0,10), pos=0, labels=F, tick=T, tcl=0)
+#axis(side=2, at=c(0,0,1), pos=0, labels=F, tick=T, tcl=0)
+# arrow
+arrows(x0 =-5, y0=0, x1=xy[2], y1=0,
+       length = 0.1, angle=30, code=2)
+
+arrows(x0 =0, y0=0, x1=0, y1=xy[4],
+       length = 0.1, angle=30, code=2)
+
+# shadow
+with(dens, polygon(x=c(x[c(x1,x1:x2,x2)]), y= c(0, y[x1:x2], 0), col="red"))
+with(dens, polygon(x=c(x[c(x3,x3:x4,x4)]), y= c(0, y[x3:x4], 0), col="black", density=10, angle=-30))
+
+# text
+text(x=0, y=0, label="O", pos=1, xpd=T, cex=1.2)
+text(x=3, y=0.1, label=expression( frac(alpha, 2) ), pos=4)
+text(x=-3, y=0.1, label=expression( frac(alpha, 2) ), pos=2)
+
+text(x=q1, y=xy[3], xpd=T,  label=expression( italic(u)[1-alpha/2] ), pos=1)
+text(x=qn4, y=xy[3], xpd=T,  label=expression( italic(u)[alpha/2] ), pos=1)
+
+# lines
+lines(x=c(3, 2.2), y=c(0.1, 0.01), col="black")
+lines(x=c(-3, -2.2), y=c(0.1, 0.01), col="black")</div>
+</div>
+
+<br><br>
 
 
 

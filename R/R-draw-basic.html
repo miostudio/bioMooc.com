@@ -361,6 +361,13 @@ red    240
 green  248
 blue   255
 
+
+# 使用 rgb() 生成颜色
+rgb(240,248,255, maxColorValue =255) # "#F0F8FF"
+
+# 使用 hsv() 生成颜色
+hsv(0.57, 0.05, 1) # "#F2FAFF"
+
 # rgb to hsv: rgb2hsv(r, g = NULL, b = NULL, maxColorValue = 255)
 > rgb2hsv(240,248,255)
         [,1]
@@ -369,11 +376,24 @@ s 0.05882353
 v 1.00000000
 
 
-# 使用 rgb() 生成颜色
-rgb(240,248,255, maxColorValue =255) # "#F0F8FF"
+# color name to hex: col2hex('aliceblue')
+# method1
+col2hex1=function(namedColor){
+  RGB = col2rgb(namedColor)
+  rgb(t(RGB), maxColorValue =255)
+}
+col2hex1('aliceblue') 
+# [1] "#F0F8FF"
 
-# 使用 hsv() 生成颜色
-hsv(0.57, 0.05, 1) # "#F2FAFF"</div>
+# method2
+col2hex2 = function(x, alpha = "ff") {
+  RGB = col2rgb(x)
+  return(apply(RGB, 2, function(C) {
+    paste(c("#", sprintf("%02x", C), alpha), collapse = "")
+  }))
+}
+col2hex2('aliceblue')
+# [1] "#f0f8ffff"</div>
 </div>
 
 

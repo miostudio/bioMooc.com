@@ -411,12 +411,25 @@ for(var i=0;i<colors.length;i++){
 <canvas id="canvas_colorBar5" width="600" height="300" style="border:1px dashed #ccc;"></canvas>
 
 
+
+
+<h4>Color Palette 6: 色盲友好的渐变色(viridis 包)，前7个适合做热图配色</h4>
+<canvas id="canvas_colorBar6" width="600" height="300" style="border:1px dashed #ccc;"></canvas>
+<p>
+	viridis / ˈvɪrɪdɪs / 翠绿色 | 
+	<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/125549024">csdn blog</a> | 
+	<a target="_blank" href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">viridis R包</a> | 
+</p>
+<br>
+
+
 <script>
 	var ctx1 = document.getElementById('canvas_colorBar1').getContext('2d');
 	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d');
 	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d');
 	var ctx4 = document.getElementById('canvas_colorBar4').getContext('2d');
 	var ctx5 = document.getElementById('canvas_colorBar5').getContext('2d');
+	var ctx6 = document.getElementById('canvas_colorBar6').getContext('2d');
 	
 	// tool 1: 方框填充
 	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
@@ -828,6 +841,28 @@ Red/Dark Red/ */
 	showColors(ctx5,[ "#ED2024","#3953A4","#6FCCDD","#FAA41A", "white",
 		"#ED1C24", "#66C7C2", "#8151A1", "#F7B3C4"
 		],100, 'barplot,HiC 4个酶切图/消化动力曲线|NG', width=40); //Extended Fig.5B;
+	showColors(ctx5,[ '#0472BE', '#EDC201', 'black' ],125, 'barplot/volcano(2 colors: Normal vs Tumor)', width=100);
+
+
+
+
+/**==========================
+* 第6个色板: 色盲友好的 对比色、渐变色 viridis
+https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
+> library(viridis)
+> jsonlite::toJSON(viridis(10, alpha = 1, begin = 0, end = 1, direction = 1, option = "A")) #options A-H
+> jsonlite::toJSON(magma(10, alpha = 1, begin = 0, end = 1, direction = -1))
+*==========================*/
+	showColors(ctx6,["#FDE725FF","#B4DE2CFF","#6DCD59FF","#35B779FF","#1F9E89FF","#26828EFF","#31688EFF","#3E4A89FF","#482878FF","#440154FF"], 0, 'viridis', width=50);
+	showColors(ctx6,["#FCFDBFFF","#FEC98DFF","#FD9567FF","#F1605DFF","#CD4071FF","#9F2F7FFF","#721F81FF","#451077FF","#180F3EFF","#000004FF"], 25, 'magma', width=50);
+	showColors(ctx6,["#FCFFA4FF","#F7D03CFF","#FB9A06FF","#ED6925FF","#CF4446FF","#A52C60FF","#781C6DFF","#4B0C6BFF","#1B0C42FF","#000004FF"], 50, 'inferno', width=50);
+	showColors(ctx6,["#F0F921FF","#FDC926FF","#FA9E3BFF","#ED7953FF","#D8576BFF","#BD3786FF","#9C179EFF","#7301A8FF","#47039FFF","#0D0887FF"], 75, 'plasma', width=50);
+	showColors(ctx6,["#FFEA46FF","#E4CF5BFF","#C4B56CFF","#A69D75FF","#8A8779FF","#707173FF","#575C6DFF","#39486BFF","#00336FFF","#00204DFF"], 100, 'cividis', width=50);
+	showColors(ctx6,["#FAEBDDFF","#F6C09EFF","#F5936AFF","#F06043FF","#DD2C45FF","#B41658FF","#841E5AFF","#551E4FFF","#2A1636FF","#03051AFF"], 125, 'rocket', width=50);
+	showColors(ctx6,["#DEF5E5FF","#A0DFB9FF","#54C9ADFF","#38AAACFF","#348AA6FF","#366A9FFF","#40498EFF","#3B2F5EFF","#28192FFF","#0B0405FF"], 150, 'mako', width=50);
+	showColors(ctx6,["#7A0403FF","#CB2A04FF","#F66B19FF","#FABA39FF","#C7EF34FF","#72FE5EFF","#1AE4B6FF","#36AAF9FF","#4662D7FF","#30123BFF"], 175, 'turbo', width=50);
+
+
 
 
 </script>

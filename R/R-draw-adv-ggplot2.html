@@ -174,7 +174,7 @@ p{text-indent:2em;}
 
 <a name="1"></a>
 <h2 class="tutheader">ggplot2 包简介</h2>
-<p><a target="_blank" href="https://ggplot2.tidyverse.org/reference/">官网 reference</a> 应该是你入门后参考最多的网站。其次是应该打印出来贴墙上的小抄 <a target="_blank" href=" https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">ggplot2-cheatsheet.pdf</a>。</p>
+<p><a target="_blank" href="https://ggplot2.tidyverse.org/reference/">官网 reference</a> 应该是你入门后参考最多的网站。其次是应该打印出来贴墙上的小抄 <a target="_blank" href="https://nyu-cdsc.github.io/learningr/assets/data-visualization-2.1.pdf">ggplot2-cheatsheet.pdf</a>。</p>
 
 
 <ul><b>知名图书</b>：
@@ -665,11 +665,14 @@ p + theme(legend.title = element_text(size=12, color = "salmon", face="bold"),
 		<td>#fill设置legend box背景色，colour设置边框颜色</td>
 	</tr>
 
+
 	<tr>
 		<td>去除legend</td>
 		<td>p + theme(legend.title = element_blank());<br>
+		p + labs(color = NULL, title = col.by) <br>
 		p + theme(legend.position='none')</td>
 		<td>去除legend title<br>
+		去除legend标题(方法2)<br>
 		去除整个legend</td>
 	</tr>
 </tbody></table>
