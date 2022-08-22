@@ -114,6 +114,7 @@ $(function(){
 			<li><a href="#2_1">泛型函数</a></li>
 			<li><a href="#2_2">S3泛型函数和方法: UseMethod</a></li>
 			<li><a href="#2_3">NextMethod 函数</a></li>
+			<li><a href="#2_4">查看 S3 函数的源码</a></li>
 		</ul>
 	</li>
 	<li><a href="#3">S4</a>
@@ -127,6 +128,7 @@ $(function(){
 			<li><a href="#3_7">7. Method dispatch 方法调度：ANY和missing伪类</a></li>
 			<li><a href="#3_8">8. 在S4中使用S3方法</a></li>
 			<li><a href="#3_9">9. Introspection 自省</a></li>
+			<li><a href="#3_10">10. 查看 S4 函数的源码</a></li>
 		</ul>
 	</li>
 	
@@ -466,8 +468,32 @@ doit(x)
 
 
 
+<a name="2_4"></a>
+<h3 class="tutheader">查看 S3 函数的源码</h3>
+
+<pre>
+> getAnywhere("[[<-.data.frame")
 
 
+> `[[<-.data.frame` 
+function (x, i, j, value) 
+{
+    if (!all(names(sys.call()) %in% c("", "value"))) 
+...
+
+
+例:
+> getAnywhere("print.data.frame")
+A single object matching ‘print.data.frame’ was found
+It was found in the following places
+  package:base
+  registered S3 method for print from namespace base
+  namespace:base
+with value
+
+function (x, ..., digits = NULL, quote = FALSE, right = TRUE, 
+    row.names = TRUE, max = NULL) 
+</pre>
 
 
 
@@ -519,6 +545,31 @@ S4对象系统具有明显的结构化特征，更适合面向对象的程序设
 <a name="3_1"></a>
 <h3>1. Defining Classes 定义类</h3>
 <p>class和slots是定义R S4类最重要的参数。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># R包 Seurat 4 中类的定义
+Seurat = setClass(
+  Class = 'Seurat',
+  slots = c(
+    assays = 'list',
+    meta.data = 'data.frame',
+    active.assay = 'character',
+    active.ident = 'factor',
+    graphs = 'list',
+    neighbors = 'list',
+    reductions = 'list',
+    images = 'list',
+    project.name = 'character',
+    misc = 'list',
+    version = 'package_version',
+    commands = 'list',
+    tools = 'list'
+  )
+)</div>
+</div>
+<br>
+<br>
+
+完整 S4类定义 形参列表：
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">MyClass = setClass("MyClass", slots= ...., contains =....)
 
@@ -1481,6 +1532,31 @@ dumpMethod('whatIs2', "ANY", file="xx.R") </div>
 
 
 
+<a name="3_10"></a>
+<h3 class="tutheader">10. 查看 S4 函数的源码</h3>
+
+<pre>
+> getMethod("[[<-", signature = "Seurat")
+Method Definition:
+
+function (x, i, j, ..., value) 
+{
+    x <- UpdateSlots(object = x)
+...
+
+
+例:
+> getMethod("show", signature = 'Seurat')
+Method Definition:
+
+function (object) 
+{
+    object <- UpdateSlots(object = object)
+    assays <- FilterObjects(object = object, classes.keep = "Assay")
+    nfeatures <- sum(vapply(X = assays, FUN = function(x) {
+        return(nrow(x = object[[x]]))
+    }, FUN.VALUE = integer(length = 1L)))
+</pre>
 
 
 

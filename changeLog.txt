@@ -262,12 +262,21 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.4-5 update linux/ 进程 [2022.5.5, Wed]
 	page0.3.4-6 update links to jslecture [2022.6.15, Wed]
 	page0.3.4-7 add R base polygon; 色盲友好颜色; [2022.7.28, Thu]
+	page0.3.4-8 add 新的模板系统 tpl4; [2022.8.22, Mon]
 ##############
 # commit
 ########>> push miostudio
 
 
 
+
+
+
+目前本项目有3种书写系统: tpl 系统
+	tpl1.原始 html: linux/docker-tutorial.html
+		tpl4.整合进markdown后: R/R-process-control.html 的 markdown 文件在 R/markdown/R-process-control.md
+	tpl2.新版 html(无顶部目录、侧边目录): linux/docker-guide.html
+	tpl3.Markdown(单页，无目录，适合短篇): linux/docker_image_seurat4.0.html
 
 
 
