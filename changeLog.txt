@@ -265,6 +265,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.4-8 add 新的模板系统 tpl4; [2022.8.22, Mon]
 	page0.3.4-9 add R 数据结构: vector, factor, matrix, df part; [2022.8.23, Teu]
 	page0.3.5-0 fix js
+	page0.3.5-1 split markdown tpl4 css
 ##############
 # commit
 ########>> push miostudio
@@ -279,6 +280,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 		tpl4.整合进markdown后: R/R-process-control.html 的 markdown 文件在 R/markdown/R-process-control.md
 	tpl2.新版 html(无顶部目录、侧边目录): linux/docker-guide.html
 	tpl3.Markdown(单页，无目录，适合短篇): linux/docker_image_seurat4.0.html
+不定期修改网站底部的版本号: /part/footer.html 形式: v0.3.5
 
 
 
@@ -289,10 +291,3 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 
 ImageDir:
 G:\xampp\htdocs\bioMooc.com\R\images\
-
-
-
-
-
-##
-

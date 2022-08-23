@@ -1,0 +1,29 @@
+p{text-indent:2em;}
+
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow-y:scroll;}
+
+.light{color: #aaa;}
+.red{color:red;}
+
+/**
+* for tpl4 style
+*/
+/* markdown 目录中，段落前空几格 */
+.indent_1{text-indent: 0em;}
+.indent_2{text-indent: 2em;}
+.indent_3{text-indent: 4em;}
+.indent_4{text-indent: 6em;}
+.indent_5{text-indent: 8em;}
+.indent_6{text-indent: 10em;}
+
+
+/*h1 in markdown*/
+.markdown h1{
+	text-align: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+
+
