@@ -46,6 +46,7 @@ p{text-indent:2em;}
 
 <body>
 <!-- 头尾自动加载 -->
+<script src="/static/js/marked.js">/*load markdown parser*/</script>
 <script>
 $(function(){
 	$.get('/part/header-nav.html',function(data,status){
@@ -79,7 +80,7 @@ $(function(){
 	
 	// 添加 md 读取方式
 	//1.载入 markdown parser
-	$.getScript("/static/js/marked.js");
+	//$.getScript("/static/js/marked.js");
 	//2.获取网页文件名，组装md文件名
 	var url=window.location.href,
 		filename = url.substring(url.lastIndexOf('/') + 1);
@@ -132,7 +133,7 @@ $(function(){
 			<div class="article-intro" id="content">
 
 			
-			<h1><span class="color_h1">R </span> 数据类型</h1>
+			<h1><span class="color_h1">R </span> 数据类型: 向量、因子</h1>
 
 
 <h2 class="tutheader">目录</h2>
