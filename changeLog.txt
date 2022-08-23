@@ -264,6 +264,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.4-7 add R base polygon; 色盲友好颜色; [2022.7.28, Thu]
 	page0.3.4-8 add 新的模板系统 tpl4; [2022.8.22, Mon]
 	page0.3.4-9 add R 数据结构: vector, factor, matrix, df part; [2022.8.23, Teu]
+	page0.3.5-0 fix js
 ##############
 # commit
 ########>> push miostudio
