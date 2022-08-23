@@ -266,6 +266,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.4-9 add R 数据结构: vector, factor, matrix, df part; [2022.8.23, Teu]
 	page0.3.5-0 fix js
 	page0.3.5-1 split markdown tpl4 css
+	page0.3.5-1 add R/ basic
 ##############
 # commit
 ########>> push miostudio
@@ -278,6 +279,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 目前本项目有3种书写系统: tpl 系统
 	tpl1.原始 html: linux/docker-tutorial.html
 		tpl4.整合进markdown后: R/R-process-control.html 的 markdown 文件在 R/markdown/R-process-control.md
+			单独的 js 和 css 文件
 	tpl2.新版 html(无顶部目录、侧边目录): linux/docker-guide.html
 	tpl3.Markdown(单页，无目录，适合短篇): linux/docker_image_seurat4.0.html
 不定期修改网站底部的版本号: /part/footer.html 形式: v0.3.5
