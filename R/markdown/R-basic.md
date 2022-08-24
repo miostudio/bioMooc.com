@@ -128,9 +128,38 @@ $ Rscript test1.R
 
 
 
-# 输入与输出 I/O
 
-## print()
+
+
+# R帮助
+
+```
+> help("print") #显示print函数的帮助文档
+> ?print #同上
+
+> example("print") #Run an Examples Section from the Online Help
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 输入与输出 (I/O)
+
+## print() 输出到控制台
 
 ```
 > dim(iris)  #在交互式环境中，print可由可无。
@@ -147,13 +176,34 @@ $ Rscript test1.R
 2          4.9         3.0          1.4         0.2  setosa
 ```
 
-print() 只能接受一个参数，如果要输出两个变量的值，则需要使用两次print，或者把两个变量连接成一个字符串，再print输出。
+- print() 只能接受一个参数，如果要输出两个变量的值
+	* 则需要使用两次print
+	* 或者把两个变量连接成一个字符串，再print输出
 
 ```
 > print("a", "b") #报错
 
-> print( paste("a", "b") ) #先拼接成一个字符串，再输出
+> print( paste("a", "b") ) #先拼接成一个字符串，再输出。默认使用空格分隔符
 [1] "a b"
+
+> print( paste("a", "b", sep=", ") ) #使用sep 指定分隔符，隔开多个(字符串)参数
+[1] "a, b"
+```
+
+
+
+使用C语言风格的 sprintf() 格式化字符串 / 拼接多个字符串、数字：
+```
+> print( sprintf("%s--%s", "a", "b") ) 
+[1] "a--b"
+```
+
+
+
+对于向量，可使用 collapse= 分割后拼接成一个字符串：
+```
+> print( paste(colnames(iris), collapse=", ") )  # 使用 collapse 隔开一个参数(向量)的多个元素
+[1] "Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species"
 ```
 
 
@@ -161,7 +211,54 @@ print() 只能接受一个参数，如果要输出两个变量的值，则需要
 
 
 
-## cat()
+
+## message()/warning() 输出调试信息
+
+```
+> message("nrow:", nrow(iris)) #多个输出之间没有分隔符
+nrow:150
+
+> warning( "nrow:", nrow(iris) ) #多个输出之间没有分隔符
+Warning message:
+nrow:150 
+
+
+# 可自定义输出换行符 "\n"，制表符"\t", 空格 " "等
+> message( "nrow:","\t", nrow(iris) )
+nrow:	150
+
+
+# 对于长消息，可以结尾添加换行符号 \，注意是空格加反斜杠，反斜杠后面不能有任何字符。
+> message("==>> This is the function called when loading this pkg. \
+           Very suit to load .so file here.")
+==>> This is the function called when loading this pkg. 
+          Very suit to load .so file here.
+```
+
+
+
+
+Seurat 4 R包源码中的用法:
+```
+# 函数 NBResiduals 中
+message(sprintf('glm.nb failed for gene %s; falling back to scale(log(y+1))', gene))
+
+
+# 函数 Seurat:::Parenting
+
+> warning("Nothing to parent", immediate. = TRUE, 
+                call. = FALSE) #立刻给出提醒
+```
+
+
+
+
+
+
+
+
+
+## cat() 输出到控制台、文件(file=参数)
 
 ```
 > cat("dim(iris):", dim(iris)) #默认输出到控制台，元素之间默认用空白连接
@@ -187,7 +284,7 @@ ab
 
 
 
-## sink() 
+## sink() 适合输出报告
 
 sink() 函数可以把控制台输出的文字直接输出到文件中去。
 
@@ -247,11 +344,82 @@ $ cat dustbin/output.sink.txt
 
 
 
+## source() 从文件载入R代码
+
+Read R Code from a File, a Connection or Expressions
+常用于从文件中载入R脚本，一般是自己的函数库。
+
+例: 在文件中写一个R计算平均值的函数，通过 source() 载入该文件。
+```
+$ cat my_functions.R
+average = function(x){
+  return( sum(x)/length(x) )
+}
+
+
+$ R
+> ls()
+character(0)
+> source("my_functions.R") #从文件中载入R代码
+
+> ls()
+[1] "average"
+> class(average) #确实是一个函数
+[1] "function"
+
+> average(c(1,2,3,4,5)) #使用该函数
+[1] 3 
+```
 
 
 
 
-# 工作目录 
+
+
+## pdf() 保存图片到文件
+
+保存图片的系列函数，常用的是 pdf(), 其次是 png()，svg().
+
+
+- pdf 是矢量图，体积小，可以任意缩放，方便后续修改。建议使用
+- 为了防止 Illustrator 调整时不变形，建议绘图时添加 useDingbats=F 选项。
+```
+pdf("scatter.pdf", width=3.5, height=4, useDingbats=F)
+plot(mtcars$mpg, mtcars$disp, xlab="mpg", ylab="disp", pch=19, col="purple")
+dev.off()
+```
+
+
+
+- png是位图，放大就模糊，适合最后的输出。
+```
+res = 96 #设置分辨率
+png("scatter.png", width=3.5*res, height=4*res, res=res)
+plot(mtcars$mpg, mtcars$disp, xlab="mpg", ylab="disp", pch=19, col="purple")
+dev.off()
+```
+
+
+
+
+
+
+- svg 也是矢量图，不过是XML存文本描述的所有绘图细节，体积最大。
+```
+svg("scatter.svg", width=3.5, height=4)
+plot(mtcars$mpg, mtcars$disp, xlab="mpg", ylab="disp", pch=19, col="purple")
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+# 工作目录与全局变量
 
 ```
 > setwd("/home/wangjl/data/bams/") #设定工作目录
@@ -264,5 +432,39 @@ $ cat dustbin/output.sink.txt
 ```
 $ ls -lth ~/data
 lrwxrwxrwx 1 wangjl wangjl 12 Nov 12  2020 /home/wangjl/data -> /data/wangjl
+```
+
+
+获取 全局环境中的变量，并删除
+```
+> a=1
+> ls() #全局空间中的变量名
+[1] "a"
+
+> rm('a') #删除某变量
+> a  #已经找不到了
+Error: object 'a' not found
+
+> rm( list=ls()) #删除当前全局空间的全部变量
+```
+
+
+
+
+
+
+
+# 全局变量
+
+```
+> 1/7
+[1] 0.1428571   # 显示7位小数
+> options("digits") #默认是显示7位小数
+$digits
+[1] 7
+
+> options("digits"=10) #设置为10位小数
+> 1/7
+[1] 0.1428571429 #显示10位小数
 ```
 
