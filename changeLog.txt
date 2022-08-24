@@ -268,6 +268,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.5-1 split markdown tpl4 css
 	page0.3.5-1 add R/ basic
 	page0.3.5-2 fix R/ link
+	page0.3.5-3 add R/ df
 ##############
 # commit
 ########>> push miostudio
@@ -277,7 +278,13 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 
 
 
-目前本项目有3种书写系统: tpl 系统
+==> 内容参考:
+https://www.runoob.com/r/r-basic-syntax.html
+https://www.w3cschool.cn/r/r_variables.html
+
+
+
+==>目前本项目有3种书写系统: tpl 系统
 	tpl1.原始 html: linux/docker-tutorial.html
 		tpl4.整合进markdown后: R/R-process-control.html 的 markdown 文件在 R/markdown/R-process-control.md
 			单独的 js 和 css 文件
