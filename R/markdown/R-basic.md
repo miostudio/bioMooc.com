@@ -212,7 +212,7 @@ $ Rscript test1.R
 
 
 
-## message()/warning() 输出调试信息
+## message()/warning()/stop() 输出调试/错误信息
 
 ```
 > message("nrow:", nrow(iris)) #多个输出之间没有分隔符
@@ -233,6 +233,11 @@ nrow:	150
            Very suit to load .so file here.")
 ==>> This is the function called when loading this pkg. 
           Very suit to load .so file here.
+
+
+> x=1:10
+> stop("No named arguments passed", x) #执行到 stop 时，输出消息，程序停止。
+Error: No named arguments passed12345678910
 ```
 
 
@@ -249,6 +254,88 @@ message(sprintf('glm.nb failed for gene %s; falling back to scale(log(y+1))', ge
 > warning("Nothing to parent", immediate. = TRUE, 
                 call. = FALSE) #立刻给出提醒
 ```
+
+
+例2: 检查传入的参数是有命名参数
+```
+fn1=function(...){
+  args.names=names(x = list(...))
+  print(args.names)
+  
+  if (is.null(x = args.names)) {
+    stop("No named arguments passed")
+  }
+}
+
+fn1(c(1,2,100), a=1, b=2) 
+# [1] ""  "a" "b"
+
+fn1( c(1,2,100) ) #没有命名的参数就返回T，至少有一个是命名的参数
+fn1() #如果都不传入呢？也报错 #在 CheckDots()中不可能，因为前面还有一个参数长度判断
+# NULL
+# Error:  No named arguments passed
+
+fn1( x=1) 
+#[1] "x"
+```
+
+
+更多实例:
+```
+# 如果文件夹不存在
+    if (!dir.exists(paths = run)) {
+      stop("Directory provided does not exist")
+    }
+
+# 如果文件不存在
+	if (!file.exists(barcode.loc)) {
+      stop("Barcode file missing. Expecting ", basename(path = barcode.loc))
+    }
+
+# 如果不是所有 输入字符都在 0-f之间，则报错退出
+      if (!all(hex %in% key)) {
+        stop('All hexadecimal colors must be valid hexidecimal numbers from 0-9 and A-F')
+      }
+
+
+# 如果让提示 error，且 至少一个包 没安装
+    if (error && any(!package.installed)) {
+		# 报错
+        stop("Cannot find the following packages: ", 
+			paste(pkgs[!package.installed], collapse = ", "), 
+			". Please install")
+    }
+
+
+# good: 输出向量，要给出分隔符。否则就是直接连接成字符串。
+stop(
+  "Cannot find the following identities in the object: ",
+  paste(
+    idents[!idents %in% x],
+    collapse = ', '
+  ) 
+)
+
+
+
+if (!inherits(x = value, what = c('SeuratCommand', 'NULL', 'SpatialImage', 'Neighbor')) && !all(Cells(x = value) == Cells(x = x))) {
+	stop("All cells in the object being added must match the cells in this object", call. = FALSE)
+}
+
+
+# 至少需要一个正数
+function(n) {
+	if (n <= 0) {
+		stop("Must request at least one colour from a hue palette.", 
+			call. = FALSE)
+	}
+	#...
+}
+```
+
+- 及时、恰当的警告和错误提醒，是一个包成熟的标志。
+- 能让用户自主纠正自己的行为，在使用中学习。
+
 
 
 
@@ -341,6 +428,17 @@ $ cat dustbin/output.sink.txt
 [1] 4
 [1] 5
 ```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
