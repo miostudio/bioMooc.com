@@ -468,3 +468,27 @@ $digits
 [1] 0.1428571429 #显示10位小数
 ```
 
+
+全局变量是一个列表，可以像普通list一样查看、添加、修改:
+
+```
+> class(options())
+[1] "list"
+
+> names(options()) #查看全局变量全部key
+ [1] "add.smooth"                 "askpass"                    "asksecret"                 
+ [4] "bitmapType"                 "browser"                    "browserNLdisabled"         
+ [7] "buildtools.check"           "buildtools.with"            "CBoundsCheck"  
+ ...
+
+# 添加全局变量
+> options("xx.xx2"=3)
+
+# 使用全局变量
+> options("xx.xx2") #返回的list
+$xx.xx2
+[1] 3
+
+> options()[["xx.xx2"]] #返回key对应的value
+[1] 3
+```

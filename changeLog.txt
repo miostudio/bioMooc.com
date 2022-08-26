@@ -270,6 +270,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.5-2 fix R/ link
 	page0.3.5-3 add R/ df
 	page0.3.5-4 add R/ df [2022.8.24 台风要来]
+	page0.3.5-5 add control [2022.8.26]
 ##############
 # commit
 ########>> push miostudio

@@ -39,6 +39,7 @@ p{text-indent:2em;}
 
 .markdown pre>code {
     color: #525252;
+    font-family: Roboto Mono,Monaco,courier,monospace;
     /*
     font-size: .8rem;
     padding: 2.2em 5px;

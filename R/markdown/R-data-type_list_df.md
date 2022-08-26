@@ -856,11 +856,25 @@ df1[c(1,3),] #1和3行
 
 ### (3) 使用which对行过滤filter: 布尔值、是否在集合
 
-使用 布尔值 + whch()筛选符合要求的行，是数据处理中最常用的操作。
+使用 布尔值 + which()筛选符合要求的行，是数据处理中最常用的操作。
+
+- which() 返回的是符合条件的下标向量，`> which( mtcars$gear == 5)` 返回 `[1] 27 28 29 30 31`。然后就回到了(2)
+- 布尔值则是返回和原行数相等的布尔值向量，然后向量给出T的行，不返回F的行。
+- 因为机制不同，所以不能并列使用。不过把逻辑判断放到which内是可以的。
 
 ```
 #选出 gear 列是5的行
-> mtcars[which( mtcars$gear == 5), ]
+
+> mtcars[mtcars$gear == 5, ] #使用布尔值: mtcars$gear == 5 是一个布尔值向量
+                mpg cyl  disp  hp drat    wt qsec vs am gear carb
+Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.7  0  1    5    2
+Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.9  1  1    5    2
+Ford Pantera L 15.8   8 351.0 264 4.22 3.170 14.5  0  1    5    4
+Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.5  0  1    5    6
+Maserati Bora  15.0   8 301.0 335 3.54 3.570 14.6  0  1    5    8
+
+
+> mtcars[which( mtcars$gear == 5), ] #使用子行下标
                 mpg cyl  disp  hp drat    wt qsec vs am gear carb
 Porsche 914-2  26.0   4 120.3  91 4.43 2.140 16.7  0  1    5    2
 Lotus Europa   30.4   4  95.1 113 3.77 1.513 16.9  1  1    5    2
@@ -1012,6 +1026,30 @@ Maserati Bora  15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 
 
 ## 修改
+
+### df 转为 list: unclass()
+
+```
+> unclass(iris[1:3,])
+$Sepal.Length
+[1] 5.1 4.9 4.7
+
+$Sepal.Width
+[1] 3.5 3.0 3.2
+
+$Petal.Length
+[1] 1.4 1.4 1.3
+
+$Petal.Width
+[1] 0.2 0.2 0.2
+
+$Species
+[1] setosa setosa setosa
+Levels: setosa versicolor virginica
+
+attr(,"row.names")
+[1] 1 2 3
+```
 
 
 ### 修改数据类型

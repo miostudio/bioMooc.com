@@ -459,9 +459,14 @@ order() 如果第一个相等时，还支持第二个参数。
 
 
 
+
+
+
+
 ## 实例
 
-例1: 替换缺失值NA为0
+
+### 例1: 替换缺失值NA为0
 
 ```
 > x=c(1,3, NA); x
@@ -472,7 +477,8 @@ order() 如果第一个相等时，还支持第二个参数。
 ```
 
 
-例2: 去除重复
+
+### 例2: 去除重复 duplicated() / unique()
 
 ```
 > genelist=c('a1', 'b1', 'c3', 'a1', 'e2' ); genelist
@@ -488,12 +494,94 @@ order() 如果第一个相等时，还支持第二个参数。
 
 
 
+### 例3: 把某向量恢复到原始指定的顺序？ match(x=bigOrder, table=smallVector)
+
+相关函数: `match(x, table)` 返回向量x中的每个元素在向量table中的下标，如果没找到则返回NA。
+```
+> match(x=c(-1,2), table=0:5 )
+[1] NA  3                      #-1没找到返回NA，2在0:5的第三个位置。
+```
+
+要完成本题目标，我们需要反过来思考，查询原始向量在现有向量中的下标，然后去掉NA，再根据下标重排现有向量。
+```
+arr_now=paste0("a", c(1,5,8)) #现在的顺序
+arr_raw=paste0("a", c(8,6,9,1,10,5,3)) #原始的顺序(需要的顺序)
+
+# 思路要点：把目标顺序放到 match(x=)，把现有(不需要的)顺序放到 match( table=)
+a2 = arr_now[na.omit( object= match(x=arr_raw, table=arr_now) )];a2 #恢复顺序
+# [1] "a8" "a1" "a5"
+```
+
+
+另一种问法: 取小集合在大集合的子集，并保持在大集合中的位置顺序（大集合没有的元素删掉）。
+```
+# Seurat 4 实例
+cells.scaled = cells.scaled[na.omit(object = match(x = colnames(x = x), table = cells.scaled))]
+
+
+一步一步展开:
+cells.scaled=c(3, 80,1000,20,500) #小集合
+x=c(1:100) #大集合，规定顺序
+
+rs1=match(x = x, table = cells.scaled); rs1
+rs2=na.omit(rs1); rs2 #1,4, 2
+cells.scaled[rs2] #3 20 80
+
+
+
+# 在函数 WhichCells.Seurat 最后，也使用到了这个套路
+cells =c(20, 4, 60, 8) # 是经过各种筛选后留下的小集合。
+cell.order =seq(100,1, -1) # 是最早的大集合。规定顺序。
+# 排序: 大集合在小集合中的下标，去掉na，然后是小集合的元素，按照大集合的顺序输出
+cells2 = cells[na.omit(object = match(x = cell.order, table = cells))]
+cells2
+# [1] 60 20  8  4
+```
 
 
 
 
 
 
+###  例4: 按某分组向量，求一组向量的 各组均值。
+
+`tapply(incomes, statef, mean)` 返回结果是 工资向量incomes 按照 州statef 分组后的 平均值 mean
+
+```
+> state = c("tas", "sa",  "qld", "nsw", "nsw", "nt",  "wa",  "wa",
+             "qld", "vic", "nsw", "vic", "qld", "qld", "sa",  "tas",
+             "sa",  "nt",  "wa",  "vic", "qld", "nsw", "nsw", "wa",
+             "sa",  "act", "nsw", "vic", "vic", "act")
+
+> incomes = c(60, 49, 40, 61, 64, 60, 59, 54, 62, 69, 70, 42, 56,
+               61, 61, 61, 58, 51, 48, 65, 49, 49, 41, 48, 52, 46,
+               59, 46, 58, 43)
+
+> incmeans = tapply(incomes, state, mean)
+> class(incmeans)
+[1] "array"
+
+> incmeans
+     act      nsw       nt      qld       sa      tas      vic       wa 
+44.50000 57.33333 55.50000 53.60000 55.00000 60.50000 56.00000 52.25000 
+```
+
+还可以自定义函数：计算方差(standard errors )
+
+```
+> stdError = function(x) sqrt(var(x)/length(x))
+> incster = tapply(incomes, state, stdError)
+> incster
+     act      nsw       nt      qld       sa      tas      vic       wa 
+1.500000 4.310195 4.500000 4.106093 2.738613 0.500000 5.244044 2.657536 
+
+> tapply(incomes, state, length) #每个州的样本数
+act nsw  nt qld  sa tas vic  wa 
+  2   6   2   5   4   2   5   4 
+
+
+
+```
 
 
 
