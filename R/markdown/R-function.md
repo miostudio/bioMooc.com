@@ -39,6 +39,11 @@ R 函数类型
 ## 内置数学函数
 
 ```
+加 +，	 减-，	乘*，	除/，	乘方^(或者**)，	求余数(取模)%%， x%/%y 整数除法
+10%%3  #1
+10%/%3 #3
+
+
 exp()
 log() #自然对数为底，就是 ln(2.718291829)=1
 log10()
@@ -54,6 +59,69 @@ cumsum()，cumprod()
 round()，floor()，ceiling()
 
 factorial()：阶乘
+```
+
+
+
+
+
+## 集合运算: 交集intersect、并集union、找不同setdiff、判断相同setequal
+
+在R语言进行数据分析时，经常需要找不同(向量)组间的相同和不同，那你应该掌握如下几个函数，让你事半功倍。
+
+```
+union(x, y)
+intersect(x, y)
+setdiff(x, y)
+setequal(x, y)
+
+is.element(el, set)
+```
+
+
+tips: 集合运算的输出顺序时优先按照第一个参数中的顺序
+
+```
+# R 的数字、字符串混合向量，一律转字符串向量
+> c("a", 2, 3, 4)
+[1] "a" "2" "3" "4"
+
+
+#(1) 交集intersect
+两个向量的交集，集合可以是数字、字符串等
+> intersect(x=c(1,-3,5,8), y=c(-5:5))
+[1]  1 -3  5
+
+
+#(2) 并集union
+> union(x=c("a", 4, "b", "c"), y = c("a", 2, 3, 4))
+[1] "a" "4" "b" "c" "2" "3"
+
+
+#(3) 找不同setdiff
+# 求向量x与向量y中不同的元素(只取x中不同的元素) ，相当于是差集x-y
+x = 1:4
+y = 2:6
+# 找x中不同于y的元素
+setdiff(x, y)
+# [1] 1
+# 找y中不同于x的元素
+setdiff(y, x)
+# [1] 5 6
+
+
+#(4) 判断相同setequal
+# 只有完全相同的才返回TRUE
+y = 1:4
+setequal(x=c(1,2,3,4), y)
+# [1] TRUE
+
+> setequal(x=c(1,3,4), y) #否则都是F
+[1] FALSE
+
+# 例外: 数字和字符串比较，如果数字转字符后相等，则给出T
+> setequal(c(1,2,3),c("1","2","3"))
+[1] TRUE
 ```
 
 
@@ -90,8 +158,76 @@ x4 #[1] 1.33e-11
 
 
 
+## 数据结构，及其查看
+
+```
+str()
+length() #只有一维的，获得向量元素个数
+nchar() 获取一个字符串的长度
+dim() #多维度的，获得维度
+
+mode()
+class()
+attributes()
+typeof()
+names(mtcars) #返回mtcars中11个变量名；如果是list则返回其包含的变量名。就是$后面会出现的内容。
+
+head(mtcars) 预览前几行
+tail() 预览后几行
+
+无论什么类型的数据，缺失数据总是用NA(Not Available的意思)来表示; 
+R可以正确地表示无穷的数值，如用Inf和-Inf表示正负无穷大；
+或者用NaN(Not a Number 的意思)表示不是数字的值.
 
 
+变量是否存在
+exists("tt") #注意：要查询的变量名必须加引号
+
+
+符合数据类型的查看
+> typeof(mtcars)
+[1] "list"
+> class(mtcars)
+[1] "data.frame"
+```
+
+
+
+
+## 数据类型的判断与转换
+
+```
+x="1"
+is.character("1") #TRUE
+is.numeric("1") #FALSE
+is.logical(x)
+is.complex(x) 
+
+#转换类型
+is.numeric(as.numeric("1")) #[1] TRUE
+
+向量是否相等
+all.equal(c(1,2),c(1,2)) #[1] TRUE
+identical(c(1,2),c(1,2)) #[1] TRUE #精确相等
+```
+
+
+
+
+## 查看对象、删除对象
+
+```
+ls() #显示内存中的对象名字
+ls(pat="m") #pattern(缩写为pat)实现只显示带有某个指定字符的对象名字
+ls(pat="^m") #显示以m开头的对象名
+ls(pattern = "^acc") #显示以acc开头的对象
+ls.str( ) #显示内存中所有对象的详细信息
+
+rm(x) #删除内存中的对象x
+rm(x,y) #删除内存中的对象x和y
+rm(list=ls()) #删除内存中的所有对象
+rm(list=ls(pat="^m")) #删除对象中以字母m开头的对象
+```
 
 
 
