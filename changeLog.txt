@@ -274,6 +274,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.5-6 add function [2022.8.26]
 	page0.3.5-7 update function [2022.8.27]
 	page0.3.5-8 add string [2022.8.27]
+	page0.3.5-9 add IO, Cpp Link [2022.8.28]
 ##############
 # commit
 ########>> push miostudio

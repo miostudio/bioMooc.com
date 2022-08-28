@@ -125,6 +125,7 @@ $(function(){
 	</li>
 	<li><a href="#4">rapply, 递归版本的lapply，只处理list类型数据</a></li>
 	<li><a href="#5">eapply, 对环境内的所有变量批量(开发R包用)//todo</a></li>
+	<li><a href="#10">aggregate(df, by=list(vect1, vect2), FUN=)</a></li>
 	
 </ul>
 
@@ -1072,7 +1073,7 @@ Petal.Width   0.246      1.326     2.026</div>
 
 
 
-<p>aggregate 只能调用但返回值函数，无法一次返回若干统计量。</p>
+<p>aggregate 只能调用单返回值函数，无法一次返回若干统计量。</p>
 <p>例3: 想多个返回值，使用 by() 函数: by(data, INDICES, FUN)。</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># 例3: 鸢尾花按亚类分组，统计组内各指标的中位数、均值、方差、变异系数、峰度等。
@@ -1201,12 +1202,25 @@ rapply(X1, log, classes = "numeric", how = "list", base = 10)</div>
 
 
 
-
-
 <br><a name="5"></a>
 <h2 class="tutheader">eapply, 对环境内的所有变量批量(开发R包用)</h2>
 
 
+
+
+
+
+
+
+
+
+
+
+<br><a name="10"></a>
+<h2 class="tutheader">aggregate(df, by=list(vect1, vect2), FUN=)</h2>
+
+<p>作用就是基于by指定的变量做分组，计算FUN分别统计每个组的结果。</p>
+<p>例子在本页中查找: ctrl+F 输入本函数名</p>
 
 
 
