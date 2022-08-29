@@ -112,6 +112,7 @@ $(function(){
 		<ul>
 			<li><a href="#31">标题 title()</a>
 			<li><a href="#32">坐标轴 axis()</a>
+			<li><a href="#32_B">网格线 grid()</a>
 			<li><a href="#33">参考线 abline()</a>
 			<li><a href="#34">图例 legend()</a>
 			<li><a href="#35">文本标注 text(),mtext(),plotmath: 标注公式、R^2、p值</a>		
@@ -986,6 +987,64 @@ points( meansERCC, cv2ERCC, pch=20, cex=1, col="#0060B8A0" )</div>
 
 
 
+
+
+
+
+
+
+
+
+
+
+<a name="32_B"></a>
+<h3 class="tutheader">网格线 grid() </h3>
+<p>更多例子点击查看: <a href="https://r-charts.com/base-r/grid/">Plot grid in R</a></p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># data
+set.seed(132)
+x = rnorm(500)
+
+# fig1: dot below plot
+plot(x, main="Fig1")
+#grid(nx = NA, ny = NULL, lty = 2, col = "gray", lwd = 2) #只画水平线
+grid(nx = NULL, ny = NULL, lty = 2, col = "gray", lwd = 2) #横竖网格
+par(new = TRUE) #再画一层
+plot(x, pch = 19, col = 4)
+
+
+# fig1_B: 使用 abline 绘制
+plot(x)
+# Vertical grid
+abline(v = seq(0, 500, 100), lty = 2, col = "gray")
+# Horizontal grid
+abline(h = seq(-3, 3, 1),   lty = 2, col = "gray")
+# Grid below points
+points(x, pch = 19, col = 4)
+
+
+# fig2: hist on horizontal grid
+hist(x, main="Fig2")
+grid(nx = NA, ny = NULL, #只画横线
+     lty = 1, col = "gray", lwd = 1)
+hist(x, col = 4,
+     add = TRUE)</div>
+</div>
+<img src="images/draw-basic/grid.png"><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <hr />
 <a name="33"></a>
 <h3 class="tutheader">参考线 abline() </h3>
@@ -998,6 +1057,11 @@ abline(h=c(10,50,100), lty=2, col="red",lwd=0.5) #三条red虚横线，宽度是
 abline(v=seq(0,10,2), lty=2, col="grey",lwd=0.5) #n条灰色虚竖线，宽度是一半</div>
 </div>
 <img src="images/draw-basic/abline.png"><br><br>
+
+
+
+
+
 
 
 
