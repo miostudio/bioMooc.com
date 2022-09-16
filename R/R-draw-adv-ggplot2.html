@@ -107,19 +107,25 @@ p{text-indent:2em;}
 
 <ul>
 	<li><a href="#1">ggplot2包介绍</a>
-	<li><a href="#2">用几何函数指定图的类型
+	<li><a href="#2">用几何函数指定图的类型</a>
 		<ul>
 			<li><a href="#2_1">批量小提琴图</a>
 			<li><a href="#2_2">概率密度曲线和频率分布直方图</a>
-			<li><a href="#6_2">饼图（原生R和ggplot2）</a>
+			<li><a href="#6_2_1">饼图（原生R和ggplot2）</a>
+			<li><a href="#4B_1">柱状图</a>
 		</ul>
-	</a>
-	<li><a href="#3">分组</a>
-	<li><a href="#4">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</a>
+	</li>
 	
-	<li><a href="#42">位置调整(position="dodge|fill|stack|identity|jitter")</a>
+	<li><a href="#3">分组 //todo</a></li>
+	<li><a href="#4">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</a></li>
 	
-	<li><a href="#5">添加光滑曲线</a>
+	<li><a href="#4B">位置调整(position="dodge|fill|stack|identity|jitter")</a>
+		<ul>
+			<li><a href="#4B_1">并列bar图组内组间宽度</a>
+		</ul>
+	</li>
+	
+	<li><a href="#5">添加光滑曲线</a></li>
 	<li><a href="#6">修改ggplot2图形的外观</a>
 		<ul>
 			<li><a href="#6_1">坐标轴 todo</a>
@@ -213,7 +219,7 @@ p{text-indent:2em;}
 <br>
 <br>
 <a name="2"></a>
-
+<h2 class="tutheader">用几何函数指定图的类型</h2>
 
 
 <a name="2_1"></a>
@@ -436,7 +442,7 @@ grid.arrange(g1,g2,nrow=2)</div>
 
 
 <a name="3"></a>
-<h2 class="tutheader">分组</h2>
+<h2 class="tutheader">分组 //todo</h2>
 <p>under coding ...</p>
 
 
@@ -506,8 +512,7 @@ ggplot(diamonds, aes(x=price, fill=cut)) +
 
 
 
-
-<a name="42"></a>
+<a name="4B"></a>
 <h2 class="tutheader">位置调整(position="dodge|fill|stack|identity|jitter")</h2>
 <p>position参数: R in action,P62. jitter对散点图有效，对柱状图虽然能画出来，但是没有意义。</p>
 <p>基于table()统计结果的 <a target="_blank" href="https://tool.biomooc.com/R_scripts/#t6">barplot 百分数堆叠条形图(原生+ggplot2)</a>。</p>
@@ -565,6 +570,59 @@ dev.off();</div>
 <br><br>
 
 
+
+
+<a name="4B_1"></a>
+<h3 class="tutheader">并列bar图组内组间宽度</h3>
+<p>geom_bar(stat = "identity", width=0.6, position = position_dodge(width=0.75)) </p>
+<img src="images/draw-adv-ggplot2/position_dodge.png">
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 模拟数据: x轴是汽化器的个数，颜色分类是自动挡/手动挡，y轴是该分类的汽车型号计数。
+df1=table(mtcars$carb, mtcars$am); df1
+df2=as.data.frame(df1);df2
+colnames(df2)=c("carb", "am", "count")
+df2
+
+# 开始画图
+library(ggplot2)
+packageVersion("ggplot2")
+
+# 设置颜色: am	Transmission (0 = automatic, 1 = manual)
+ggplot(df2, aes(x=carb, y=count, fill=am))+
+  geom_bar(stat = "identity",
+           width=0.6, #柱子显示宽度
+           position = position_dodge(width=0.75))+ #每个柱子占用的宽度，即便不显示内容
+  theme_classic(base_size = 12)+
+  scale_fill_manual( name="Type", #图例标题
+                     breaks=c("1", "0"), #规定图例顺序：从上到下
+                     labels=c("manual", "automatic"), #图例的新标签，与breaks一一对应
+                     values=c("#1874B7", "#E3B338"), # 颜色，按照 breaks 规定的顺序
+                     )+
+  labs(x="Number of carburetors", y="Count", title="Car types")+
+  theme(
+    plot.title = element_text(hjust=0.5, face="bold"), #标题居中、黑体
+    legend.position = c("top"), #方位: 上下左右共4个
+    legend.justification = "left", #靠左对齐
+
+    legend.key.height = unit(2, "mm"), #控制图例 小图的高度
+    legend.key.width = unit(5, "mm"),  #控制图例 小图的宽度
+  )</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="5"></a>
+<h2 class="tutheader">添加光滑曲线 //todo</h2>
 
 
 
@@ -963,7 +1021,8 @@ g1</div>
 <a name="6_2_3"></a>
 <h3 class="tutheader">共用一个图例</h3>
 <pre>
-plotc <- plot1+plot2+ plot_layout(guides = 'collect') #公用图例
+library(patchwork)
+plotc = plot1+plot2+ plot_layout(guides = 'collect') #公用图例
 </pre>
 <br><br>
 
@@ -1055,11 +1114,11 @@ ggplot(mtcars, aes(wt, mpg, color=gear) )+
     legend.position = c("left"), #方位: 上下左右共4个
     legend.text=element_text(size=8), #刻度字号
     legend.title=element_text(size=8), #标题字号
-	
+
     legend.key.width = unit(4, "mm"), #control legend width and height
     legend.key.height = unit(4, "mm"),
     
-	legend.margin=margin(t = 0, r = 0, b = 50, l = 0, unit = "pt"), #move legend up a litter
+    legend.margin=margin(t = 0, r = 0, b = 50, l = 0, unit = "pt"), #move legend up a litter
   )</div>
 </div>
 <br><br>

@@ -1779,6 +1779,104 @@ Position(f, x, right = FALSE, nomatch = NA_integer_)
 
 
 
+## Reduce(f, x) 两参数逐个计算并合并结果
+
+是对参数逐个计算并加和给出最后结果。
+
+例1: 显示计算过程。每次的y都是后一个参数，x存储之前的结果。
+```
+> f1=function(x,y){
+   message("x=", x, ", y=", y)
+   x+y
+ }
+> Reduce(f1, c(1,2,3,4,5))
+x=1, y=2
+x=3, y=3
+x=6, y=4
+x=10, y=5
+[1] 15
+```
+
+
+例2: 连接不确定个数字符串
+
+```
+> Reduce(function(x,y){
+   message("x=",x, ", y=",y)
+   paste(x,y, sep=",")
+ }, c("this", "is", "a", "book") )
+
+x=this, y=is
+x=this,is, y=a
+x=this,is,a, y=book
+[1] "this,is,a,book"
+```
+
+
+例3: 合并不确定个数个数据框
+
+```
+> allframes=lapply(1:3, function(x){
+   data.frame(
+     key=paste0("name", x),
+     value=1:x
+   )
+ })
+> allframes #该list包含三个数据框
+[[1]]
+    key value
+1 name1     1
+
+[[2]]
+    key value
+1 name2     1
+2 name2     2
+
+[[3]]
+    key value
+1 name3     1
+2 name3     2
+3 name3     3
+
+> sapply(allframes, nrow) #每个的行数
+[1] 1 2 3
+> Reduce(rbind, allframes) #逐个按行合并
+    key value
+1 name1     1
+2 name2     1
+3 name2     2
+4 name3     1
+5 name3     2
+6 name3     3
+```
+
+
+
+
+
+
+
+## Map(f, ...) 分别对每个循环条件进行计算
+
+返回list。可以替代for循环。
+
+```
+> Map(function(x)x**2, c(1,2,3))
+[[1]]
+[1] 1
+
+[[2]]
+[1] 4
+
+[[3]]
+[1] 9
+```
+
+
+
+
+
+
 
 ## Filter(f, x) 把f函数应用到数组x上，结果是TRUE的返回x上原来位置上的元素
 
@@ -1793,6 +1891,29 @@ Position(f, x, right = FALSE, nomatch = NA_integer_)
   Sepal.Length Sepal.Width Petal.Length Petal.Width
 1          5.1         3.5          1.4         0.2
 2          4.9         3.0          1.4         0.2
+```
+
+
+
+
+
+
+
+
+## Negate(f) 给出函数的反面
+
+```
+> f1=Negate(is.function)
+> f1(mean)
+[1] FALSE
+
+
+# 还可以用于匿名函数。
+# 例: 配合Filter，获取非数字的列
+> Filter( Negate(function(x) is.numeric(x)), head(iris, n=2))
+  Species
+1  setosa
+2  setosa
 ```
 
 
