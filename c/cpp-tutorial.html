@@ -1,6 +1,201 @@
+<!Doctype html>
+<html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="refresh" content="0;url=https://dawneve.github.io/learnCpp/">
-	<title>About ajax</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="C++ 教程,C">
+<meta name="description" content="C++语言是一门通用的基础编程语言，可以实现任何大中小型项目。">
+
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
 </head>
-cpp-tutorial.html
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+
+
+	});
+
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+</style>
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+
+
+
+
+
+
+<div class="col middle-column">
+
+
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/c/c-intro.html" rel="next"> C++ 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+
+			<div class="article-intro" id="content">
+
+			<h1><span class="color_h1">C++ </span> 教程</h1>
+<hr>
+<div class="tutintro"> 
+<p>C++ 是一种高级语言，它是由 Bjarne Stroustrup 于 1979 年在贝尔实验室开始设计开发的。C++ 进一步扩充和完善了 C 语言，是一种面向对象的程序设计语言。C++ 可运行于多种平台上，如 Windows、MAC 操作系统以及 UNIX 的各种版本。</p>
+
+<p>当前最新的 C++ 语言标准为 C22 ，在它之前的 C++ 语言标准有 C++17、C++14、C++11（常用）、C++03、C++98 等。</p>
+
+<br/>
+<p>C/C++语言自学交流QQ群: 817812087</p>
+
+<p><a target="_blank" href="https://www.w3cschool.cn/Cpp/">w3cschool的C++教程</a></p>
+<p><a target="_blank" href="https://www.runoob.com/cplusplus/cpp-tutorial.html">菜鸟教程C++语言</a></p>
+<p><a target="_blank" href="https://en.cppreference.com/w/cpp/language">C++ language</a></p>
+<p><a target="_blank" href="https://learn.microsoft.com/en-us/cpp/cpp/cpp-language-reference?view=msvc-170">C++ lang(MS)</a></p>
+
+
+<br>
+<hr>
+<p><a href="c-intro.html">现在开始学习 C ！</a></p>
+<p>入门推荐: <a target="_blank" href="https://dawneve.github.io/learnCpp/">C++ primer, 5th Edition 笔记</a></p>
+
+</div>
+
+
+
+
+<hr>
+<h2>谁适合阅读？</h2>
+<p>本教程针对的是零基础C语言学习者，适合从事系统开发和数据分析的人员阅读。</p>
+<hr>
+
+
+
+
+
+<h2>需要具备的知识？</h2>
+<p>读者最好有计算机组成与结构的基础知识。</p>
+<p>本教程使用g++和记事本作为开发工具。还可能用到vscode等IDE环境。</p>
+<br />
+
+
+
+<h2>怎么学习C++语言？</h2>
+<p>看视频入门，看书学细节，勤练习，看源码，做项目。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2>C++语言核心知识框架</h2>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+
+		<div class="previous-next-links">
+			<div class="previous-design-link"> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

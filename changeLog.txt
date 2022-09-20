@@ -277,6 +277,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.5-9 add IO, Cpp Link [2022.8.28]
 	page0.3.6-0 add R/ grid; [2022.8.29]
 	page0.3.6-1 add R/ ggplot bar plot [2022.9.16]
+	page0.3.6-2 add C 和 C++ 首页  [2022.9.20]
+		<img class="codeicon codeicon-36 desaturate" height="36" width="36" src= 去掉 desaturate
 ##############
 # commit
 ########>> push miostudio
@@ -294,8 +296,9 @@ https://www.w3cschool.cn/r/r_variables.html
 
 ==>目前本项目有3种书写系统: tpl 系统
 	tpl1.原始 html: linux/docker-tutorial.html
-		tpl4.整合进markdown后: R/R-process-control.html 的 markdown 文件在 R/markdown/R-process-control.md
+		[推荐]tpl4.整合进markdown后: R/R-process-control.html 的 markdown 文件在 R/markdown/R-process-control.md
 			单独的 js 和 css 文件
+			使用方法: 新建同名不同后缀名的 xx.html 和 markdown/xx.md 即可自动关联。前者修改大概2行标题，主要在后者书写内容。
 	tpl2.新版 html(无顶部目录、侧边目录): linux/docker-guide.html
 	tpl3.Markdown(单页，无目录，适合短篇): linux/docker_image_seurat4.0.html
 不定期修改网站底部的版本号: /part/footer.html 形式: v0.3.5
