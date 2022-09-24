@@ -720,13 +720,99 @@ line.is_paired                  line.qual                       line.tostring( <
 </div>
 
 
-<p>xx</p>
+<h4>一个处理 bam 文件的简单py脚本实例</h4>
+<p>对 STAR 的输出文件bam进行过滤，获取 uniq mapping 的reads(只保留 MAPQ==255的序列)，并按照正负链分成2个bam文件。</p>
 
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;">//todo NGS/bioinfo_tools
-# 对 STAR 的输出文件bam进行过滤，获取 uniq mapping 的reads，并按照正负链分成2个bam文件。
+	<div style="white-space: pre-wrap;">$ vim scripts/split_bam_by_strand.py
+# v0.1
+import argparse, os
+parser = argparse.ArgumentParser(description='Split bam by pA or nonpA')
+parser.add_argument('--input', '-I', help='input filename, bam format, required', required=True)
+parser.add_argument('--outputP', '-P', help='output filename, bam format, save reads on + strand, required', required=True)
+parser.add_argument('--outputN', '-N', help='output filename, bam format, save reads on - strand, required', required=True)
 
+args = parser.parse_args()
 
+# get params
+inputFile=args.input
+outputFile1=args.outputP
+outputFile2=args.outputN
+
+if (not inputFile.endswith(".bam"))  or  (not outputFile1.endswith(".bam")) or (not outputFile2.endswith(".bam")):
+    raise Exception("Input file and output files must be .bam!")
+
+if not os.path.exists(inputFile):
+    raise Exception("Input file not exist:" + inputFile)
+
+if os.path.exists(outputFile1):
+    raise Exception("Output file already exist:" + outputFile1)
+
+if os.path.exists(outputFile2):
+    raise Exception("Output file already exist:" + outputFile2)
+
+# part II
+import pysam,re
+def split_bam_by_strand(inputFile, outputFile1, outputFile2):
+    print( "Function: split bam by strand. \nVersion 0.1 work now\nparams: -I %s -P %s -N %s\n" % (inputFile, outputFile1, outputFile2) )
+    samfile = pysam.AlignmentFile(inputFile, "rb")
+    # write
+    samOutPos=pysam.AlignmentFile( outputFile1, "wb", template=samfile)
+    samOutNeg=pysam.AlignmentFile( outputFile2, "wb", template=samfile)
+    i=0 #total
+    pos=0; neg=0;
+    for line in samfile:
+        i+=1
+        # 1. only keep reads with MAPQ==255
+        if line.mapq != 255:
+            continue
+        # 2. split by flag
+        if line.flag == 0:
+            samOutPos.write(line)
+            pos+=1
+        elif line.flag==16:
+            samOutNeg.write(line)
+            neg+=1
+    # close files
+    samfile.close()
+    samOutPos.close()
+    samOutNeg.close()
+    print(f"total: {i}, pos:{pos}, neg:{neg}, keep:{pos+neg}, keep_ratio:{round( (neg+pos)/i ,2)}")
+
+if __name__ == "__main__":
+    split_bam_by_strand(inputFile, outputFile1, outputFile2)
+
+运行:
+$ samtools index L_Aligned.sortedByCoord.out.bam
+$ python3 /data/pipeline/scripts/split_bam_by_strand.py -I L_Aligned.sortedByCoord.out.bam -P pos.bam -N neg.bam
+Function: split bam by strand. 
+Version 0.1 work now
+params: -I L_Aligned.sortedByCoord.out.bam -P pos.bam -N neg.bam
+
+total: 51187, pos:7771, neg:6777, keep:14548, keep_ratio:0.28
+
+检查文件:
+$ samtools view pos.bam |wc
+   7771  131631 3372502
+$ samtools view neg.bam |wc
+   6777  114855 2954822
+
+查看该文件:
+$ samtools view L_Aligned.sortedByCoord.out.bam |awk '{print $2"\t"$5}' |sort|uniq -c
+   1463 0       0
+   1656 0       1
+   7771 0       255
+   1587 0       3
+   1177 16      0
+   1800 16      1
+   6777 16      255
+   1788 16      3
+   9125 256     0
+   3750 256     1
+   1517 256     3
+   6465 272     0
+   4453 272     1
+   1858 272     3
 </div>
 </div>
 
