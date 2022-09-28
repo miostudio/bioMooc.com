@@ -574,7 +574,10 @@ dev.off();</div>
 
 <a name="4B_1"></a>
 <h3 class="tutheader">并列bar图组内组间宽度</h3>
-<p> <a target="_blank" href="https://r-graphics.org/recipe-bar-graph-adjust-width">refer</a> </p>
+<p>
+	<a target="_blank" href="https://r-graphics.org/recipe-bar-graph-adjust-width">Refer1(R cookbook)</a>,
+	<a target="_blank" href="https://rpubs.com/dawnEve/948683">Refer2(Bar plot using ggplot2)</a>,
+</p>
 <p>geom_bar(stat = "identity", width=0.6, position = position_dodge(width=0.75)) </p>
 <img src="images/draw-adv-ggplot2/position_dodge.png">
 
@@ -692,6 +695,14 @@ p + theme(legend.title = element_text(size=12, color = "salmon", face="bold"),
 		<th>目的</th>
 		<th>代码</th>
 		<th>解释</th>
+	</tr>
+
+	<tr>
+		<td>图例位置的相对点，配合legend.position使用 >><a target="_blank" href="https://r-graphics.org/recipe-legend-position">More</a></td>
+		<td>p + theme(legend.justification = "top"); <br>
+			p + theme(legend.justification = c(0, 1))</td>
+		<td>可选: 'left','top', 'right', 'bottom'.<br>
+			或坐标 c(x,y),x和y都是[0,1]之间，默认c(0.5,0.5)</td>
 	</tr>
 
 	<tr>
@@ -1274,7 +1285,14 @@ p + theme(panel.grid.major = element_blank(), #主网格线
 <a name="6_4_1"></a>
 <h3 class="tutheader">可修改的位置</h3>
 <p>举一个设置背景颜色的例子。</p>
+<p><a target="_blank" href="https://github.com/claragranell/ggplot2/blob/main/ggplot_theme_system_cheatsheet.pdf">ggplot_theme_system_cheatsheet.pdf</a></p>
+<p><a target="_blank" href="https://henrywang.nl/ggplot2-theme-elements-demonstration/">Original links of this picture</a></p>
+<image src="images/draw-adv-ggplot2/theme_elements2.png">
+<br>
+<br>
+<hr>
 <image src="images/draw-adv-ggplot2/theme_element_rect.png">
+
 <p>最大的绘图区是plot，然后又分成几个分面 画板 panel，panel的标题叫 strip。</p>
 <p>图例整体叫 legend.background，里面的每个图文对中的小图叫 legend.key。</p>
 
