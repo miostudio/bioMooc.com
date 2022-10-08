@@ -280,12 +280,32 @@ text(3-6,6,"plotting ‘character’: pch=")
 text(xy$x+0.4-6,xy$y,as.character(0:25))</div>
 </div>
 <img src="images/draw-basic/pch.png" /><br>
-<p>fig1 对于pch的21-25，还可以指定边界颜色(col=)和填充色(bg=).</p><br>
+<p>Fig1 对于pch的21-25，还可以指定边界颜色(col=)和填充色(bg=).</p><br>
 
 
+<hr>
 <p>lty: 指定线条类型(见图fig2)。Line types can either be specified as an integer (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one of the character strings "blank", "solid", "dashed", "dotted", "dotdash", "longdash", or "twodash", where "blank" uses ‘invisible lines’ (i.e., does not draw them).</p>
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">plot(NULL, xlim=c(0,6),ylim=c(0,6), # 指定坐标轴范围
+     ann=F,axes=F)
+text(3,6.5,"line type: lty=", xpd=T)
+abline(h=1:6, lty=c(1:6), lwd=2 ) #6种线的类型
+text(-0.5, (1:6), label=1:6, xpd=T)</div>
+</div>
 <img src="images/draw-basic/lty.png" /><br>
-<p>fig2 线条类型-6种lty</p><br>
+<p>Fig2 线条类型-6种lty</p><br>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

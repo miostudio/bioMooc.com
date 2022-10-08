@@ -281,6 +281,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 		<img class="codeicon codeicon-36 desaturate" height="36" width="36" src= 去掉 desaturate
 	page0.3.6-3 add py/ pysam 完整实例 [2022.9.24]
 	page0.3.6-4 add py/ pysam 完整实例 [2022.9.28]
+	page0.3.6-5 add R/ color; which; [2022.10.8]
+		gh-pages 不能访问了，看浏览记录上次访问还是10.5号
 ##############
 # commit
 ########>> push miostudio

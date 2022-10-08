@@ -858,6 +858,8 @@ df1[c(1,3),] #1和3行
 
 使用 布尔值 + which()筛选符合要求的行，是数据处理中最常用的操作。
 
+推荐使用 which()，因为仅使用逻辑值筛选时，遇到NA可能产生意外的结果。
+
 - which() 返回的是符合条件的下标向量，`> which( mtcars$gear == 5)` 返回 `[1] 27 28 29 30 31`。然后就回到了(2)
 - 布尔值则是返回和原行数相等的布尔值向量，然后向量给出T的行，不返回F的行。
 - 因为机制不同，所以不能并列使用。不过把逻辑判断放到which内是可以的。
@@ -908,7 +910,48 @@ Maserati Bora  15.0    8
 > mtcars[which( !mtcars$gear %in% c(3,4) ), ]  # 保留 gear 的值 不在 c(3,4)的行
 ```
 
+<br>
+<hr>
 
+> Bug 提醒: 仅使用逻辑值，不配套使用 which 可能出现`意外结果`。例如:
+
+预防方法：筛选数据时，一定要使用which。
+
+```
+> dat=iris
+> dat$Species[2:3]=NA #被筛选列有2行是NA时
+> head(dat)
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2    <NA>
+3          4.7         3.2          1.3         0.2    <NA>
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+6          5.4         3.9          1.7         0.4  setosa
+> head(dat[dat$Species=="setosa",], n=4)  #不带which，结果中有NA这2行，和预期的不一致
+     Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1             5.1         3.5          1.4         0.2  setosa
+NA             NA          NA           NA          NA    <NA>
+NA.1           NA          NA           NA          NA    <NA>
+4             4.6         3.1          1.5         0.2  setosa
+> head(dat[which(dat$Species=="setosa"),], n=4)  #带which，则过滤掉 NA 这2行 [建议的使用方法]
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+6          5.4         3.9          1.7         0.4  setosa
+
+> table(dat$Species=="setosa")
+FALSE  TRUE 
+  100    48 
+
+# 探究原因：不用which会出现NA，导致筛选的时候只去掉FALSE，保留TRUE和NA，导致结果包含了NA行
+> head(dat$Species=="setosa")
+[1] TRUE   NA   NA TRUE TRUE TRUE
+
+> head(which(dat$Species=="setosa"))  #而which只保留TRUE的
+[1] 1 4 5 6 7 8
+```
 
 
 
