@@ -283,6 +283,8 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.6-4 add py/ pysam 完整实例 [2022.9.28]
 	page0.3.6-5 add R/ color; which; [2022.10.8]
 		gh-pages 不能访问了，看浏览记录上次访问还是10.5号
+	page0.3.6-6 add bar plot 外链; [2022.10.19]
+		update /about, /part/footer; /index2;
 ##############
 # commit
 ########>> push miostudio
