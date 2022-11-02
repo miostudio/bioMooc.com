@@ -285,6 +285,10 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 		gh-pages 不能访问了，看浏览记录上次访问还是10.5号
 	page0.3.6-6 add bar plot 外链; [2022.10.19]
 		update /about, /part/footer; /index2;
+	page0.3.6-7 add ngs/sam格式 [2022.11.2]
+		c/ 新增大纲
+		更新 index2
+		首页新增c,c++一级导航菜单
 ##############
 # commit
 ########>> push miostudio
