@@ -289,6 +289,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 		c/ 新增大纲
 		更新 index2
 		首页新增c,c++一级导航菜单
+	page0.3.6-8 add a SVG file [2022.11.7]
 ##############
 # commit
 ########>> push miostudio

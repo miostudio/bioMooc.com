@@ -1,8 +1,10 @@
 # 1 参考资料
 
 - [SAM/BAM and related specifications](http://samtools.github.io/hts-specs/)
-- http://samtools.github.io/hts-specs/SAMv1.pdf
+- SAM specs (sam文件类型标准): http://samtools.github.io/hts-specs/SAMv1.pdf
+- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2723002/
 - https://samtools.github.io/hts-specs/SAMtags.pdf
+- https://davetang.org/wiki/tiki-index.php?page=SAM
 
 
 SAM和BAM是序列比对之后常用的输出格式，比如tophat输出BAM格式，bowtie和bwa等都采用了SAM格式。
@@ -128,12 +130,21 @@ SRR7629163.10004	83	chr3	73049200	60	40M	=	73049179	-61	ATTAGAATACTTCTCGGGGCCAGG
 
 通过这个和可以直接推断出匹配的情况。假如说标记不是以上列举出的数字，比如说83=（64+16+2+1），就是这几种情况值和。
 
-查询flag组合的意义：
+
+
+### 查询flag组合的意义
 
 - https://www.samformat.info/sam-format-flag
 - https://broadinstitute.github.io/picard/explain-flags.html
 - https://davetang.org/muse/2014/03/06/understanding-bam-flags/
 - http://samtools.github.io/hts-specs/SAMv1.pdf page7
+
+
+```
+把十进制 3844 转化为 二进制:
+$ echo 'obase=2;3844' | bc
+111100000100
+```
 
 
 
@@ -198,6 +209,7 @@ CIGAR = "Concise Idiosyncratic Gapped Alignment Report"
 CIGAR string，可以理解为reads mapping到第三列序列的mapping状态，对于mapping状态可分为以下几类：
 
 ```
+The standard cigar has three operations:
 M：alignment match (can be a sequence match or mismatch)
 表示read可mapping到第三列的序列上，则read的碱基序列与第三列的序列碱基相同，表示正常的mapping结果，M表示完全匹配，但是无论reads与序列的正确匹配或是错误匹配该位置都显示为M
 
@@ -207,13 +219,18 @@ I：insertion to the reference
 D：deletion from the reference
 表示read的碱基序列相对于第三列的RNAME序列，有碱基的删除
 
+
+
+The extended cigar adds:
 N：skipped region from the reference
-表示可变剪接位置
+表示可变剪接位置，跳过的区域可能是内含子。
 
 S：soft clipping (clipped sequences present in SEQ)
-
+soft clip 的序列出现在sam的第10列seq中。
 
 H：hard clipping (clipped sequences NOT present in SEQ)
+hard clip 的序列不出现在sam的第10列seq中。
+
 P：padding (silent deletion from padded reference)
 clipped均表示一条read的序列被分开，之所以被分开，是因为read的一部分序列能匹配到第三列的RNAME序列上，而被分开的那部分不能匹配到RNAME序列上。
 "=" 表示正确匹配到序列上
@@ -227,12 +244,86 @@ clipped均表示一条read的序列被分开，之所以被分开，是因为rea
 - S may only have (H operations) between (them) and (the ends of the CIGAR string)
 	* S和结尾之间只有H: H-end; 或者 SH-end;
 - 对于 mRNA到基因组的比对(RNA-seq比对)，N代表一个intron。其他比对，N未定义。
-- 操作符`M/I/S/=/X`的长度和，要等于测序reads的长度。
+- 操作符`M/I/S/=/X`的长度和，要等于测序reads(第10列)的长度。
 
 <img src="images/format/sam_CIGAR.png">
+<br>
+(Source: <a href="https://wikis.utexas.edu/download/temp/pdfexport-20221102-021122-0825-2377/Filtering+with+SAMTools_e8b4a9c24eb24738aa07b3347c0cddd2-021122-0825-2378.pdf?contentType=application/pdf">pdf</a>)
+<br>
+<br>
+
 
 
 soft-clipping是指一条reads未匹配上当前基因组位置的部分，如果有多个reads在这种情况，并且这些reads的soft-clipping碱基都能够比对在基因组另一位置，那么就可能存在SV(结构变异)。
+
+
+
+
+
+
+
+### H(hard clip) 和 S(soft clip) 的区别是什么？
+
+```
+REF:    AGCTAGCATCGTGTCGCCCGTCTAGCATACGCATGATCGACTGTCAGCTAGTCAGACTAGTCGATCGATGTG
+READ:          gggGTGTAACC-GACTAGgggg
+```
+
+上述示例是某一条read的比对结果，其中大写字母表示匹配(非完全匹配，部分碱基是错配的)，-表示缺失，小写字母表示末端为匹配的序列，这部分就是clipping序列。
+
+- 若该read只比对到基因组的这个位置，cigar信息为 3S8M1D6M4S，
+- 若该序列比对到基因组多个位置，比对的cigar信息为 3H8M1D6M4H。
+
+S和H除了比对位置的区别以外，输出到bam的序列也不同，标注为S的序列会显示在bam文件中，标注H的则会删除。
+
+- 比如3S8M1D6M4S在bam中输出序列为gggGTGTAACCGACTAGgggg，
+- 而3H8M1D6M4H输出的序列为GTGTAACCGACTAG
+
+
+
+
+
+
+### Clipped 与 Spliced 的区别
+
+(1) Smith-Waterman 比对时，序列不一定从第一个残基比对到最后一个。序列的首尾末端可能会被剪切掉。用S来表示这种剪切。
+
+```
+clipped_alignment
+REF: AGCTAGCATCGTGTCGCCCGTCTAGCATACGCATGATCGACTGTCAGCTAGTCAGACTAGTCGATCGATGTG
+READ:          gggGTGTAACC-GACTAGgggg
+```
+如上文的比对，reads序列上，大写字母是匹配，小写字母是剪切。
+比对的 CIGAR 是 3S8M1D6M4S，表示3个soft clip, 8个match, 1个 deletion, 6个 match 和 4个 soft clip。
+
+
+(2) cDNA比对到基因组上，可能有内含子。使用N表示跳过很长的参考基因组区域。
+
+```
+spliced_alignment
+REF: AGCTAGCATCGTGTCGCCCGTCTAGCATACGCATGATCGACTGTCAGCTAGTCAGACTAGTCGATCGATGTG
+READ:          GTGTAACCC................................TCAGAATA
+```
+如上比对，read上的 ... 表示相对于参考基因组的删除，可能是内含子。
+
+比对的 CIGAR 是 9M32N8M，表示 9个碱基match, 32个跳过，8个match。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -281,9 +372,6 @@ ASCII码格式的序列质量，ASCII of base QUALity plus 33 (same as the quali
 
 
 
-## 11列以后附带的tag
-
-- https://www.samformat.info/sam-format-alignment-tags
 
 
 
@@ -294,7 +382,56 @@ ASCII码格式的序列质量，ASCII of base QUALity plus 33 (same as the quali
 
 
 
-# 3. samtools 
+
+# 3. 可选的tag
+
+sam文件11列之后是可选标签。
+
+可选列的格式: `<TAG>:<VTYPE>:<VALUE>`，表示标签名字，数据类型，值。
+- 标签名字TAG是2个字母的，每行最多出现一次。
+- 数据类型 VTAPE 使用 Perl的格式：`$ perldoc -f pack`，sam中可用的类型如下:
+
+```
+Type	Description
+A	Printable character
+i	Signed 32-bin interger
+f	Single-precision float number
+Z	Printable string
+H	Hex string (high nybble first)
+```
+
+
+
+X开头的标签都是给终端用户预留的。
+
+Any tags that start with X? are reserved fields for end users: XT:A:M, XN:i:2, XM:i:0, XO:i:0, XG:i:0
+
+```
+NH	i	Number of reported alignments that contains the query in the current record
+IH	i	Number of stored alignments in SAM that contains the query in the current record
+
+SM:i:37 - Mapping quality if the read is mapped as a single read rather than as a read pair
+AM:i:37 - Smaller single-end mapping quality of the two reads in a pair
+RG:Z:SRR035022 - Read group. Value matches the header RG-ID tag if @RG is present in the header
+NM:i:2 - Number of nucleotide differences (i.e. edit distance to the reference sequence)
+MD:Z:0N0N52 - String for mismatching positions in the format of [0-9]+(([ACGTN]|\^[ACGTN]+)[0-9]+)*
+```
+
+- 更多标签信息查看: https://www.samformat.info/sam-format-alignment-tags
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 4. samtools 
 
 ## 格式互转 sam/bam 
 
@@ -380,11 +517,19 @@ $ samtools tview xx.sorted.bam hg19.fasta
 
 
 
+
+
+
+
 ## flagstat 作用：统计bam文件的比对结果
 
 `$ samtools flagstat xx.sorted.bam > xx.sorted.flagstat.txt`
 
 // 解释: todo
+
+
+
+
 
 
 
@@ -397,6 +542,11 @@ $ samtools tview xx.sorted.bam hg19.fasta
 -Q：要求比对的质量最低值
 
 `$ samtools depth xx.sorted.bam >xx.depth`
+
+
+
+
+
 
 
 
@@ -430,9 +580,23 @@ $ 表示一个read结束，修饰前面碱基;
 
 
 
+
+
+
+
 ## bam转fastq  作用：方便提取出一段比对到参考序列的reads进行分析
 
 利用软件：http://www.hudsonalpha.org/gsl/information/software/bam2fastq
+
+```
+https://bedtools.readthedocs.io/en/latest/content/tools/bamtofastq.html
+先将bam安装reads名称排序（-n），保证PEreads相邻
+$ samtools sort -n aln.bam aln.qsort
+$ bedtools -i test.bam -fq tmp1.fq -fq2 tmp2.fq 
+```
+
+
+
 
 
 
@@ -440,7 +604,24 @@ $ 表示一个read结束，修饰前面碱基;
 
 作用：将测序数据中由于PCR duplicate得到的reads去掉，只保留比对质量最高的reads
 
-samtools rmdup 默认只对PE数据进行处理
+samtools rmdup 默认只对PE数据进行处理 // todo 这句话存疑
+
+(1) 单端数据: `$ samtools rmdup -s xx.sorted.bam xx.rmdup.bam`
+
+比对flag情况只有0,4,16，只去掉比对起始、终止坐标一致的reads
+
+
+
+(2) 双端数据: 最好用picard的MarkDuplicates
+
+```
+$ gatk --java-options "-Xmx20G -Djava.io.tmpdir=./tmp" MarkDuplicates \
+    -I xx.bam \
+    --REMOVE_DUPLICATES=true \
+    -O xx.marked.bam \
+    -M xx.metrics
+```
+
 
 
 
@@ -457,4 +638,7 @@ samtools rmdup 默认只对PE数据进行处理
 - [SAM/BAM的CIGAR难点]()https://www.jianshu.com/p/150e22af024d
 - [1 处理SAM、BAM你需要Samtools](https://mp.weixin.qq.com/s?__biz=MzU4NjU4ODQ2MQ==&mid=2247484346&idx=1&sn=21f8c100252aeaa92ace5580382992e7&scene=21#wechat_redirect)
 - [2 再次理解SAM/BAM操作](https://mp.weixin.qq.com/s/Q5q-Euxau6OnrWzSEWT-Ug)
+- 软件介绍之Samtools http://www.360doc.com/content/21/0714/12/76149697_986501797.shtml
+- H 和 S 的区别 https://www.jianshu.com/p/854a23887820
+- BAM和SAM格式文件shell练习 https://www.jianshu.com/p/8e9c15a999ca
 
