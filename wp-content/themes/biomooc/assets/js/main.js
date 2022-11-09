@@ -1,5 +1,6 @@
 // author: xx
 jQuery(document).ready(function ($){
+	/*
 	//搜索
 	$(".search-reveal").click(function() {
         $(".row-search-mobile").slideToggle("400",
@@ -26,6 +27,7 @@ jQuery(document).ready(function ($){
 	      $(this).val('');
 	   }
 	});
+	*/
 	
 	//代码高亮
 	$('pre').each(function() {
@@ -34,15 +36,17 @@ jQuery(document).ready(function ($){
 		}
 	});
 
+	/*
 	//反馈按钮
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
 	    $(".feedback-btn").hide();
 	} else {
 		$(".feedback-btn").show();
 	}
-	// 评论区域样式
 
+	// 评论区域样式
 	$(".comt-main li").prepend( "<i style=\"font-size:12px;color:#E44D26;padding-right: 4px;\" class=\"fa fa-circle\" aria-hidden=\"true\"></i>" );
+	*/
 	
 	// 列表
 	color_flag = false; //配色标记
@@ -68,7 +72,7 @@ jQuery(document).ready(function ($){
  	// var _atop = 0;
 	$("#leftcolumn").find("a").each(function(index, value){
 		if(next_title_flag) {
-				return false; //结束循环
+			return false; //结束循环
 		} 
 		
 		
@@ -80,14 +84,14 @@ jQuery(document).ready(function ($){
 		if(href.indexOf(cur_href) != -1) {
 			// _cura = $(this);
 			// _atop =  $(this).offset().top;
-		if(index==0) {
-			$(".previous-design-link").hide();
-		}
-		if(index==(total-1)) {
-			$(".next-design-link").hide();
-		}
+			if(index==0) {
+				$(".previous-design-link").hide(); //顶部底部的链接 上一篇
+			}
+			if(index==(total-1)) {
+				$(".next-design-link").hide(); //顶部底部的链接 下一篇
+			}
 			
-			
+			// 其他地方的链接
 			if(cur_href.indexOf('/') == -1) { //第二重判断
 				tmp_url = href.substring(0, href.lastIndexOf('/')+1) + cur_href;
 				
@@ -103,8 +107,11 @@ jQuery(document).ready(function ($){
 			next_href = $(this).next("a").prop("href");
 			next_title = $(this).next("a").prop("title");
 			if(!next_title) next_title=$(this).next("a").text();
+			
+			console.log(">>0 prev_title_flag=", prev_title_flag) //debug
 			if(!prev_title_flag) {
 				if( prev_title ) {
+					console.log(">>1 set URL on top and bottom: ") //debug
 					$(".previous-design-link a").prop("href", prev_href);
 					$(".previous-design-link a").prop("title", prev_title);
 					$(".previous-design-link a").text( prev_title);
@@ -171,11 +178,12 @@ jQuery(document).ready(function ($){
 		$(this).children("ul").hide();
 	})
 	// 关闭QQ群
-	$(".qqinfo").hide();
+	//$(".qqinfo").hide();
 	//$.getJSON("/try/qqinfo.php", function(data) {
 	//	$("#qqid").text(data.qqid);
 	//	$("#qqhref").prop("href", data.qqhref);
 	//});
+	
 	// 首页导航
 	$("#index-nav li").click(function(){
 		$(this).find("a").addClass("current");
@@ -205,20 +213,24 @@ jQuery(document).ready(function ($){
 			$("#manual").hide();
 		}
     });
+	
     $("#note-nav li").each(function(){
         if(window.location.pathname == $(this).find("a").attr("href")) {
         	$(this).find("a").addClass("current");
         	return false;
         }
   	});
+	
 	$("#cate0").click(function() {
 		$(".codelist-desktop").show();
 	})
+	
 	$(".design").click(function() {
 		id = $(this).prop("id");
 		$("." + id).show();
 		$("." + id).siblings().hide();
 	})
+	
 	//移动设备点击链接	
 	$('a').on('click touchend', function(e) {
 		if(screen.availHeight==548 && screen.availHeight==320) {
@@ -236,6 +248,7 @@ jQuery(document).ready(function ($){
 		},function(){
 			$("#bottom-qrcode").hide();
 	});
+	
 	/*
 	if($("#leftcolumn").length && $(".previous-next-links").length) {
 		var _dheight = $(document).height();
@@ -305,10 +318,14 @@ jQuery(document).ready(function ($){
 	});
 
 
+	// 回到顶部
 	$(".go-top").click(function(event){	
 		$('html,body').animate({scrollTop:0}, 100);
+		console.log(".go-top clicked!") //debug
 		return false;
 	});
+	
+	
 	$(window).resize(function() {
 		var viewportWidth = $(window).width();
 		if(window.location.href.indexOf("w3cnote")!=-1) {
@@ -340,6 +357,8 @@ jQuery(document).ready(function ($){
 		});
 	}*/
 });
+
+
 /**
 * 用户登陆注册
 */
@@ -356,6 +375,7 @@ jQuery(document).ready(function($){
 	$.ajaxSetup({ 
 	    async : true 
 	});     
+/*
 	//判断是否登陆
 	if(readCookie('checklogin_ajax')) {
 		$.post('/wp-content/themes/runoob/option/user/log.php',{action:'checklogin'},function(res){
@@ -490,7 +510,7 @@ jQuery(document).ready(function($){
 			$(this).removeClass("fa-caret-down").addClass("fa-caret-up");
 		} 
 	});
-
+*/
 	// 夜间模式与日间模式
 	var cateID = $("#moon").attr("data-cate");
 	if(cateID) {
@@ -532,6 +552,8 @@ jQuery(document).ready(function($){
 
 
 
+
+/*
 jQuery.fn.putCursorAtEnd = function() {
 	return this.each(function() {
     	// If this function exists...
@@ -547,13 +569,22 @@ jQuery.fn.putCursorAtEnd = function() {
     	}
 	});
 };
+*/
 //--------- 登陆，注册结束---------------
+
+
+/*
 // 废弃弹窗
 function NewWindow(text)
 {
 	win=window.open(text,'','top=0,left=0,width=400,height=230');
 }
+*/
 
+
+
+// 操作 cookie 
+// 夜间模式等依赖cookie
 function createCookie(name,value,days) {
     var expires = "";
     if (days) {
@@ -579,5 +610,6 @@ function eraseCookie(name) {
 }
 
 
+// 广告
 
 $.getScript("/ads/ads.js"); //加载广告

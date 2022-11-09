@@ -291,6 +291,7 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 		首页新增c,c++一级导航菜单
 	page0.3.6-8 add a SVG file [2022.11.7]
 	page0.3.6-9 fix R/ [2022.11.8]
+	page0.3.7-0 fix 首尾链接占位符; 添加链接错误的说明页: R/R-intro.html [2022.11.9]
 ##############
 # commit
 ########>> push miostudio
