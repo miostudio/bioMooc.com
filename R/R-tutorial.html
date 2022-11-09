@@ -44,7 +44,6 @@ $(function(){
 
 	//左右菜单
 	$.get('./part/menu-left.html',function(data,status){
-		console.log("status on left menu:", status) //debug
 		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
 	});
 
@@ -55,7 +54,7 @@ $(function(){
 
 
 	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15", function(response, status){
-		console.log("load js file success!")
+		console.log("load main.js file: ", status)
 	});//回到顶部js文件
 });
 </script>

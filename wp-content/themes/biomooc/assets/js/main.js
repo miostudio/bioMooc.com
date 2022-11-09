@@ -108,10 +108,8 @@ jQuery(document).ready(function ($){
 			next_title = $(this).next("a").prop("title");
 			if(!next_title) next_title=$(this).next("a").text();
 			
-			console.log(">>0 prev_title_flag=", prev_title_flag) //debug
 			if(!prev_title_flag) {
 				if( prev_title ) {
-					console.log(">>1 set URL on top and bottom: ") //debug
 					$(".previous-design-link a").prop("href", prev_href);
 					$(".previous-design-link a").prop("title", prev_title);
 					$(".previous-design-link a").text( prev_title);
@@ -183,8 +181,12 @@ jQuery(document).ready(function ($){
 	//	$("#qqid").text(data.qqid);
 	//	$("#qqhref").prop("href", data.qqhref);
 	//});
-	
-	// 首页导航
+
+
+
+	// 首页导航：现在是单机换页，应该设置到载入后事件
+	// 首页导航: old version
+	/*
 	$("#index-nav li").click(function(){
 		$(this).find("a").addClass("current");
 		$(this).siblings().find("a").removeClass("current");
@@ -213,7 +215,9 @@ jQuery(document).ready(function ($){
 			$("#manual").hide();
 		}
     });
-	
+	*/
+
+
     $("#note-nav li").each(function(){
         if(window.location.pathname == $(this).find("a").attr("href")) {
         	$(this).find("a").addClass("current");
@@ -230,7 +234,9 @@ jQuery(document).ready(function ($){
 		$("." + id).show();
 		$("." + id).siblings().hide();
 	})
-	
+
+
+
 	//移动设备点击链接	
 	$('a').on('click touchend', function(e) {
 		if(screen.availHeight==548 && screen.availHeight==320) {
@@ -239,7 +245,9 @@ jQuery(document).ready(function ($){
 	  		window.location = link;
   		}
 	});
-	
+
+
+
 	$("#pull").click(function() {
 		$(".left-column").slideToggle("400",function() {});
 	})
@@ -248,7 +256,9 @@ jQuery(document).ready(function ($){
 		},function(){
 			$("#bottom-qrcode").hide();
 	});
-	
+
+
+
 	/*
 	if($("#leftcolumn").length && $(".previous-next-links").length) {
 		var _dheight = $(document).height();
@@ -356,6 +366,25 @@ jQuery(document).ready(function ($){
 			}
 		});
 	}*/
+});
+
+
+// 首页顶部菜单 标识当前
+jQuery(document).ready(function($){
+	var aLi=$("#index-nav li");
+	var _this=null;
+	// 找到和当前页面 url 匹配的 li a.href
+	var mainTitle="/"+ location.pathname.split("\/")[1] +"/";
+	for(var i=0; i<aLi.length; i++){
+		if(aLi[i].firstChild.pathname==mainTitle){
+			_this=aLi[i];
+			break;
+		}
+	}
+	if(_this){
+		$(_this).find("a").addClass("current");
+		$(_this).siblings().find("a").removeClass("current");
+	}
 });
 
 

@@ -50,7 +50,6 @@ $(function(){
 
 	//左右菜单
 	$.get('./part/menu-left.html', function(data,status){
-		console.log("status on left menu:", status) //debug
 		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
 	});
 
