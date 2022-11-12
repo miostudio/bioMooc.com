@@ -31,35 +31,36 @@ $(function(){
 	$.get('/part/header-nav.html',function(data,status){
 		$('body').prepend(data);//header-nav
 	});
-	
+
 	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
 	$("#footer").load("/part/footer.html"); //footer
-	
+
 	$.get('/part/right-bottom-btn.html',function(data,status){
 		$('#footer').after(data);//右下角按钮
 	});
 
-	
-			
+
 	//左右菜单
 	$.get('./part/menu-left.html',function(data,status){
 		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
 	});
-	
+
 	$.get('/part/menu-right.html',function(data,status){
 		$('.main .row').first().append(data);//右侧菜单-全局通用
 		//没有事件，还需要绑定事件
-		
-		
+
+
 	});
-	
-	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15", function(response, status){
+		console.log("load main.js file: ", status)
+	});//回到顶部js文件
 });
 </script>
 
 
-	
-	
+
+
 
 <!--  内容  -->
 <div class="container main">

@@ -1,1 +1,170 @@
-/js/js-tutorial.html
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>JavaScript 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="JavaScript 教程,js">
+<meta name="description" content="js  教程。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />	
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<!-- v2 去空格 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+	});
+
+
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15", function(response, status){
+		console.log("load main.js file: ", status)
+	});//回到顶部js文件
+});
+</script>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+</style>
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+
+
+
+
+
+
+<div class="col middle-column">
+
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="next"> R 简介</a>  </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+
+			<div class="article-intro" id="content">
+
+			<h1><span class="color_h1">JavaScript </span> 教程</h1>
+<hr>
+<div class="tutintro"> 
+<p>在网页端运行的编程语言，有且只有js，编网页就不得不学。</p>
+<p>我学js，是为了把本网站该写的更流畅、好用。</p>
+<p>JS其实很容易入门，但精通很难。</p>
+<br/>
+<p>JS熟手交流QQ群: 369578518</p>
+<p><a target="_blank" href="https://www.w3cschool.cn/JavaScript/">w3cschool的js教程</a> CN</p>
+<p><a target="_blank" href="https://www.w3schools.com/js/DEFAULT.asp">w3cschool的js教程</a> EN</p>
+
+
+
+
+<br>
+<p>现在开始学习 JS: <a target="_blank" href="http://jslecture.biomooc.com/">《JavaScript 从入门到精通》</a></p>
+
+</div>
+
+
+
+<h2>怎么学习js语言？</h2>
+<p>入门看视频，快速进步靠书籍，高手查文档，顶尖要研究源码。<br>纸上得来终觉浅，绝知此事要躬行！不停地编码才能进步，不能光看不练。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="next"> R 简介</a>  </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
