@@ -1,3 +1,5 @@
+/ads/ads.js
+
 1.在每个想添加广告的页面<head>标签内添加如下代码：
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -11,6 +13,9 @@
 是否激活需要一天时间：
 https://www.google.com/adsense/new/u/0/pub-9506119208881563/home
 
+最新的只需要:
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506119208881563"
+     crossorigin="anonymous"></script>
 
 
 主机记录就是域名前缀，常见用法有：

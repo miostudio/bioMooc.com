@@ -1,6 +1,5 @@
 /*
 <div class="col middle-column">
-		
 <div class="topbar-adBox">
 	<a target="_blank" href="/about.html#ads"><p class=big></p></a>
 </div>
@@ -37,11 +36,15 @@ oArticle.parentElement.insertBefore(oDiv, oArticle)
 /*****************
 * google adsense 
 *******************/
-//<script data-ad-client="ca-pub-9506119208881563" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-var oAdSense=document.createElement('script');
-oAdSense.setAttribute('data-ad-client', 'ca-pub-9506119208881563')
-oAdSense.setAttribute('async','async')
-oAdSense.setAttribute('src', "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
-//
-var oHead=document.getElementsByTagName("head")[0]
-oHead.append(oAdSense)
+//<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506119208881563"
+//     crossorigin="anonymous"></script>
+//window.addEventListener('load', function(){}, false)
+setTimeout(function(){
+	var oAdSense=document.createElement('script');
+	oAdSense.setAttribute('async','async')
+	oAdSense.setAttribute('crossorigin','anonymous')
+	oAdSense.setAttribute('src', "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9506119208881563")
+	//
+	document.body.append(oAdSense)
+	console.log("ad sense...")
+}, 0)
