@@ -1,0 +1,332 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="C++ 教程,C">
+<meta name="description" content="C++语言是一门通用的基础编程语言，可以实现任何大中小型项目。">
+
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+
+
+	});
+
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+</style>
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+
+
+
+
+
+
+<div class="col middle-column">
+
+
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="next"> R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+
+			<div class="article-intro" id="content">
+
+			<h1><span class="color_h1">C++ </span> 教程</h1>
+<hr>
+<div class="tutintro"> 
+<p>C++ 是一种高级语言，它是由 Bjarne Stroustrup 于 1979 年在贝尔实验室开始设计开发的。C++ 进一步扩充和完善了 C 语言，是一种面向对象的程序设计语言。C++ 可运行于多种平台上，如 Windows、MAC 操作系统以及 UNIX 的各种版本。</p>
+
+<p>当前最新的 C++ 语言标准为 C22 ，在它之前的 C++ 语言标准有 C++17、C++14、C++11（常用）、C++03、C++98 等。</p>
+
+<br/>
+<p>C/C++语言自学交流QQ群: 817812087</p>
+
+
+<blockquote>
+<p>送给学习 C++ 的同学一段浙大翁凯老师讲课说的话：</p>
+<p>学 C++ (计算机)一定要有一个非常强大的心理状态。为什么呢？C++ （计算机）的所有东西都是人做出来的，别人能想出来的我也一定想得出来，在 C++（计算机）里头没有任何黑魔法，所有的东西只不过是我现在不知道而已。总有一天我会把它里面的细节搞明白的！</p>
+</blockquote>
+
+
+
+
+<p><a target="_blank" href="https://www.w3cschool.cn/Cpp/">w3cschool的C++教程</a></p>
+<p><a target="_blank" href="https://www.runoob.com/cplusplus/cpp-tutorial.html">菜鸟教程C++语言</a></p>
+<p><a target="_blank" href="https://en.cppreference.com/w/cpp/language">C++ language</a></p>
+<p><a target="_blank" href="https://learn.microsoft.com/en-us/cpp/cpp/cpp-language-reference?view=msvc-170">C++ lang(MS)</a></p>
+
+
+<br>
+<hr>
+<p>现在开始学习 C++ ！</a></p>
+<p>入门推荐: <a target="_blank" href="https://dawneve.github.io/learnCpp/">C++ primer, 5th Edition 笔记</a></p>
+<p><a target="_blank" href="https://www.avabodh.com/articles/">C++ Object Model Internals</a></p>
+
+</div>
+
+
+
+
+<hr>
+<h2>谁适合阅读？</h2>
+<p>本教程针对的是零基础C语言学习者，适合从事系统开发和数据分析的人员阅读。</p>
+<hr>
+
+
+
+
+
+<h2>需要具备的知识？</h2>
+<p>读者最好有计算机组成与结构的基础知识。</p>
+<p>本教程使用g++和记事本作为开发工具。还可能用到vscode等IDE环境。</p>
+<br />
+
+
+<h2>怎么学习C++语言？</h2>
+<p>看视频入门，看书学细节，勤练习，看源码，做项目。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2>C++语言核心知识框架</h2>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+1.入门阶段的学习主要是熟悉 C++ 语言的语法知识。
+
+除了基础的变量、常量、关键字、数据类型、运算符、数组、函数、指针、结构体外，
+
+还要学习 C++ 的
+面向对象编程思想、
+命名空间 namespace、
+引用、
+函数扩展、
+类的封装、
+构造和析构、
+继承、
+多态、
+异常处理等内容。
+
+入门阶段推荐两本书，一本薄的，一本厚的，都是超级经典的书籍。
+
+《Essential C++》是一本内容不多但很实用的 C++ 入门书籍，这本书强调的是快速上手与理解 C++ 编程。
+《C++ Primer》很多人 C++ 入门的时候会推荐《C++ Primer Plus》，但是我更强烈推荐的是这本《C++ Primer》！
+
+《C++ Primer》堪称 C++ 语法学习的最权威书籍，非常全面地讲解了C++的语法以及C++11的各种新特性，看完之后真的帮助特别大！如果有时间建议至少看两遍以上！时面向 C++ 语言的初学者，是一本很友好的自学教材！而且例程和习题丰富，相信认真读过之后，可以完成 C++ 语言入门这个目标！！
+
+
+
+2. 进阶阶段
+
+深入学习 C++ 标准模板库（STL）、设计模式、数据结构基础以及 UI 界面开发、数据库开发等高级技能。
+
+《C++标准程序库》
+关于 STL，可以先读这本侯捷老师翻译的《C++ 标准程序库》。
+通过这本书对STL有个基本认识，学会使用 STL。
+
+
+《STL源码剖析》
+读完 《C++ 标准程序库》，就可以来读这本侯捷老师编写的《STL源码剖析》了。
+这本书建议必读！
+这本书讲解了 C++ 底层实现，主要包括 C++ 底层内存管理、各种容器的数据结构实现、常见算法的实现等。
+可以帮助深入理解C++底层，同时也是对数据结构的复习和巩固。
+
+
+《Effective C++》
+《Effective C++》讲了 C++ 编程的 55 条准则，提高你的 C++ 编程质量，也是侯捷老师翻译的！
+这本书有助于梳理在编写 C++ 程序时的一些常见错误和注意事项，也是面试常考的。
+
+
+《深度探索C++对象模型》
+《深度探索C++对象模型》这本书讲解了C++面向对象特性的底层实现机制。
+侯捷老师翻译的，看完这本书，对C++面向对象的理解帮助极大，建议必读！
+
+
+
+3.应用阶段
+
+其实编程语言就是要多练，怎么多练，就是代码量。
+
+自己多写，然后多观摩别人的项目，看人家的写法，模仿项目，学习其中的思想，一点点的积累，一步步形成自己的东西，厚积而薄发，慢慢你就会发现你也可以了。
+
+一共推荐 14 个开源项目，7 个入门级，7 个企业级，保证都是值得学习的开源项目！
+
+入门级
+1.TinyWebServer（3.6k+ star）
+2.libqalculate（545 star）使用 C++ 编写的多功能计算器桌面应用、库和 CLI 程序。它易于使用功能强大，支持大型可定制函数库、单位计算和转换、符号计算（包括积分和方程）。作为用户你可以直接在命令行中使用，作为开发者你也可以在自己的项目中使用这个库。官方还制作了Qt和GTK两个版本的 GUI 计算器应用。
+3.spdlog（12.7k+）
+快速、上手简单的 C++ 日志库。
+
+4.CPlusPlusThings（15.4k+star）
+这是一个适合 C++ 初学者从入门到进阶的教程。
+解决了面试者想要深入 C++ 及如何入坑 C++ 的问题。
+除此之外，该仓库拓展了更加深入的语法分析、多线程并发等的知识，是一个比较全面的 C++ 从入门学习到进阶提升的项目。
+
+5.indicators（1.7k+star）
+一个使用 C++ 编写的进度条库，你可以用它在命令行中实现美观的进度条。它使用方便、线程安全、支持多种进度条样式。
+
+6.sudoku（299 star）
+C++ 实现的命令行数独游戏。600 余行代码，初学者也可以轻松学习。
+
+7.dbg-macro（1.7k+）
+打日志是 C++ 开发中必不可少的一种 debug 方式，dbg-macro 受 rust-lang 中 的 dbg 启发，提供比 printf 和 std::cout 更好的宏函数。
+
+
+企业级
+1.rocksdb（21.1k+ star）
+该项目是由 Fackbook 数据库团队基于 levelDB 开发，用 C++ 编写的高性能键值存储引擎。
+
+2.winmerge（2.2k+ star）
+一个用 C++ 编写的 Windows 比较和合并工具。
+
+3.workflow（6.1k+ star）
+搜狗开源的 C++ 服务器引擎。
+
+4.srpc（825 star）
+搜狗基于 C++ Workflow 的高性能 RPC 框架。
+与 thrift/brpc 协议兼容，支持 protobuf/thrift IDL一键迁移，核心代码量仅 1w 行。
+
+5.nvui（1.2k+ star）
+跨平台现代的 Neovim 前端。
+它使用起来流畅，动画效果细腻、美观，你可以用 Neovim 和 nvui 自由定制出一个高颜值、最懂你的编辑器。
+
+6.filament（12.1k+ star）
+filament 是轻量级实时物理渲染引擎。
+能够用来做游戏渲染引擎或者音视频编辑工程，当你需要处理 3D 渲染效果，又不想引入庞大的游戏引擎时，可以考虑使用它尤其是 Android 平台。
+https://github.com/google/filament
+
+7.hplayer（451 star）
+一个基于 C++ 实现的多画面播放器。
+能播放文件源、网络源、设备捕获源，界面为多画面监控网格，可自由切换多画面风格，支持拖拽与合并。适合想要入门音视频、播放器开发的小伙伴们学习，该项目用到的技术栈：
+Qt 实现界面
+FFmpeg 获取帧、编解码、转码
+OpenCV 处理图片
+OpenGL 渲染视频帧
+
+
+
+
+
+n.希望对你有所帮助
+
+其实说实话，本科的同学 C++ 水平真是天差地別的。
+你能学到什么程度，就看你的努力程度了。
+
+https://www.zhihu.com/question/23447320/answer/2254583684
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="next"> R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>
