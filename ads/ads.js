@@ -12,7 +12,6 @@ oCss.setAttribute('type', 'text/css')
 oCss.setAttribute('rel', 'stylesheet')
 document.body.append(oCss)
 
-
 // top ads
 var oP=document.createElement('p')
 oP.setAttribute('class', 'big')
