@@ -205,8 +205,12 @@ If Nmap >= 5, MAPQ = 0.
 ## (6) CIGAR	Extended CIGAR string（操作符：MIDNSHP）比对结果信息；匹配碱基数，可变剪接等	例如：87M
 
 CIGAR = "Concise Idiosyncratic Gapped Alignment Report"
-
 CIGAR string，可以理解为reads mapping到第三列序列的mapping状态，对于mapping状态可分为以下几类：
+
+<img src="images/format/sam_CIGAR2.png">
+
+“Consumes query” and “consumes reference” indicate whether the CIGAR operation causes the
+alignment to step along the query sequence and the reference sequence respectively.
 
 ```
 The standard cigar has three operations:
