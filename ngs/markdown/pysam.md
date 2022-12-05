@@ -70,8 +70,8 @@ Help on AlignedSegment object:
 ## (3) 读写bam文件
 ```
 import pysam
-samfile = pysam.AlignmentFile("ex1.bam", "rb")
-pairedreads = pysam.AlignmentFile("allpaired.bam", "wb", template=samfile)
+samfile = pysam.AlignmentFile("ex1.bam", "rb") #读 bam 用 rb，读 sam 用 r;
+pairedreads = pysam.AlignmentFile("allpaired.bam", "wb", template=samfile); #写 bam 用wb，写 sam 用w;
 #for read in samfile.fetch():
 for read in samfile:
     print(read)
@@ -134,7 +134,7 @@ A00679:526:HYVNJDSXY:4:2270:29658:29465_TAATCGGG_ATGGGGGCGA	0	chr1	3132265	255	2
 
 
 
-## (4) POS 比对到的坐标位置(bam: 0-based)
+## (4) POS: 比对到的坐标位置(bam: 0-based)
 
 samtools view xx.bam #1-based
 
@@ -193,7 +193,7 @@ This is equal to reference_end - reference_start. Returns None if not available.
 
 
 
-## (6) CIGAR 字符串
+## (6) CIGAR: 比对状态字符串
 ```
 >>> line.cigarstring #推荐
 '20M7S'
@@ -233,7 +233,13 @@ P	BAM_CPAD	6
 =	BAM_CEQUAL	7
 X	BAM_CDIFF	8
 B	BAM_CBACK	9
+
+In the Python API, the cigar alignment is presented as a list of tuples (operation,length). 
+For example, the tuple [ (0,3), (1,5), (0,2) ] refers to an alignment with 3 matches, 5 insertions and another 2 matches.
 ```
+
+
+
 
 
 ## (7-9) 双端测序的另一个read的信息: 参考基因组、位置、长度
@@ -244,7 +250,8 @@ B	BAM_CBACK	9
 ```
 
 
-## (10) SEQ 获取序列
+## (10) SEQ: 获取序列
+
 ```
 # bam 中记录的序列 (bam中的序列永远和.fasta文件一致：正链和fq一致，负链则和fq的反向互补)
 >>> line.seq  #废除；推荐 query_sequence
@@ -335,6 +342,38 @@ line.inferred_length            line.qqual                      line.to_dict(
 line.is_duplicate               line.qstart                     line.to_string(
 line.is_paired                  line.qual                       line.tostring( 
 ```
+
+
+
+
+
+
+# 5. 常见问题解答 FAQ
+
+- https://pysam.readthedocs.io/en/latest/faq.html
+
+## (1) pysam 的坐标不对?
+
+像python一样，pysam使用 基于0的坐标系统。pysam的坐标和区间都按照这个惯例。
+pysam uses 0-based coordinates and the half-open notation for ranges as does python. Coordinates and intervals reported from pysam always follow that convention.
+
+
+疑惑的起因可能是不同的文件有不同的惯例。
+比如，sam格式是 基于1的，而bam是 基于0的。
+要记住：pysam 总是自动转为 pysam 的惯例: 基于0的坐标。
+Confusion might arise as different file formats might have different conventions. For example, the SAM format is 1-based while the BAM format is 0-based. It is important to remember that pysam will always conform to the python convention and translate to/from the file format automatically.
+
+
+唯一的例外是：fetch() 和 pileup() 方法中的区域字符串。
+这个区域字符串使用 samtools 命令行的惯例。直接传递给 samtools 命令行的也是这样，比如 pysam.mpileup().
+The only exception is the region string in the fetch() and pileup() methods. This string follows the convention of the samtools command line utilities. The same is true for any coordinates passed to the samtools command utilities directly, such as pysam.mpileup().
+
+
+
+
+
+
+
 
 
 
