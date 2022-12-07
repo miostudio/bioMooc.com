@@ -609,7 +609,40 @@ expression(a + b)
 [1] 8
 ```
 
-例4: 可以指定数据框作为环境，执行某个表达式
+
+
+例4: 如果指定的环境是一个多行数据框
+
+数据框也是一个list，每一列是对应list的一项键值对。
+
+```
+> df1=data.frame(x=1:3, y=c(1,20,300))
+> df1
+  x   y
+1 1   1
+2 2  20
+3 3 300
+> lst2=as.list(df1)
+> lst2
+$x
+[1] 1 2 3
+
+$y
+[1]   1  20 300
+
+> eval( quote(x+y), df1) #求值是对数据框的每一行求值
+[1]   2  22 303
+
+> eval( quote(x+y), lst2) #求值是对list的每一个位置下标求值
+[1]   2  22 303
+```
+
+
+
+
+
+
+例5: 指定数据框作为环境，执行某个表达式筛选该数据框
 
 在环境 mtcars 下，求表达式 gear>4 的值
 ```
@@ -628,6 +661,8 @@ Ford Pantera L 15.8   8 351.0 264 4.22 3.170 14.5  0  1    5    4
 Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.5  0  1    5    6
 Maserati Bora  15.0   8 301.0 335 3.54 3.570 14.6  0  1    5    8
 ```
+
+
 
 
 
@@ -1339,6 +1374,105 @@ Ford Pantera L 15.8   8 351.0 264 4.22 3.170 14.5  0  1    5    4
 Ferrari Dino   19.7   6 145.0 175 3.62 2.770 15.5  0  1    5    6
 Maserati Bora  15.0   8 301.0 335 3.54 3.570 14.6  0  1    5    8
 ```
+
+
+
+
+例8: 借助 delayedAssign() 实现函数外的 Promise(惰性求值).
+
+```
+> msg <- "old"
+> delayedAssign("x", msg)
+> substitute(x) # shows only 'x', as it is in the global env.
+x
+> msg <- "new!"
+> x # new!
+[1] "new!"
+> delayedAssign("x", {
+   for(i in 1:3)
+     cat("yippee!\n")
+   10
+ })
+
+> x^2 #- yippee 第一次调用，先计算再返回值
+yippee!
+yippee!
+yippee!
+[1] 100
+
+> x^2 #- simple number 第二次调用，只有值
+[1] 100
+
+
+
+
+> ne <- new.env()
+> delayedAssign("x", pi + 2, assign.env = ne)
+
+> ## See the promise {without "forcing" (i.e. evaluating) it}:
+> substitute(x, ne) #  'pi + 2'
+pi + 2
+
+> get("x", ne) #访问该变量
+[1] 5.141593
+```
+
+
+环境中的 promise (面向高级用户)
+```
+> e <- (function(x, y = 1, z) environment())(cos, "y", {cat(" HO!\n"); pi+2})
+> ls(e)
+[1] "x" "y" "z"
+
+
+## How can we look at all promises in an env (w/o forcing them)?
+> gete <- function(e_)
+   lapply(lapply(ls(e_), as.name),
+          function(n) eval(substitute(substitute(X, e_), list(X=n))))
+
+> (exps <- gete(e))
+[[1]]
+cos
+
+[[2]]
+[1] "y"
+
+[[3]]
+{
+    cat(" HO!\n")
+    pi + 2
+}
+
+> sapply(exps, typeof)
+[1] "symbol"    "character" "language" 
+
+
+> (le <- as.list(e)) # evaluates ("force"s) the promises
+ HO!
+$x
+function (x)  .Primitive("cos")
+
+$y
+[1] "y"
+
+$z
+[1] 5.141593
+
+> stopifnot(identical(unname(le), lapply(exps, eval))) # and another "Ho!"
+ HO!
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
