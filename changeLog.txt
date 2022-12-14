@@ -301,6 +301,16 @@ https://www.ezlippi.com/blog/2017/02/sed-introduction.html
 	page0.3.7-6 add R/R-metaprogramming.html [2022.12.5]
 	page0.3.7-7 add R/R-metaprogramming-fn.html [2022.12.7]
 	page0.3.7-8 update R/R-metaprogramming-fn.html [2022.12.7]
+################
+最近又被谷歌爬了:
+31		2022/12/07 03:24:06	其他	直接访问	https://www.biomooc.com/R/R-tutorial.html	--	74.125.150.49	1853877540478933353	1'8"	3	 
+32		2022/12/07 03:24:05	其他	直接访问	https://www.biomooc.com/R/R-tutorial.html	--	74.125.150.55	2239962583166066611	1'46"	3
+IP地址: 
+74.125.150.61来自美国 谷歌云
+74.125.150.43来自美国 谷歌云
+################
+	page0.3.7-9 add Linux/ 备份 scp/md5sum [2022.12.14]
+
 ##############
 # commit
 ########>> push miostudio
