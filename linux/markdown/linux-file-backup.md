@@ -14,6 +14,7 @@ SCP ：secure copy (remote file copy program)
 	* 经过测试，目录1和目录2后面是否加`/`对结果没影响，都是传目录1中的内容到目录2中;
 	* 目录2如果不存在，则新建该目录，如果该目录的上级目录也不存在，则报错;
 	* 如果路径中有空格，则必须使用双反斜杠 \\ 并将整个路径用引号引起来转义字符：`scp localFile1.txt user@192.168.1.102:"/file\\ path\\ with\\ spaces/remoteFile2.txt"`
+	* 限制速度 -l: `$ scp -l 1000 文件名  账号@远程机器IP`，此时的传输速率就是1M／8＝100K左右。
 
 
 
