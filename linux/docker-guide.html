@@ -85,7 +85,14 @@ https://www.ibm.com/cloud/learn/docker
 
 <ul>
 	<li><a href="#1">1. Docker 概念</a></li>
-	<li><a href="#2">2. Docker 安装</a></li>
+	<li><a href="#2">2. Docker 安装</a>
+		<ul>
+			<li><a href="#2.1">2.1. 在Ubuntu安装: apt</a></li>
+			<li><a href="#2.2">2.2. 在Ubuntu安装: snap</a></li>
+			<li><a href="#2.3">2.3. 在CentOS安装: yum</a></li>
+			<li><a href="#2.4">2.4. 移动数据目录</a></li>
+		</ul>
+	</li>
 	<li><a href="#3">3. Docker 运行常用操作</a>
 		<ul>
 			<li><a href="#3.1">3.1. 获取和查看镜像(搜索镜像名、标签名)</a></li>
@@ -159,7 +166,12 @@ Docker有五个命名空间：进程、网络、挂载、宿主和共享内存�
 
 
 <h2 class=section><a name=2></a>2. Docker 安装</h2>
-<p>本文使用Ubuntu 20.04 作为宿主机。使用最新的 docker 版本。</p>
+
+<p>本文尝试在Ubuntu 20.04 和 CentOS7.9上分安装最新的 docker 版本。</p>
+
+
+<h3><a name=2.1></a>2.1尝试在Ubuntu上使用 apt-get 安装 docker（推荐）</h3>
+<p>本文使用 Ubuntu 20.04 作为宿主机，安装 docker 最新版。</p>
 
 <pre class=quote>
 全新的 桌面版 Ubuntu 20.04.3 LTS (GNU/Linux 5.11.0-34-generic x86_64)，virtualBox。
@@ -175,10 +187,6 @@ Docker有五个命名空间：进程、网络、挂载、宿主和共享内存�
 $ uname -r
 5.11.0-34-generic
 </pre>
-
-
-
-<h3>2.1尝试使用 apt-get 安装 docker（推荐）</h3>
 
 <pre class=code>
 如果snap安装过docker，先卸载。
@@ -394,7 +402,7 @@ Server:
 
 
 
-<h3>2.2 尝试使用 snap 安装 docker（不推荐）</h3>
+<h3><a name=2.2></a>2.2 尝试在Ubuntu上使用 snap 安装 docker（不推荐）</h3>
 <p>使用 snap 安装的docker只能挂载$HOME 下的目录，<a target="_blank" href="https://github.com/common-workflow-language/common-workflow-language/issues/927">不能挂载/data等目录。</a></p>
 <pre class=code>
 https://docs.docker.com/get-docker/
@@ -530,7 +538,7 @@ See 'docker run --help'.
 
 
 
-<h3>2.3 尝试在 centOS7 安装 docker (推荐)</h3>
+<h3><a name=2.3></a>2.3 尝试在 centOS7 安装 docker (推荐)</h3>
 
 <pre class=code>
 1.查询老版本docker
@@ -637,14 +645,119 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS  
 </pre>
 
 
-
-
-
-
 <p>如果无法访问，可能是防火墙。</p>
 <pre class=quote>
-$ systemctl stop firewalld   关闭防火墙
+$ sudo systemctl stop firewalld   关闭防火墙
 </pre>
+
+
+
+
+
+
+
+<h3><a name=2.4></a>2.4 移动数据目录</h3>
+
+<p>默认 docker 都在根目录，可能随着时间的推移导致系统盘不够用。建议一开始就把docker数据切换到一个大硬盘，这样还能防止经常读写的系统盘坏掉而损失数据。</p>
+<p>示例: 把默认的docker目录 /var/lib/docker 改为 /data/docker/lib/docker 。</p>
+
+<pre class=code>
+查看版本
+$ docker --version
+Docker version 20.10.15, build fd82621
+
+查看数据保存的位置
+$ sudo docker info
+Docker Root Dir: /var/lib/docker
+Registry: https://index.docker.io/v1/
+
+
+1. 停止docker服务。
+$ sudo systemctl stop docker
+或 
+$ sudo service docker stop
+$ service docker status
+
+
+2. 创建新的docker目录
+执行命令df -h,找一个大的磁盘。 我在 /home目录下面建了 /home/docker/lib目录，执行的命令是：
+## mkdir -p /home/docker/lib
+
+$ sudo mkdir /data/docker
+$ sudo mkdir /data/docker/lib
+
+3. 迁移 /var/lib/docker 目录下面的文件到 /home/docker/lib：
+## rsync -avz /var/lib/docker /home/docker/lib/
+
+$ sudo rsync -avz /var/lib/docker /data/docker/lib/
+实际位置从 /var/lib/docker 变为 /data/docker/lib/docker
+耗时: 14:25-->
+
+还有人用 -P 参数: rsync -avzP /var/lib/docker/ /data/lib/docker
+
+
+4、(跳过该步骤。可能是老方案，不一定可用了) 配置 /etc/systemd/system/docker.service.d/devicemapper.conf
+查看 devicemapper.conf 是否存在。如果不存在，就新建。
+$ sudo mkdir -p /etc/systemd/system/docker.service.d/
+$ sudo vim /etc/systemd/system/docker.service.d/devicemapper.conf
+
+然后在 devicemapper.conf 写入：（同步的时候把父文件夹一并同步过来，实际上的目录应在 /home/docker/lib/docker ）
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd  --graph=/data/docker/lib/docker
+#ExecStart=/usr/bin/dockerd  --graph=/home/docker/lib/docker
+
+
+5. 修改配置目录
+如果配置文件不存在，则新建一个。
+
+$ cat /etc/docker/daemon.json 
+{
+  "data-root": "/data/docker/lib/docker"
+}
+
+（可选）添加国内的源:
+$ cat /etc/docker/daemon.json 
+{
+  "data-root": "/data/docker/lib/docker",
+  "registry-mirrors": ["http://hub-mirror.c.163.com"]
+}
+
+或者 华中科技大学的源:
+"registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"]
+
+
+6.  重新启动 docker 服务
+# sudo systemctl daemon-reload  #加载配置文件
+# sudo systemctl restart docker.service #重启服务
+# sudo systemctl enable docker  #允许开机启动
+
+$ sudo service docker start
+
+
+7. 配置核查
+docker info 命令检查Docker 的根目录.它将被更改为 /home/docker/lib/docker
+
+$ sudo docker info | grep Root
+ Docker Root Dir: /data/docker/lib/docker
+
+
+8. 启动成功后，再确认之前的镜像还在：
+$ docker images
+REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
+AAA/AAA               v2                  7331b8651bcc        27 hours ago        3.85GB
+BBB/BBB               v1                  da4a80dd8424        28 hours ago        3.47GB
+
+9、 确定容器没问题后删除 /var/lib/docker/ 目录中的文件。
+$ sudo mv /var/lib/docker /var/lib/docker-can-delete  #先重命名文件，放几周再删掉。
+
+$ ls -lth /var/lib/ | grep docker
+drwx--x---. 15 root           root            200 May 10 14:04 docker-can-delete
+drwxr-xr-x.  2 root           root              6 May  6 13:42 docker-engine
+</pre>
+
+
+
 
 
 
