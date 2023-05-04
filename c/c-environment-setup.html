@@ -1,0 +1,266 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>C 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="C 教程,C">
+<meta name="description" content="C语言是一门通用的基础编程语言，可以实现任何大中小型项目。">
+
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+	});
+
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+</style>
+
+
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+
+
+
+
+
+
+<div class="col middle-column">
+
+
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="next"> R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+
+			<div class="article-intro" id="content">
+
+			<h1><span class="color_h1">C 环境设置</span>: gcc </h1>
+<hr>
+<div class="tutintro"> 
+
+<p>C语言需要编译器编译、链接后才能运行，这个环境一般也统称为编译器。</p>
+<p>C语言有多个流行的编译器，如 gcc、clang、llvm、MSVC等，我们这里只介绍 GNU 的 gcc，喜欢其他的也可以自己探索。</p>
+
+
+<h2>Windows 下怎么安装gcc?</h2>
+<p>最简单的是通过安装 Perl 语言的环境，顺便获得gcc环境。</p>
+<p>下载和默认安装: <a href="https://strawberryperl.com/" target="_blank">strawberry perl</a>。然后win+R输入cmd打开命令行，输入 gcc --version 即可看到版本号。</p>
+
+<pre>
+C:\Users\wangj>gcc --version
+gcc (x86_64-posix-seh, Built by strawberryperl.com project) 8.3.0
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+</pre>
+
+
+
+
+
+
+
+<h2>CentOS7 无root权限怎么安装最新版gcc?</h2>
+
+<p>注：本例使用极简的docker镜像(centos:centos7.9.2009)作为演示环境。</p>
+<pre>
+1. 下载
+$ cd /home/$USER/Downloads/
+$ wget http://ftp.gnu.org/gnu/gcc/gcc-12.1.0/gcc-12.1.0.tar.gz
+$ tar zxvf gcc-12.1.0.tar.gz
+
+
+2. 下载几个依赖
+$ cd gcc-12.1.0
+
+$ ./contrib/download_prerequisites #报错
+	依赖: line 261: bzip2: command not found
+	$ sudo yum install bzip2
+
+$ ./contrib/download_prerequisites	#再执行
+gmp-6.2.1.tar.bz2: OK
+mpfr-4.1.0.tar.bz2: OK
+mpc-1.2.1.tar.gz: OK
+isl-0.24.tar.bz2: OK
+All prerequisites downloaded successfully.
+
+
+3. 编译与安装
+$ mkdir build
+$ cd build
+$ ../configure --prefix=/home/$USER/soft/gcc-12.1.0 --enable-shared --enable-threads=posix --enable-languages=c,c++,fortran --disable-multilib
+$ make -j 50 #多线程编译，否则巨慢！~几个小时
+
+$ make install
+Libraries have been installed in:
+   /home/wangjl2/soft/gcc-12.1.0/lib/../lib64
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the `LD_RUN_PATH' environment variable
+     during linking
+   - use the `-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+
+
+4. 加入环境变量
+打开.bashrc
+$ vim ~/.bashrc
+
+添加以下三条，需要把路径改成自己的实际路径
+export PATH=~/soft/gcc-12.1.0/bin:$PATH
+export LD_LIBRARY_PATH=~/soft/gcc-12.1.0/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=~/soft/gcc-12.1.0/lib64:$LD_LIBRARY_PATH
+
+激活环境
+$ source ~/.bashrc
+
+
+5. 查看版本
+$ which gcc
+~/soft/gcc-12.1.0/bin/gcc
+
+$ gcc --version
+gcc (GCC) 12.1.0  #最新版
+Copyright (C) 2022 Free Software Foundation, Inc.
+
+
+现在系统共2个版本:
+$ whereis gcc
+gcc: /usr/bin/gcc /usr/lib/gcc /usr/libexec/gcc /data/jinwf/wangjl/soft/gcc-12.1.0/bin/gcc
+
+原来自带的老版本是 gcc 4.8.5
+$ /usr/bin/gcc --version
+gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-44)
+Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+</pre>
+
+
+
+
+
+<h3>编译并运行</h3>
+<p>win和linux下的操作类似。</p>
+<pre>
+1. 使用文本编辑器编辑代码，保存为.c结尾的文本文件。
+$ cat hello.c 
+#include<stdio.h>
+int main(){
+  printf("hello, %s\n", "world");
+}
+
+2. 使用gcc编译为二进制程序，-o指定输出文件名。
+$ gcc hello.c -o hello
+
+3. 执行程序
+$ ./hello 
+hello, world
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="next"> R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

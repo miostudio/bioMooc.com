@@ -314,6 +314,8 @@ IP地址:
 	page0.3.8-1 update R/R script; [2023.1.20]
 	page0.3.8-2 update linux/ docker; [2023.1.30]
 	page0.3.8-3 转移到笔记本 [2023.5.4]
+################ on HP notebook
+	page0.3.8-4 add C/ 环境设置 [2023.5.4]
 
 ##############
 # commit
