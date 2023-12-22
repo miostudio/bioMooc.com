@@ -192,6 +192,11 @@ print(g1)
 dev.off()
 
 ggsave("01.pdf", width=3, height=3, useDingbats = F)
+
+
+# 设置边距的顺序（底部开始，顺时针）：B, L, T, R
+par(mar=c(4,4,1,1))
+plot(1:10, main="x")
 </pre>
 
 

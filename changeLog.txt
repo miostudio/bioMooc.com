@@ -317,6 +317,7 @@ IP地址:
 ################ on HP notebook
 	page0.3.8-4 add C/ 环境设置 [2023.5.4]
 	page0.3.8-5 add TS logo 行胜于言(无图); fix cpp a link [2023.6.30]
+	page0.3.8-6 fix R/ [2023.12.22]
 
 ##############
 # commit

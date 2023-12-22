@@ -148,7 +148,7 @@ p{text-indent:2em;}
 			<li><a href="#6_3">标度(scale) todo</a></li>
 			<li><a href="#6_4">主题 (theme) 精雕细琢</a>
 				<ul>
-					<li><a href="#6_4_1">可修改的位置</a></li>
+					<li><a href="#6_4_1">theme() 可修改的位置</a></li>
 					<li><a href="#6_4_2">自带主题及扩展包</a></li>
 				</ul>
 			</li>
@@ -970,7 +970,7 @@ ggPie=function(df2){
     labs(title="Pie plot (ggplot2)",  #设置大图标题
          #subtitle ="subtitles here, pie from count data.",
          x="",y="")+
-    geom_text_repel(stat="identity",aes(x=1.2,y=x, label = tag), size=4, #饼图上的文字
+    geom_text_repel(stat="identity",aes(x=1.2, y=count, label = tag), size=4, #饼图上的文字
               position=position_stack(vjust = 0.5));g
   #geom_text(stat="identity",aes(y=x, label = scales::percent(x/100)), 
   #          size=4, position=position_stack(vjust = 0.5))
@@ -1182,7 +1182,8 @@ g1+theme_classic(base_size = 14) #统一调大字号
 #fig3 分面标题无边框
 g1+theme_classic(base_size = 14)+
   theme(
-    strip.background = element_rect(fill = "white", colour = "grey", size = rel(0))
+    #strip.background = element_rect(fill = "white", colour = "grey", size = rel(0))
+    strip.background = element_blank()
 )
 
 
@@ -1289,7 +1290,7 @@ p + theme(panel.grid.major = element_blank(), #主网格线
 
 
 <a name="6_4_1"></a>
-<h3 class="tutheader">可修改的位置</h3>
+<h3 class="tutheader">theme() 可修改的位置</h3>
 <p>举一个设置背景颜色的例子。</p>
 <p><a target="_blank" href="https://github.com/claragranell/ggplot2/blob/main/ggplot_theme_system_cheatsheet.pdf">ggplot_theme_system_cheatsheet.pdf</a></p>
 <p><a target="_blank" href="https://henrywang.nl/ggplot2-theme-elements-demonstration/">Original links of this picture</a></p>

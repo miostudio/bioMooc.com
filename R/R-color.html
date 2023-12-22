@@ -397,7 +397,7 @@ for(var i=0;i<colors.length;i++){
 
 
 <h4>Color Palette 3: 财经杂志 商务图表 知名网站</h4>
-<canvas id="canvas_colorBar3" width="600" height="480" style="border:1px dashed #ccc;"></canvas>
+<canvas id="canvas_colorBar3" width="600" height="580" style="border:1px dashed #ccc;"></canvas>
 
 
 
@@ -665,7 +665,10 @@ for(var i=0;i<colors.length;i++){
 	], 450, 'Zhang,Science2021, CD4', 18)	
 
 	showColors(ctx2,["#9BCD44", "#FC811E", "#737F77", "#CB6753", "#50B054", "#FFC035", "#994FA2" //CD4	
-	], 475, 'scVelo colors', 25)	
+	], 475, 'scVelo colors', 25)
+    
+	showColors(ctx2,["#BF0000", "#00BF00", "#FFC000", "#0000BF", "#BF00BF", "#00BFBF" //genelibs	
+	], 500, 'genelibs', 25)
 
 
 
@@ -691,7 +694,7 @@ for(var i=0;i<colors.length;i++){
 		'#971B1E', '#0055A6', '#8DD8F8', '#8EC63F', '#006F3B', '#C0252D',  		'#CDCCCC', '#807F7F', '#B8E3F9','#1E62AC', '#A888BF','#583694', 'white',
 		
 		'black'
-	], 525, 'nature 杂志色彩组合', 25,deltaH=2)
+	], 550, 'nature 杂志色彩组合', 25,deltaH=2)
 	
 
 
@@ -783,8 +786,10 @@ Red/Dark Red/ */
 		'#5CC0C0', '#6D6192', '#F6ACC3', '#5695B8', 
 		'#D06160', '#54895F', '#EDB267', '#A853CB', 
 	], 450, '邮件圆圈', 40, deltaH=2, 20)
-
-
+	//15 web 4 circles
+	showColors2(ctx3,[
+		'#1a8601', '#b4b205', '#cb0003', '#0f75ba'
+	], 475, 'web circles', 30)
 
 
 
@@ -846,6 +851,7 @@ Red/Dark Red/ */
 	showColors(ctx5,[ '#4682B4', '#8B0000' ],150, 'barplot(2 colors) in R: steelblue, darkred [Good]', width=100);
 	showColors(ctx5,[ "#F71480", "#FF8101", "#808101" ],175, 'barplot(3 colors)', width=100);
 	showColors(ctx5,[ "#00AFBB", "#E7B800", "#FC4E07" ],200, 'barplot(3 colors)', width=100);
+	showColors(ctx5,[ "#FDE725FF", "#3AC96DFF", "#440154FF" ],225, 'dot plot(3 colors)', width=100);
 
 
 
@@ -912,6 +918,9 @@ barplot(rep(1,4), col=c('red','blue', '#FF9600', '#0096FF'), border = NA)
 library(scales)
 show_col(viridis_pal()(16), labels = FALSE)
 show_col(hue_pal()(9), borders = NA) #效果见下图
+
+color.set1=scales::hue_pal()(9); color.set1 #Seurat 的默认颜色
+# "#F8766D" "#D39200" "#93AA00" "#00BA38" "#00C19F" "#00B9E3" "#619CFF" "#DB72FB" "#FF61C3"
 </pre>
 <img src="images/color/show_col.png" /><br>
 
