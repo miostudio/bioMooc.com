@@ -318,6 +318,7 @@ IP地址:
 	page0.3.8-4 add C/ 环境设置 [2023.5.4]
 	page0.3.8-5 add TS logo 行胜于言(无图); fix cpp a link [2023.6.30]
 	page0.3.8-6 fix R/ [2023.12.22]
+	page0.3.8-7 update ngs/Seurat code [2024.1.29]
 
 ##############
 # commit

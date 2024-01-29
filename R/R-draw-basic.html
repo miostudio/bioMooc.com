@@ -1279,7 +1279,7 @@ dev.off()</div>
 
 
 
-
+<!-- -->
 <hr />
 <a name="35"></a>
 <h3 class="tutheader">文本标注 text(), mtext() </h3>
@@ -1293,8 +1293,10 @@ dev.off()</div>
 <tr><td>location</td> <td> 文本的位置参数。可为一对x,y坐标，也可通过指定location为locator(1)使用鼠标交互式地确定摆放位置</td></tr>
 <tr><td>pos</td> <td> 文本相对于位置参数的方位。1=下，2=左，3=上，4=右。如果指定了pos，就可以同时指定参数offset=作为偏移量，以相对于单个字符宽度的比例表示</td></tr>
 <tr><td>side</td> <td> 指定用来放置文本的边。1=下，2=左，3=上，4=右。你可以指定参数line=来内移或外移文本，随着值的增加，文本将外移。也可使用adj=0将文本向左下对齐，或使用adj=1右上对齐</td></tr>
+<tr><td>srt</td> <td> The string rotation in degrees. 指定文字旋转角度，0-360角度值。只支持 text()。如 text(x=-0.12, y=200, labels = "x = -0.1", pos = 3, srt=90, col="red");</td></tr>
 	</tbody>
 </table>
+
 <p>其他选项：cex、col和font（分别用来调整字号、颜色和字体样式）。</p>
 <p>text()常用来标示图形中的点，只需一系列x,y坐标值作为位置参数，同时以向量形式指定要放置的文本。</p>
 
