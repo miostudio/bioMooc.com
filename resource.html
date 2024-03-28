@@ -13,11 +13,40 @@ body{width:90%; margin:10px auto;
     color: #333;
     transition: height .5s linear;
 }
+
+table { border-collapse:collapse; }
+table th{background:#ddd;}
+table tr td{ text-align: center;}
+table tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+table tr th,
+table tr:hover{
+	background: #ddd;
+}
+table td.alignLeft{
+	text-align:left;
+}
 </style>
 
 <body>
-<a href='/'>Home page</a>
+<a href='/'>Goto Home page</a>
 
+<ul>
+	目录
+	<li>希腊字母</li>
+	<li>氨基酸缩写</li>
+</ul>
+
+
+
+
+
+
+
+
+
+<hr />
 <h2>希腊字母</h2>
 <pre class='best-text'>
 Α α：阿尔法 Alpha
@@ -46,5 +75,64 @@ body{width:90%; margin:10px auto;
 Ω ω：欧米伽 Omega
 </pre>
 
+
+
+
+
+
+
+
+
+
+<hr>
+<h2>氨基酸缩写(n=20)</h2>
+
+<table border="1">
+	<tr>
+		<th>中文名</th>
+		<th>Name</th>
+		<th>3-Letter code</th>
+		<th>1-Letter code</th>
+		<th>Side chain</th>
+		<th>Desc</th>
+	</tr>
+
+	<tr>
+		<td>甘氨酸</td>
+		<td>Glycine</td>
+		<td>Gly</td>
+		<td>G</td>
+		<td>H</td>
+		<td class=alignLeft>Optically inactive.</td>
+	</tr>
+	<tr><td>丙氨酸</td><td>Alanine</td><td>Ala</td><td>	A</td><td>	-CH3</td><td class=alignLeft>	The simplest optically active AA. All other AAs will build off alanine, A like the beginning of the alphabet.</td></tr>
+	<tr><td>缬氨酸</td><td>Valine</td><td>Val</td><td>	V</td><td>	-CH(CH3)2</td><td class=alignLeft>	The side chain is branched like a V.</td></tr>
+	<tr><td>亮氨酸</td><td>Leucine</td><td>	Leu</td><td>	L</td><td>	-CH2[CH(CH3)2]</td><td class=alignLeft>	The side chain is branched like a Y.</td></tr>
+	<tr><td>异亮氨酸</td><td>Isoleucine</td><td>	Ile</td><td>	I</td><td>	-CH(CH3)(C2H5)</td><td class=alignLeft>	An isomer of leucine. One branch is longer than the other.</td></tr>
+	<tr><td>脯氨酸</td><td>Proline</td><td>	Pro</td><td>	P</td><td>	-CH2 CH2CH2–</td><td class=alignLeft>	The only cyclic aliphatic.</td></tr>
+	<tr><td>半胱氨酸</td><td>Cysteine</td><td>	Cys</td><td>	C</td><td>	-CH2-SH</td><td class=alignLeft>	Cysteine has a sulfhydryl (SH) group.</td></tr>
+	<tr><td>甲硫氨酸/蛋氨酸</td><td>Methionine</td><td>	Met</td><td>	M</td><td>	-(CH2)-S-(CH3)</td><td class=alignLeft>	Thiol is synonymous with sulfur. Methionine is a methylated sulfur.</td></tr>
+	<tr><td>苯丙氨酸</td><td>Phenylalanine</td><td>	Phe</td><td>	F</td><td>	-CH2(C6H5)</td><td class=alignLeft>	A benzene (or phenyl) ring attached to an alanine. F like its name.</td></tr>
+	<tr><td>色氨酸</td><td>Tryptophan</td><td>	Trp</td><td>	W</td><td>	-indole ring</td><td class=alignLeft>	AA with the largest side chain, two fused rings (double).</td></tr>
+	<tr><td>酪氨酸</td><td>Tyrosine</td><td>	Tyr</td><td>	Y</td><td>	-CH2(C6H4OH)</td><td class=alignLeft>	A hydroxylated (OH) phenylalanine.</td></tr>
+	<tr><td>丝氨酸</td><td>Serine</td><td>	Ser</td><td>	S</td><td>	-CH2OH</td><td class=alignLeft>	A hydroxylated alanine.</td></tr>
+	<tr><td>苏氨酸</td><td>Threonine</td><td>	Thr</td><td>	T</td><td>	– CH(OH)(CH3)</td><td class=alignLeft>	Three parts to this AA: alanine, methyl, and hydroxyl.</td></tr>
+	<tr><td>精氨酸</td><td>Arginine</td><td>	Arg</td><td>	R</td><td>	-(CH2)3-urea</td><td class=alignLeft>	The side chain has a urea (NH2-C (NH2+)(NH)) group (A pirates favorite AA, arginine).</td></tr>
+	<tr><td>赖氨酸</td><td>Lysine</td><td>	Lys</td><td>	K</td><td>	-(CH2)4-NH3+</td><td class=alignLeft>	The basic straight chain AA with amino group .</td></tr>
+	<tr><td>组氨酸</td><td>Histidine</td><td>	His</td><td>	H</td><td>	-CH2-(C3N2H4)+</td><td class=alignLeft>	This amino acid has an imidazole, an aromatic ring with two nitrogen atoms that can be protonated.</td></tr>
+	<tr><td>天冬氨酸</td><td>Aspartate</td><td>	Asp</td><td>	D</td><td>	-CH2COOH</td><td class=alignLeft>	An acidic alanine. Just remember D.</td></tr>
+	<tr><td>谷氨酸</td><td>Glutamate</td><td>	Glu</td><td>	E</td><td>	-CH2CH2COOH</td><td class=alignLeft>	A longer version of Asp. E follows D in the alphabet.</td></tr>
+	<tr><td>天冬酰胺</td><td>Asparagine</td><td>	Asn</td><td>	N</td><td>	-CH2CONH2</td><td class=alignLeft>	Amidated Asp.</td></tr>
+	<tr><td>谷氨酰胺</td><td>Glutamine</td><td>	Gln</td><td>	Q</td><td>	-CH2CH2CONH2</td><td class=alignLeft>	AmidatedGlu.</td></tr>
+</table>
+
+
+
+
+
+
+<br>
+<br>
+<br>
 
 </body>

@@ -320,6 +320,7 @@ IP地址:
 	page0.3.8-6 fix R/ [2023.12.22]
 	page0.3.8-7 update ngs/Seurat code [2024.1.29]
 	page0.3.8-8 add pdf to visual/visual-tutorial.html [2024.2.22]
+	page0.3.8-9 add 氨基酸缩写; [2024.2.28]
 
 ##############
 # commit
