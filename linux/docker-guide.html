@@ -5,6 +5,7 @@ v0.1 docker
 v0.2 add singularity
 v0.3 docker: Rstudio + Seurat
 v0.4 add install docker on CentOS
+v0.5 update docker save
 </title>
 
 <link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
@@ -1406,7 +1407,53 @@ $ docker logs 5911b
 
 
 
+
+
 <h3><a name=3.4></a>3.4. 镜像的转移和运输</h3>
+
+更好的建议是保存压缩后的版本。
+
+<pre class=code>
+1.用途: 不同机器共享 docker 镜像。
+
+(1)镜像的迁移，一个方法是传到仓库(公共或本地)，另一个是使用文件。
+使用Docker save和Docker load命令来存储和载入镜像。
+
+命令:
+	对于容器，可以使用import和export 进行导入导出操作。
+	对于已有镜像，可以使用 docker命令行的 save 和 load 命令来创建压缩包tarball。
+
+(2) 压缩的优势
+压缩后体积大幅减少。
+	-rw-rw-r-- 1 wangjl wangjl  68M Apr 17 10:47 postgres_10.image.tar.gz
+	-rw------- 1 wangjl wangjl 197M Apr 17 10:02 postgres_10.image.tar
+
+	-rw-rw-r-- 1 wangjl wangjl  42M Apr 17 10:49 nginx_1.15.10.image.tar.gz
+	-rw------- 1 wangjl wangjl 108M Apr 17 10:01 nginx_1.15.10.image.tar
+
+
+
+2. 推荐导出压缩过的镜像 .tar.gz，节省磁盘空间
+(1) 导出镜像并压缩：
+docker save myimage:tag | gzip > myimage_tag.image.tar.gz
+
+(2) 两个机器之间通过 scp 传输镜像文件。
+$ scp from/path to/path/
+
+(3) 解压并导入镜像：
+gunzip -c myimage_tag.image.tar.gz | docker load
+
+推荐命名后缀 myimage_tag.image.tar.gz
+推荐命名间隔 org__myimage_tag.image.tar.gz
+
+
+实例：镜像的导入和导出
+$ docker save bdgenomics/rhapsody:1.9.1 | gzip > bdgenomics__rhapsody_1.9.1.image.tar.gz
+$ gunzip -c bdgenomics__rhapsody_1.9.1.image.tar.gz | docker load
+</pre>
+
+
+之前的版本，没压缩，一般不用：
 <pre class=code>
 (1) 通过 tar 包导出、导入
 
