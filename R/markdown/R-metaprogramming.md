@@ -1597,7 +1597,7 @@ Any good tutorials for R metaprogramming and its best practices? enexpr(), depar
 - https://search.r-project.org/CRAN/refmans/rlang/html/topic-data-mask-programming.html
 - https://search.r-project.org/CRAN/refmans/rlang/html/topic-metaprogramming.html
 - https://advanced-r-solutions.rbind.io/expressions.html
-
+- https://rlang.r-lib.org/reference/topic-metaprogramming.html
 - https://combine-australia.github.io/r-pkg-dev/advanced-topics.html
 
 

@@ -324,6 +324,9 @@ IP地址:
 	page0.3.9-0 correct date error [2024.3.28]
 ################ @picb shanghai
 	page0.3.9-1 update docker save [2024.4.19]
+	page0.3.9-2 add level 1 menu: AI [2024.7.19]
+		R/ B样条曲线拟合
+		static/css/marked.helper.css 微调
 
 ##############
 # commit
@@ -349,7 +352,14 @@ https://www.w3cschool.cn/r/r_variables.html
 	tpl3.Markdown(单页，无目录，适合短篇): linux/docker_image_seurat4.0.html
 不定期修改网站底部的版本号: /part/footer.html 形式: v0.3.5
 
+## 新建AI/一级目录，尝试使用tpl4系统
+	1. 复制R/的首页 index.html 和 ./part/，以及模板页 R-process-control.html，模板文件改名 DL-tutorial.html
+	2. 新建文件夹 ./markdown/DL-tutorial.md
 
+
+
+==> 如何定时跳转到二级域名？
+	参考: /Python3/python-ML-DL-tutorial.html 不再用，但是一个好的js实现
 
 
 ##

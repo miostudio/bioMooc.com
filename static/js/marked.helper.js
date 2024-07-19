@@ -37,6 +37,8 @@ function addContents(){
 	var oMd=document.getElementsByClassName("markdown")[0],
 		aH=oMd.querySelectorAll("h1,h2,h3,h4,h5,h6"),
 		oUl=createElement('ul');
+	
+	oUl.setAttribute("class", "toc")
 
 	//创建content
 	oContent=createElement('div',{'class':"content"},"")

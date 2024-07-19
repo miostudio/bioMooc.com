@@ -1,0 +1,59 @@
+<head>
+	<meta charset="utf-8">
+	<title>About ML-DL</title>
+</head>
+Python3/python-ML-DL-tutorial.html
+<br>
+
+<ul>
+	<li>卷积神经网络 CNN </li>
+	<li>循环神经网络 RNN </li>
+	<li>图神经网络 GNN </li>
+	<li>transformer</li>
+</ul>
+
+<script>
+//<div id="msg" style="color: red; margin:20px;"></div>
+//<meta http-equiv="refresh" content="0;url=http://ml.biomooc.com/">
+
+//获取顶级域名
+function getTopLevelDomain(url) {
+	try {
+		let subdomain = ''
+		const domain = url ? url.split('/') : ''
+		const domainList = domain[2].split('.')
+		const urlItems = []
+		urlItems.unshift(domainList.pop())
+		while (urlItems.length < 2) {
+			urlItems.unshift(domainList.pop())
+			subdomain = urlItems.join('.')
+		}
+		return subdomain
+	} catch (e) {
+		return ''
+	}
+}
+
+// 获取当前主域名 xx.com
+var currentUrl = window.location.href;
+var topLevelURL = getTopLevelDomain(currentUrl)
+
+// 跳转到其子域名
+var targetURL=window.location.protocol + "//ml." + topLevelURL
+var total_time=10
+
+// 通知消息
+var oDiv=document.createElement("div");
+oDiv.style="margin:50px 0;"
+document.body.append(oDiv);
+
+setInterval(function(){
+	if(total_time>0){
+		var msg="> Jump to <b> <a style='color:red;' href='"+ targetURL + "'>"+targetURL+"</a> </b> in "+total_time+" second(s)"
+		oDiv.innerHTML=msg;
+		total_time--;
+	}else{
+		window.location.href = targetURL
+	}
+}, 1000)
+</script>

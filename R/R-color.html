@@ -839,10 +839,15 @@ Red/Dark Red/ */
 * 第5个色板: barplot/lineplot 等色彩搭配
 *==========================*/
 	//1
-	showColors(ctx5,[ '#5BC4BA', '#E82364' ],0, 'barplot(2 colors)', width=100);
+	showColors(ctx5,[ '#5BC4BA', '#E82364', "white", 
+		"#F9AC4E", "#29A1C0" ],0, 'barplot(2 colors) | dotplot', width=50);
+	//https://www.nature.com/articles/s41586-018-0414-6 Fig.4d
+	
 	showColors(ctx5,[ '#8B72AE', '#74AD43', '#CA495B', '#D3D3D3'  ],25, 'dotplot(highlight 3 colors)|PNAS', width=100); //https://www.pnas.org/content/115/28/E6437
 	showColors(ctx5,[ '#D59F1C', '#84B5E4' ],50, 'violin(2 colors)', width=100);
-	showColors(ctx5,[ '#497AA2', '#AE3137' ],75, 'barplot, R: steelblue, darkred', width=100);
+	showColors(ctx5,[ '#497AA2', '#AE3137', "white",
+		"#0079A9", "#7B0C00"
+		],75, 'barplot, R: steelblue, darkred | Volcano plot', width=50);
 	showColors(ctx5,[ "#ED2024","#3953A4","#6FCCDD","#FAA41A", "white",
 		"#ED1C24", "#66C7C2", "#8151A1", "#F7B3C4"
 		],100, 'barplot,HiC 4个酶切图/消化动力曲线|NG', width=40); //Extended Fig.5B;
@@ -852,6 +857,7 @@ Red/Dark Red/ */
 	showColors(ctx5,[ "#F71480", "#FF8101", "#808101" ],175, 'barplot(3 colors)', width=100);
 	showColors(ctx5,[ "#00AFBB", "#E7B800", "#FC4E07" ],200, 'barplot(3 colors)', width=100);
 	showColors(ctx5,[ "#FDE725FF", "#3AC96DFF", "#440154FF" ],225, 'dot plot(3 colors)', width=100);
+
 
 
 

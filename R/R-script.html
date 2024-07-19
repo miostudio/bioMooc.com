@@ -140,6 +140,24 @@ p{text-indent:2em;}
 
 <p>脚本化，就是把程序写成有输入和输出的独立程序文件。就像shell的 ls 命令, 比对软件 STAR 一样，用户只需要调用脚本名字、给出参数，程序就能判断参数是否合法，并返回结果。把程序像黑盒一样封装起来，方便用户使用，还能轻易整合到 snakemake 等流程中。</p>
 
+<p>推荐使用朴素的写法，尽量只使用R核心API，依赖越少越稳定，以便其他用户复用。</p>
+
+
+<pre>
+推荐：
+- 脚本名字以 xx.script.R 结尾。
+- 开头部分写上脚本的目的，使用方法，测试环境，版本变化
+- R脚本模板 参考： bioToolKit/R_scripts/single_script/template.script.R
+
+# Aim: do monocle2 as a script, output to a dir
+# how to use: $ Rscript this.script.R xx.Seurat.obj [outputRoot]
+# Env: R 4.1.0
+# version: 0.2-20240504
+# version: 0.3-20240504 set parameters
+</pre>
+
+
+
 
 
 
@@ -216,7 +234,7 @@ length:1, first:hello
 <a name='2_2'></a>
 <h3 class="tutheader">参数校验与主动报错</h3>
 <p>先检查参数个数，再检查参数类型，还要检查输出文件是否存在，如果存在是否覆盖？</p>
-<p>主动报错，就是在参数不合法时，主动抛出错误，终止程序的运行，并指出错误或给出合理化建议。</p>
+<p>主动报错，即在参数不合法时，主动抛出错误，终止程序运行，并给出错误提示或给出合理化建议。</p>
 
 
 <h4>如果参数个数不对，则报错：</h4>
@@ -244,7 +262,7 @@ length:2, first:hello</div>
 
 
 
-<h4>如果输入文件不存在，则报错</h4>
+<h4>如果输入(file)文件不存在，则报错</h4>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># 获取数据文件的行列数
 $ cat t3.R
@@ -277,8 +295,40 @@ Execution halted</div>
 
 
 
+<h4>如果输出(dir)文件夹不存在，则报错</h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">$ cat t3B.R
+myArgs = commandArgs(TRUE)
 
-<h4>脚本参数的校验，和函数参数的校验类似。</h4>
+outputRoot="./"
+if(length(myArgs)>=2){
+  outputRoot=myArgs[2] 
+  # must end with /
+  if(substring(outputRoot, nchar(outputRoot)) != "/"){
+    outputRoot=paste0(outputRoot, "/")
+  }
+  # the dir must exist
+  if(!dir.exists(outputRoot)){
+    stop( sprintf("dir not exist, outputRoot=%s", outputRoot) )
+  }
+}
+message( sprintf("settings: outputRoot=%s", outputRoot) )
+
+
+# 测试: 第二个参数是输出文件夹，不存在则报错
+$ Rscript t3B.R obj /data4/
+Error: dir not exist, outputRoot=/data4/
+Execution halted
+
+$ Rscript t3B.R obj /home/
+settings: outputRoot=/home/</div>
+</div>
+
+
+
+
+
+<h4>stopifnot(): 脚本参数的校验，和函数参数的校验类似。</h4>
 <pre># stopifnot(): If any of the expressions (in ... or exprs) are not all TRUE, stop is called, producing an error message indicating the first expression which was not (all) true.
 
 $ cat t4.R 
