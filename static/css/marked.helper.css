@@ -63,6 +63,7 @@ ul.toc li:hover{
 .markdown pre>code {
     color: #525252;
     font-family: Roboto Mono,Monaco,courier,monospace;
+	line-height: 2px;
     /*
     font-size: .8rem;
     padding: 2.2em 5px;
