@@ -329,7 +329,7 @@ jQuery(document).ready(function ($){
 
 
 	// 回到顶部
-	$(".go-top").click(function(event){	
+	$(".go-top").click(function(event){
 		$('html,body').animate({scrollTop:0}, 100);
 		console.log(".go-top clicked!") //debug
 		return false;

@@ -1,11 +1,28 @@
+<html>
+
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
 
 <style>
+html,body,div,ul,li{margin:0; padding:0;}
 html{background: #f6f6f6;}
 body{width:800; margin:0 auto; background: white; padding:0 10px;}
-h2{background:#FFD7CD; border-left: #E44D26 10px solid; padding:5px; }
 
+h2{background:#FFD7CD; border-left: #E44D26 10px solid; padding:5px; }
+/*font-size: 20px; line-height:34px;*/
+
+p, pre{
+	font-size: 18px;
+	line-height:25px;
+	font-family:'Arial', 'Microsoft YaHei';
+}
+
+p{
+	font-family:Georgia, 'Arial', 'Microsoft YaHei';
+}
+
+b{color:#E44D26;}
 
 @media screen and (min-width: 1000px) {
 	#sideMenu{
@@ -13,17 +30,35 @@ h2{background:#FFD7CD; border-left: #E44D26 10px solid; padding:5px; }
 	}
 }
 #sideMenu{
-	background: #FFD7CD;
-	left:10px; top:5px;
-	padding:15px;
-	list-style-type: none;
+	/*background: #FFD7CD;*/
+	border: 1px solid #ddd;
+
+	left:0px;
+	top:20px;
 	border-radius:10px;
 	opacity: 0.9;
 }
-#sideMenu a{ text-decoration:none; color: black; }
-#sideMenu a:hover{ color:white; }
+#sideMenu b{
+	display:block;
+	background:white;
+
+	font-size: 20px; line-height:44px;
+	text-align: center;
+}
+
+#sideMenu ul{
+	list-style-type: none;
+	padding:0;
+}
+#sideMenu li{padding: 0px; border-left:5px #FFD7CD solid;}
 #sideMenu li:hover{ background: #E44D26;}
-#sideMenu b{ margin-bottom:15px; display: inline-block;}
+#sideMenu li.cur{ background: #E44D2655; border-left:5px #E44D26 solid;}
+
+#sideMenu a{
+	text-decoration:none; color: black;
+	display:block; padding:5px;
+}
+#sideMenu a:hover{ color:white; }
 
 pre{
 	word-wrap: break-word!important; 
@@ -34,21 +69,24 @@ a{color:#e22092}
 .bottom_line{border-bottom: 1px dashed #aaa;}
 .message{color:#E44D26; font-weight: bold;}
 </style>
+<head>
+
 <body>
 <a href="/">&lt;&lt;返回首页</a>
 
 
 
-<ul id=sideMenu>
+<div id=sideMenu>
 	<b>目录</b>
-	<li><a href="#us">关于我们</a></li>
-	<li><a href="#donate">捐赠 Donate</a></li>
-	<li><a href="#plan">近期规划</a></li>
-	<li><a href="#ads">广告服务中心</a></li>
-	<li><a href="#aq">付费咨询服务</a></li>
-	<li><a href="#logo">关于 logo</a></li>
-</ul>
-
+	<ul>
+		<li><a href="#us">关于我们/About Us</a></li>
+		<li><a href="#donate">捐赠/Donate</a></li>
+		<li><a href="#plan">近期规划</a></li>
+		<li><a href="#ads">广告服务中心</a></li>
+		<li><a href="#aq">付费咨询服务</a></li>
+		<li><a href="#logo">关于logo</a></li>
+	</ul>
+</div>
 
 
 
@@ -61,13 +99,12 @@ a{color:#e22092}
 
 
 
-<pre>
 <a name="us"></a>
-<h2>About Us 关于我们</h2>
+<h2>关于我们/About Us</h2>
 <p>Since 2017 BioMooc has been a place where you can explore ideas that interest you, find people who inspire and challenge you, and make discoveries that change your life—and the world. Thank you for being a part of the <a target="_blank" href="https://github.com/BioMooc/learn_R/discussions">BioMooc community</a>.</p>
 
-
 <b>关于博客</b>
+<pre>
 博客是很好的知识管理工具，能梳理和积累凌乱的片段化知识。
 之前我用博客记笔记，无奈sina的上下左右都是广告，比较好用的百度空间、网易博客也相继关闭。
 简书、cnblogs近年的审查导致很多链接打不开。
@@ -82,9 +119,11 @@ a{color:#e22092}
     文字为主的<a target="_blank" href="https://github.com/DawnEve/txtBlog.py">txtBlog.py</a>系统: 生物慕课 微信公众号后台回复 txtBlog.py 获得更多信息。
     和
     图文版的 biomooc.com 网站
+</pre>
 
 
 <b>关于域名</b>
+<pre>
 我盯着该域名有一段时间了，它到期当天熬夜抢购的。
 买域名的钱后来用我带的一个zz大学大学生创新项目的经费报销了。
 他们本打算做生信视频教程网站的，后发现视频类网站技术上太过复杂，做个粗糙的demo后就放弃了。
@@ -92,14 +131,15 @@ a{color:#e22092}
 荒废掉挺可惜的，基于github pages，本域名开启了图文为主的生信参考资料分享之路。
 界面几经修改，变成了现在这个样子。
 感谢那几个小朋友，也感谢zz大学大创项目的资助。
+</pre>
 
 
 <b>BioMooc 代码库</b>
-<a target="_blank" href="https://github.com/BioMooc">https://github.com/BioMooc</a>
-
+<p><a target="_blank" href="https://github.com/BioMooc">https://github.com/BioMooc</a></p>
 
 
 <b>加入我们 / 关注我们</b>
+<pre>
 自愿分享，主动分享，用分享倒逼自己学习，是IT界的一股清流。
 我们希望用自己的微小力量，分享便捷、优质的生信知识。
 如果你也热爱分享与交流生信相关技术，请加入我们。
@@ -118,7 +158,7 @@ a{color:#e22092}
 <!--
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=211014&auto=1&height=32"></iframe>
 -->
-
+</pre>
 
 
 
@@ -130,13 +170,17 @@ a{color:#e22092}
 
 
 <a name="donate"></a>
-<h2>捐赠 Donate</h2>
-您的支持很重要。
-募集资金将主要用于本网站建设，域名/服务器续费，知识分享（QQ群扩建），以及偶尔的线下活动。
+<h2>捐赠/Donate</h2>
+<p>您的支持很重要。</p>
+<p>募集资金将主要用于本网站建设，域名/服务器续费，知识分享（QQ群扩建），以及偶尔的线下活动。</p>
 
 <img src="https://ielts.biomooc.com/en/images/zhifu-wx.png" /> <img src="https://ielts.biomooc.com/en/images/zhifu-zfb.png" />
 
-
+<pre>
+近期主要开支:
+阿里云域名: 大约70元/年 * 10年
+腾讯云服务器: 大约79元首年
+</pre>
 
 
 
@@ -147,21 +191,25 @@ a{color:#e22092}
 
 <a name="plan"></a>
 <h2>近期规划</h2>
+<pre>
 - 优先完善最日常需要、而又很容易混淆的知识块。
-- 不断完善基础R绘图教程：美观、通用、易查
+- 不断完善基础R/Python绘图教程：美观、通用、易查
 - 在网易公开课上线一个视频课程。
 
 由于时间有限，目前本网站依旧很不完善，还缺很多内容。
 并且在可预期的未来，不打算展示视频。可能会放些优秀视频的链接。
-
+</pre>
 
 <p>语言学习的过程，就是翻过一座一座看似不可逾越的高山，然后再出发！
+<br>
 <img width=300 src="/images/hill_hill.jpg">
+<br>
 看到这张图，要做好持续学习的心理预期。不要绝望，更不要还没开始就放弃。
 </p>
 
 
 <b>优秀视频网站推荐:</b>
+<pre>
 1.网易云课堂: 
 python https://study.163.com/course/courseMain.htm?courseId=302001
 
@@ -170,7 +218,7 @@ sed和awk https://www.imooc.com/learn/819
 
 3. bilibili
 R语言入门 https://search.bilibili.com/all?keyword=R%E8%AF%AD%E8%A8%80
-
+</pre>
 
 
 
@@ -182,6 +230,7 @@ R语言入门 https://search.bilibili.com/all?keyword=R%E8%AF%AD%E8%A8%80
 
 <a name="ads"></a>
 <h2>广告服务中心</h2>
+<pre>
 本网站没有资金支持，处于持续亏损状态。
 欢迎金主投广告，最好是行业相关广告，以实现双赢。
 合同一般一年一签，可以沟通。
@@ -225,7 +274,7 @@ R语言入门 https://search.bilibili.com/all?keyword=R%E8%AF%AD%E8%A8%80
 4. 联系方式
 
 jimmymall at 163 dot com
-
+</pre>
 <div class=bottom_line></div>
 
 
@@ -242,8 +291,10 @@ jimmymall at 163 dot com
 
 <a name="aq"></a>
 <h2>付费咨询服务</h2>
-<p class="message">本站提供的内容绝大多数是免费的。<br>
-我们长期致力于技术的研究和问题的探索，如果需要占用我们的时间提供服务，需要支付相关的费用，非诚勿扰。</p>
+<p class="message">本站提供的<u>内容</u>绝大多数是免费的。<br>
+我们长期致力于技术的研究和问题的探索，如果需要占用我们的时间提供<u>咨询服务</u>，需要支付相关的费用，非诚勿扰。</p>
+
+<pre>
 本博客不定期提供付费咨询服务，主要看双方时间是否允许。
 如果您的问题/报错很多，肯定是基础不牢，请仔细看文献 and/or 文档。
 
@@ -258,11 +309,12 @@ jimmymall at 163 dot com
 注意：
   本咨询所有问题与答案，默认授权答主可以以任何形式、任何时间予以公开分享，包括截图、写到教程中、发到博客上等。
   我们会保护咨询者的头像、昵称、联系方式、基因名等隐私信息。
-
+</pre>
 
 
 
 <div class=bottom_line></div>
+<pre>
 >> 关于提问规范
 其实，基本就2点规范，
 	1、问题复现性。即，别人要重复出你的报错或问题。
@@ -272,7 +324,7 @@ jimmymall at 163 dot com
 
 我碰到过给了建议怎么提问还置之不理的，那我对不起只能不回答你了，对这种 白嫖党 + 自私党 要坚决扼杀。
 谁的时间不是“工作时间”呢？
-
+</pre>
 
 
 
@@ -302,9 +354,14 @@ jimmymall at 163 dot com
 
 <a name="logo"></a>
 <h2>关于logo</h2>
+<p>
 星星之火，点燃学习热情。
+<br>
 三昧真火，探索真知灼见。
+</p>
 
+
+<pre>
 1. 正反主图形
 实心 <img src="/img/mobile-icon-2.png" />
 镂空 <img src="/img/mobile-icon.png" />  
@@ -323,9 +380,47 @@ favicon.ico <img src="/img/favicon.ico" />
 <img height="200" src="/img/biomooc-photo.png" />
 
 
-
-
-
-<a href="/">返回首页</a>
+<a href="/">&lt;&lt;返回首页</a>
 </pre>
 </body>
+
+<script>
+var $=function(o){
+	return document.getElementById(o);
+}
+
+
+window.onscroll = function() {
+	//为了保证兼容性，这里取两个值，哪个有值取哪一个
+	//scrollTop就是触发滚轮事件时滚轮的高度
+	var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+	//console.log("滚动距离" + scrollTop);
+	//开始循环干活了
+	//目录内容
+	var oMenu=$('sideMenu');
+	var aLink=oMenu.getElementsByTagName("a");
+
+	//正文内容
+	var aA= window.document.body.querySelectorAll("a[name]");
+
+	//remove class cur, for 导航
+	for(var j=0;j<aLink.length;j++){
+		aLink[j].parentElement.setAttribute("class","");
+	}
+
+	//对正文的锚点进行遍历
+	for(var i=0;i<aA.length;i++){
+		if(aA[i].offsetTop >= scrollTop+10){
+			//add class cur, for 导航
+			aLink[i==0?0:i-1].parentElement.setAttribute("class","cur")
+			break;
+		}else if( (i==aA.length-1) && (aA[i].offsetTop < scrollTop + 10) ){
+			//如果到最后一个header后了，则高亮它
+			aLink[i].parentElement.setAttribute("class", "cur");
+			break;
+		}
+	}
+}
+
+</script>
+</html>
