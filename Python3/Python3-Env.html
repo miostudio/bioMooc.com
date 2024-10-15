@@ -113,7 +113,8 @@ $(function(){
 		</ul>
 	</li>
 	
-	<li><a href="#2"> 基于python的笔记管理系统txtBlog.py</a></li>
+	<li><a href="#2"> Python 内置模块 venv: 创建虚拟环境</a></li>
+	<li><a href="#10"> 基于python的笔记管理系统txtBlog.py</a></li>
 
 </ul>
 
@@ -279,10 +280,37 @@ $ jupyter notebook list # 查询当前主机可用的jupyter及其token
 
 
 <a name='2'></a>
+<h2 class="tutheader">Python 内置模块 venv: 创建虚拟环境</h2>
+<p>venv 是 Python 原生环境管理。</p>
+<pre>
+创建环境
+$ python3 -m venv alphaFold-env
+
+激活环境
+$ source alphaFold-env/bin/activate
+
+安装包
+$ python3 -m pip install novas
+
+关闭环境
+$ deactivate
+</pre>
+
+
+
+
+
+
+
+
+
+
+<a name='10'></a>
 <h2 class="tutheader">基于python的笔记管理系统txtBlog.py</h2>
 
-<p>txtBlog.py(<a target="_blank" href="https://github.com/DawnEve/txtBlog.py">github</a>, <a target="_blank" href="https://mp.weixin.qq.com/s/8sKdMKgXhUB274A5z0-daQ">简介</a>)</p>
+<p>txtBlog.py(<a target="_blank" href="https://github.com/BioMooc/txtBlog.py">github</a>, <a target="_blank" href="https://mp.weixin.qq.com/s/8sKdMKgXhUB274A5z0-daQ">简介</a>)</p>
 <p>[知识管理]A simple yet powerful blog system for reading and organizing txt files, based on Python3 flask framework. 支持txt, html, markdown 格式的笔记。</p>
+<p>依赖py包: flask, </p>
 
 
 <p>整体结构</p>
