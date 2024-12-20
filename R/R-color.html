@@ -409,7 +409,7 @@ for(var i=0;i<colors.length;i++){
 
 
 <h4>Color Palette 5: barplot/lineplot 等色彩搭配</h4>
-<canvas id="canvas_colorBar5" width="600" height="400" style="border:1px dashed #ccc;"></canvas>
+<canvas id="canvas_colorBar5" width="600" height="500" style="border:1px dashed #ccc;"></canvas>
 
 
 
@@ -841,7 +841,8 @@ Red/Dark Red/ */
 *==========================*/
 	//1
 	showColors(ctx5,[ '#5BC4BA', '#E82364', "white", 
-		"#F9AC4E", "#29A1C0" ],0, 'barplot(2 colors) | dotplot', width=50);
+		"#F9AC4E", "#29A1C0", "white",    "#626C73", "#E0A570", "white",    "#596BA8", "#DD832C",
+		], 0, 'barplot(2 colors) | dotplot', width=30);
 	//https://www.nature.com/articles/s41586-018-0414-6 Fig.4d
 	
 	showColors(ctx5,[ '#8B72AE', '#74AD43', '#CA495B', '#D3D3D3'  ],25, 'dotplot(highlight 3 colors)|PNAS', width=100); //https://www.pnas.org/content/115/28/E6437
@@ -861,6 +862,9 @@ Red/Dark Red/ */
 
 	showColors2(ctx5,[ "#FF3030", "#009ACD", "#FFC125", "#AB82FF", "#CD8500", "#548B54" ],250, 'Vln plot(6 dark)', width=24);
 	showColors2(ctx5,[ "#F57C63", "#4897D2", "#DEEBB4", "#8EAEE7", "#FFDE63", "#6C9059" ],275, 'Vln plot(6 light)', width=24);
+	showColors(ctx5,[ "#E14939", "#58BCD5", "#23A087", "#3F5688", "#F09A81", "#8693B3" ],300, 'Box plot(n=6)', width=50);
+	showColors(ctx5,[ "#F4EE87", "#804922", "#26345E", "#B7E0F2", "#ED6369", "#546F35" ],325, 'Box plot(n=6)', width=50);
+	showColors(ctx5,[ "#C36752", "#578BC2", "#E39B5D", "#5F9A72", "#8B8DBD", "#85A4B3" ],350, 'Box plot(n=6)', width=50);
 
 
 
@@ -1097,11 +1101,15 @@ plot(iris$Petal.Length, iris$Petal.With,
 
 
 <h4>colorRamp()和colorRampPalette()的区别</h4>
-<p>两者都可用于建立颜色板，通过传入期望的主色，如蓝、紫，colorRamp()和colorRampPalette都返回一个函数。用同样的参数，结果是相同的，虽然 colorRamp()更繁琐一些。</p>
+<p>两者都可用于建立颜色板，通过传入期望的主色，如蓝、紫，colorRamp()和colorRampPalette都返回一个函数。用等价的参数，结果是相同的，虽然 colorRamp()更繁琐一些。</p>
 
-<p>二者返回的函数区别为：
-<br>* colorRamp()返回的函数像grey()一样，参数为[0,1]之间的数列，数列中数字个数即为函数返回的颜色数，返回值是一行一个rgb格式的颜色。
-<br>* colorRampPalette()返回的参数则像rainbow()一样，参数为希望返回颜色板色彩的数量。</p>
+<p>colorRamp(colors, bias = 1, space = c("rgb", "Lab"), interpolate = c("linear", "spline"))</p>
+
+<p>二者返回的函数区别为：</p>
+<ul>
+  <li>colorRamp()返回的函数像grey()一样，参数为[0,1]之间的数列，数列中数字个数即为函数返回的颜色数，返回值是一行一个rgb格式的颜色。</li>
+  <li>colorRampPalette()返回的参数则像rainbow()一样，参数为希望返回颜色板色彩的数量。</li>
+</ul>
 
 
 <img src="images/color/colorRamp.png" /><br>

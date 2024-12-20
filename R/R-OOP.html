@@ -482,7 +482,13 @@ function (x, i, j, value)
 ...
 
 
-例:
+例1: 查 print 的有哪些实现
+> methods("print") |> head()
+[1] "print,ANY-method"            "print,diagonalMatrix-method"
+[3] "print,sparseMatrix-method"   "print.aareg"
+[5] "print.abbrev"                "print.acf"
+
+查看具体一个print的实现代码：
 > getAnywhere("print.data.frame")
 A single object matching ‘print.data.frame’ was found
 It was found in the following places
@@ -1311,6 +1317,39 @@ p1
 </div>
 
 
+<h4>例2：为Seurat v4类添加自定义方法 print2() </h4>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(Seurat)
+scObj #PBMC 3k data
+
+# 定义泛型方法
+setGeneric("print2", function(x) standardGeneric("print2"))
+
+# R 方法名字中可以有逗号
+`print2,Seurat` = function(x){
+  print(">>>in print,Seurat...My defination")
+  message("cell number:", ncol(x))
+}
+`print2,Seurat`(scObj) #真的可以直接调用
+# [1] ">>>in print,Seurat...My defination"
+# cell number:2700
+
+#定义S4类的方法
+setMethod(
+  f="print2",
+  #signature = "Seurat",
+  signature = signature(x="Seurat"),
+  definition = `print2,Seurat`
+)
+#可能会有警告。
+# Warning message:
+# For function ‘print2’, signature ‘Seurat’: argument in method definition changed from (obj) to (x) 
+# 警告的原因是 setGeneric 中泛型函数的虚参数名 和 `print2,Seurat`()函数实现的虚参名不同。改为相同即可消除警告。
+
+print2(scObj) #调用该S4方法
+# [1] ">>>in print,Seurat...My defination"
+# cell number:2700 </div>
+</div>
 
 
 
@@ -1423,7 +1462,7 @@ myMethod(10,20) #[1] "MyMethod on numeric, numeric (2 paras)"</div>
 <p>利用S4和S3的分发机制，可以在S4中调用S3方法。但方法不能同名。</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">## S3类的方法
-whatIs <- function(...) UseMethod("whatIs")
+whatIs = function(...) UseMethod("whatIs")
 whatIs.default=function(object){cat("Class:",data.class(object), sep='')}
 whatIs.character=function(object){
   cat("Class:",data.class(object),"; ",
@@ -1495,10 +1534,9 @@ new(S2, name="XL", age=19, GPA=4)
 
 
 <br />
-<p>查对象的类型 
-	> class(p1) #Student; |> is(s1) #Student; 
-	|> typeof(s1) #S4;  |> isS4(s1) #TRUE;
-</p>
+<p>查对象的类型</p>
+<p>> class(p1) #Student; |> is(s1) #Student;</p>
+<p>|> typeof(s1) #S4;  |> isS4(s1) #TRUE;</p>
 
 
 

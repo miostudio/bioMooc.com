@@ -1,0 +1,763 @@
+<meta charset="utf8">
+
+<style>
+main,
+.help{margin:10px;}
+.help p{text-indent: 2em;}
+</style>
+
+<div class="help">
+	<h1>Color Picker</h1>
+
+	<p>HSL 颜色模型更容易被人类理解。<b>论文中常常使用饱和度在40-60%之间，且饱和度接近的颜色组合。</b></p>
+	<p>H 色相[0, 360]，就是红橙黄绿蓝靛紫等颜色。</p>
+	<p>S 饱和度[0, 100%]，鲜艳程度。饱和度越高，颜色越鲜艳。饱和度越低，颜色越灰黑暗沉。</p>
+	<p>L 亮度[0, 100%]，光线强度，没有亮度就是黑色；亮度逐步提升，表现出各种色相；亮度最高时，都是白色。</p>
+</div>
+
+
+
+
+<main>
+  <div class="target js-target" style="--hue: 280; --saturation: 80%; --lightness: 80%;">      
+    <button class="change-button js-change-color">Change Color</button>
+  </div>
+  
+  <div class="pickers">
+    <section class="rgb-picker color-picker">
+      <header aria-live="polite" aria-atomic="true">
+        <h2>Hexadecimal Picker</h2>
+        <span><span class="percent">0</span>% Match</span>
+      </header>
+      <div class="picker-and-output">
+        <form>
+          <label for="r">
+            Red:
+
+            <input type="range" value="122.5" min="0" max="255" step="0.1" name="r" id="r">
+          </label>
+
+          <label for="s">
+            Green:
+
+            <input type="range" value="122.5" min="0" max="255" step="0.1" name="g" id="g">
+          </label>
+
+          <label for="l">
+            Blue:
+
+            <input type="range" value="122.5" min="0" max="255" step="0.1" name="b" id="b">
+          </label>
+        </form>
+        <div class="output">
+          <code class="output-text">
+            #7a7a7aff 
+          </code>
+        </div>
+      </div>
+    </section>
+
+    <section class="hsl-picker color-picker">
+      <header aria-live="polite" aria-atomic="true">
+        <h2>HSL Picker</h2>
+        <span><span class="percent">0</span>% Match</span>
+      </header>      
+      <div class="picker-and-output">
+        <form>
+          <label for="h">
+            Hue:
+
+            <input type="range" value="180" min="0" max="360" step="0.1" name="h" id="h">
+          </label>
+
+          <label for="s">
+            Saturation:
+
+            <input type="range" value="50" min="0" max="100" step="0.1" name="s" id="s">
+          </label>
+
+          <label for="l">
+            Lightness:
+
+            <input type="range" value="50" min="0" max="100" step="0.1" name="l" id="l">
+          </label>
+        </form>
+        <div class="output">
+          <code class="output-text">
+            hsl(180, 50%, 50%)
+          </code>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+<div class="help">
+	<br>
+	<hr>
+	<p style="color:#aaa">* code from <a target="_blank" href="https://cloudfour.com/thinks/hsl-a-color-format-for-humans/">here</a>.</p>
+</div>
+
+
+
+
+<style>
+/**
+ * General Rules
+ */
+
+html, body {
+  margin: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial, sans-serif; 
+}
+
+* {
+  font-family: inherit;
+}
+
+/** 
+ * Target color section styles
+ */
+
+.target {
+  padding: 1em;
+  min-height: 6em;
+  background-color: hsl(
+    var(--hue),
+    var(--saturation),
+    var(--lightness)
+  );
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-grow: 1;
+}
+
+/**
+ * Layout
+ */
+
+.pickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8em;
+}
+
+header span {
+  font-weight: bold;
+}
+
+/**
+ * Color pickers
+ */
+
+.color-picker {
+  background: #eee;
+  padding: 1em;
+  flex-grow: 1;
+  width: min(50%, 15em);
+}
+
+.picker-and-output {
+  display: flex;
+}
+
+.rgb-picker {
+  --r: 122.5;
+  --g: 122.5;
+  --b: 122.5;
+  --a: 1;
+  
+  --border-color: rgba(var(--r), var(--g), var(--b), var(--a));
+}
+
+.hsl-picker {
+  --h: 180;
+  --s: 50%;
+  --l: 50%;
+  --a: 100%;
+  
+  --border-color: hsl(var(--h), 100%, 35%);
+}
+
+/**
+ * Color picker layout stuff
+ */
+
+.color-picker form {
+  flex-grow: 1;
+  margin-right: 2em;
+}
+
+.color-picker label {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.color-picker label + label {
+  margin-top: 1em;
+}
+
+/**
+ * Color picker output color + text
+ */
+
+.output {
+  flex-basis: min(20em, 40%);
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+.output::before {
+  content: '';
+  top: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.rgb-picker .output::before{
+  background-color: rgba(var(--r), var(--g), var(--b), var(--a));
+}
+
+.hsl-picker .output::before {
+  background-color: hsla(var(--h), var(--s), var(--l), var(--a));
+}
+
+.output-text {
+  font-family: monospace;
+  margin: 0.5em;
+  padding: 0.5em;
+  background: hsla(0, 0%, 95%, 95%);
+  position: relative;
+  flex-grow: 1;
+  text-align: center;
+}
+
+/**
+ * General range input styles
+ */
+
+input[type="range"] {
+  margin-top: 1em;
+  width: 100%;
+  -webkit-appearance: none;
+  height: 1em;
+  box-shadow: 0 0 0 0.12em #fff;
+  border-radius: 1em;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+.rgb-picker input[type="range"]:focus {
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em rgb(var(--r), var(--g), var(--b));
+}
+
+.hsl-picker input[type="range"]:focus {
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em hsl(var(--h), 50%, 50%);
+}
+
+/**
+ * Individual range slider styles
+ * Using custom props for dynamic color updates
+ */
+
+#r {
+  background: linear-gradient(
+    to right, 
+    rgb(0, var(--g), var(--b)) 0%,     
+    rgb(255, var(--g), var(--b)) 100% 
+  );
+}
+
+#g {
+  background: linear-gradient(
+    to right, 
+    rgb(var(--r), 0, var(--b)) 0%,     
+    rgb(var(--r), 255, var(--b)) 100% 
+  );
+}
+
+#b {
+   background: linear-gradient(
+     to right, 
+     rgb(var(--r), var(--g), 0) 0%,     
+     rgb(var(--r), var(--g), 255) 100% 
+   ); 
+}
+
+#h {
+  --s: 100%;
+  --l: 50%;
+  /* credit to Jamie Kudla: https://codepen.io/JKudla/pen/GpYXxZ */
+  background: linear-gradient(
+    to right, 
+    hsl(0, 100%, 50%) 0%, 
+    hsl(30, 100%, 50%) 8.3%, 
+    hsl(60, 100%, 50%) 16.6%, 
+    hsl(90, 100%, 50%) 25%, 
+    hsl(120, 100%, 50%) 33.3%, 
+    hsl(150, 100%, 50%) 41.6%, 
+    hsl(180, 100%, 50%) 50%, 
+    hsl(210, 100%, 50%) 58.3%, 
+    hsl(240, 100%, 50%) 66.6%, 
+    hsl(270, 100%, 50%) 75%, 
+    hsl(300, 100%, 50%) 83.3%, 
+    hsl(330, 100%, 50%) 91.6%, 
+    hsl(360, 100%, 50%) 100%
+  );
+}
+
+#s {
+  background: linear-gradient(
+    to right, 
+    hsl(var(--h), 0%, var(--l)) 0%, 
+    hsl(var(--h), 100%, var(--l)) 100%
+  );
+}
+
+#l {
+   background: linear-gradient(
+     to right, 
+     hsl(var(--h), var(--s), 0%) 0%, 
+     hsl(var(--h), var(--s), 50%) 50%, 
+     hsl(var(--h), var(--s), 100%) 100%
+   ); 
+}
+
+/**
+ * Thumb styles
+ * Unfortunately these need to be re-set for every browser
+ */
+
+[type="range"]::-moz-range-thumb {
+  border-radius: 50%;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.rgb-picker [type="range"]::-moz-range-thumb {
+  background-color: rgb(var(--r), var(--g), var(--b));
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em rgb(var(--r), var(--g), var(--b));
+  border: none;
+}
+
+.hsl-picker [type="range"]::-moz-range-thumb {
+  background-color: hsl(var(--h), var(--s), var(--l));
+  border: 0.1em solid hsl(var(--h), 100%, 35%);
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em hsl(var(--h), 100%, 35%);
+}
+
+[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border-radius: 50%;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.rgb-picker [type="range"]::-webkit-slider-thumb {
+  background-color: rgb(var(--r), var(--g), var(--b));
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em rgb(var(--r), var(--g), var(--b));
+  border: none;
+}
+
+.hsl-picker [type="range"]::-webkit-slider-thumb {
+  background-color: hsl(var(--h), var(--s), var(--l));
+  border: 0.1em solid hsl(var(--h), 100%, 35%);
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em hsl(var(--h), 100%, 35%);
+}
+
+[type="range"]::-ms-thumb {
+  border-radius: 50%;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.rgb-picker [type="range"]::-ms-thumb {
+  background-color: rgb(var(--r), var(--g), var(--b));
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em rgb(var(--r), var(--g), var(--b));
+  border: none;
+}
+
+.hsl-picker [type="range"]::-ms-thumb {
+  background-color: hsl(var(--h), var(--s), var(--l));
+  border: 0.1em solid hsl(var(--h), 100%, 35%);
+  box-shadow: 
+    0 0 0 0.2em #fff,
+    0 0 0 0.4em hsl(var(--h), 100%, 35%);
+}
+
+/**
+ * Button Stuff
+ */
+
+button {
+  /* Text Colors */
+  --text-saturation: 90%;
+  --text-lightness: 30%;
+  --text-color-hover: hsl(
+    var(--hue),
+    calc(var(--text-saturation) + 10%),
+    calc(var(--text-lightness) - 5%)
+  );
+  --text-color-active: hsl(
+    var(--hue),
+    calc(var(--text-saturation) + 10%),
+    calc(var(--text-lightness) - 10%)
+  );
+  
+--text-color-disabled: hsl(
+    var(--hue),
+    calc(var(--text-saturation) - 60%),
+    calc(var(--text-lightness) + 10%)
+  );
+  
+  /* Background Colors */
+  --background-saturation: 0%;
+  --background-lightness: 100%;
+  --background-color-hover: hsl(
+    var(--hue),
+    calc(var(--background-saturation) + 80%),
+    calc(var(--background-lightness) - 5%)
+  );
+  --background-color-active: hsl(
+    var(--hue),
+    calc(var(--background-saturation) + 80%),
+    calc(var(--background-lightness) - 10%)
+  );
+  --background-color-disabled: hsl(
+    var(--hue),
+    calc(var(--background-saturation) + 30%),
+    calc(var(--background-lightness) - 10%)
+  );
+  
+  /* Border Colors */
+  --border-saturation: 90%;
+  --border-lightness: 60%;
+  --border-color-hover: hsl(
+    var(--hue),
+    calc(var(--border-saturation) + 10%),
+    calc(var(--border-lightness) - 10%)
+  );
+  --border-color-active: hsl(
+    var(--hue),
+    calc(var(--border-saturation) + 10%),
+    calc(var(--border-lightness) - 20%)
+  );
+  --border-color-disabled: hsl(
+    var(--hue),
+    calc(var(--border-saturation) - 60%),
+    calc(var(--border-lightness) + 20%)
+  );
+  
+  --shadow-color-focus: hsl(
+    var(--hue),
+    100%,
+    85%
+  );
+  
+  /* Color Styles */
+  color: hsl(var(--hue), var(--text-saturation), var(--text-lightness));
+  background-color: hsl(var(--hue), var(--background-saturation), var(--background-lightness)); 
+  border:0.1em solid hsl(var(--hue), var(--border-saturation), var(--border-lightness)); 
+  
+  /* Misc. Styles */
+  border-radius: 0.25em;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1em;
+  padding: 0.5em 1em;
+  transition-property: box-shadow, background-color, border-color, color;
+  transition-timing-function: ease-out;
+  transition-duration: 0.2s;
+}
+
+button:hover {
+  color: var(--text-color-hover);
+  background-color: var(--background-color-hover);
+  border-color: var(--border-color-hover);
+}
+
+button:active {
+  color: var(--text-color-active);
+  background-color: var(--background-color-active);
+  border-color: var(--border-color-active);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25em var(--shadow-color-focus);
+}
+
+button[disabled] {
+  color: var(--text-color-disabled);
+  background-color: var(--background-color-disabled);
+  border-color: var(--border-color-disabled);
+}
+</style>
+
+
+
+
+<script>
+/**
+ * RGB Picker + HSL picker could be DRYed up 
+ */
+
+/**
+ * RGB Picker
+ */
+
+initRgbPicker(document.querySelector('.rgb-picker'));
+
+function initRgbPicker(picker) {
+  const outputText = picker.querySelector('.output-text');
+  
+  picker.querySelectorAll('[type="range"]').forEach(input => {
+    input.addEventListener('input', ({target}) => {
+      let {name, value} = target;
+
+      picker.style.setProperty(`--${name}`, value);
+      
+      const styles = window.getComputedStyle(picker);
+      
+      outputText.innerText = `
+        #${
+          parseInt(styles.getPropertyValue('--r')).toString(16)
+        }${
+          parseInt(styles.getPropertyValue('--g')).toString(16)
+        }${
+          parseInt(styles.getPropertyValue('--b')).toString(16)
+        }${
+          parseInt(styles.getPropertyValue('--a') * 255).toString(16)
+        }
+      `.trim();
+      
+      updateContrastPercentages({rgb: true});
+    });
+  });
+}
+
+/**
+ * HSL Picker
+ */
+
+initHslPicker(document.querySelector('.hsl-picker'));
+
+function initHslPicker(picker) {
+  const outputText = picker.querySelector('.output-text');
+  
+  picker.querySelectorAll('[type="range"]').forEach(input => {
+    input.addEventListener('input', ({target}) => {
+      let {name, value} = target;
+
+      if(target.name !== 'h') {
+        value = `${value}%`;
+      }
+
+      picker.style.setProperty(`--${name}`, value);
+      
+      const styles = window.getComputedStyle(picker);
+      
+      outputText.innerText = `
+        hsl(${
+          styles.getPropertyValue('--h')
+        }, ${
+          styles.getPropertyValue('--s')
+        }, ${
+          styles.getPropertyValue('--l')
+        })
+      `.trim();
+      
+      updateContrastPercentages({hsl: true});
+    });
+  });
+}
+
+/**
+ * Our target color
+ */
+
+initTargetColor();
+
+function initTargetColor() {
+  const button = document.querySelector('.js-change-color');
+  const target = document.querySelector('.js-target');
+  
+  button.addEventListener('click', () => {
+    target.style.setProperty('--hue', Math.random() * 360);
+    target.style.setProperty('--saturation', `${Math.random() * 100}%`);
+    target.style.setProperty('--lightness', `${Math.random() * 100}%`);
+    updateContrastPercentages({hsl: true, rgb: true});
+  });
+}
+
+/**
+ * Logic to update our % matches whenever anything changes 
+ */
+
+updateContrastPercentages({hsl: true, rgb: true});
+
+function updateContrastPercentages({hsl = false, rgb = false}) {
+  const target = document.querySelector('.js-target');
+  const targetStyles = window.getComputedStyle(target);
+  const targetColor = hslToRgb(
+    targetStyles.getPropertyValue('--hue').trim(),
+    targetStyles.getPropertyValue('--saturation').replace('%', '').trim(),
+    targetStyles.getPropertyValue('--lightness').replace('%', '').trim()
+  ) 
+  
+  if(hsl) {
+    const hslPicker = document.querySelector('.hsl-picker');
+    const hslStyles = window.getComputedStyle(hslPicker);
+    const hslColor = hslToRgb(
+      hslStyles.getPropertyValue('--h').trim(),
+      hslStyles.getPropertyValue('--s').replace('%', '').trim(),
+      hslStyles.getPropertyValue('--l').replace('%', '').trim()
+    );
+    
+    hslPicker.querySelector('.percent').textContent = getMatchPercentage(targetColor, hslColor);
+  }
+  
+  if(rgb) {
+    const hexPicker = document.querySelector('.rgb-picker');
+    const hexStyles = window.getComputedStyle(hexPicker);
+    const hexColor = [
+      hexStyles.getPropertyValue('--r'),
+      hexStyles.getPropertyValue('--g'),
+      hexStyles.getPropertyValue('--b')
+    ];
+    
+    hexPicker.querySelector('.percent').textContent = getMatchPercentage(targetColor, hexColor);
+  }
+}
+
+// https://stackoverflow.com/a/36722579/7816145
+/**
+     * Converts an HSL color value to RGB. Conversion formula
+     * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+     * Assumes h, s, and l are contained in the set [0, 1] and
+     * returns r, g, and b in the set [0, 255].
+     *
+     * @param   {number}  h       The hue
+     * @param   {number}  s       The saturation
+     * @param   {number}  l       The lightness
+     * @return  {Array}           The RGB representation
+     */
+function hslToRgb(h, s, l){
+  h = h / 360;
+  s = s / 100;
+  l = l / 100;
+  var r, g, b;
+
+  if(s == 0){
+    r = g = b = l; // achromatic
+  }else{
+    var hue2rgb = function hue2rgb(p, q, t){
+      if(t < 0) t += 1;
+      if(t > 1) t -= 1;
+      if(t < 1/6) return p + (q - p) * 6 * t;
+      if(t < 1/2) return q;
+      if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    }
+
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    var p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+/**
+ * Format our match into our final display
+ */
+
+function getMatchPercentage(rgbA, rgbB) {
+  const match = 100 - deltaE(rgbA, rgbB)
+  if(match < 0) match = 0;
+  return Math.round(match * 10) / 10;
+}
+
+/**
+ * Get Euclidean distance between two colors
+ */
+function deltaE(rgbA, rgbB) {
+  let labA = rgb2lab(rgbA);
+  let labB = rgb2lab(rgbB);
+  let deltaL = labA[0] - labB[0];
+  let deltaA = labA[1] - labB[1];
+  let deltaB = labA[2] - labB[2];
+  let c1 = Math.sqrt(labA[1] * labA[1] + labA[2] * labA[2]);
+  let c2 = Math.sqrt(labB[1] * labB[1] + labB[2] * labB[2]);
+  let deltaC = c1 - c2;
+  let deltaH = deltaA * deltaA + deltaB * deltaB - deltaC * deltaC;
+  deltaH = deltaH < 0 ? 0 : Math.sqrt(deltaH);
+  let sc = 1.0 + 0.045 * c1;
+  let sh = 1.0 + 0.015 * c1;
+  let deltaLKlsl = deltaL / (1.0);
+  let deltaCkcsc = deltaC / (sc);
+  let deltaHkhsh = deltaH / (sh);
+  let i = deltaLKlsl * deltaLKlsl + deltaCkcsc * deltaCkcsc + deltaHkhsh * deltaHkhsh;
+  return i < 0 ? 0 : Math.sqrt(i);
+}
+
+/**
+ * To compute the color contrast we need to convert to LAB colors
+ */
+
+function rgb2lab(rgb){
+  let r = rgb[0] / 255, g = rgb[1] / 255, b = rgb[2] / 255, x, y, z;
+  r = (r > 0.04045) ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+  g = (g > 0.04045) ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+  b = (b > 0.04045) ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+  x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+  y = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 1.00000;
+  z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+  x = (x > 0.008856) ? Math.pow(x, 1/3) : (7.787 * x) + 16/116;
+  y = (y > 0.008856) ? Math.pow(y, 1/3) : (7.787 * y) + 16/116;
+  z = (z > 0.008856) ? Math.pow(z, 1/3) : (7.787 * z) + 16/116;
+  return [(116 * y) - 16, 500 * (x - y), 200 * (y - z)]
+}
+</script>

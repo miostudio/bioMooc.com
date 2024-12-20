@@ -63,7 +63,7 @@ function getColors(event){
 }
 
 // 为画板绑定事件: 单击、双击
-var ctxArr=[ctx1, ctx2, ctx3, ctx4, ctx5];
+var ctxArr=[ctx1, ctx2, ctx3, ctx4, ctx5, ctx6];
 for(var i=0; i<ctxArr.length; i++){
 	var ctx=ctxArr[i]
 	//console.log(i, ctx)

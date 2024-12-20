@@ -269,8 +269,8 @@ soft-clipping是指一条reads未匹配上当前基因组位置的部分，如�
 ### H(hard clip) 和 S(soft clip) 的区别是什么？
 
 ```
-REF:    AGCTAGCATCGTGTCGCCCGTCTAGCATACGCATGATCGACTGTCAGCTAGTCAGACTAGTCGATCGATGTG
-READ:          gggGTGTAACC-GACTAGgggg
+REF: AGCTAGCATCGTGTCGCCCGTCTAGCATACGCATGATCGACTGTCAGCTAGTCAGACTAGTCGATCGATGTG
+READ:       gggGTGTAACC-GACTAGgggg
 ```
 
 上述示例是某一条read的比对结果，其中大写字母表示匹配(非完全匹配，部分碱基是错配的)，-表示缺失，小写字母表示末端为匹配的序列，这部分就是clipping序列。
@@ -295,7 +295,7 @@ S和H除了比对位置的区别以外，输出到bam的序列也不同，标注
 ```
 clipped_alignment
 REF: AGCTAGCATCGTGTCGCCCGTCTAGCATACGCATGATCGACTGTCAGCTAGTCAGACTAGTCGATCGATGTG
-READ:          gggGTGTAACC-GACTAGgggg
+READ:       gggGTGTAACC-GACTAGgggg
 ```
 如上文的比对，reads序列上，大写字母是匹配，小写字母是剪切。
 比对的 CIGAR 是 3S8M1D6M4S，表示3个soft clip, 8个match, 1个 deletion, 6个 match 和 4个 soft clip。
@@ -413,6 +413,8 @@ Any tags that start with X? are reserved fields for end users: XT:A:M, XN:i:2, X
 ```
 NH	i	Number of reported alignments that contains the query in the current record
 IH	i	Number of stored alignments in SAM that contains the query in the current record
+
+HI:i:5 - Query hit index, indicating the alignment record is the i-th one stored in SAM
 
 SM:i:37 - Mapping quality if the read is mapped as a single read rather than as a read pair
 AM:i:37 - Smaller single-end mapping quality of the two reads in a pair

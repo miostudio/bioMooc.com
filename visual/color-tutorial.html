@@ -99,7 +99,7 @@ $(function(){
 <p>如果不确定，就试试色彩组合: "navy", "firebrick3"。</p>
 
 <br>
-<p>下面是一个主题索引: </p>
+<p>本站主题索引: </p>
 <p><a href="/R/R-draw-basic.html#22">原生R中的颜色与渐变色。</a></p>
 <p><a href="/R/R-color.html">R 色彩 详解与实例</a>: SCI中的常见色彩组合，canvas 展示。</p>
 <p><a href="/Python3/Python3-color.html">Python3 色彩 详解与实例</a>: 在 python 中使用色彩。</p>
@@ -109,29 +109,91 @@ $(function(){
 
 <hr>
 
+
+
+
+
 <h2>颜色辅助工具</h2>
 <ul>
+<h3>颜色列表:</h3>
 	<p>py/R 自带颜色list:</p>
-	<li><a target="_blank" href="/color/matplotlibColors.html">matplotlibColors</a></li>
-	<li><a target="_blank" href="/color/seabornColors.html">seabornColors</a></li>
-	<li><a target="_blank" href="/color/colorsInR.html">657 colors() in R</a>，produced by  
-		R and Python scripts
+	<li><a target="_blank" href="/color/matplotlibColors.html">matplotlibColors</a> /
+		<a target="_blank" href="/color/seabornColors.html">seabornColors</a> /
+		<a target="_blank" href="/color/colorsInR.html">657 colors() in R</a>(produced by  R and Python scripts) /
 	</li>
 	
 	<p>单个颜色挑选:</p>
 	<li><a target="_blank" href="/color/colorPicker_PS.html">colorPicker (like PhotoShop)</a></li>
 
 	<p>多种颜色挑选:</p>
+	<li><a target="_blank" href="/color/colorPalette.html">HSL取色工具</a>: 适用于一组颜色的选择。</li>
 	<li><a target="_blank" href="/color/colorWheel.html">colorWheel</a> Inner to outer: lightness 0(black) to 1(white)</li>
 	<li><a target="_blank" href="/color/colorWheelBatch.html">colorWheelBatch</a> Inner to outer: Lightness</li>
 	<li><a target="_blank" href="/color/colorWheelBatch2.html">colorWheelBatch2</a> Inner to outer: Saturation</li>
+	<li><a target="_blank" href="/R/R-color.html#1_4">色卡集合 (使用Canvas展示)</a>: 给出若干sci颜色组合，单击控制台可显示16进制颜色值</li>
+
+	<p>DIY 颜色卡:</p>
+	<li>
+		一键生成高质量色卡:
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/119056214">matlab版</a> /
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/144133217">my R语言版</a>
+	</li>
+	<li>
+		查看颜色卡效果：
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/143275486">单细胞配色效果模拟器(R语言版)</a>
+	</li>
+
+
 	
-	<p>外站颜色方案:</p>
+<h3>外站颜色方案:</h3>
 	<li><a target="_blank" href="https://medialab.github.io/iwanthue/">i want hue</a> 基于聚类给出k个颜色。Colors for data scientists. Generate and refine palettes of optimally distinct colors.</li>
 	<li>@csdn: <a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/125549024">色彩 | R 语言中的渐变色: viridis 包(色盲友好的颜色包)</a> 提供8种颜色方案。</li>
+	<li>
+		<a target="_blank" href="https://r-charts.com/color-palettes/">能引用上千调色板的R包</a>: paletteer::paletteer_d("ggsci::nrc_npg")
+		(<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/143213277">R语言 | paletteer包：拥有2100多个调色板！</a>)
+	</li>
+	<li>
+		<a target="_blank" href="https://encycolorpedia.cn/named">web 命名颜色</a>: 支持三种排序(色相 / 色度 / 亮度)
+	</li>
+
+
+
+<h3>顶刊高质量论文插图配色:</h3>
+	<li>示例与色卡: 
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/114157177">高质量论文配图配色（附RGB值及16进制码）</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/134796419">顶刊高质量论文插图配色（含RGB值及16进制HEX码）（第一期）</a> |
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/135258628">第二期</a> |
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/137187869">第三期</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/114157177">高质量论文配图配色（附RGB值及16进制码）</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/126015997">我也做了一套绘图配色可视化模板</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/129828666">MATLAB配色不够用，近2000款配色来啦</a> /
+
+	</li>
+
+	<li>相关：
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/117199400">MATLAB 爬取配色css数据及渐变图</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/127935365">MATLAB海洋、气象数据colormap配色补充包(NCL color tables)</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/127719784">MATLAB配色不够用 全网最全的colormap补充包来啦</a> /
+		<a target="_blank" href="https://slandarer.blog.csdn.net/article/details/124588524">如何在MATLAB中使用python全部colormap配色</a> /
+
+	</li>
+
+	<!--
+	<li><a target="_blank" href="">xx</a></li>
+	-->
+
 </ul>
 
 
+
+
+
+
+
+
+
+
+<hr>
 
 <h2>颜色模型 /color space</h2>
 <p>我们有限的语言(红橙黄绿蓝靛紫)只能明确定义某几个或几十个颜色，更多细微差别的颜色的描述就需要数字化了。所谓颜色模型就是描述颜色的数学模型，或者说颜色的数字形式及其意义。</p>
@@ -147,6 +209,116 @@ $(function(){
 
 <h4>CMYK 颜色模型</h4>
 <p>这是一个四色打印机颜色模型，和RGB类似，不过用了4个基础颜色。采用加法模型，没有颜色的时候是白色，谁数值大偏向谁，四个颜色都用且最大就是黑色。</p>
+
+
+
+
+
+
+
+
+
+<h4>HSL 颜色模型：符合人直觉</h4>
+<p>按照 色相hue, 饱和度saturation, 和明度lightness 定义颜色。</p>
+<p>取值范围: hue[0,360], saturation[0, 100%], lightness[0, 100%]</p>
+<p>色相hue, 也叫色别，不同颜色的表象和名称，如红、橙、黄、绿、青、蓝、紫等。不同的色别都可用光谱中的波长来标示，人的眼睛可分辨出的色别有180种左右。</p>
+<p>明度, 色彩的明暗程度。一般在反光率相同的情况下，不同色别的明暗程度不同。如黄色光比红色光更明亮，而红色光则比青色光要明亮。明度最高是白色，明度适中是不同的彩色，明度最低则是黑色。</p>
+<p>饱和度（纯度）是指同一色别的纯净度和鲜明度的变化。饱和度越高，颜色越鲜艳；饱和度越低，颜色越灰黑暗沉。</p>
+
+<p>
+	<a target="_blank" href="https://htmlcolors.com/hsl-color">HSL取色1</a>, 
+	<a target="_blank" href="/color/colorPalette.html">HSL取色工具(本地版)</a>
+</p>
+
+
+<p>HSL和RGB的相互转化的 <a target="_blank" href="https://stackoverflow.com/questions/28562288/how-to-use-the-hsl-hue-saturation-lightness-cylindric-color-model">R代码</a> 如下：</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">
+# specify h as whole input degrees (e.g 0-360)
+# s = 0.0 - 1 (0 - 100%)
+# l = 0.0 - 1, (0 - 100%)
+# returns output from R's rgb() functin
+
+hsl_to_rgb <- function(h, s, l) {
+  h <- h / 360
+  r <- g <- b <- 0.0
+  if (s == 0) {
+    r <- g <- b <- l
+  } else {
+    hue_to_rgb <- function(p, q, t) {
+      if (t < 0) { t <- t + 1.0 }
+      if (t > 1) { t <- t - 1.0 }
+      if (t < 1/6) { return(p + (q - p) * 6.0 * t) }
+      if (t < 1/2) { return(q) }
+      if (t < 2/3) { return(p + ((q - p) * ((2/3) - t) * 6)) }
+      return(p)
+    }
+    q <- ifelse(l < 0.5, l * (1.0 + s), l + s - (l*s))
+    p <- 2.0 * l - q
+    r <- hue_to_rgb(p, q, h + 1/3)
+    g <- hue_to_rgb(p, q, h)
+    b <- hue_to_rgb(p, q, h - 1/3)
+  }
+  return(rgb(r,g,b))
+}
+if(0){
+	cols=c()
+	for(h in seq(0, 359, 60)){
+	  cols=c(cols, hsl_to_rgb( h,  0.5,  0.5))
+	}
+	cols |> jsonlite::toJSON()
+
+	c("#8C7373","#8C8C73","#738C73","#738C8C","#73738C","#8C738C") #10% s
+	c("#996666","#999966","#669966","#669999","#666699","#996699") #20% s
+	c("#A65959","#A6A659","#59A659","#59A6A6","#5959A6","#A659A6") #30% s
+	c("#B34D4D","#B2B34D","#4DB34D","#4DB2B3","#4D4DB3","#B34DB2") #40% s
+	c("#BF4040","#BFBF40","#40BF40","#40BFBF","#4040BF","#BF40BF") #50% s
+	c("#CC3333","#CCCC33","#33CC33","#33CCCC","#3333CC","#CC33CC") #60% s
+	c("#D92626","#D9D926","#26D926","#26D9D9","#2626D9","#D926D9") #70% s
+	c("#E61919","#E5E619","#19E619","#19E5E6","#1919E6","#E619E5") #80% s
+	c("#F20D0D","#F2F20D","#0DF20D","#0DF2F2","#0D0DF2","#F20DF2") #90% s
+	c("#FF0000","#FFFF00","#00FF00","#00FFFF","#0000FF","#FF00FF") #100% s
+	#
+	hsl_to_rgb( 180,  0.5,  0.5)
+	"#40BFBF"
+	hsl_to_rgb( 0,  0.315,  0.5)
+	"#A85757"
+}
+
+
+
+
+# r, g, b = 0.0 - 1 (0 - 100%)
+# returns h/s/l in a vector, h = 0-360 deg, s = 0.0 - 1 (0-100%), l = 0.0 - 1 (0-100%)
+rgb_to_hsl <- function(r, g, b) {
+  val_max <- max(c(r, g, b))
+  val_min <- min(c(r, g, b))
+  h <- s <- l <- (val_max + val_min) / 2
+  if (val_max == val_min){
+    h <- s <- 0
+  } else {
+    d <- val_max - val_min
+    s <- ifelse(l > 0.5, d / (2 - val_max - val_min), d / (val_max + val_min))
+    if (val_max == r) { h <- (g - b) / d + (ifelse(g < b, 6, 0)) }
+    if (val_max == g) { h <- (b - r) / d/ + 2 }
+    if (val_max == b) { h <- (r - g) / d + 4 }
+    h <- (h / 6) * 360
+  }
+  return(c(h=h, s=s, l=l))
+}
+if(0){
+  my.col=(col2rgb("#FFaabb")/255) |> as.vector(); my.col
+  rgb_to_hsl(my.col[1], my.col[2], my.col[3])
+
+  hsl_to_rgb(348, 1, 0.83)
+  "#FFA8BA"
+}</div>
+</div>
+
+
+
+
+
 
 
 <h4>LAB 颜色模型</h4>

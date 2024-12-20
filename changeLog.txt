@@ -331,6 +331,9 @@ IP地址:
 		R/ add colorset;
 	page0.3.9-4@picb update about.html [2024.10.5]
 	page0.3.9-5@picb py3/ add venv [2024.10.15]
+	page0.3.9-6@picb visual/ HSL 颜色模式 [2024.12.20]
+		R/ add R-draw-examples.html; R/ math_SVD_EVD_PCA.html
+		color/ add colorPalette.html HSL 取色器
 
 ##############
 # commit

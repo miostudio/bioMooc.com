@@ -1,0 +1,282 @@
+<!Doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>R 教程 | 生物慕课网</title>
+
+<link rel="canonical" href="http://www.biomooc.com/R/R-tutorial.html" />
+<meta name="keywords" content="R 绘图教程,ggplot2">
+<meta name="description" content="R 绘图教程,ggplot2。">
+		
+	<link rel="shortcut icon" href="/img/favicon.ico" mce_href="/img/favicon.ico" type="image/x-icon" >
+	<link rel="stylesheet" href="/wp-content/themes/biomooc/style.css?v=1.141" type="text/css" media="all" />	
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" media="all" />
+  <!--[if gte IE 9]><!-->
+  <script src="/static/js/jquery.min.js"></script>
+  <!--<![endif]-->
+  <!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+  <link rel="apple-touch-icon" href="/img/mobile-icon.png"/>
+  <meta name="apple-mobile-web-app-title" content="生物慕课网">
+
+</head>
+
+
+<body>
+<!-- 头尾自动加载 -->
+<script>
+$(function(){
+	$.get('/part/header-nav.html',function(data,status){
+		$('body').prepend(data);//header-nav
+	});
+	
+	$('<div id="footer" class="mar-t50"></div>').appendTo($("body"));
+	$("#footer").load("/part/footer.html"); //footer
+	
+	$.get('/part/right-bottom-btn.html',function(data,status){
+		$('#footer').after(data);//右下角按钮
+	});
+
+	
+			
+	//左右菜单
+	$.get('./part/menu-left.html',function(data,status){
+		$('.main .row').first().prepend(data);//左侧菜单-本文件夹内使用
+	});
+	
+	$.get('/part/menu-right.html',function(data,status){
+		$('.main .row').first().append(data);//右侧菜单-全局通用
+		//没有事件，还需要绑定事件
+
+	});
+	
+	$.getScript("/wp-content/themes/biomooc/assets/js/main.js?v=1.15");//回到顶部js文件
+});
+</script>
+
+<style>
+/*本页R代码过长: 最长n px,超过了出现滚动条*/
+.notranslate{max-height:400px; overflow:scroll;}
+
+h4{
+	margin-top: 30px;
+    border-left: 3px solid red;
+    padding-left: 2px;
+}
+p{text-indent:2em;}
+
+.red{color:red}
+</style>
+	
+	
+
+<!--  内容  -->
+<div class="container main">
+	<!-- 中间 -->
+	<div class="row">
+	
+
+
+
+
+
+<div class="col middle-column">
+		
+	
+	<div class="article">
+			<div class="article-heading-ad" style="display: none;">
+		
+		</div>
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+		<div class="article-body">
+		
+			<div class="article-intro" id="content">
+			
+			<h1><span class="color_h1">R绘图 </span> R / ggplot2 绘图实例</h1>
+
+
+
+<h2 class="tutheader">目录</h2>
+<p><b>要点</b>: R / ggplot2 等绘图实例</p>
+
+<ul>
+	<li><a href="#1">一维信息</a>
+		<ul>
+			<li><a href="#1_1">bar plot</a>
+		</ul>
+	</li>
+	<li><a href="#2">二维信息</a>
+		<ul>
+			<li><a href="#2_1">火山图</a>
+		</ul>
+	</li>
+	<li><a href="#3">异型图</a></li>
+
+	<li><a href="#100">深入学习</a></li>
+</ul>
+
+
+
+
+
+
+
+<h2 class="tutheader">总体要求</h2>
+<p>R作图的目的：更好地理解数据，并能够与他人沟通这些理解方式。</p>
+<br>
+<p>优化常用的绘图代码，尽可能的美观、清晰、易用，争取为以后使用节省时间。</p>
+<p>注意写清楚目的，输入，输出。函数名要科学、易懂，记录每次变更的版本号和变更内容。</p>
+<p>函数库：<a href="https://gitee.com/dawnEve/Seurat_demo/tree/main/code">gitee</a> </p>
+
+<br>
+<p>几个常见图表的R画法: <a target="_blank" href="https://www.rpubs.com/dawnEve/R_base_plot">Rpubs: R 原生绘图函数实例 basic plot</a></p>
+<p>几个常见图表的R画法: <a target="_blank" href="https://www.rpubs.com/dawnEve/R_plot_challenges">Rpubs: 画图挑战赛</a></p>
+
+
+
+
+
+
+
+
+<a name="1"></a>
+<h2 class="tutheader">一维信息</h2>
+<p>一维信息就是每个观测对象只有一个信息，常见的学生身高，只能绘制分布图。</p>
+<p>有一个分类信息的也认为是一维信息，比如男女的身高信息，不同年龄段的血压信息，能绘制box plot，violin plot。</p>
+
+
+<ul>
+	<p>一维信息：bar图</p>
+	<li>
+		<a target="_blank" href="https://rpubs.com/dawnEve/ggplot2_bar_plot">ggplot2 bar plot</a> |
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/137079717">上下双向柱状图</a> |
+	</li>
+
+	<p>一维信息：饼图 pie/ring</p>
+	<li>
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/135154525">ggplot2 pie plot</a> | 
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/143649995">环形图</a> |
+	</li>
+
+	<!--
+	<li> <a target="_blank" href="xx">xx</a> </li>
+	-->
+</ul>
+
+
+
+
+
+
+
+
+
+<a name="2"></a>
+<h2 class="tutheader">二维信息</h2>
+<p>二维信息是值每个观测指标有两个观测值，比如学生的身高、体重信息，可以绘制散点图、线性拟合图、边缘密度图等。</p>
+<p>加上分类信息，比如男女的身高、体重信息，可以根据分类添加颜色。</p>
+
+
+<ul>
+	<a name="2_1"></a>
+	<p>2维信息：火山图</p>
+	<li>
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/123093894">经典火山图</a> |
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/134850344">多组火山图(单细胞组间)</a> |
+	</li>
+
+</ul>
+
+
+
+
+
+
+
+
+
+<a name="2"></a>
+<h2 class="tutheader">异型图</h2>
+
+<ul>
+	<p>ggplot2 扩展</p>
+	<li>
+		<a target="_blank" href="https://rpubs.com/dawnEve/Radar_GO_plot">ggplot2 雷达图</a> | 		
+	</li>
+	
+	
+	<p>grid包</p>
+	<li>
+		<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/143954994">grid向ggplot2中随意添加文字</a> |
+	</li>
+</ul>
+
+
+
+
+
+
+
+
+
+<a name="100"></a>
+<h2>xx </h2>
+
+
+<pre>
+
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+		</div>
+		
+		<div class="previous-next-links">
+			<div class="previous-design-link"><i style="font-size:16px;" class="fa fa-arrow-left" aria-hidden="true"></i> <a href="/R/R-intro.html" rel="pre">R 简介</a> </div>
+			<div class="next-design-link"><a href="/R/R-intro.html" rel="next"> R 简介</a> <i style="font-size:16px;" class="fa fa-arrow-right" aria-hidden="true"></i></div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+</body>
+</html>

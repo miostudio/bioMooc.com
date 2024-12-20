@@ -33,3 +33,11 @@ todo
 2. 据说很全面的数据库 https://www.hsls.pitt.edu/obrc/
 
 $ git push origin gh-pages
+
+
+---------------
+网站常用通知
+1.
+Site Maintenance
+Our site is down for maintenance but we'll be back online very soon.
+

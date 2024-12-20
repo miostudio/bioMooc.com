@@ -145,7 +145,7 @@ p{text-indent:2em;}
 				</ul>
 			</li>
 			
-			<li><a href="#6_3">标度(scale) todo</a></li>
+			<li><a href="#6_3">标度(scale)</a></li>
 			<li><a href="#6_4">主题 (theme) 精雕细琢</a>
 				<ul>
 					<li><a href="#6_4_1">theme() 可修改的位置</a></li>
@@ -175,13 +175,13 @@ p{text-indent:2em;}
 <p>R作图的目的：更好地理解数据，并能够与他人沟通这些理解方式。</p>
 <p>几个常见图表的R画法: <a target="_blank" href="https://www.rpubs.com/dawnEve/R_base_plot">Rpubs: R 原生绘图函数实例 basic plot</a></p>
 <p>几个常见图表的R画法: <a target="_blank" href="https://www.rpubs.com/dawnEve/R_plot_challenges">Rpubs: 画图挑战赛</a></p>
-<p>R语言 ggplot2 画常见的图: 
-	<a target="_blank" href="https://rpubs.com/dawnEve/ggplot2_bar_plot">ggplot2 bar plot</a> | 
-	<a target="_blank" href="https://rpubs.com/dawnEve/Radar_GO_plot">ggplot2 雷达图</a> | 
-	<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/135154525">ggplot2 pie plot</a> | 
-	<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/123093894">经典火山图</a> | 
-	<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/134850344">多组火山图(单细胞组间)</a> | 
-</p>
+
+<p>更多绘图实例，请查看 <a href="/R/R-draw-examples.html">&gt;R / ggplot2 绘图实例</a></p>
+
+
+
+
+
 
 
 
@@ -213,9 +213,10 @@ p{text-indent:2em;}
 
 
 
-
+<blockquote>
 <p>"一张统计图形就是从数据到几何对象(geometric object, 缩写为geom, 包括点、线、条形等)的图形属性(aesthetic attributes, 缩写为aes, 包括颜色、形状、大小等)的一个映射。此外, 图形中还可能包含数据的统计变换(statistical transformation, 缩写为stats), 最后绘制在某个特定的坐标系(coordinate system,  缩写为coord)中, 而分面(facet, 指将绘图窗口划分为若干个子窗口)则可以用来生成数据中不同子集的图形。"</p>
 <p>  ----- Hadley Wickham </p>
+</blockquote>
 
 
 
@@ -1149,6 +1150,24 @@ ggplot(mtcars, aes(wt, mpg, color=gear) )+
 
 
 
+
+
+
+
+<a name="6_3"></a>
+<h3 class="tutheader">标度(scale)</h3>
+
+<p>常用 scale_color_和scale_fill_来更改调色板。</p>
+<p>scale_fill_manual(values = colorset.genetypes, breaks = my.breaks, labels=my.labels) 修改图例颜色(values)，设置顺序(breaks)和标签(labels)。</p>
+<p>scale_x_discrete(breaks = my.breaks, labels = my.labels) 修改x轴显示的顺序(breaks)和标签(labels)。</p>
+
+
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">scale_y_continuous(breaks = c(0,0.5,1), expand = c(0,0.2), limits=c(0, 1.2))
+#连续性y变量，指定要显示的坐标刻度breaks，与x轴距离改为0；y轴显示范围(limits)。
+</div>
+</div>
+<br><br>
 
 
 

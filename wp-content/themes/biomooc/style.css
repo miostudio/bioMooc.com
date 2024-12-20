@@ -16,8 +16,9 @@ div.code{width:98%;
 	/*
 	background-color:#000;
 	color:#fff;E44D26
-	*/
 	background-color:#f6f4f0;
+	*/
+	background-color:#F6F6F6;
 	color:#444;
 	
 	padding:5px;
@@ -62,8 +63,21 @@ img.desaturate { -webkit-filter: grayscale(100%); filter: grayscale(100%); }
 /*本页R代码过长: 最长n px,超过了出现滚动条*/
 .notranslate{max-height:400px; overflow:scroll;}
 
-h4{
+
+h2.tutheader {
+    border: 1px solid #E44D2633;
+    border-left: #E44D26 3px solid;
+    margin-top: 20px;
+    padding-left: 10px;
+}
+
+.article-body h3{
+	color:#E44D26;
+}
+
+.article-body h4{
 	margin-top: 30px;
     border-left: 3px solid red;
     padding-left: 2px;
 }
+
