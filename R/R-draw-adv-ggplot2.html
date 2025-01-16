@@ -1159,7 +1159,7 @@ ggplot(mtcars, aes(wt, mpg, color=gear) )+
 
 <p>常用 scale_color_和scale_fill_来更改调色板。</p>
 <p>scale_fill_manual(values = colorset.genetypes, breaks = my.breaks, labels=my.labels) 修改图例颜色(values)，设置顺序(breaks)和标签(labels)。</p>
-<p>scale_x_discrete(breaks = my.breaks, labels = my.labels) 修改x轴显示的顺序(breaks)和标签(labels)。</p>
+<p>scale_x_discrete(breaks = my.breaks, labels = my.labels, limits= my.breaks) 修改x轴显示的顺序(limits)和标签(breaks=old, labels=new)。</p>
 
 
 <div class="code notranslate">

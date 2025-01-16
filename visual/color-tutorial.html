@@ -126,7 +126,7 @@ $(function(){
 	<li><a target="_blank" href="/color/colorPicker_PS.html">colorPicker (like PhotoShop)</a></li>
 
 	<p>多种颜色挑选:</p>
-	<li><a target="_blank" href="/color/colorPalette.html">HSL取色工具</a>: 适用于一组颜色的选择。</li>
+	<li><a target="_blank" href="/color/colorPalette_HSL.html">HSL取色工具</a>: 适用于一组颜色的选择。</li>
 	<li><a target="_blank" href="/color/colorWheel.html">colorWheel</a> Inner to outer: lightness 0(black) to 1(white)</li>
 	<li><a target="_blank" href="/color/colorWheelBatch.html">colorWheelBatch</a> Inner to outer: Lightness</li>
 	<li><a target="_blank" href="/color/colorWheelBatch2.html">colorWheelBatch2</a> Inner to outer: Saturation</li>
@@ -227,11 +227,14 @@ $(function(){
 
 <p>
 	<a target="_blank" href="https://htmlcolors.com/hsl-color">HSL取色1</a>, 
-	<a target="_blank" href="/color/colorPalette.html">HSL取色工具(本地版)</a>
+	<a target="_blank" href="/color/colorPalette_HSL.html">HSL取色工具(本地版)</a>
 </p>
 
 
-<p>HSL和RGB的相互转化的 <a target="_blank" href="https://stackoverflow.com/questions/28562288/how-to-use-the-hsl-hue-saturation-lightness-cylindric-color-model">R代码</a> 如下：</p>
+<p>HSL和RGB的相互转化的 
+	<a target="_blank" href="https://www.rapidtables.com/convert/color/index.html">公式(点击查看)</a>，
+	<a target="_blank" href="https://stackoverflow.com/questions/28562288/how-to-use-the-hsl-hue-saturation-lightness-cylindric-color-model">R代码实现</a> 如下：
+</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">
 # specify h as whole input degrees (e.g 0-360)
@@ -284,6 +287,24 @@ if(0){
 	hsl_to_rgb( 0,  0.315,  0.5)
 	"#A85757"
 }
+if(0){
+	# 随机颜色
+	getColor=function(base_S=50, base_L=50){
+	  random=function(){
+		runif(1, 0, 1)
+	  }
+	  hue = random() * 360
+	  saturation = base_S + (random() * 20);
+	  lightness = base_L + (random() * 20);
+	  
+	  #
+	  hsl_to_rgb(hue, saturation/100, lightness/100)
+	}
+	getColor()
+	c("#D53897", "#D66D6B", "#7FD0D9", "#C9D750")
+	getColor(base_S=40)
+	c("#C8559A", "#6F75D6", "#CD399E", "#7DD587")
+}
 
 
 
@@ -300,7 +321,7 @@ rgb_to_hsl <- function(r, g, b) {
     d <- val_max - val_min
     s <- ifelse(l > 0.5, d / (2 - val_max - val_min), d / (val_max + val_min))
     if (val_max == r) { h <- (g - b) / d + (ifelse(g < b, 6, 0)) }
-    if (val_max == g) { h <- (b - r) / d/ + 2 }
+    if (val_max == g) { h <- (b - r) / d + 2 }
     if (val_max == b) { h <- (r - g) / d + 4 }
     h <- (h / 6) * 360
   }

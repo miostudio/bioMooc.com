@@ -1,0 +1,75 @@
+/*For csdn links page: html/sitemap_blogs.html */
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "Microsoft Yahei", "宋体", "Tahoma", Arial;
+}
+
+.content {
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.75;
+    margin: 0 10px;
+    font-family: "MicroSoft YaHei", "Courier New", "Andale Mono", monospace;
+}
+
+.content p {
+    text-indent: 2em;
+    margin: 10px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.content a {
+    color: #0593d3;
+    text-decoration: none;
+}
+
+.content a:hover {
+    text-decoration: underline;
+}
+
+.content h2 {
+    font-style: normal;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 10px 0;
+    border-bottom: 1px solid #d3d3d3;
+    font-size: 25px;
+    background-image: linear-gradient(to bottom, #f3f3f3 0, #e3e3e3 100%);
+    border-radius: 5px;
+}
+
+.content li{
+    list-style-type: none;
+    margin-left: 40px;
+}
+.content h3{
+    margin-top:20px;
+    margin-left: 20px;
+    border-bottom: 1px solid #555;
+}
+
+.content h4{
+    margin-top:10px;
+    margin-left:20px;
+    border-bottom: 1px dashed #bbb;
+}
+
+/*txt目录的链接样式*/
+.content a .text_menu{color:#eee; }
+.content a .text_menu span{color:#009a61 /*#009a61 DB784D */; }
+/*当前行*/
+.content a.cur .text_menu {color:#009a61; font-weight:bold;}
+
+
+/* headers: 最多支持3级目录，再细没有意义 */
+.content h1:after{ content: "H1"; color: #efefef; }
+.content h1:hover:after{ color: #eaa; }
+
+.content h2:after{ content: "H2"; color: #efefef; }
+.content h2:hover:after{ color: #eaa; }
+
+.content h3:after{ content: "H3"; color: #efefef; }
+.content h3:hover:after{ color: #eaa; }

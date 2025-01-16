@@ -334,6 +334,8 @@ IP地址:
 	page0.3.9-6@picb visual/ HSL 颜色模式 [2024.12.20]
 		R/ add R-draw-examples.html; R/ math_SVD_EVD_PCA.html
 		color/ add colorPalette.html HSL 取色器
+################ @picb 2025 new year
+	page0.3.9-7@picb add R/R-shiny; add csdn sitemap 目录 [2025.1.16]
 
 ##############
 # commit

@@ -708,8 +708,8 @@ Some more stuff here...
 
 
 
-## 9. 读取 gz 压缩过的文本文件 gzfile()
-(1) 实例
+## 9. 读写 gz 压缩过的文本文件 gzfile()
+(1) 读取实例
 ```
 > outputRoot="/home/wangjl/data/"
 
@@ -719,6 +719,14 @@ Some more stuff here...
 1 ENSMUSG00000000001.5 AAACACCA    25
 2 ENSMUSG00000000001.5 AAACGAGA    78
 3 ENSMUSG00000000001.5 AAACTTAG    11
+```
+
+
+(2) 写入gz实例
+```
+conn <- gzfile(sprintf("%s.csv.gz", out.prefix), "w")
+write.table(adj.comb.out, file=conn, quote=F, sep=",", row.names=F)
+close(conn)
 ```
 
 
