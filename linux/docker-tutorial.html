@@ -128,6 +128,95 @@ $(function(){
 
 
 
+<h2>Docker 常用操作</h2>
+<p>镜像和容器的常用操作。</p>
+
+
+<h3>镜像的下载与传送</h3>
+<pre>
+可以从某些云下载镜像，然后打包成文件，下载到自己的服务器，再导入使用。
+
+$ docker pull aertslab/pyscenic:0.12.1
+
+查看
+$ docker images
+REPOSITORY          TAG             IMAGE ID       CREATED       SIZE
+aertslab/pyscenic   0.12.1          4d3790890827   2 years ago   986MB
+
+压缩为gz文件
+$ docker save aertslab/pyscenic:0.12.1 | gzip > aertslab__pyscenic_0.12.1.image.tar.gz
+
+-rw-rw-r-- 1 wangjl2 wangjl2 293M Jan 16 15:01 aertslab__pyscenic_0.12.1.image.tar.gz
+$ md5sum aertslab__pyscenic_0.12.1.image.tar.gz
+d02591d3985e7a9a60ac0cd5898f402c  aertslab__pyscenic_0.12.1.image.tar.gz
+
+传输gz文件
+$ scp aertslab__pyscenic_0.12.1.image.tar.gz wangjl@xxxx.ac.cn:/path/to/wangjl/
+
+导入gz文件为镜像
+$ gunzip -c /path/to/wangjl/aertslab__pyscenic_0.12.1.image.tar.gz | docker load
+
+查看镜像
+$ docker images | grep pyscenic
+aertslab/pyscenic           0.12.1                              4d3790890827   2 years ago     986MB
+</pre>
+
+
+
+<h3>启动docker，创建用户名</h3>
+<p>为与宿主机权限一致，我们在docker内新建用户，其uid和gid和host中的当前用户相同。</p>
+<pre>
+在宿主机(host)查看uid和gid。
+$ id
+uid=5662(wangjl) gid=1210(jinlab)
+
+映射当前目录为容器中的/data/
+$ cd /datapool/wangjl/others/zhaoym/output/demo_SCENIC
+
+推荐在tmux环境中启动容器:
+$ tmux
+$ docker run --name pyscenic -it -v `pwd`:/data aertslab/pyscenic:0.12.1 bash
+
+创建用户名和密码：保持和host的uid和gid一致
+# DEFAULT_USER="wangjl2" && uid=5662 && gid=1210
+# groupadd -g $gid groupA
+# useradd -s /bin/bash -d /home/${DEFAULT_USER} -m ${DEFAULT_USER} -u $uid -g $gid
+# echo "${DEFAULT_USER}:123456.." | chpasswd
+
+切换到新用户
+# su wangjl2
+$ cd /data
+
+查看容器中软件包的位置：
+$ which pyscenic
+/opt/venv/bin/pyscenic
+
+$ python3 -V
+Python 3.10.6
+
+$ pip3 -V
+pip 22.2.1 from /opt/venv/lib/python3.10/site-packages/pip (python 3.10)
+
+可以使用 exit 退出docker环境。
+
+$ docker ps
+CONTAINER ID   IMAGE                        COMMAND   CREATED        STATUS       PORTS        NAMES
+fc98566b5a12   aertslab/pyscenic:0.12.1     "bash"    2 hours ago    Up 2 hours   8787/tcp     pyscenic
+</pre>
+
+
+
+<p>再次进入 docker 环境:</p>
+<pre>
+$ docker exec -it pyscenic bash
+root@fc98566b5a12:/# su wangjl2
+wangjl2@fc98566b5a12:/$ cd /data/
+</pre>
+
+
+
+
+
 
 
 
