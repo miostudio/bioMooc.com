@@ -9,15 +9,21 @@ My Blogs on Internet: csdn
 -->
 <link rel="stylesheet" href="/static/css/sitemap.css" media="all" />
 
+<style>
+/*定期更新到css文件：最多积攒到一屏*/
+b.red{color:#f44;}
+</style>
 
 
 
 <div class=content>
-	<p><b>How to update</b></p>
+	<p><b>How to update?</b></p>
 	<p>本页面是<a target="_blank" href="https://blog.csdn.net/wangjunliang">我的csdn博客</a>标题汇总，按内容做了整理。定期梳理，方便查看参考。</p>
 	<p>1.下载链接信息{title:"", no:"", time:""}: 参考 js::好用的js脚本 中的 console.save() 函数 部分。</p>
-	<p>2.查找目录，添加到合适目录下。目录按照可视化优先原则。目录链接div编号：box + 数字和(可选)字母。</p>
+	<p>2.查找本页的目录，添加链接信息到合适目录下。目录按照可视化优先原则。目录链接div编号：box + 数字和(可选)字母。</p>
 	<p>3.使用js添加内容：提供博客json信息、本文分区div id。</p>
+	<hr>
+	<p>思考: <b class=red>目录式学习最系统，检索式学习是补充。</b>如果某个知识点搜索频繁，最好花时间系统学习一下。</p>
 
 
 
@@ -51,7 +57,7 @@ My Blogs on Internet: csdn
 
 
 
-	<h2>3.数据库 DB: TCGA, GEO, 参考基因组</h2>
+	<h2>3.数据库 DB: TCGA, GEO, 参考基因组, GO</h2>
 	<div id="box3"></div>
 
 
@@ -93,6 +99,16 @@ My Blogs on Internet: csdn
 
 	<h2>更新历史</h2>
 	<p>2024.12.3 add first time;</p>
+	<p>2025.2.11 update</p>
+
+
+
+
+
+
+
+
+
 
 
 <script>
@@ -162,6 +178,11 @@ addBlog([
         "no": "136901182",
         "time": "2024.03.21"
     },
+    {
+        "title": "基于R的单细胞分析岌岌可危: 数据太大时，建议用python | 手动py leiden细胞分群后导回R",
+        "no": "144364172",
+        "time": "2024.12.10"
+    },
 ],	"box0")
 
 
@@ -187,12 +208,36 @@ addBlog([
         "no": "126591180",
         "time": "2022.08.29"
     },
+	{title: "IDE/编程环境"},
+    {
+        "title": "R语言 | vscode R plot 不弹出图形窗口，看不到图怎么办？",
+        "no": "145011054",
+        "time": "2025.01.14"
+    },
+	{title: "编程思想/哲学"},
+    {
+        "title": "抽象与过渡抽象 | 代码重构",
+        "no": "144948472",
+        "time": "2025.01.05"
+    },
 ],	"box1")
 
 
 //ggplot2
 addBlog([
 	{title: "一维信息: density, bar, pie, ring, "},
+	//density
+	{
+        "title": "R语言 | 峰峦图 / 山脊图",
+        "no": "144294758",
+        "time": "2024.12.06"
+    },
+    {
+        "title": "R绘图 | 单列数据的分布图，对A变量分bin求B变量的平均值",
+        "no": "136308900",
+        "time": "2024.02.26"
+    },
+	//bar
     {
         "title": "R 语言 | 用ggplot2画2个分类变量的计数柱状图",
         "no": "126894320",
@@ -203,16 +248,13 @@ addBlog([
         "no": "137079717",
         "time": "2024.03.27"
     },
-    {
-        "title": "R绘图 | 单列数据的分布图，对A变量分bin求B变量的平均值",
-        "no": "136308900",
-        "time": "2024.02.26"
-    },
+	//pie
     {
         "title": "pie plot | ggplot2 画饼状图，排序并标注文字",
         "no": "135154525",
         "time": "2023.12.22"
     },
+	//ring
     {
         "title": "ggplot2 绘制环形图",
         "no": "143649995",
@@ -238,7 +280,16 @@ addBlog([
         "no": "144197939",
         "time": "2024.12.08"
     },
-
+    {
+        "title": "R绘图 | pheatmap 聚类并设置间隔",
+        "no": "145423734",
+        "time": "2025.02.02"
+    },
+    {
+        "title": "R语言 | 使用 ComplexHeatmap 绘制热图，分区并给对角线分区加黑边框",
+        "no": "145450282",
+        "time": "2025.02.05"
+    },
 
 
 
@@ -251,6 +302,12 @@ addBlog([
 
 
 	{title: "ggplot2 特殊技巧"},
+    {
+        "title": "R 语言 | 绘图的文字格式(绘制上标、下标、斜体、文字标注等)",
+        "no": "126730935",
+        "time": "2024.12.22"
+    },
+	//需要grid包
 	{
         "title": "ggplot2 缩小的/一般长度的、带箭头的坐标轴 | R语言",
         "no": "142028695",
@@ -320,6 +377,11 @@ addBlog([
         "time": "2024.01.02"
     },
     {
+        "title": "ggplot2 | 带p值的violin plot + jitter(云雨图)",
+        "no": "144975027",
+        "time": "2025.01.07"
+    },
+    {
         "title": "单细胞 拟时序分析 | diffusionMap",
         "no": "135260015",
         "time": "2023.12.31"
@@ -333,6 +395,11 @@ addBlog([
         "title": "ggplot2 | 单细胞类间比较的火山图 - 经典效果",
         "no": "123093894",
         "time": "2022.02.23"
+    },
+    {
+        "title": "R语言 |展示差异基因，不一定非要用火山图",
+        "no": "144471502",
+        "time": "2024.12.14"
     },
     {
         "title": "单细胞 | label transfer with Seurat4(未知细胞映射到注释好的细胞图谱)",
@@ -477,7 +544,6 @@ addBlog([
     },
 
 
-
 	{title: "Rcpp"},
     {
         "title": "R包的尽头是 C/C++",
@@ -492,11 +558,16 @@ addBlog([
 
 
 
-	{title: "并行/并发/多线程"},
+	{title: "并行/并发/多线程/异步"},
     {
         "title": "R语言 | 多线程包 RcppParallel 测试",
         "no": "126273684",
         "time": "2022.08.10"
+    },
+    {
+        "title": "R 语言 | future 包，非阻塞的执行耗时脚本",
+        "no": "145290727",
+        "time": "2025.01.21"
     },
 
 
@@ -529,6 +600,11 @@ addBlog([
         "title": "R语言通过RMySQL包操作mysql数据库(on linux) - 如何避免读写中文时乱码",
         "no": "102478142",
         "time": "2019.10.10"
+    },
+    {
+        "title": "R shiny app | 网页应用 空格分隔的文本文件在线转csv",
+        "no": "144951773",
+        "time": "2025.01.05"
     },
 ], "box1C")
 
@@ -598,6 +674,12 @@ addBlog([
     },
 
 	//聚类
+	{title: "聚类"},
+    {
+        "title": "KNN 算法的实现 Annoy（Approximate Nearest Neighbors Oh Yeah）| 原理与实战",
+        "no": "144729255",
+        "time": "2024.12.25"
+    },
     {
         "title": "kmeans 最佳聚类个数 | 轮廓系数（越大越好）",
         "no": "144060572",
@@ -609,6 +691,7 @@ addBlog([
         "time": "2024.05.22"
     },
 	//PCA
+	{title: "降维"},
 	{
         "title": "与PC1显著相关的基因 | p值计算",
         "no": "141726229",
@@ -624,6 +707,7 @@ addBlog([
 
 //单细胞算法：整合
 addBlog([
+	{title: "单细胞整合"},
     {
         "title": "vst 算法R语言手工实现 | Seurat4 筛选高变基因的算法",
         "no": "140474807",
@@ -650,10 +734,16 @@ addBlog([
 
 //深度学习，卷积/图/时间/transformer
 addBlog([
+	{title: "深度学习: deep learning"},
     {
         "title": "图论概念：Degree Centrality 和 Betweenness Centrality",
         "no": "60468546?spm=1001.2014.3001.5502",
         "time": "2017.03.05"
+    },
+    {
+        "title": "学习Transformer这事简单，照着做包你变成高手！",
+        "no": "145290929",
+        "time": "2025.01.21"
     },
 ], "box2C")
 
@@ -714,6 +804,12 @@ addBlog([
         "title": "deeptools | bam to BigWig, 并使用IGV可视化峰图差异",
         "no": "124926867",
         "time": "2022.05.23"
+    },
+	//GO,KEGG
+    {
+        "title": "怎么用 metascape 做GO分析",
+        "no": "144487551",
+        "time": "2024.12.15"
     },
 ], "box3B")
 
@@ -798,6 +894,12 @@ addBlog([
         "no": "100038819",
         "time": "2019.08.23"
     },
+    {
+        "title": "文档 | Rstudio下的轻量级单页面markdown阅读器 markdownReader",
+        "no": "144930274",
+        "time": "2025.01.04"
+    },
+
 ], "box4B")
 
 
@@ -988,30 +1090,30 @@ addBlog([
 
 
 //############## box 100: 硬件 ################
-addBlog(
+addBlog([
+	{title: "硬件"},
     {
         "title": "显示器接口种类 | 附图片",
         "no": "143692247",
         "time": "2024.11.11"
-    }, "box100")
+    },
+], "box100")
 
 
 //英语
-addBlog(
+addBlog([
+	{title: "英语"},
     {
         "title": "GoldenDict v1.5 | win11本地 英汉词典",
         "no": "143080544",
         "time": "2024.10.19"
-    }, "box100")
+    },
+], "box100")
 
 
 //吐槽等乱七八糟
 addBlog([
-    {
-        "title": "知名软件的垃圾功能/特点：garbage features of famous software",
-        "no": "142827055",
-        "time": "2024.10.10"
-    },
+	{title: "预测未来"},
     {
         "title": "2024诺贝尔物理学奖获得者：Hinton",
         "no": "142786642",
@@ -1022,24 +1124,35 @@ addBlog([
         "no": "138632087",
         "time": "2024.05.10"
     },
+    {
+        "title": "异想天开 | 什么是一流的学者？",
+        "no": "144687655",
+        "time": "2024.12.24"
+    },
 
+	{title: "个人成长"},
 	{
         "title": "复盘步骤| 每天，每周，每年",
         "no": "135045038",
         "time": "2023.12.17"
     },
     {
-        "title": "win10 | 频繁死机 鼠标键盘无响应: 尝试恢复 删掉的服务",
-        "no": "125234411",
-        "time": "2022.06.11"
-    },
-
-    {
         "title": "每年做一次 “普鲁斯特问卷“: 记录自己的心智成长",
         "no": "128574365",
         "time": "2023.01.06"
     },
 
+	{title: "垃圾软件"},
+    {
+        "title": "win10 | 频繁死机 鼠标键盘无响应: 尝试恢复 删掉的服务",
+        "no": "125234411",
+        "time": "2022.06.11"
+    },
+    {
+        "title": "知名软件的垃圾功能/特点：garbage features of famous software",
+        "no": "142827055",
+        "time": "2024.10.10"
+    },
     {
         "title": "notepad++太不靠谱了",
         "no": "129869752",
@@ -1051,12 +1164,18 @@ addBlog([
         "time": "2023.01.15"
     },
 
-
+	{title: "杂乱"},
     {
         "title": "莫言 | 古人说过自相矛盾的话",
         "no": "125637547",
         "time": "2022.07.06"
     },
+    {
+        "title": "Excel | 空格分隔的行怎么导入excel?",
+        "no": "144922931",
+        "time": "2025.01.04"
+    },
+
 
 ], "box100")
 </script>
