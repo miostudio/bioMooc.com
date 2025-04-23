@@ -4,6 +4,8 @@ R中最常使用的数据框的行名、列名都是字符串。
 
 所以掌握R常见的字符串处理方法十分必要！
 
+常见字符串操作：求长度、合并、拆分、替换、删除、取子字符串、大小写转换等。
+
 字符串、字符串向量是密不可分的。本文都会讲到。
 
 ```
@@ -31,7 +33,7 @@ grep grepl regexpr
 
 
 
-# 获取长度
+# 字符串长度: nchar(x)
 
 nchar() 是获取一个字符串有几个字符。
 
@@ -54,6 +56,69 @@ length() 则是获取一个向量有几个元素。
 
 # 字符串合并
 
+```
+> a1=paste("this", "is", "an", "apple"); a1
+[1] "this is an apple"
+
+> paste0("cell", 1:3)
+[1] "cell1" "cell2" "cell3"
+
+> sprintf("The price($%s) of %s is quite high", 10, "xx")
+[1] "The price($10) of xx is quite high"
+```
+
+
+
+
+
+# 字符串拆分
+
+```
+> strsplit("Gene1, Gene2, Gene3", ", ")[[1]]
+[1] "Gene1" "Gene2" "Gene3"
+
+
+> strsplit(colnames(iris)[1:4], "\\.")
+[[1]]
+[1] "Sepal"  "Length"
+
+[[2]]
+[1] "Sepal" "Width"
+
+[[3]]
+[1] "Petal"  "Length"
+
+[[4]]
+[1] "Petal" "Width"
+
+
+> sapply(colnames(iris)[1:4], function(x){ strsplit(x, "\\.")[[1]][1] })
+Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+     "Sepal"      "Sepal"      "Petal"      "Petal"
+```
+
+
+
+
+
+# 字符串截取
+
+```
+Usage:
+     substr(x, start, stop)
+     substring(text, first, last = 1000000L)
+     
+     substr(x, start, stop) <- value
+     substring(text, first, last = 1000000L) <- value
+
+> substring("abcd", 2, 4)
+[1] "bcd"
+
+> sapply(colnames(iris)[1:4], function(x){ substring(x, 7, nchar(x)) })
+Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+    "Length"      "Width"     "Length"      "Width"
+
+```
 
 
 
@@ -62,13 +127,6 @@ length() 则是获取一个向量有几个元素。
 
 
 
-
-
-
-
-
-
-求长度、合并、拆分、替换、删除、取子字符串、大小写转换
 
 
 

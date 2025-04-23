@@ -11,7 +11,8 @@ git push origin master
 全站模仿：https://www.runoob.com/
 按照 sitemap 组织内容。
 
-miostudio/bioMooc
+github repo: miostudio/bioMooc
+dev branch: gh-pages
 
 
 > v0.1.1 add links: e1071,docker
@@ -340,6 +341,9 @@ IP地址:
 	page0.3.9-9@picb rm 1 linker [2025.1.25]
 	page0.4.0-0@picb add 1 color link[2025.2.9]
 	page0.4.0-1@picb update csdn links [2025.2.11]
+	page0.4.0-2@picb add /友情链接 页 [2025.4.23]
+		AI/ 新增 大纲
+		R/ update & fix;
 
 ##############
 # commit

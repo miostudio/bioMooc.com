@@ -27,6 +27,26 @@ table tr:hover{
 table td.alignLeft{
 	text-align:left;
 }
+
+
+
+
+.wikitable > tr > th, .wikitable > tr > td, .wikitable > * > tr > th, .wikitable > * > tr > td {
+    border: 1px solid var(--border-color-base, #a2a9b1);
+    padding: 0.2em 0.4em;
+}
+table {
+    font-size: 100%;
+}
+.wikitable {
+    border-collapse: collapse;
+	border: 1px solid var(--border-color-base, #a2a9b1);
+}
+.vector-body {
+    font-size: var(--font-size-medium);
+    line-height: var(--line-height-medium);
+}
+
 </style>
 
 <body>
@@ -36,6 +56,7 @@ table td.alignLeft{
 	目录
 	<li>希腊字母</li>
 	<li>氨基酸缩写</li>
+	<li>标准遗传密码子表</li>
 </ul>
 
 
@@ -127,6 +148,227 @@ table td.alignLeft{
 </table>
 
 
+
+
+
+
+
+
+
+
+<hr>
+<h2>标准遗传密码子表(n=64)</h2>
+
+<a href="https://en.wikipedia.org/wiki/DNA_and_RNA_codon_tables">Ref wiki</a>
+
+<table class="wikitable" style="border:none; text-align:center;">
+  <tbody>
+    <tr>
+      <td>
+        <a href="https://en.wikipedia.org/wiki/Amino_acids" class="mw-redirect" title="Amino acids">Amino-acid</a>biochemical properties</td>
+      <td style="background-color:#ffe75f; width: 50px;">Nonpolar (np)</td>
+      <td style="background-color:#b3dec0; width: 50px;">Polar (p)</td>
+      <td style="background-color:#bbbfe0; width: 50px;">Basic (b)</td>
+      <td style="background-color:#f8b7d3; width: 50px;">Acidic (a)</td>
+      <td style="border:none; width: 100px;"></td>
+      <td style="background-color:#B0B0B0;">Termination: stop codon *</td>
+      <td style="border:none; width: 10px;"></td>
+      <td style="background-color:#97D8F7;">Initiation: possible start codon ⇒</td></tr>
+  </tbody>
+</table>
+
+
+<table class="wikitable">
+  <caption>Standard genetic code</caption>
+  <tbody>
+    <tr>
+      <th rowspan="2">1st
+        <br>base</th>
+      <th colspan="8">2nd base</th>
+      <th rowspan="2">3rd
+        <br>base</th></tr>
+    <tr>
+      <th colspan="2" style="width:150px;">T</th>
+      <th colspan="2" style="width:150px;">C</th>
+      <th colspan="2" style="width:150px;">A</th>
+      <th colspan="2" style="width:150px;">G</th></tr>
+    <tr>
+      <th rowspan="4">
+        <a href="https://en.wikipedia.org/wiki/Thymine" title="Thymine">T</a></th>
+      <td>TTT</td>
+      <td rowspan="2" style="background-color:#ffe75f">(Phe/F)
+        <a href="https://en.wikipedia.org/wiki/Phenylalanine" title="Phenylalanine">Phenylalanine</a>(np)</td>
+      <td>TCT</td>
+      <td rowspan="4" style="background-color:#b3dec0">(Ser/S)
+        <a href="https://en.wikipedia.org/wiki/Serine" title="Serine">Serine</a>(p)</td>
+      <td>TAT</td>
+      <td rowspan="2" style="background-color:#b3dec0">(Tyr/Y)
+        <a href="https://en.wikipedia.org/wiki/Tyrosine" title="Tyrosine">Tyrosine</a>(p)</td>
+      <td>TGT</td>
+      <td rowspan="2" style="background-color:#b3dec0">(Cys/C)
+        <a href="https://en.wikipedia.org/wiki/Cysteine" title="Cysteine">Cysteine</a>(p)</td>
+      <th>T</th></tr>
+    <tr>
+      <td>TTC</td>
+      <td>TCC</td>
+      <td>TAC</td>
+      <td>TGC</td>
+      <th>C</th></tr>
+    <tr>
+      <td>TTA</td>
+      <td rowspan="6" style="background-color:#ffe75f">(Leu/L)
+        <a href="https://en.wikipedia.org/wiki/Leucine" title="Leucine">Leucine</a>(np)</td>
+      <td>TCA</td>
+      <td>TAA</td>
+      <td style="background-color:#B0B0B0;">
+        <a href="https://en.wikipedia.org/wiki/Stop_codon" title="Stop codon">Stop</a>(
+        <i>Ochre</i>) *
+        <sup id="cite_ref-historical_18-3" class="reference">
+          <a href="#cite_note-historical-18">
+            <span class="cite-bracket">[</span>note 2
+            <span class="cite-bracket">]</span></a>
+        </sup>
+      </td>
+      <td>TGA</td>
+      <td style="background-color:#B0B0B0;">
+        <a href="https://en.wikipedia.org/wiki/Stop_codon" title="Stop codon">Stop</a>(
+        <i>Opal</i>) *
+        <sup id="cite_ref-historical_18-4" class="reference">
+          <a href="#cite_note-historical-18">
+            <span class="cite-bracket">[</span>note 2
+            <span class="cite-bracket">]</span></a>
+        </sup>
+      </td>
+      <th>A</th></tr>
+    <tr>
+      <td style="background-color:#97D8F7;">TTG ⇒</td>
+      <td>TCG</td>
+      <td>TAG</td>
+      <td style="background-color:#B0B0B0;">
+        <a href="https://en.wikipedia.org/wiki/Stop_codon" title="Stop codon">Stop</a>(
+        <i>Amber</i>) *
+        <sup id="cite_ref-historical_18-5" class="reference">
+          <a href="#cite_note-historical-18">
+            <span class="cite-bracket">[</span>note 2
+            <span class="cite-bracket">]</span></a>
+        </sup>
+      </td>
+      <td>TGG</td>
+      <td style="background-color:#ffe75f;">(Trp/W)
+        <a href="https://en.wikipedia.org/wiki/Tryptophan" title="Tryptophan">Tryptophan</a>(np)</td>
+      <th>G</th></tr>
+    <tr>
+      <th rowspan="4">
+        <a href="https://en.wikipedia.org/wiki/Cytosine" title="Cytosine">C</a></th>
+      <td>CTT</td>
+      <td>CCT</td>
+      <td rowspan="4" style="background-color:#ffe75f">(Pro/P)
+        <a href="https://en.wikipedia.org/wiki/Proline" title="Proline">Proline</a>(np)</td>
+      <td>CAT</td>
+      <td rowspan="2" style="background-color:#bbbfe0">(His/H)
+        <a href="https://en.wikipedia.org/wiki/Histidine" title="Histidine">Histidine</a>(b)</td>
+      <td>CGT</td>
+      <td rowspan="4" style="background-color:#bbbfe0">(Arg/R)
+        <a href="https://en.wikipedia.org/wiki/Arginine" title="Arginine">Arginine</a>(b)</td>
+      <th>T</th></tr>
+    <tr>
+      <td>CTC</td>
+      <td>CCC</td>
+      <td>CAC</td>
+      <td>CGC</td>
+      <th>C</th></tr>
+    <tr>
+      <td>CTA</td>
+      <td>CCA</td>
+      <td>CAA</td>
+      <td rowspan="2" style="background-color:#b3dec0">(Gln/Q)
+        <a href="https://en.wikipedia.org/wiki/Glutamine" title="Glutamine">Glutamine</a>(p)</td>
+      <td>CGA</td>
+      <th>A</th></tr>
+    <tr>
+      <td>CTG</td>
+      <td>CCG</td>
+      <td>CAG</td>
+      <td>CGG</td>
+      <th>G</th></tr>
+    <tr>
+      <th rowspan="4">
+        <a href="https://en.wikipedia.org/wiki/Adenine" title="Adenine">A</a></th>
+      <td>ATT</td>
+      <td rowspan="3" style="background-color:#ffe75f">(Ile/I)
+        <a href="https://en.wikipedia.org/wiki/Isoleucine" title="Isoleucine">Isoleucine</a>(np)</td>
+      <td>ACT</td>
+      <td rowspan="4" style="background-color:#b3dec0">(Thr/T)
+        <a href="https://en.wikipedia.org/wiki/Threonine" title="Threonine">Threonine</a>(p)</td>
+      <td>AAT</td>
+      <td rowspan="2" style="background-color:#b3dec0">(Asn/N)
+        <a href="https://en.wikipedia.org/wiki/Asparagine" title="Asparagine">Asparagine</a>(p)</td>
+      <td>AGT</td>
+      <td rowspan="2" style="background-color:#b3dec0">(Ser/S)
+        <a href="https://en.wikipedia.org/wiki/Serine" title="Serine">Serine</a>(p)</td>
+      <th>T</th></tr>
+    <tr>
+      <td>ATC</td>
+      <td>ACC</td>
+      <td>AAC</td>
+      <td>AGC</td>
+      <th>C</th></tr>
+    <tr>
+      <td>ATA</td>
+      <td>ACA</td>
+      <td>AAA</td>
+      <td rowspan="2" style="background-color:#bbbfe0">(Lys/K)
+        <a href="https://en.wikipedia.org/wiki/Lysine" title="Lysine">Lysine</a>(b)</td>
+      <td>AGA</td>
+      <td rowspan="2" style="background-color:#bbbfe0">(Arg/R)
+        <a href="https://en.wikipedia.org/wiki/Arginine" title="Arginine">Arginine</a>(b)</td>
+      <th>A</th></tr>
+    <tr>
+      <td style="background-color:#97D8F7;">ATG ⇒</td>
+      <td style="background-color:#ffe75f;">(Met/M)
+        <a href="https://en.wikipedia.org/wiki/Methionine" title="Methionine">Methionine</a>(np)</td>
+      <td>ACG</td>
+      <td>AAG</td>
+      <td>AGG</td>
+      <th>G</th></tr>
+    <tr>
+      <th rowspan="4">
+        <a href="https://en.wikipedia.org/wiki/Guanine" title="Guanine">G</a></th>
+      <td>GTT</td>
+      <td rowspan="4" style="background-color:#ffe75f">(Val/V)
+        <a href="https://en.wikipedia.org/wiki/Valine" title="Valine">Valine</a>(np)</td>
+      <td>GCT</td>
+      <td rowspan="4" style="background-color:#ffe75f">(Ala/A)
+        <a href="https://en.wikipedia.org/wiki/Alanine" title="Alanine">Alanine</a>(np)</td>
+      <td>GAT</td>
+      <td rowspan="2" style="background-color:#f8b7d3">(Asp/D)
+        <a href="https://en.wikipedia.org/wiki/Aspartic_acid" title="Aspartic acid">Aspartic acid</a>(a)</td>
+      <td>GGT</td>
+      <td rowspan="4" style="background-color:#ffe75f">(Gly/G)
+        <a href="https://en.wikipedia.org/wiki/Glycine" title="Glycine">Glycine</a>(np)</td>
+      <th>T</th></tr>
+    <tr>
+      <td>GTC</td>
+      <td>GCC</td>
+      <td>GAC</td>
+      <td>GGC</td>
+      <th>C</th></tr>
+    <tr>
+      <td>GTA</td>
+      <td>GCA</td>
+      <td>GAA</td>
+      <td rowspan="2" style="background-color:#f8b7d3">(Glu/E)
+        <a href="https://en.wikipedia.org/wiki/Glutamic_acid" title="Glutamic acid">Glutamic acid</a>(a)</td>
+      <td>GGA</td>
+      <th>A</th></tr>
+    <tr>
+      <td style="background-color:#97D8F7;">GTG ⇒</td>
+      <td>GCG</td>
+      <td>GAG</td>
+      <td>GGG</td>
+      <th>G</th></tr>
+  </tbody>
+</table>
 
 
 

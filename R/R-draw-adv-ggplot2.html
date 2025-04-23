@@ -69,6 +69,18 @@ h4{
 p{text-indent:2em;}
 
 .red{color:red}
+code{
+	padding:2px 3px;
+	border-radius:2px;
+}
+code.red{
+	color:red;
+	background-color:#ff000011;
+}
+code.grey{
+	color:black;
+	background-color:#00000011;
+}
 </style>
 	
 	
@@ -118,7 +130,11 @@ p{text-indent:2em;}
 	</li>
 	
 	<li><a href="#3">分组 //todo</a></li>
-	<li><a href="#4">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</a></li>
+	<li><a href="#4">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</a>
+		<ul>
+			<li><a href="#4_1">facet_grid() 设置分面坐标、宽度可不一致</a>
+		</ul>
+	</li>
 	
 	<li><a href="#4B">位置调整(position="dodge|fill|stack|identity|jitter")</a>
 		<ul>
@@ -438,10 +454,38 @@ g2=ggplot(NULL, aes(x=score, y=..count../sum(..count..)*100 ))+theme_classic()+
 library(gridExtra)
 grid.arrange(g1,g2,nrow=2)</div>
 </div>
-<br><br>
+<br>
 
 
 
+
+
+<h3>二维概率密度图 density2d</h3>
+
+<p>二维密度图（2D Density Plot）展示两个维度的密度分布。无论是探索性数据分析还是结果展示，二维密度图都能提供直观且富有洞察力的视觉信息。
+	更多示例查看<a target="_blank" href="https://blog.csdn.net/wangjunliang/article/details/147070283">CSDN</a>。
+</p>
+
+<img src="images/draw-adv-ggplot2/stat_density2d.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">library(ggplot2)
+ggplot(faithful, aes(eruptions, waiting) )+
+  stat_density2d(geom = "raster", aes(fill = ..density..), contour = F) + 
+  #stat_density2d(color = "black", size = 0.6, bins=8) + 
+  stat_density2d(color = "black", size = 0.6, binwidth=0.0035) + 
+  geom_point(colour = "black", size=0.8) + 
+  scale_fill_gradient2(low = "navy", 
+                       mid = "#FFF200", midpoint = 0.012,
+                       high="#ED1C24")  +
+  theme_classic()+ggtitle("stat_density2d")</div>
+</div>
+<p>参考:
+	<a href="https://r-graph-gallery.com/2d-density-chart.html">Density 2d</a> |
+	<a href="https://r-graph-gallery.com/2d-density-plot-with-ggplot2.html">2d density plot with ggplot2</a> |
+	<a href="https://stackoverflow.com/questions/75598144/interpretation-of-2d-density-estimate-charts">Interpretation of 2D density estimate charts</a> |
+</p>
+<br>
+<br>
 
 
 
@@ -466,7 +510,10 @@ grid.arrange(g1,g2,nrow=2)</div>
 
 <a name="4"></a>
 <h2 class="tutheader">分面: 一维facet_wrap(~x)，二维facet_grid(x~y)</h2>
-<p>ggplot2提供了2种分面系统，根据需要选择.</p>
+<p>ggplot2提供了2种分面系统，根据需要选择:</p>
+<p>facet_wrap(~cyl, nrow=2) 封装分面：先输出为一个长队列，再根据行列设置断开。</p>
+<p>facet_grid(drv~cyl) 网格分面：二维分面。如果只指定一个参数，如 .~cyl ，得到一维分面效果。</p>
+
 <img src="images/draw-adv-ggplot2/facet.png">
 
 <div class="code notranslate">
@@ -515,6 +562,21 @@ ggplot(diamonds, aes(x=price, fill=cut)) +
 </div>
 <img src="images/draw-adv-ggplot2/facet_wrap.png">
 <br><br>
+
+
+<a name="4_1"></a>
+<h3>facet_grid() 设置分面坐标、宽度可不一致</h3>
+<p>典型案例可参考 Seurat::DotPlot()的实现。简单示例如下：</p>
+<pre>
+ggplot(mpg, aes(drv, model)) +
+  geom_point( aes(size=displ) ) + #画点图，指定点大小
+  scale_size( range=c(0, 6) )+ #指定按面积显示大小，最大6
+  facet_grid(manufacturer~.,
+             scales = "free_y",  #y坐标在不同分面可以不一致
+             space = "free_y",   #每个分面的y宽度可以不同
+             switch=NULL) +       #默认分面标签显示在right侧；设置为y显示到left侧
+  theme(strip.text.y = element_text(angle = 0))
+</pre>
 
 
 
@@ -721,6 +783,12 @@ p + theme(legend.title = element_text(size=12, color = "salmon", face="bold"),
 			p + theme(legend.position = c(0.8, 0.2))</td>
 		<td>可选: 'left','top', 'right', 'bottom'.<br>
 			或坐标值 c(x,y)</td>
+	</tr>
+
+	<tr>
+		<td>图例的标题</td>
+		<td>p + guides(size = guide_legend(title = 'Percent Expressed'))</td>
+		<td>设置图例的标题，size 还可以是 color, fill 等</td>
 	</tr>
 
 	<tr>
@@ -1362,6 +1430,7 @@ ggplot(df1, aes(carat, price, color=color, shape=isDear))+
 <a name="6_4_2"></a>
 <h3 class="tutheader">自带主题及扩展包</h3>
 <p>theme_grey()为默认主题，theme_bw()为白色背景主题，theme_classic()为经典主题。</p>
+<p>Seurat::DotPlot()使用的主题 @importFrom cowplot <code class="red">theme_cowplot</code>，其默认字体大小为 14，更值得推荐使用。</p>
 <pre>
 p + theme_bw() +
     labs(subtitle="Change theme_bw")
@@ -1493,7 +1562,7 @@ DotPlot(pbmc, features = c("CD8A", "CD8B", "CD3D", "CD79A", "NKG7")) + RotatedAx
 
 
 <a name="6_5"></a>
-<h3 class="tutheader">一页多图</h3>
+<h3 class="tutheader">多重图，一页多图</h3>
 <p>图略: 第一行一个多，第二行2个图。</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">#造三个图
@@ -1661,9 +1730,9 @@ print(ggplotObj)
 dev.off()
 </pre>
 
+<p>1.<a target="_blank" href="https://cloud.tencent.com/developer/ask/sof/107931327/answer/118398441">useDingbats=T 能降低文件大小</a>。小圆圈将使用Dingbat字体，散点图和带有大量异常点的盒图的最终PDF会大幅变小。</p>
 
-
-
+<p>2.<a target="_blank" href="https://stackoverflow.com/a/21756600/4975218">useDingbats=F 能避免在Illustrator中因找不到字体而报错</a>。restrict ggplot2 from using Dingbats in the first place by adding the argument 'useDingbats' to your ggsave command eg <code class="grey">ggsave(plot=p, height=6, width=6, dpi=200, filename="xx.pdf", useDingbats=FALSE)</code></p>
 
 
 

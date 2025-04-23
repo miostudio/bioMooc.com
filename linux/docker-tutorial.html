@@ -138,6 +138,9 @@ $(function(){
 
 $ docker pull aertslab/pyscenic:0.12.1
 
+  或者把正在运行的容器提交为镜像：其中的 9587 为 docker ps 第一列
+  $ docker commit -m 'install hlaad.1.7.1' 9587 dawneve/hlaad:1.7.1
+
 查看
 $ docker images
 REPOSITORY          TAG             IMAGE ID       CREATED       SIZE
@@ -165,6 +168,7 @@ aertslab/pyscenic           0.12.1                              4d3790890827   2
 
 <h3>启动docker，创建用户名</h3>
 <p>为与宿主机权限一致，我们在docker内新建用户，其uid和gid和host中的当前用户相同。</p>
+<p>为与宿主机区分，建议设置不同的用户名，防止操作时忘了是在容器内操作。容器内外都要尽可能不用 root 用户。</p>
 <pre>
 在宿主机(host)查看uid和gid。
 $ id

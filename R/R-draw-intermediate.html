@@ -539,6 +539,37 @@ Correlation Matrices”（下载网址为 <a target="_blank" href="http://www.ma
 
 
 
+<h3 class="tutheader">Correlation_matrix</h3>
+<p>问题：怎么可视化多个变量之间的相关系数的强弱？参考 <a target="_blank" href="http://www.cookbook-r.com/Graphs/Correlation_matrix/">cookbook-r</a>。</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;">dat.cor=cor(iris[,1:4])
+dat.cor #按列求两两的相关系数
+
+library(ellipse)
+# Make the graph, with reduced margins
+#plotcorr(dat.cor)
+plotcorr(dat.cor, mar = c(0.0, 0.5, 0.5, 0.0)) #left
+
+# Do the same, but with colors corresponding to value
+colorfun = colorRamp(c("#CC0000","white","#3366CC"), space="Lab")
+plotcorr(dat.cor, col=rgb(colorfun((dat.cor+1)/2), maxColorValue=255),
+         mar = c(0.0, 0.5, 0.5, 0.0)) #right</div>
+</div>
+<img src="images/draw-intermediate/plotcorr.png"><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a name="4"></a>
 <h2 class="tutheader">马赛克图 mosaic()：展示类别型变量 </h2>
 <p>cd包中的mosaic()函数可以绘制马赛克图。（R基础安装中的mosaicplot()也可绘制马赛克图，但vcd包具有更多扩展功能。</p>

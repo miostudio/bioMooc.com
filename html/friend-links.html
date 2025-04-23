@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>友情链接</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #E44D26;
+        }
+        .links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .link-item {
+            display: flex;
+			flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        .link-item:hover {
+			/*
+            background-color: #E44D2699;
+            color: #fff;
+			*/
+			
+        }
+        .link-item img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .link-item .description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .links {
+                grid-template-columns: 1fr;
+            }
+        }
+a {color: #E44D26;}
+a:hover { opacity: .8; color: #FC704C}
+p.note{font-size:small; margin:5px 0;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>友情链接</h1>
+		
+        <p>
+			<a href="/">返回首页</a> |
+			<a target="_blank" href="https://github.com/DawnEve/txtBlog/discussions/18">互换友情链接</a>
+		</p>
+		<p class=note>* 默认按照时间顺序添加，随时可能按分区微调。</p>
+
+
+
+
+
+
+		<h2>学英语</h2>
+        <div class="links">
+<!--
+使用方法
+将href属性替换为实际链接地址。
+将<img>的src属性替换为实际图标地址。
+修改<a>标签内的文本为链接名称。
+修改<div class="description">内的文本为链接描述。
+-->
+
+            <a href="https://github.com/heygsc/word-wind" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Another Example">
+                单词之风
+				<div class="description">像风一样丝滑的背单词</div>
+            </a>
+            <a href="https://byoungd.github.io/English-level-up-tips/#/" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Yet Another Example">
+                English-level-up-tips
+				<div class="description">英语提升技巧</div>
+            </a>
+
+            <a href="https://github.com/xiaolai/everyone-can-use-english" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Example 4">
+                everyone-can-use-english
+				<div class="description">李笑来：人人都能用英语</div>
+            </a>
+            <a href="https://a-programmers-guide-to-english.harryyu.me/training/ListeningandSpeaking.html" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Example 5">
+                ListeningAndSpeaking
+				<div class="description">听力和口语提升</div>
+            </a>
+		</div>
+
+
+
+
+
+
+
+
+
+		<h2>个人网站</h2>
+		<p class=note>* 有趣且活跃更新的个人网站。</p>
+		<p class=note>* 不定期核查，如果对方删了我的链接，我也会对等删除对方。</p>
+		<div class="links">
+            <a href="https://www.ccgxk.com/" class="link-item" target="_blank">
+                <img src="https://www.ccgxk.com/content/uploadfile/202303/ad7b1679587804.jpg" alt="Example">
+                独元殇
+				<!--
+				个人主页（搜 背单词 js 遇到的）
+				-->
+				<div class="description">月光刚好，你在仰望，我们一起仰望。</div>
+            </a>
+
+            <a href="https://examplen.com" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Example 6">
+                第n个网站
+				<div class="description">发现艺术与灵感</div>
+            </a>
+            <a href="https://examplen.com" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Example 7">
+                第n个网站
+				<div class="description">关注健康与健身</div>
+            </a>
+            <a href="https://examplen.com" class="link-item" target="_blank">
+                <img src="/favicon.ico" alt="Example 8">
+                第n个网站
+				<div class="description">探索美食与烹饪</div>
+            </a>
+        </div>
+
+
+
+
+
+
+
+
+		
+    </div>
+</body>
+</html>

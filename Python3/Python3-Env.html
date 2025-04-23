@@ -247,30 +247,29 @@ PORT     STATE SERVICE
 </pre>
 <p>开端口是系统资源，需要root权限或者sudo权限。</p>
 
-
-
-
-
-
-
-
-
 <br>
 <br>
+
+
+
+
+
+
+
+
 
 <a name='1_2'></a>
 <h3 class="tutheader">运行服务器上的 Jupyter notebook</h3>
 <pre>$ jupyter notebook --no-browser --port 7000 --ip=192.168.2.120
 # 以上代码建议在tmux中运行，这样jupyter服务就可以常驻后台了。</pre>
-<p>然后通过本地浏览器作为客户端，就可以直接使用服务器硬件和文件了。
-<br>
+<p>然后通过本地浏览器作为客户端，就可以直接使用服务器硬件和文件了。</p>
 <p>
-http://192.168.2.120:7000/?token=3816b9c204abfd22c38ba70cd298c262d01ad826215beffb (注意替换IP、端口号为当前设置的值，token为每次运行自动生成的登陆凭证) </p>
-$ jupyter notebook list # 查询当前主机可用的jupyter及其token
+http://192.168.2.120:7000/?token=3816b9c204abfd22c38ba70cd298c262d01ad826215beffb (注意替换IP、端口号为当前设置的值，token为每次运行自动生成的登陆凭证) 
 </p>
+<pre>$ jupyter notebook list # 查询当前主机可用的jupyter及其token</pre>
+<br>
+<br>
 
-<br>
-<br>
 
 
 
@@ -279,8 +278,10 @@ $ jupyter notebook list # 查询当前主机可用的jupyter及其token
 <a name='1_3'></a>
 <h3 class="tutheader">开启本地端口转发 ssh -L</h3>
 <p>如果没有管理员权限，可以考虑本地端口转发：</p>
-<pre>$ ssh -L 7000:localhost:7000 username@remote_server_ip</pre>
-<p>然后在本地浏览器中输入 http://localhost:7000/?token=xxxx 登录。</p>
+<pre>$ ssh -L 8081:192.168.2.120:7000 username@remote_server_ip
+其中 remote_server_ip 是 192.168.2.120 或者能登录该服务器的其他服务器。
+</pre>
+<p>然后在本地浏览器中输入 http://localhost:8082 就是访问服务器 192.168.2.120 的7000端口。</p>
 
 
 <br>
@@ -315,13 +316,13 @@ $ jupyter notebook list # 查询当前主机可用的jupyter及其token
 
 <a name='2'></a>
 <h2 class="tutheader">Python 内置模块 venv: 创建虚拟环境</h2>
-<p>venv 是 Python 原生环境管理。</p>
+<p>venv 是 Python 原生环境管理工具。</p>
 <pre>
 创建环境
 $ python3 -m venv alphaFold-env
 
 激活环境
-$ source alphaFold-env/bin/activate
+$ source alphaFold-env/bin/activate #文件所在位置是创建命令时的 pwd
 
 安装包
 $ python3 -m pip install novas

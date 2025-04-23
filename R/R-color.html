@@ -128,12 +128,12 @@ $(function(){
 		<ul>
 			<li><a href="#2_0">查看颜色效果</a>
 			<li><a href="#2_1">内置渐变色</a>
-			<li><a href="#2_2">预置配色与自定义渐变色</a>
+			<li><a href="#2_2">RColorBrewer 包预置配色与自定义渐变色</a>
 			<li><a href="#2_3">伪时间热图的渐变色设置原理</a>
 			<li><a href="#2_4">连续型变量和渐变色的映射: cut()函数</a>
 		</ul>
 	</li>
-	<li><a href="#3">ggplot2中的色彩函数</a></li>
+	<li><a href="#3">ggplot2 中的色彩函数</a></li>
 	<li><a href="#100">色彩进阶参考</a></li>
 
 </ul>
@@ -1018,7 +1018,7 @@ barplot(rep(1,n),col=cm.colors(n), border=NA,axes=F, main="cm.colors")</div>
 
 
 <a name='2_2'></a>
-<h3 class="tutheader">2. 预置配色与自定义渐变色</h3>
+<h3 class="tutheader">2. RColorBrewer 包预置配色与自定义渐变色</h3>
 
 <p>RColorBrewer 包中颜色板被划分为序列型(sequential)、离散型(diverging)、分类型（qualitative)这三种基本能满足统计作图需要的类型。</p>
 
@@ -1028,19 +1028,58 @@ barplot(rep(1,n),col=cm.colors(n), border=NA,axes=F, main="cm.colors")</div>
 	<div style="white-space: pre-wrap;">library(RColorBrewer)
 display.brewer.all() #显示全部颜色集合
 
-#div", "qual", "seq", or "all"
+#"div", "qual", "seq", or "all"
 display.brewer.all(type="seq") #Sequential 连续型，浅色数字小，深色数字大
 display.brewer.all(type="qual") #Qualitative 定性的，适合分类变量
 display.brewer.all(type="div") #Diverging 离散型，两端强对比，中间过渡自然</div>
 </div>
 
+<pre class="maxHeight">
+> RColorBrewer::brewer.pal.info #显示颜色信息表
+         maxcolors category colorblind
+BrBG            11      div       TRUE
+PiYG            11      div       TRUE
+PRGn            11      div       TRUE
+PuOr            11      div       TRUE
+RdBu            11      div       TRUE
+RdGy            11      div      FALSE
+RdYlBu          11      div       TRUE
+RdYlGn          11      div      FALSE
+Spectral        11      div      FALSE
+Accent           8     qual      FALSE
+Dark2            8     qual       TRUE
+Paired          12     qual       TRUE
+Pastel1          9     qual      FALSE
+Pastel2          8     qual      FALSE
+Set1             9     qual      FALSE
+Set2             8     qual       TRUE
+Set3            12     qual      FALSE
+Blues            9      seq       TRUE
+BuGn             9      seq       TRUE
+BuPu             9      seq       TRUE
+GnBu             9      seq       TRUE
+Greens           9      seq       TRUE
+Greys            9      seq       TRUE
+Oranges          9      seq       TRUE
+OrRd             9      seq       TRUE
+PuBu             9      seq       TRUE
+PuBuGn           9      seq       TRUE
+PuRd             9      seq       TRUE
+Purples          9      seq       TRUE
+RdPu             9      seq       TRUE
+Reds             9      seq       TRUE
+YlGn             9      seq       TRUE
+YlGnBu           9      seq       TRUE
+YlOrBr           9      seq       TRUE
+YlOrRd           9      seq       TRUE
+</pre>
 
 
 <h4>brewer.pal(n, name) 获取颜色值</h4>
 <p>使用预置配色集合 Set2/Dark2，通过函数colorRampPalette()插值生成任意个渐变颜色。</p>
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;"># 我最喜欢中间这几组颜色了
-display.brewer.all(type="qual")
+display.brewer.all(type="qual") #见下图左
 
 # 预览一个颜色集合，比如Dark2, Set2
 display.brewer.pal(n = 8, name = 'RdBu')
@@ -1049,33 +1088,33 @@ csn='Dark2'
 myColors=brewer.pal(8,csn) #该主题有8种颜色
 
 par( mfrow=c(3,1), mar=c(0,1,1,0)) #bottom, left, top, right
-barplot(rep(1,8),col= myColors, main=csn, axes=F,border=F)</div>
+barplot(rep(1,8),col= myColors, main=csn, axes=F,border=F) #见下图右row1</div>
 </div>
 <img src="images/color/color_a2.png" /><br>
 
 
 <h4>colorRampPalette() 插值，生成一组颜色</h4>
 <div class="code notranslate">
-	<div style="white-space: pre-wrap;"># 插值，8色生成15色
+	<div style="white-space: pre-wrap;"># 插值，8色生成15色: 见上图右row2,row3
 n=15
 colorN=colorRampPalette(colors = myColors, interpolate ="linear")( n )
 barplot(rep(1, n ),col= colorN, axes=F, border=F,
         main="linear") #插值方式
 colorN2=colorRampPalette(colors = myColors, interpolate ="spline")( n )
 barplot(rep(1, n ),col= colorN2, axes=F, border=F,
-        main="spline") #插值方式
+        main="spline") #插值方式</div>
+</div>
 
 
-
-# 使用方法
-
-# 推荐使用 LAB 色彩空间
+<p>colorRampPalette()函数使用方法：</p>
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># 推荐使用 LAB 色彩空间：三色渐变
 Lab.palette = colorRampPalette(c("red", "orange", "blue"),
                                 space = "Lab")
 n=100; barplot(rep(1, n), col=Lab.palette(n), border = NA, space=0, axes=F)
 
 
-# 从绿色到深绿色的渐变
+# 从绿色到深绿色的渐变：双色渐变
 fun_color_range = colorRampPalette(c("Green", "darkgreen"))   
 my_colors = fun_color_range(100)  
 # Plotting a graph
@@ -1307,7 +1346,27 @@ plot(dat_1, pch=20, mgp=c(2,0.5,0),
 <a name='3'></a>
 <h2 class="tutheader">ggplot2 中的色彩函数</h2>
 <p><a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/">Colors_(ggplot2)</a></p>
-coding ...
+
+<pre>
+离散变量的颜色:
+scale_fill_brewer(palette = "Set1")
+scale_fill_manual(values=c(c = "red", d = "blue", e = "green" , p = "orange", r = "yellow")) #为每个 fill 值指定颜色
+scale_fill_brewer(palette = "Blues") #单一颜色
+
+
+连续型变量
+gradient 创建渐变色
+distiller 使用ColorBrewer的颜色
+	scale_color_distiller(palette = "Set1")
+identity 使用color变量对应的颜色，对离散型和连续型都有效
+
+scale_color_gradient 双色渐变（低-高）
+	scale_colour_gradient(low = "green", high = "red")
+scale_color_gradient2 发散颜色渐变（低-中-高）
+	scale_color_gradient2(low = "navy", mid = "white", high =  "red")
+scale_color_gradientn 创建n色渐变
+	scale_color_gradientn(colours =rainbow(10))
+</pre>
 
 
 

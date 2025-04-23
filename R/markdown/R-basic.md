@@ -176,6 +176,9 @@ $ Rscript test1.R
 2          4.9         3.0          1.4         0.2  setosa
 ```
 
+
+## paste()/sprintf()拼接字符串
+
 - print() 只能接受一个参数，如果要输出两个变量的值
 	* 则需要使用两次print
 	* 或者把两个变量连接成一个字符串，再print输出
@@ -191,20 +194,29 @@ $ Rscript test1.R
 ```
 
 
+对于向量，可使用 collapse="分割符" 拼接成一个字符串：
+```
+> paste( c("a", "b", "C"))
+[1] "a" "b" "C"
+> paste( c("a", "b", "C"), collapse=":") #向量遍字符串
+[1] "a:b:C"
+
+> print( paste(colnames(iris), collapse=", ") )  # 使用 collapse 隔开一个参数(向量)的多个元素
+[1] "Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species"
+```
+
 
 使用C语言风格的 sprintf() 格式化字符串 / 拼接多个字符串、数字：
 ```
 > print( sprintf("%s--%s", "a", "b") ) 
 [1] "a--b"
+
+> print( sprintf("The %s: %s", "width", "100") )
+[1] "The width: 100"
 ```
 
 
 
-对于向量，可使用 collapse= 分割后拼接成一个字符串：
-```
-> print( paste(colnames(iris), collapse=", ") )  # 使用 collapse 隔开一个参数(向量)的多个元素
-[1] "Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, Species"
-```
 
 
 
@@ -552,7 +564,7 @@ Error: object 'a' not found
 
 
 
-# 全局变量
+## 全局变量
 
 ```
 > 1/7
@@ -564,6 +576,9 @@ $digits
 > options("digits"=10) #设置为10位小数
 > 1/7
 [1] 0.1428571429 #显示10位小数
+
+> options("width"=200) #设置显示宽度为一行200个字符；默认是80个字符
+
 ```
 
 

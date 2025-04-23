@@ -81,3 +81,6 @@ h2.tutheader {
     padding-left: 2px;
 }
 
+.article-body p {
+    text-indent: 2em;
+}
