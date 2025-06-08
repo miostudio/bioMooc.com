@@ -346,6 +346,7 @@ IP地址:
 		R/ update & fix;
 	page0.4.0-3@picb add links [2025.4.25]
 	page0.4.0-4@picb before leave for SZ [2025.4.29]
+	page0.4.0-5@picb update python/ jupyter ssh 转发 [2025.6.8]
 
 ##############
 # commit

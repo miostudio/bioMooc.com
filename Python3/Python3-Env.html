@@ -267,6 +267,23 @@ PORT     STATE SERVICE
 http://192.168.2.120:7000/?token=3816b9c204abfd22c38ba70cd298c262d01ad826215beffb (注意替换IP、端口号为当前设置的值，token为每次运行自动生成的登陆凭证) 
 </p>
 <pre>$ jupyter notebook list # 查询当前主机可用的jupyter及其token</pre>
+
+<p>可以使用curl查看服务是否启动。</p>
+<pre>
+# 该端口没有启动服务
+$ curl -I http://192.168.2.120:8701
+curl: (7) Failed connect to 192.168.2.120:8701; Connection refused
+
+# 启动服务了，只是没权限访问
+$ curl -I http://192.168.2.120:7000
+HTTP/1.1 405 Method Not Allowed
+Server: TornadoServer/6.4.1
+Content-Type: text/html; charset=UTF-8
+Date: Sun, 08 Jun 2025 09:38:32 GMT
+Content-Length: 87
+
+</pre>
+
 <br>
 <br>
 
@@ -277,11 +294,12 @@ http://192.168.2.120:7000/?token=3816b9c204abfd22c38ba70cd298c262d01ad826215beff
 
 <a name='1_3'></a>
 <h3 class="tutheader">开启本地端口转发 ssh -L</h3>
-<p>如果没有管理员权限，可以考虑本地端口转发：</p>
-<pre>$ ssh -L 8081:192.168.2.120:7000 username@remote_server_ip
+<p>如果没有管理员权限，可以考虑本地端口转发，也就是通过22端口转发来访问目标端口7000：</p>
+<pre>$ ssh -L 8082:192.168.2.120:7000 username@remote_server_ip
 其中 remote_server_ip 是 192.168.2.120 或者能登录该服务器的其他服务器。
+本地端口 8082 和服务器远程端口 7000 可以相同，也可以不同。
 </pre>
-<p>然后在本地浏览器中输入 http://localhost:8082 就是访问服务器 192.168.2.120 的7000端口。</p>
+<p>然后在本地浏览器中输入 http://localhost:8082 就能访问服务器 192.168.2.120 的7000端口的服务。</p>
 
 
 <br>
