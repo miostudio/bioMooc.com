@@ -497,8 +497,26 @@ order() 如果第一个相等时，还支持第二个参数。
 
 相关函数: `match(x, table)` 返回向量x中的每个元素在向量table中的下标，如果没找到则返回NA。
 ```
+# eg1: match()函数用法示例:
 > match(x=c(-1,2), table=0:5 )
 [1] NA  3                      #-1没找到返回NA，2在0:5的第三个位置。
+
+
+# eg2: 为3种iris类型分配颜色
+colorset=c("red", "orange", "blue", "purple")
+species=c("setosa","versicolor","virginica")
+
+> match(iris$Species, species) |> head()
+[1] 1 1 1 1 1 1
+> colorset[match(iris$Species, species)] |> head()
+[1] "red" "red" "red" "red" "red" "red"
+
+plot(iris[,3], iris[,4],
+     pch=19, cex=1,
+     col=colorset[match(iris$Species, species)])
+legend("topleft", legend = species, col = colorset[1:3],
+       bty = "n", #box type: o(default), n
+       lty=1, lwd=5)
 ```
 
 要完成本题目标，我们需要反过来思考，查询原始向量在现有向量中的下标，然后去掉NA，再根据下标重排现有向量。

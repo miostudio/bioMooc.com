@@ -129,7 +129,8 @@ $(function(){
 			<li><a href="#2_0">查看颜色效果</a>
 			<li><a href="#2_1">内置渐变色</a>
 			<li><a href="#2_2">RColorBrewer 包预置配色与自定义渐变色</a>
-			<li><a href="#2_3">伪时间热图的渐变色设置原理</a>
+			<li><a href="#2_3">伪时间热图的渐变色设置原理: monocle2</a>
+			<li><a href="#2_3b">伪时间热图的渐变色设置原理: CytoTRACE</a>
 			<li><a href="#2_4">连续型变量和渐变色的映射: cut()函数</a>
 		</ul>
 	</li>
@@ -383,7 +384,8 @@ for(var i=0;i<colors.length;i++){
 	<a target="_blank" href="/color/colorWheel.html">批量By色环</a> | 
 	<a target="_blank" href="/color/colorWheelBatch.html">批量ByL</a> | 
 	<a target="_blank" href="/color/colorWheelBatch2.html">批量ByS</a> | 
-	<a target="_blank" href="/color/colorPicker_PS.html">仿PS颜色设置</a> | 
+	<a target="_blank" href="/color/colorPicker_PS.html">仿PS颜色设置</a> |
+	<a target="_blank" href="/color/colorPalette_HSL.html">HSL取色工具</a>(推荐) |
 </p>
 
 
@@ -426,12 +428,15 @@ for(var i=0;i<colors.length;i++){
 
 
 <script>
-	var ctx1 = document.getElementById('canvas_colorBar1').getContext('2d');
-	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d');
-	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d');
-	var ctx4 = document.getElementById('canvas_colorBar4').getContext('2d');
-	var ctx5 = document.getElementById('canvas_colorBar5').getContext('2d');
-	var ctx6 = document.getElementById('canvas_colorBar6').getContext('2d');
+//第一次调用 getContext() 时，添加 {willReadFrequently: true}据说能提速
+//https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+
+	var ctx1 = document.getElementById('canvas_colorBar1').getContext('2d', {willReadFrequently: true});
+	var ctx2 = document.getElementById('canvas_colorBar2').getContext('2d', {willReadFrequently: true});
+	var ctx3 = document.getElementById('canvas_colorBar3').getContext('2d', {willReadFrequently: true});
+	var ctx4 = document.getElementById('canvas_colorBar4').getContext('2d', {willReadFrequently: true});
+	var ctx5 = document.getElementById('canvas_colorBar5').getContext('2d', {willReadFrequently: true});
+	var ctx6 = document.getElementById('canvas_colorBar6').getContext('2d', {willReadFrequently: true});
 	
 	// tool 1: 方框填充
 	var showColors=function(ctx, colors, initHeight, text="", width=50, deltaH=0, height=20){
@@ -573,12 +578,12 @@ for(var i=0;i<colors.length;i++){
 			
 		'#000000',
 		], 410, '大自然 4 色组合', 30,deltaH=2)
-		
-	
-	
-	
-	
-	
+
+
+
+
+
+
 
 /**==========================
 * 第2个色板: cns文章色彩
@@ -676,8 +681,9 @@ for(var i=0;i<colors.length;i++){
 
 
 
-	
-	
+
+
+
 	//100. CNS 色彩
 	showColors(ctx2,[
 		// nature杂志配色
@@ -697,7 +703,7 @@ for(var i=0;i<colors.length;i++){
 		
 		'black'
 	], 550, 'nature 杂志色彩组合', 25,deltaH=2)
-	
+
 
 
 
@@ -857,15 +863,18 @@ Red/Dark Red/ */
 	showColors(ctx5,[ '#0472BE', '#EDC201', 'black' ],125, 'barplot/volcano(2 colors: Normal vs Tumor)', width=100);
 
 	showColors(ctx5,[ '#4682B4', '#8B0000' ],150, 'barplot(2 colors) in R: steelblue, darkred [Good]', width=100);
-	showColors(ctx5,[ "#F71480", "#FF8101", "#808101" ],175, 'barplot(3 colors)', width=100);
-	showColors(ctx5,[ "#00AFBB", "#E7B800", "#FC4E07" ],200, 'barplot(3 colors)', width=100);
-	showColors(ctx5,[ "#FDE725FF", "#3AC96DFF", "#440154FF" ],225, 'dot plot(3 colors)', width=100);
+	showColors(ctx5,[ "#F71480", "#FF8101", "#808101",
+		"white", "#BC5DC8", "#1D6F74", "#FB721A"],175, 'barplot(3 colors) | r-bloggers(3)', width=50);
+		//c("purple", "cyan4", "darkorange");
+	showColors(ctx5,[ "#00AFBB", "#E7B800", "#FC4E07" ],200, 'barplot(3 colors)', width=50);
+	showColors(ctx5,[ "#FDE725FF", "#3AC96DFF", "#440154FF" ],225, 'dot plot(3 colors)', width=50);
 
 	showColors2(ctx5,[ "#FF3030", "#009ACD", "#FFC125", "#AB82FF", "#CD8500", "#548B54" ],250, 'Vln plot(6 dark)', width=24);
 	showColors2(ctx5,[ "#F57C63", "#4897D2", "#DEEBB4", "#8EAEE7", "#FFDE63", "#6C9059" ],275, 'Vln plot(6 light)', width=24);
 	showColors(ctx5,[ "#E14939", "#58BCD5", "#23A087", "#3F5688", "#F09A81", "#8693B3" ],300, 'Box plot(n=6)', width=50);
 	showColors(ctx5,[ "#F4EE87", "#804922", "#26345E", "#B7E0F2", "#ED6369", "#546F35" ],325, 'Box plot(n=6)', width=50);
 	showColors(ctx5,[ "#C36752", "#578BC2", "#E39B5D", "#5F9A72", "#8B8DBD", "#85A4B3" ],350, 'Box plot(n=6)', width=50);
+	showColors(ctx5,[ "#797979", "#7FBF78", "#E20000", "#F4A500", ],375, 'Bar plot(n=4) SpecHLA', width=50);
 
 
 
@@ -1190,8 +1199,8 @@ barplot(rep(1, 12), col = ramp2hex( b2p2(seq(0, 1, len = 12)) ),
 
 
 <a name='2_3'></a>
-<h3 class="tutheader">伪时间热图的渐变色设置原理</h3>
-<p> monocle 的pseudotime_heatmap的配色很显眼，十分值得借鉴。 本文只关心渐变色生成部分。</p> 
+<h3 class="tutheader">伪时间热图的渐变色设置原理: monocle2</h3>
+<p> monocle2 包的pseudotime_heatmap的配色很显眼，十分值得借鉴。本文只关心渐变色生成部分。</p> 
 <p> 整个图的画法请参考: <a target="_blank" href='https://tool.biomooc.com/R_scripts/#t9'>伪时间平滑化热图 plot_pseudotime_heatmap (仿monocle)</a> </p>
 <img src="images/color/color_a3.png" /><br>
 
@@ -1207,10 +1216,10 @@ table.ramp = function (n, mid = 0.5, sill = 0.5, base = 1, height = 1) {
   x <- seq(0, 1, length.out = n) #0-1之间取n个值
   y <- rep(0, length(x)) #等长度的0
   
-  ### 定义极值 still
+  ### 定义极值 sill
   sill.min <- max( c(1, round( (n-1)*(mid-sill/2) ) + 1) ) #14
   sill.max <- min( c(n, round( (n-1)*(mid+sill/2) ) + 1) ) #19
-  
+
   ########## 替换0 平台期: 围绕mid的sill极值范围内的y取1
   y[sill.min:sill.max] <- 1
   y
@@ -1248,7 +1257,9 @@ table.ramp = function (n, mid = 0.5, sill = 0.5, base = 1, height = 1) {
 
 
 height=1
-n=10
+
+n=10 #指定颜色个数
+
 #do.call("table.ramp", as.list(c(n, c(0.8, 0.2, 1)))) #等价于
 rr=table.ramp(n, 0.8,0.2,1); rr
 #[1] 0.0000000 0.0000000 0.0000000 0.0000000 0.3333333 0.6666667 1.0000000
@@ -1281,6 +1292,80 @@ text(posX, -0.05, labels=hmcols,
      srt=40) #倾斜30度)</div>
 </div>
 <br>
+
+
+
+
+
+<a name='2_3b'></a>
+<h3 class="tutheader">伪时间热图的渐变色设置原理: CytoTRACE</h3>
+<p> CytoTRACE 包的 plotCytoTRACE 的配色很显眼，十分值得借鉴。本文只关心渐变色生成部分。</p> 
+<img src="images/color/color_CytoTRACE.png" /><br>
+
+
+<div class="code notranslate maxHeight">
+	<div style="white-space: pre-wrap;"># 1. 主干11个颜色
+temp=RColorBrewer::brewer.pal(11, "Spectral");temp
+# "#9E0142" "#D53E4F" "#F46D43" "#FDAE61" "#FEE08B" "#FFFFBF" "#E6F598" "#ABDDA4" "#66C2A5" "#3288BD" "#5E4FA2"
+# 替换第6个为金色
+temp[6] <- "gold"
+
+# 2.插值：返回函数
+rbPal <- colorRampPalette(temp)
+
+# 3.获取n个颜色
+n=100
+cols <- rbPal( n ); cols
+
+#####
+# 2. 另一种插值方法：效果同上
+if(0){
+  # hmcols=colorRamp(cols, bias = 1, space = c("rgb", "Lab"), interpolate = c("linear", "spline"))
+  hmcols_fn=colorRamp(temp, bias = 1, space = c("rgb"), interpolate = c("spline"))
+  ramp2hex=function(ramp){
+    apply(ramp, 1, function(x){
+      rgb(x[1], x[2], x[3], maxColorValue = 255)
+    })
+  }
+  # 返回n个颜色
+  n=100
+  cols = ramp2hex( hmcols_fn(seq(0, 1, len = n))); cols
+}
+#####
+
+# 4.可视化颜色
+hmcols=rev(cols)
+barplot(rep(1,length(hmcols)), col=hmcols, border = NA, space=0, yaxt="n")
+
+
+
+########################
+# Fig2. 对于cell cluster的颜色，可指定更少的n
+temp=RColorBrewer::brewer.pal(11, "Spectral");temp
+temp[6] <- "gold"
+rbPal <- colorRampPalette(temp)
+n=10
+cols <- rbPal( n ); cols
+hmcols=rev(cols)
+barplot(rep(1,length(hmcols)), col=hmcols, border = NA, space=0, yaxt="n")
+
+# 在 ggplot2中这样使用:
+if(0){
+	data$Phenotype <- factor(data$Phenotype, levels = levels)
+	pheno_levels <- levels(data$Phenotype)
+	cols <- rbPal(length(pheno_levels))
+	names(cols) <- pheno_levels
+
+p1 = ggplot2::ggplot(data, ggplot2::aes(x = emb[, 1], y = emb[, 2])) +
+	ggplot2::geom_point(ggplot2::aes(colour = Phenotype), size = ptsize) +
+	ggplot2::scale_colour_manual(values = cols,
+		guide = ggplot2::guide_legend(frame.colour = "black", override.aes = list(size = 4))
+	)+
+	...
+}</div>
+</div>
+<br>
+
 
 
 

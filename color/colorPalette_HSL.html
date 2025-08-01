@@ -1,16 +1,26 @@
 <meta charset="utf8">
+<title>HSL Color Palette</title>
 
 <style>
 main,
 .help{margin:10px;}
 .help p{text-indent: 2em;}
 .red{color:red;}
+
+/* 底部：颜色灯箱 */
+#lightBox{
+  min-height: 3em;
+}
+#lightBox span{
+  padding: 5px;
+  display: inline-block;
+}
 </style>
 
 <div class="help">
-	<h1>HSL Color Picker</h1>
+	<h1>HSL Color Palette</h1>
 
-	<p>HSL 颜色模型更容易被人类理解。<b>论文中常常使用<span class=red>饱和度在40-60%之间</span>，且饱和度接近的颜色组合。</b></p>
+	<p>HSL 颜色模型更容易被人类理解。<b>论文中常常使用<span class=red>饱和度(S)在40-60%之间</span>，且饱和度接近的颜色组合。</b></p>
 	<ul>
 		<li>H 色相[0, 360]，就是红橙黄绿蓝靛紫等颜色。</li>
 		<li>S 饱和度[0, 100%]，鲜艳程度。饱和度越高，颜色越鲜艳。饱和度越低，颜色越灰黑暗沉。</li>
@@ -68,19 +78,19 @@ main,
       <div class="picker-and-output">
         <form>
           <label for="h">
-            Hue:
+            Hue [0-360]:
 
             <input type="range" value="180" min="0" max="360" step="0.1" name="h" id="h">
           </label>
 
           <label for="s">
-            Saturation:
+            Saturation [0, 100%]:
 
             <input type="range" value="50" min="0" max="100" step="0.1" name="s" id="s">
           </label>
 
           <label for="l">
-            Lightness:
+            Lightness [0, 100%]:
 
             <input type="range" value="50" min="0" max="100" step="0.1" name="l" id="l">
           </label>
@@ -96,11 +106,23 @@ main,
 </main>
 
 
+
+
+<div id=lightBox>
+  <span id=msg></span>
+</div>
+
+
+
+
 <div class="help">
 	<br>
 	<hr>
-	<p style="color:#aaa">* Code came from <a target="_blank" href="https://cloudfour.com/thinks/hsl-a-color-format-for-humans/">HSL: a color format for humans</a>.</p>
+	<p style="color:#aaa">* Code modified from 
+    <a target="_blank" href="https://cloudfour.com/thinks/hsl-a-color-format-for-humans/">HSL: a color format for humans</a>.
+  </p>
 </div>
+
 
 
 
@@ -128,7 +150,7 @@ body {
 
 .target {
   padding: 1em;
-  min-height: 6em;
+  min-height: 2em;
   background-color: hsl(
     var(--hue),
     var(--saturation),
@@ -575,6 +597,16 @@ function initRgbPicker(picker) {
       `.trim();
       
       updateContrastPercentages({rgb: true});
+
+
+      // rgb to hsl & hex, by wjl
+      var r=styles.getPropertyValue('--r').trim()
+      var g=styles.getPropertyValue('--g').trim()
+      var b=styles.getPropertyValue('--b').trim()
+      var hex=outputText.innerText.replace('ff', '')
+      msg.innerHTML=`rgb(${r}, ${g}%, ${b}%); <br>hex:${hex}`;
+      lightBox.style.backgroundColor = hex;
+      console.log("rbg:", r, g, b, ", hex:", hex)
     });
   });
 }
@@ -611,6 +643,18 @@ function initHslPicker(picker) {
       `.trim();
       
       updateContrastPercentages({hsl: true});
+
+
+
+      // hsl to rgb & hex, by wjl
+      var h=styles.getPropertyValue('--h').trim()
+      var s=styles.getPropertyValue('--s').replace('%', '').trim()
+      var l=styles.getPropertyValue('--l').replace('%', '').trim()
+      var rgb=hslToRgb(h, s, l)
+      var hex=hslToHex(h, s, l)
+      msg.innerHTML=`hsl(${h}, ${s}%, ${l}%); <br>rgb(${rgb}); <br>hex:${hex}`;
+      lightBox.style.backgroundColor = hex;
+      console.log("hsl:", h, s, l, ", rgb:", rgb, ", hex:", hex)
     });
   });
 }
@@ -675,16 +719,16 @@ function updateContrastPercentages({hsl = false, rgb = false}) {
 
 // https://stackoverflow.com/a/36722579/7816145
 /**
-     * Converts an HSL color value to RGB. Conversion formula
-     * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-     * Assumes h, s, and l are contained in the set [0, 1] and
-     * returns r, g, and b in the set [0, 255].
-     *
-     * @param   {number}  h       The hue
-     * @param   {number}  s       The saturation
-     * @param   {number}  l       The lightness
-     * @return  {Array}           The RGB representation
-     */
+* Converts an HSL color value to RGB. Conversion formula
+* adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+* Assumes h, s, and l are contained in the set [0, 1] and
+* returns r, g, and b in the set [0, 255].
+*
+* @param   {number}  h       The hue
+* @param   {number}  s       The saturation
+* @param   {number}  l       The lightness
+* @return  {Array}           The RGB representation
+*/
 function hslToRgb(h, s, l){
   h = h / 360;
   s = s / 100;
@@ -749,7 +793,6 @@ function deltaE(rgbA, rgbB) {
 /**
  * To compute the color contrast we need to convert to LAB colors
  */
-
 function rgb2lab(rgb){
   let r = rgb[0] / 255, g = rgb[1] / 255, b = rgb[2] / 255, x, y, z;
   r = (r > 0.04045) ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
@@ -762,5 +805,60 @@ function rgb2lab(rgb){
   y = (y > 0.008856) ? Math.pow(y, 1/3) : (7.787 * y) + 16/116;
   z = (z > 0.008856) ? Math.pow(z, 1/3) : (7.787 * z) + 16/116;
   return [(116 * y) - 16, 500 * (x - y), 200 * (y - z)]
+}
+
+
+
+
+
+
+/**
+ * hsl to hex, by DeepSeek
+ */
+
+function hslToHex(h, s, l) {
+    // 获取输入值
+    var h = parseInt(h);
+    var s = parseInt(s) / 100;
+    var l = parseInt(l) / 100;
+
+    // HSL转RGB算法
+    let c = (1 - Math.abs(2 * l - 1)) * s;
+    let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    let m = l - c / 2;
+    
+    let r, g, b;
+    if (h >= 0 && h < 60) {
+        [r, g, b] = [c, x, 0];
+    } else if (h >= 60 && h < 120) {
+        [r, g, b] = [x, c, 0];
+    } else if (h >= 120 && h < 180) {
+        [r, g, b] = [0, c, x];
+    } else if (h >= 180 && h < 240) {
+        [r, g, b] = [0, x, c];
+    } else if (h >= 240 && h < 300) {
+        [r, g, b] = [x, 0, c];
+    } else {
+        [r, g, b] = [c, 0, x];
+    }
+    
+    // 转换为0-255范围
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    
+    // 转换为十六进制
+    const hex = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    
+    return hex;
+}
+
+/*
+数字转为16进制字符串，不够2位的补充0
+toHex(1) //'01'
+*/
+function toHex(value) {
+    const hex = value.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
 }
 </script>

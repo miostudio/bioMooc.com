@@ -955,7 +955,7 @@ FALSE  TRUE
 
 
 
-### (4) 使用 subset() 函数筛选行
+### (4) 使用 subset() 函数筛选行(row selection)
 
 ```
 # gear >4 且 carb 为2的行，只显示3列
@@ -972,6 +972,13 @@ Merc 240D 24.4   4 146.7  62 3.69 3.19 20.0  1  0    4    2
 Merc 230  22.8   4 140.8  95 3.92 3.15 22.9  1  0    4    2
 Merc 280  19.2   6 167.6 123 3.92 3.44 18.3  1  0    4    4
 Merc 280C 17.8   6 167.6 123 3.92 3.44 18.9  1  0    4    4
+```
+
+```
+# 取子集
+subset(Puromycin, state == "treated" & rate > 160)
+
+subset(Puromycin, conc > mean(conc))
 ```
 
 
@@ -999,7 +1006,7 @@ sqldf包支持SQL查询。
 ## 遍历
 
 - 常规解决不了的就用遍历。虽然效率可能不理想，但至少先work。
-- 如果需要比较复杂的比较，甚至计算、函数调用，则不得不遍历。
+- 如果需要比较复杂的比较，甚至计算、函数调用，只能用遍历。
 - 有时候遍历是为了获取新的数据，并不做筛选。
 
 
@@ -1097,6 +1104,40 @@ attr(,"row.names")
 
 ### 修改数据类型
 
+```
+as.numeric( xx$yy)
+```
+
+
+### 宽变长
+
+一般用于画图。
+
+将数据由多列修改为只有2个列，一列是变量名（如不同条件），另一列是值（如平均表达水平）。
+
+```
+> head(dat.plot2, n=2)
+      avgA       avgB       avgC               eventType  gene
+FLNA     0 0.05336613 0.01326964 Early/transient changes  FLNA
+PI4KA    0 0.61404847 0.06067100 Early/transient changes PI4KA
+
+# 转换为长格式：参数 cols 是必须的，后面的都可选。
+> df_long <- dat.plot2 %>%
+  tidyr::pivot_longer(
+    cols = starts_with("avg"), #合并 avg开头的列
+    names_to = "Point",    #变量的列名
+    values_to = "Value",   #值的列名
+    names_prefix = "avg"  #去掉列名前的前缀 avg
+  )
+
+> head(df_long, n=2)
+# A tibble: 2 × 4
+  eventType               gene  Point  Value
+  <chr>                   <chr> <chr>  <dbl>
+1 Early/transient changes FLNA  A     0     
+2 Early/transient changes FLNA  B     0.0534
+```
+
 
 
 
@@ -1107,48 +1148,49 @@ attr(,"row.names")
 
 ## 新增
 
+
+### 添加新列的几种方法
+
+例：新增一列 iconc=1/conc。
+
+```
+a=head(Puromycin);a
+
+#方法1
+a$iconc=1/a$conc;a
+
+#方法2：使用with
+a$iconc=with(a,1/conc);a
+
+#方法3：用 transform( )函数, 且可一次性定义多个变量
+a=transform(a, iconc=1/conc, sqrtconc=sqrt(conc));a
+```
+
+
+
 ## 删除
 
-## 转置
+### 删除某一列
+
+```
+> df=iris[,1:4];
+> head(df, 2)
+  Sepal.Length Sepal.Width Petal.Length Petal.Width
+1          5.1         3.5          1.4         0.2
+2          4.9         3.0          1.4         0.2
+```
 
 
 
 ## 连接合并
 
+- rbind(df1, df2); #按行合并，变长
+- cbind(df1, df2); #按列合并，变宽
+
+
 ## 计算
 
-
-
-
-
-
-(5)数据框操作
-
-
-
-
-
-
-
-#取子集
-subset(Puromycin, state == "treated" & rate > 160)
-subset(Puromycin, conc > mean(conc))
-
-
-#添加新列的三种方法。iconc=1/conc
-a=head(Puromycin);a
-#方法1
-a$iconc=1/a$conc;a
-#方法2：使用with
-a$iconc=with(a,1/conc);a
-#方法3：用 transform( )函数, 且可一次性定义多个变量
-a=transform(a, iconc=1/conc, sqrtconc=sqrt(conc));a
-
-
-
-
-
-
+见 [apply 及家族函数](/R/R-apply.html)
 
 
 

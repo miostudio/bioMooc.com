@@ -958,9 +958,29 @@ title("Distance Between Brownian Motions") </div>
 
 
 
+<h4>填充概率密度曲线下面积：全部填充</h4>
+<img src="images/draw-basic2/polygon_fill-density.png">
+<div class="code notranslate">
+	<div style="white-space: pre-wrap;"># Data
+set.seed(3)
+y = rnorm(150)
+
+den = density(y)
+
+# Plot
+plot(den)
+
+# Fill area
+polygon(den, col = "slateblue1")
+</div>
+</div>
 
 
-<h4>填充概率曲线下的面积</h4>
+
+
+
+
+<h4>填充概率曲线下的面积: 指定区域填充</h4>
 <img src="images/draw-basic2/polygon_fill-adv.png">
 <div class="code notranslate">
 	<div style="white-space: pre-wrap;">set.seed(1)
