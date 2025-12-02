@@ -1,3 +1,137 @@
+# 远程同步命令 rsync: 增量备份 + 保留元数据
+
+- ‌元数据保留：-a参数可完整保留权限、时间戳等属性。‌‌我认为是 rsync 的精髓，可以代替cp命令。
+- 要在tmux中执行，防止网络波动。
+
+## 1. rsync 核心语句
+
+- 传输的双方都必须安装 rsync。
+
+安装：
+
+```
+# Debian
+$ sudo apt-get install rsync
+
+# Red Hat
+$ sudo yum install rsync
+```
+
+
+使用：
+
+```
+$ rsync -r source destination
+上面命令中，-r表示递归，即包含子目录。
+注意，-r是必须的，否则 rsync 运行不会成功。
+source目录表示源目录，destination表示目标目录。
+
+如果有多个文件或目录需要同步，可以写成下面这样。
+$ rsync -r source1 source2 destination
+```
+
+
+或者写成脚本，类似：
+```
+$ src=/data/wangjl/tmp/   #源目录，from
+$ des=/datapool/jinlab/wangjl/tmp/  #目标目录，to
+
+$ rsync -av ${src} ${des}
+或者
+$ rsync -avzP --delete ${src} ${des}
+
+参数解释：
+-a可以递归、同步元数据（修改时间、权限等）
+-v参数输出详细过程
+-z: 传输时进行压缩提高效率
+-P：显示文件传输的进度信息
+
+--delete 当源目录中的文件删除，同步后目标目录中的文件也会被删除
+	酌情使用，如果为了保持绝对一致，建议加上。
+```
+
+
+## 2. 我的自动备份脚本实例
+
+```
+$ vim back_logs/backup_scPolyA-seq2_monthly.sh
+src=/data/wangjl/scPolyA-seq2/
+des=/datapool/wangjl/scPolyA-seq2/
+rsync -avzP ${src} ${des} | tee -a ${des}/back_logs/sync.data2picb.$(date +%Y%m%d\-%H%M%S).log
+
+放到tmux中执行，首次可能要过夜(24MB/s)，以后之同步增量变化，会越来越快。
+$ bash back_logs/backup_scPolyA-seq2_monthly.sh
+一个月执行一次。
+```
+
+
+## 3. 细微区别: 路径结尾是否加/符号
+
+如果只想同步源目录source里面的内容到目标目录destination，则需要在源目录后面加上斜杠。
+
+$ rsync -a source/ destination
+
+上面命令执行后，source目录里面的内容，就都被复制到了destination目录里面，并不会在destination下面创建一个source子目录。
+
+```
+$ rsync dir1 dir2/  #是把dir1 复制到 dir2/ 下，最后的结果是 dir2/dir1 结构。
+$ rsync dir1/ dir2/  #是把dir1/的内容复制到 dir2/ 下，两个文件夹的内容完全一致。
+```
+
+## 4. 默认保留软连接，如果要求复制文件，而不是软连接本身
+
+-L 或 --copy-links 参数会让 rsync 复制软链接指向的实际文件或目录内容，而不是保留软链接。
+
+
+
+## 5. 只传输带有某个关键词的文件: --exclude 排除参数, --include 包含参数
+
+```
+$ src=/home/liyh/data3/newRNAseq_analysis/rawdata/
+$ des=wangjl@gate1.picb.ac.cn:/picb/jinlab/wangjl/wangjl_hair/
+
+$ rsync -avzP --copy-links --include='*wangjunliang*' --exclude='*' ${src} ${des}
+```
+
+注意：
+
+-	顺序很重要：--include 和 --exclude 的顺序会影响结果。--include 必须放在 --exclude 之前。
+-	目录处理：如果 wangjunliang 是目录名的一部分，rsync 会递归传输该目录及其内容。
+
+传输前查询大小：只统计带某关键词的文件
+```
+	$ find ./ -type f -name '*wangjunliang*' -exec du -ch {} + | grep total$
+	149G    total
+
+	参数解释：
+		find /source/path/：在 /source/path/ 目录下查找文件。
+		-type f：只查找文件（不包括目录）。
+		-name '*wangjunliang*'：匹配文件名中包含 wangjunliang 的文件。
+		-exec du -ch {} +：对找到的文件执行 du -ch 命令，计算大小并显示总计。
+		grep total$：过滤输出，只显示总计行。
+
+或者 使用 rsync 的 --dry-run 选项
+	$ rsync -avzP --copy-links --include='*wangjunliang*' --exclude='*' --dry-run ${src} ${des} | grep 'total size'
+	Try 'dirname --help' for more information.
+	total size is 172,981,478,618  speedup is 93,050,822.28 (DRY RUN)
+	=> 172981478618/1024**3=161 G，似乎对不上。
+```
+
+
+更多实例：
+```
+实例1：只要 merge 开头的文件夹，比如 merge1/, merge2/，其他不要:
+$ rsync -avzP --include='merge*/' --exclude='*/' ./ liuyulei@gate1.picb.ac.cn:/picb/jinlab/liuyulei/data/rawdata/
+
+实例2：只要T_开头和N_开头的文件（10x的fastq文件）:
+$ rsync -avzP --include='T_*' --include='N_*' --exclude='*' ./ zhumengxuan@gate1.picb.ac.cn:/picb/jinlab/zhumengxuan/pdyan/
+```
+
+
+
+
+
+
 # 文件传输命令 scp
 
 scp — OpenSSH secure file copy
@@ -179,4 +313,17 @@ R22021013-1234567_123-123_L_combined_R2.fastq.gz: OK
 
 
 
+
+## 批量获取 fastq.gz 文件的md5验证码
+
+```
+@193$ ls *fastq.gz | while read id; do echo `md5sum $id`; done > ~/yanpd.md5
+
+只要T_和N_开头的文件:
+@193$ ls *fastq.gz | grep -e "^T_" -e "^N_" | while read id; do echo `md5sum $id`; done > ~/yanpd.md5
+```
+
+然后拷贝该给对方进行完整性验证。
+
+`$ md5sum -c yanpd.md5`
 

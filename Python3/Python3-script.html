@@ -112,6 +112,7 @@ p{text-indent:2em;}
 			<li><a href="#2_2">使用 argparse 模块 接收参数</a></li>
 			<li><a href="#2_3">使用 click 第三方模块 接收参数</a></li>
 			<li><a href="#2_3_b">参数校验与主动报错</a></li>
+			<li><a href="#2_3_c">主动退出脚本: sys.exit(0)</a></li>
 			
 			<li><a href="#2_4">使用 "__main__" 程序入口</a></li>
 			<li><a href="#2_5">打印时间戳进度条</a></li>
@@ -425,6 +426,24 @@ else:
 x = 23
 assert x > 0, "x is not zero or negative"
 assert x%2 == 0, "x is not an even number"
+</pre>
+
+
+
+
+
+
+
+<a name='2_3_c'></a>
+<h3 class="tutheader">主动退出脚本: sys.exit(0)</h3>
+<pre>
+import sys
+ 
+# 正常退出，默认返回0
+sys.exit()
+
+# 退出并返回错误代码
+sys.exit(1)
 </pre>
 
 

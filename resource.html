@@ -4,6 +4,15 @@
 body{width:90%; margin:10px auto;
 	font: 14px/24px "Microsoft YaHei",arial,"\5b8b\4f53",sans-serif,tahoma;
 }
+h2{margin: 50px 0px 10px 5px;}
+
+ul.header{
+	background:#f1f1f1;
+}
+ul.header li:hover{
+	background:#e1e1e1;
+}
+
 .best-text {
     overflow: hidden;
     position: relative;
@@ -52,12 +61,13 @@ table {
 <body>
 <a href='/'>Goto Home page</a>
 
-<ul>
+<ul class=header>
 	目录
-	<li>希腊字母</li>
-	<li>简并碱基</li>
-	<li>氨基酸缩写</li>
-	<li>标准遗传密码子表</li>
+	<li><a href="#1">希腊字母</a></li>
+	<li><a href="#2">简并碱基</a></li>
+	<li><a href="#3">氨基酸缩写</a></li>
+	<li><a href="#4">标准遗传密码子表</a></li>
+	<li><a href="#5">计算机存储数量级 K(1e3), M(1e6), G(1e9), T(1e12), P(1e15)</a></li>
 </ul>
 
 
@@ -69,6 +79,7 @@ table {
 
 
 <hr />
+<a name="1"></a>
 <h2>希腊字母</h2>
 <pre class='best-text'>
 Α α：阿尔法 Alpha
@@ -106,6 +117,7 @@ table {
 
 
 <hr />
+<a name="2"></a>
 <h2>简并碱基</h2>
 <table border="" cellspacing="0" cellpadding="2" cols="2" width="350">
 <tbody>
@@ -211,6 +223,7 @@ table {
 
 
 <hr>
+<a name="3"></a>
 <h2>氨基酸缩写(n=20)</h2>
 
 <table border="1">
@@ -262,6 +275,7 @@ table {
 
 
 <hr>
+<a name="4"></a>
 <h2>标准遗传密码子表(n=64)</h2>
 
 <i>* from <a href="https://en.wikipedia.org/wiki/DNA_and_RNA_codon_tables">wiki</a></i>
@@ -478,8 +492,70 @@ table {
 
 
 
-<br>
-<br>
-<br>
 
+
+
+
+
+
+
+
+
+
+
+<hr>
+<a name="5"></a>
+<h2>计算机存储数量级 K(1e3), M(1e6), G(1e9), T(1e12), P(1e15)</h2>
+<pre>
+1.从小到大
+	y(yocto): 1e-24
+	z(zepto): 1e-21
+	a(atto): 1e-18
+	f(femto): 1e-15
+	p(pico): 1e-12
+	n(namo): 1e-9
+	µ(micro): 1e-6
+	m(milli): 1e-3
+<hr>
+thousand（千）: 1e3
+	KB(killo): 1e3
+Million（百万）‌: 1,000,000（10⁶）
+	MB(Mega): 1e6
+‌Billion（十亿）‌: 1,000,000,000（10⁹）
+	GB(Giga): 1e9
+‌Trillion（万亿）‌: 1,000,000,000,000（10¹²）
+	TB(Tera): 1e12
+Quadrillion（千万亿）: 10¹⁵
+	PB(Peta): 1e15
+Quintillion（百亿亿）: 10¹⁸
+	EB(Exa): 1e18
+zettabyte: 10²¹
+	ZB(Zetta): 1e21
+
+<i>from:
+* https://zh.wikipedia.org/wiki/国际单位制
+* https://en.wikipedia.org/wiki/International_System_of_Units
+</i>
+
+
+2.硬盘中使用GB表示 billion?
+字母 ‌G‌ 代表 ‌Giga‌（千兆），是国际单位制（SI）的标准前缀。如GHz，表示频率。
+
+与 Billion 的关系‌
+‌Billion‌ 在美式英语中表示十亿（10⁹），与 Giga 的数值相同，但用途不同：
+	‌G‌ 用于物理量单位（如存储、频率）‌。
+	‌B‌ 用于数量统计（如模型参数量、经济数据）‌。
+例如：硬盘标称 500GB 中的 G 是存储单位，而模型参数 175B 中的 B 是数量单位‌。
+</pre>
+
+
+
+
+
+
+<br>
+<br>
+<br>
+<hr>
+-- End --
 </body>

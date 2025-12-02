@@ -30,7 +30,32 @@
 
 
 
-## 全连接层 FC(Fully-Connected Layer)
+## Flatten layer(展平层/扁平层)
+
+从卷积层过渡到全连接层：在卷积神经网络 (CNN) 中，卷积层和池化层通常对多维张量（例如，图像的 2D）进行操作。但是，在将数据传递到需要 1D 输入的全连接层之前，我们需要将张量展平。
+
+Flatten 层通过将 2D 或 3D 张量转换为 1D 向量来实现此目的。
+
+扁平层（Flatten layer） 扁平层是卷积神经网络 (CNN) 的组成部分。完整的卷积神经网络可以分为两部分：
+
+- CNN：由卷积层组成的卷积神经网络。
+- ANN：由密集层组成的人工神经网络。
+
+
+扁平层位于 CNN 和 ANN 之间，其作用是将 CNN 的输出转换为 ANN 可以处理的输入。
+
+
+
+
+
+## 全连接层 FC(Fully-Connected Layer) / 密集层 (Dense Layer)
+
+Dense Layer（密集层）是深度学习中常见的一种神经网络层，也被称为 全连接层 （ Fully Connected Layer ）或 线性层 （ Linear Layer ）。其核心功能是通过矩阵运算实现输入特征到输出特征的线性变换。
+
+- 参数计算‌：每个神经元与上一层的所有神经元相连，参数数量为输入特征数×输出特征数
+‌
+- 作用‌：常用于分类、回归等任务，通过非线性激活函数实现复杂特征映射
+
 
 全连接层（Fully Connected Layer），简称 FC 层，是人工神经网络中的基础层之一。
 
@@ -45,12 +70,22 @@ y=f(W.x + b)
 - b 偏置项 bias
 - f 激活函数，如 ReLU, Sigmoid
 
+```
+# PyTorch 创建线性层可通过nn.Linear(in_features, out_features)
+linear_layer = nn.Linear(10, 5)   #该层将接收10个输入特征，输出5个特征。
+```
+
 
 * https://zhuanlan.zhihu.com/p/789336180
 
 
 
+
 ## 激活函数 (常见的四种，现在多用 ReLU)
+
+通常在线性变换之后，会应用一个非线性激活函数，如 ReLU、Sigmoid 或 Tanh，以引入非线性特性。
+
+“在人工神经网络中，每个神经元形成其输入的加权和，并将得到的标量值通过称为激活函数的函数传递。” [wiki](https://en.wikipedia.org/wiki/Activation_function)
 
 使用激活函数，是为网络引入非线性。
 
@@ -104,12 +139,29 @@ y=exp(xi) / sum( exp(xi) )
 
 ## 前向传播(Forward propagation)
 
+从左向右，由输入计算预测值的过程，叫前向传播。
+
 
 ## 反向传播(Backpropagation)
+
+从右向左，从结果根据误差大小逐步修正参数的过程，叫反向传播。
+
+- 参数的修正方向是梯度的反方向。
+- 梯度就是损失函数对未知数w和b的偏导数。
 
 
 
 ## 损失函数(loss function)
+
+预测值和真实值的差异，叫做损失函数。
+
+常见的损失函数包括绝对值和，均方差和。
+
+- Loss(w, b)=1/N * Sigma(i=1, N, |yi - yi_hat| )
+- Loss(w, b)=1/N * Sigma(i=1, N, sqrt( (yi - yi_hat)^2 ) )
+- 除以样本N是为了去掉样本量的影响。
+- 优先选择平方，而不是绝对值，因为前者对于求导比较友好，不用分条件讨论。
+
 
 损失函数层（loss layer）用于决定训练过程如何来“惩罚”网络的预测结果和真实结果之间的差异，它通常是网络的最后一层。
 
@@ -136,7 +188,17 @@ y=exp(xi) / sum( exp(xi) )
 
 
 
-## 正则化(Regularization: Dropout)
+### L1 正则化(use L1 Penalty)
+
+为了防止参数过快增长，把参数本身作为损失函数的一部分，也叫惩罚项。
+
+NewLoss=损失函数 + Sigma(i=1, N, |wi| ) #L1 惩罚项: L1 Penalty
+
+### L2 正则化(use L2 Penalty)
+
+NewLoss=损失函数 + Sigma(i=1, N, wi^2 ) #L2 惩罚项: L2 Penalty
+
+### 正则化(Regularization: Dropout)
 
 Dropout是一种流行的神经网络正则化技术。 深度神经网络特别容易过度拟合。
 
@@ -216,3 +278,8 @@ Token is parts of the input such as words or subword pieces in NLP.
 
 
 
+
+
+# Ref
+
+- [推荐] https://www.bilibili.com/video/BV1NCgVzoEG9
